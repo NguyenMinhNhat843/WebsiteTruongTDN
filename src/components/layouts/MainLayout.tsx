@@ -1,3 +1,4 @@
+import Footer from "../common/Footer";
 import Header from "../common/Header";
 
 interface MainLayoutProps {
@@ -9,6 +10,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     <div>
       <Header />
       <main>{children}</main>
+      <Footer />
     </div>
   );
 };
