@@ -1,5 +1,11 @@
+import MainBanner from "../components/home/MainBanner";
+
 const Home = () => {
-  return <div>Trang chủ</div>;
+  return (
+    <div>
+      <MainBanner />
+    </div>
+  );
 };
 
 export default Home;
