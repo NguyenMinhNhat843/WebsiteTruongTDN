@@ -1,5 +1,8 @@
+import { useParams } from "react-router-dom";
+
 const PostDetail = () => {
-  return <div>Chi tiết bài viết</div>;
+  const { slug } = useParams();
+  return <div>{slug}</div>;
 };
 
 export default PostDetail;
