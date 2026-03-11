@@ -1,61 +1,54 @@
-import React from "react";
-import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Facebook, Instagram, Youtube } from "lucide-react";
 import NavigationTree from "./NavigationTree";
 import { navData } from "./navData";
 
-const TopBar: React.FC = () => {
+const SOCIAL_LINKS = [
+  { Icon: Facebook, label: "Facebook", href: "#" },
+  { Icon: Instagram, label: "Instagram", href: "#" },
+  { Icon: Youtube, label: "Youtube", href: "#" },
+] as const;
+const HOTLINE = "0982 626 111";
+
+const TopBar = () => {
   return (
     <div className="w-full bg-blue-900 text-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-10">
-        <span className="text-sm font-semibold tracking-wider">
-          HOTLINE: 0982 626 111
-        </span>
+        <a
+          href={`tel:${HOTLINE}`}
+          className="text-sm font-semibold tracking-wider"
+        >
+          HOTLINE: {HOTLINE}
+        </a>
         <div className="flex items-center space-x-4">
-          <a
-            href="#"
-            className="hover:text-blue-200 transition-colors"
-            aria-label="Facebook"
-          >
-            <Facebook size={16} strokeWidth={2.5} />
-          </a>
-          <a
-            href="#"
-            className="hover:text-blue-200 transition-colors"
-            aria-label="Twitter"
-          >
-            <Twitter size={16} strokeWidth={2.5} />
-          </a>
-          <a
-            href="#"
-            className="hover:text-blue-200 transition-colors"
-            aria-label="Instagram"
-          >
-            <Instagram size={16} strokeWidth={2.5} />
-          </a>
-          <a
-            href="#"
-            className="hover:text-blue-200 transition-colors"
-            aria-label="Youtube"
-          >
-            <Youtube size={16} strokeWidth={2.5} />
-          </a>
+          {SOCIAL_LINKS.map(({ Icon, label, href }) => (
+            <a
+              href={href}
+              className="hover:text-blue-200 transition-colors"
+              aria-label={label}
+            >
+              <Icon size={16} strokeWidth={2.5} />
+            </a>
+          ))}
         </div>
       </div>
     </div>
   );
 };
 
-const HeaderNav: React.FC = () => {
+const HeaderNav = () => {
   return (
     <header className="w-full bg-white shadow-md">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-center">
         <div className="flex items-center space-x-3">
           {/* Logo/Brand */}
-          <div className="h-18 w-18 rounded-full overflow-hidden border-2 border-blue-200 shadow-sm flex-shrink-0">
+          <div className="h-20 w-20 rounded-full overflow-hidden border-2 border-blue-200 shadow-sm flex-shrink-0">
             <img
               src="/logo.png"
-              alt="Logo"
+              alt="Logo Trường Trung Cấp Kinh Tế – Kỹ Thuật Trần Đại Nghĩa"
               className="h-full w-full object-cover"
+              onError={(e) => {
+                e.currentTarget.src = "/logo-fallback.png";
+              }}
             />
           </div>
 
@@ -81,10 +74,10 @@ const HeaderNav: React.FC = () => {
 
 const Header = () => {
   return (
-    <>
+    <header>
       <TopBar />
       <HeaderNav />
-    </>
+    </header>
   );
 };
 

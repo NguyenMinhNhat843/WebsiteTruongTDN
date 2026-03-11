@@ -7,20 +7,25 @@ import {
   Music2, // TikTok thường dùng icon nốt nhạc trong Lucide
 } from "lucide-react";
 
+const SOCIAL_LINKS = [
+  { Icon: Facebook, label: "Facebook", link: "#" },
+  { Icon: Music2, label: "TikTok", link: "#" },
+  { Icon: Youtube, label: "Youtube", link: "#" },
+] as const;
+
 const Footer = () => {
   return (
-    <section className="bg-blue-900 text-white pt-12 pb-4 px-4">
+    <footer className="bg-blue-900 text-white pt-12 pb-4 px-4">
       <div className="container mx-auto flex flex-col md:flex-row items-start gap-12">
         {/* Cột 1: Bản đồ */}
-        <div className="w-full md:w-1/2 rounded-2xl overflow-hidden shadow-2xl border border-blue-700/50">
+        <div className="w-full md:w-1/2 aspect-video rounded-2xl overflow-hidden shadow-2xl border border-blue-700/50">
           <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.96638428612!2d106.67493631525656!3d10.813813961456976!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528e1f00a5d21%3A0x633d744833256a1b!2zMzQgTmd1eeG7hW4gQsSpbmggS2hpw6ptLCBQaMaw4budbmcgMSwgR8OyIFZhcCwgVGjDoG5oIHFwaOG7kSBI4buTIENow60gTWluaA!5e0!3m2!1svi!2s!4v1650000000000!5m2!1svi!2s"
-            width="100%"
-            height="320"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3898.9227336237846!2d109.19086307484181!3d12.253507987999754!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317067017e128bf5%3A0x575db80a15914628!2zVHLGsOG7nW5nIFRydW5nIGPhuqVwIEtpbmggdOG6vyAtIEvhu7kgdGh14bqtdCBUcuG6p24gxJDhuqFpIE5naMSpYQ!5e0!3m2!1svi!2s!4v1773194714627!5m2!1svi!2s"
+            className="w-full h-full"
             style={{ border: 0 }}
             loading="lazy"
-            title="Địa chỉ trường"
-            className="grayscale contrast-125 hover:grayscale-0 transition-all duration-500"
+            allowFullScreen
+            referrerPolicy="no-referrer-when-downgrade"
           ></iframe>
         </div>
 
@@ -36,14 +41,11 @@ const Footer = () => {
 
           {/* Mạng xã hội */}
           <div className="flex gap-3">
-            {[
-              { Icon: Facebook, link: "#" },
-              { Icon: Music2, link: "#" },
-              { Icon: Youtube, link: "#" },
-            ].map((item, index) => (
+            {SOCIAL_LINKS.map((item, index) => (
               <a
                 key={index}
                 href={item.link}
+                aria-label={item.label}
                 className="p-2.5 rounded-lg bg-blue-800/50 hover:bg-blue-400 hover:text-blue-900 transition-all duration-300 border border-blue-700"
               >
                 <item.Icon size={20} strokeWidth={2} />
@@ -98,7 +100,7 @@ const Footer = () => {
       <div className="container mx-auto mt-12 pt-6 border-t border-blue-800 text-center text-blue-400 text-xs">
         © 2026 Trường Trung cấp kinh tế - kỹ thuật Trần Đại Nghĩa.
       </div>
-    </section>
+    </footer>
   );
 };
 
