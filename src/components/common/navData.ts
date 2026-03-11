@@ -73,6 +73,11 @@ export const navData: MenuItem[] = [
     ],
   },
   {
+    id: "tin-tuc",
+    label: "TIN TỨC",
+    href: "/tin-tuc",
+  },
+  {
     id: "thong-tin-hoc-sinh-sinh-vien",
     label: "THÔNG TIN HỌC SINH - SINH VIÊN",
     href: "/thong-tin-hoc-sinh-sinh-vien",

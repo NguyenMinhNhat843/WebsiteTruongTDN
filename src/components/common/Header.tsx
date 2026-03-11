@@ -1,6 +1,7 @@
 import { Facebook, Instagram, Youtube } from "lucide-react";
 import NavigationTree from "./NavigationTree";
 import { navData } from "./navData";
+import { Link } from "react-router-dom";
 
 const SOCIAL_LINKS = [
   { Icon: Facebook, label: "Facebook", href: "#" },
@@ -41,7 +42,10 @@ const HeaderNav = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-center">
         <div className="flex items-center space-x-3">
           {/* Logo/Brand */}
-          <div className="h-20 w-20 rounded-full overflow-hidden border-2 border-blue-200 shadow-sm flex-shrink-0">
+          <Link
+            to="/"
+            className="h-20 w-20 rounded-full overflow-hidden border-2 border-blue-200 shadow-sm shrink-0 hover:opacity-80 transition-opacity block"
+          >
             <img
               src="/logo.png"
               alt="Logo Trường Trung Cấp Kinh Tế – Kỹ Thuật Trần Đại Nghĩa"
@@ -50,7 +54,7 @@ const HeaderNav = () => {
                 e.currentTarget.src = "/logo-fallback.png";
               }}
             />
-          </div>
+          </Link>
 
           <div className="leading-tight">
             <div className="text-sm text-center font-normal text-gray-500 tracking-wide uppercase">
