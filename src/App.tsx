@@ -7,13 +7,13 @@ import NewsList from "./pages/NewsList";
 
 function App() {
   return (
-    <MainLayout>
-      <Routes>
+    <Routes>
+      <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="tin-tuc" element={<NewsList />} />
         <Route path="tin-tuc/:slug" element={<PostDetail />} />
-      </Routes>
-    </MainLayout>
+      </Route>
+    </Routes>
   );
 }
 

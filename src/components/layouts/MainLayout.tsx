@@ -1,15 +1,14 @@
+import { Outlet } from "react-router-dom";
 import Footer from "../common/Footer";
 import Header from "../common/Header";
 
-interface MainLayoutProps {
-  children: React.ReactNode;
-}
-
-const MainLayout = ({ children }: MainLayoutProps) => {
+const MainLayout = () => {
   return (
     <div>
       <Header />
-      <main>{children}</main>
+      <main>
+        <Outlet />
+      </main>
       <Footer />
     </div>
   );
