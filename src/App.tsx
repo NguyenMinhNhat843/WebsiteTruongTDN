@@ -18,6 +18,7 @@ function App() {
           <Route path="tuyen-sinh/:slug" element={<PostDetail />} />
           <Route path="tin-tuc/:slug" element={<PostDetail />} />
         </Route>
+        <Route path="/:slug" element={<PostDetail />} />
       </Route>
     </Routes>
   );

@@ -1,18 +1,10 @@
 import { Link } from "react-router-dom";
 import { CalendarDays } from "lucide-react"; // Import icon lịch
 import type { IPost } from "../../types/api.type";
+import { formatDate } from "../../util/formatDate";
 
 const PostCard = ({ post }: { post: IPost }) => {
   const { slug, image, title, published_at } = post;
-  const formatDate = (dateString?: string) => {
-    console.log("Date string received in PostCard:", dateString); // Debug log
-    if (!dateString) return "";
-    return new Date(dateString).toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
 
   const isNewPost = (dateString?: string) => {
     if (!dateString) return false;

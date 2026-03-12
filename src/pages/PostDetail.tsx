@@ -48,17 +48,17 @@ const PostDetail = () => {
     );
   }
 
-  if (!post) {
+  if (!post || typeof post !== "object") {
     return (
       <div className="text-center py-20">
         <h2 className="text-2xl font-bold text-gray-800">
-          Không tìm thấy bài viết
+          Không tìm thấy bài viết {slug}
         </h2>
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate("/")}
           className="mt-4 text-blue-600 hover:underline inline-flex items-center gap-2"
         >
-          <ArrowLeft size={18} /> Quay lại
+          <ArrowLeft size={18} /> Quay về trang chủ
         </button>
       </div>
     );
@@ -66,18 +66,6 @@ const PostDetail = () => {
 
   return (
     <article className="max-w-4xl mx-auto px-4 py-10">
-      {/* Nút quay lại */}
-      <button
-        onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-gray-500 hover:text-blue-600 transition-colors mb-8 group"
-      >
-        <ArrowLeft
-          size={20}
-          className="group-hover:-translate-x-1 transition-transform"
-        />
-        <span className="font-medium">Quay lại danh sách</span>
-      </button>
-
       {/* Header bài viết */}
       <header className="mb-8">
         <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">

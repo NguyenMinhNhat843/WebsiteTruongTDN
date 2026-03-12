@@ -29,19 +29,11 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ user }) => {
           <div className="space-y-2 border-t border-gray-50 pt-3">
             <div className="flex items-center text-gray-600 hover:text-blue-600 transition-colors">
               <span className="text-sm mr-2 opacity-70">📞</span>
-              <a
-                href={`tel:${user.phoneNumber}`}
-                className="text-sm font-medium"
-              >
-                {user.phoneNumber}
-              </a>
+              <a className="text-sm font-medium">{user.phoneNumber}</a>
             </div>
             <div className="flex items-center text-gray-600 hover:text-blue-600 transition-colors">
               <span className="text-sm mr-2 opacity-70">✉️</span>
-              <a
-                href={`mailto:${user.email}`}
-                className="text-sm font-medium truncate max-w-45"
-              >
+              <a className="text-sm font-medium truncate max-w-45">
                 {user.email}
               </a>
             </div>

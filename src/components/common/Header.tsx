@@ -26,6 +26,7 @@ const TopBar = () => {
               href={href}
               className="hover:text-blue-200 transition-colors"
               aria-label={label}
+              key={label}
             >
               <Icon size={16} strokeWidth={2.5} />
             </a>
