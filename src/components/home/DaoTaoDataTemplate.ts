@@ -1,6 +1,9 @@
 export const danhSachKhoa = [
   {
-    tenKhoa: "Trình độ trung cấp",
+    tenKhoa: "Trình độ Trung cấp",
+    khoaSlug: "trinh-do-trung-cap",
+    description:
+      "Đào tạo nghề chuyên sâu, chú trọng thực hành, giúp học sinh tốt nghiệp THCS/THPT có việc làm ngay.",
     anh: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     nganh: [
       { label: "TC Hướng dẫn du lịch", slug: "tc-huong-dan-du-lich" },
@@ -19,6 +22,9 @@ export const danhSachKhoa = [
   },
   {
     tenKhoa: "Trình độ Cao đẳng (Liên kết)",
+    khoaSlug: "trinh-do-cao-dang-lien-ket",
+    description:
+      "Chương trình liên kết đào tạo chính quy, nâng cao trình độ chuyên môn và kỹ năng quản lý.",
     anh: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     nganh: [
       { label: "CĐ điều dưỡng", slug: "cd-dieu-duong" },
@@ -28,6 +34,9 @@ export const danhSachKhoa = [
   },
   {
     tenKhoa: "Trình độ Đại học (Liên kết)",
+    khoaSlug: "trinh-do-dai-hoc-lien-ket",
+    description:
+      "Cơ hội sở hữu bằng cử nhân từ các trường Đại học uy tín thông qua hình thức liên kết đào tạo.",
     anh: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?w=800&q=80",
     nganh: [
       { label: "ĐH Ngôn ngữ Anh", slug: "dh-ngon-ngu-anh" },
@@ -47,6 +56,9 @@ export const danhSachKhoa = [
   },
   {
     tenKhoa: "Trình độ Sơ cấp",
+    khoaSlug: "trinh-do-so-cap",
+    description:
+      "Các khóa học ngắn hạn từ 3-6 tháng, tập trung rèn luyện tay nghề nhanh để đi làm ngay.",
     anh: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     nganh: [
       { label: "SCN Kế toán doanh nghiệp", slug: "scn-ke-toan-doanh-nghiep" },
@@ -74,6 +86,9 @@ export const danhSachKhoa = [
   },
   {
     tenKhoa: "Đào tạo nghề cho Bộ đội xuất ngũ",
+    khoaSlug: "dao-tao-nghe-bo-doi-xuat-ngu",
+    description:
+      "Chương trình ưu đãi dành riêng cho quân nhân, hỗ trợ định hướng nghề nghiệp và việc làm bền vững.",
     anh: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     nganh: [
       { label: "Nghề điện lạnh", slug: "nghe-dien-lanh" },
@@ -102,6 +117,9 @@ export const danhSachKhoa = [
   },
   {
     tenKhoa: "Bồi dưỡng kỹ năng nghiệp vụ quản lý",
+    khoaSlug: "boi-duong-ky-nang-quan-ly",
+    description:
+      "Nâng cao năng lực lãnh đạo, kỹ năng mềm và quản trị doanh nghiệp hiện đại.",
     anh: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     nganh: [
       { label: "Quản lý chất lượng", slug: "quan-ly-chat-luong" },
