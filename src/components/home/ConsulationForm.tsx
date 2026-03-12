@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { CheckCircle } from "lucide-react";
 import FormInput from "../ui/FormInput";
-import type { Option } from "../ui/TempOption";
-import SelectOption from "../ui/TempOption";
+import type { Option } from "../ui/SelectOption";
+import SelectOption from "../ui/SelectOption";
 
 interface FormState {
   fullName: string;
