@@ -24,7 +24,7 @@ const PostCard = ({ post }: { post: IPost }) => {
   const isNew = isNewPost(published_at);
 
   return (
-    <Link to={`/${slug}`} className="block h-full">
+    <Link to={`/tin-tuc/${slug}`} className="block h-full">
       <div className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-100 flex flex-col h-full cursor-pointer group">
         {/* Container Hình ảnh */}
         <div className="relative overflow-hidden aspect-video">
@@ -65,7 +65,7 @@ const PostCard = ({ post }: { post: IPost }) => {
         <div className="p-5 flex flex-col grow text-center items-center">
           <div className="w-10 h-1 bg-gray-200 mb-4 rounded-full group-hover:bg-blue-500 transition-colors"></div>
 
-          <h3 className="text-blue-900 font-bold text-lg leading-snug uppercase mb-4 line-clamp-3 group-hover:text-blue-700 transition-colors">
+          <h3 className="text-blue-900 font-bold leading-snug uppercase mb-4 line-clamp-3 group-hover:text-blue-700 transition-colors">
             {title}
           </h3>
         </div>

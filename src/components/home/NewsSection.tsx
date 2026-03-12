@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PostCard from "../common/PostCard";
 import type { IPost } from "../../types/api.type";
 import { ExternalLink } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const NewsSection = () => {
   const [posts, setPosts] = useState<IPost[]>([]);
@@ -35,9 +36,11 @@ const NewsSection = () => {
           <h2 className="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-3">
             Tin tức & Sự kiện
           </h2>
-          <button className="text-blue-600 font-medium hover:underline cursor-pointer flex items-center gap-1 transition-colors">
-            Xem tất cả <ExternalLink size={14} />
-          </button>
+          <Link to={"/tin-tuc"}>
+            <button className="text-blue-600 font-medium hover:underline cursor-pointer flex items-center gap-1 transition-colors">
+              Xem tất cả <ExternalLink size={14} />
+            </button>
+          </Link>
         </div>
 
         {loading ? (

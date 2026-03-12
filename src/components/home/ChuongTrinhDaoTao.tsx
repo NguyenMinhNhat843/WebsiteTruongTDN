@@ -3,7 +3,10 @@ import KhoaCard from "./KhoaCard";
 
 const ChuongTrinhDaoTao = () => {
   return (
-    <section className="bg-slate-50 py-20 px-6 font-['Be_Vietnam_Pro']">
+    <section
+      className="bg-slate-50 py-20 px-6 font-['Be_Vietnam_Pro']"
+      id="chuong-trinh-dao-tao"
+    >
       {/* Header Section */}
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight italic">

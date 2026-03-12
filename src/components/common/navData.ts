@@ -37,7 +37,7 @@ export const navData: MenuItem[] = [
   {
     id: "dao-tao",
     label: "ĐÀO TẠO",
-    href: "#",
+    href: "/#chuong-trinh-dao-tao",
     layout: "dropdown",
     children: [
       {
