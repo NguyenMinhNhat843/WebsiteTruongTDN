@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { CheckCircle } from "lucide-react";
 import FormInput from "../ui/FormInput";
-import type { Option } from "../ui/SelectOption";
-import SelectOption from "../ui/SelectOption";
+import type { Option } from "../ui/TempOption";
+import SelectOption from "../ui/TempOption";
 
 interface FormState {
   fullName: string;
@@ -58,7 +58,6 @@ export default function ConsultationForm() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
-  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
@@ -78,7 +77,6 @@ export default function ConsultationForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const v = validate();
-    setErrors(v);
     if (Object.keys(v).length > 0) return;
 
     setSubmitting(true);
