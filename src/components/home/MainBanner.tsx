@@ -25,7 +25,7 @@ const BANNERS = [
 
 const MainBanner = () => {
   return (
-    <div className="relative group w-full h-[300px] overflow-hidden">
+    <div className="relative group w-full h-75 overflow-hidden">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         effect="fade"
@@ -64,9 +64,6 @@ const MainBanner = () => {
                 <p className="text-lg md:text-xl max-w-2xl font-light">
                   {banner.subtitle}
                 </p>
-                <button className="mt-8 px-8 py-3 bg-blue-600 hover:bg-blue-700 transition-all rounded-full font-medium">
-                  Tìm hiểu ngay
-                </button>
               </div>
             </div>
           </SwiperSlide>

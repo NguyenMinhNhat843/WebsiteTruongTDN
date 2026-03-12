@@ -19,7 +19,7 @@ export const danhSachKhoa = [
   },
   {
     tenKhoa: "Trình độ Cao đẳng (Liên kết)",
-    anh: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80",
+    anh: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     nganh: [
       { label: "CĐ điều dưỡng", slug: "cd-dieu-duong" },
       { label: "CĐ Chăm sóc sắc đẹp", slug: "cd-cham-soc-sac-dep" },
@@ -47,7 +47,7 @@ export const danhSachKhoa = [
   },
   {
     tenKhoa: "Trình độ Sơ cấp",
-    anh: "https://images.unsplash.com/photo-1581092921461-39b9d08a9e24?w=800&q=80",
+    anh: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     nganh: [
       { label: "SCN Kế toán doanh nghiệp", slug: "scn-ke-toan-doanh-nghiep" },
       { label: "SCN Sữa chữa ô tô", slug: "scn-sua-chua-o-to" },
@@ -74,7 +74,7 @@ export const danhSachKhoa = [
   },
   {
     tenKhoa: "Đào tạo nghề cho Bộ đội xuất ngũ",
-    anh: "https://images.unsplash.com/photo-1581092921461-39b9d08a9e24?w=800&q=80",
+    anh: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     nganh: [
       { label: "Nghề điện lạnh", slug: "nghe-dien-lanh" },
       {
@@ -102,7 +102,7 @@ export const danhSachKhoa = [
   },
   {
     tenKhoa: "Bồi dưỡng kỹ năng nghiệp vụ quản lý",
-    anh: "https://images.unsplash.com/photo-1581092921461-39b9d08a9e24?w=800&q=80",
+    anh: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&q=80",
     nganh: [
       { label: "Quản lý chất lượng", slug: "quan-ly-chat-luong" },
       { label: "Quản lý nhân sự", slug: "quan-ly-nhan-su" },

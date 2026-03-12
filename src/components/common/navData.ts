@@ -9,28 +9,28 @@ export const navData: MenuItem[] = [
       {
         id: "gioi-thieu-ve-truong-kt-kt-tran-dai-nghia",
         label: "Giới thiệu về Trường KT-KT Trần Đại Nghĩa",
-        href: "/gioi-thieu/ve-truong",
+        href: "/gioi-thieu-chung",
       },
       {
         id: "bo-may-to-chuc",
         label: "Bộ máy tổ chức",
-        href: "/gioi-thieu/bo-may-to-chuc",
+        href: "/bo-may-to-chuc",
       },
       {
         id: "tam-nhin-su-mang-gia-tri-cot-loi",
         label: "Tầm nhìn, sứ mệnh, giá trị cốt lõi",
-        href: "/gioi-thieu/tam-nhin-su-mang-gia-tri-cot-loi",
+        href: "/tam-nhin-su-mang-gia-tri-cot-loi",
       },
       {
         id: "so-do-to-chuc",
         label: "Sơ đồ tổ chức",
-        href: "/gioi-thieu/so-do-to-chuc",
+        href: "/so-do-to-chuc",
       },
       {
         id: "hop-tac-quoc-te",
         label:
           "Trung tâm Đào tạo, Hợp tác quốc tế và Phát triển nguồn nhân lực ASIA",
-        href: "/gioi-thieu/hop-tac-quoc-te",
+        href: "/hop-tac-quoc-te",
       },
     ],
   },

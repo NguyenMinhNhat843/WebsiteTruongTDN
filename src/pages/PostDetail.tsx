@@ -85,20 +85,6 @@ const PostDetail = () => {
         </h1>
       </header>
 
-      {/* Ảnh bìa */}
-      <div className="mb-10">
-        <img
-          src={post.image}
-          alt={post.title}
-          className="w-full h-auto max-h-125 object-cover rounded-2xl shadow-lg"
-        />
-      </div>
-
-      {/* Tóm tắt bài viết */}
-      <div className="mb-10 px-6 py-4 border-l-4 border-blue-600 bg-gray-50 italic text-xl text-gray-700 leading-relaxed">
-        {post.summary}
-      </div>
-
       {/* Nội dung chi tiết (Render HTML) */}
       <div
         className="prose prose-lg max-w-none prose-slate prose-headings:text-gray-900 prose-a:text-blue-600"
