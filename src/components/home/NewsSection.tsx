@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import PostCard from "../common/PostCard";
-import type { IPost } from "../../types/api.type";
+import type { Post } from "../../types/api.type";
 import { ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const NewsSection = () => {
-  const [posts, setPosts] = useState<IPost[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,11 +33,11 @@ const NewsSection = () => {
       <div className="container mx-auto px-4">
         {/* Tiêu đề Section */}
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-3">
+          <h2 className="text-2xl font-bold text-gray-800 border-l-4 border-school-blue-600 pl-3">
             Tin tức & Sự kiện
           </h2>
           <Link to={"/tin-tuc"}>
-            <button className="text-blue-600 font-medium hover:underline cursor-pointer flex items-center gap-1 transition-colors">
+            <button className="text-school-blue-600 font-medium hover:underline cursor-pointer flex items-center gap-1 transition-colors">
               Xem tất cả <ExternalLink size={14} />
             </button>
           </Link>

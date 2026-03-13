@@ -31,10 +31,10 @@ const MediaSection = () => {
       <div className="container mx-auto px-4">
         {/* Tiêu đề Section */}
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-2xl font-bold text-gray-800 border-l-4 border-blue-600 pl-3">
+          <h2 className="text-2xl font-bold text-gray-800 border-l-4 border-school-blue-600 pl-3">
             Thư viện Media
           </h2>
-          <button className="text-blue-600 font-medium hover:underline cursor-pointer flex items-center gap-1 transition-colors">
+          <button className="text-school-blue-600 font-medium hover:underline cursor-pointer flex items-center gap-1 transition-colors">
             Xem tất cả <ExternalLink size={14} />
           </button>
         </div>

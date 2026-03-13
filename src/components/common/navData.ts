@@ -2,6 +2,11 @@ import type { MenuItem } from "./types";
 
 export const navData: MenuItem[] = [
   {
+    id: "home",
+    label: "TRANG CHỦ",
+    href: "/",
+  },
+  {
     id: "gioi-thieu",
     label: "GIỚI THIỆU",
     href: "#",
@@ -37,38 +42,38 @@ export const navData: MenuItem[] = [
   {
     id: "dao-tao",
     label: "ĐÀO TẠO",
-    href: "/#chuong-trinh-dao-tao",
+    href: "#",
     layout: "dropdown",
     children: [
       {
         id: "trinh-do-trung-cap",
         label: "Trình độ Trung cấp",
-        href: "/dao-tao/trinh-do-trung-cap",
+        href: "/chuong-trinh-dao-tao/trinh-do-trung-cap",
       },
       {
         id: "trinh-do-cao-dang",
-        label: "Trình độ Cao đẳng",
-        href: "/dao-tao/trinh-do-cao-dang",
+        label: "Trình độ Cao đẳng liên kết",
+        href: "/chuong-trinh-dao-tao/trinh-do-cao-dang-lien-ket",
       },
       {
         id: "trinh-do-dai-hoc-lien-ket",
         label: "Trình độ Đại học liên kết",
-        href: "/dao-tao/trinh-do-dai-hoc-lien-ket",
+        href: "/chuong-trinh-dao-tao/trinh-do-dai-hoc-lien-ket",
       },
       {
         id: "trinh-do-so-cap",
         label: "Trình độ sơ cấp",
-        href: "/dao-tao/trinh-do-so-cap",
+        href: "/chuong-trinh-dao-tao/trinh-do-so-cap",
       },
       {
         id: "dao-tao-nghe-bo-doi-xuat-ngu",
         label: "Đào tạo nghề cho bộ đội xuất ngũ",
-        href: "/dao-tao/bo-doi-xuat-ngu",
+        href: "/chuong-trinh-dao-tao/dao-tao-nghe-bo-doi-xuat-ngu",
       },
       {
         id: "boi-duong-ky-nang-nghiep-vu",
         label: "Bồi dưỡng kỹ năng nghiệp vụ",
-        href: "/dao-tao/boi-duong-ky-nang",
+        href: "/chuong-trinh-dao-tao/boi-duong-ky-nang-quan-ly",
       },
     ],
   },
@@ -80,102 +85,109 @@ export const navData: MenuItem[] = [
   {
     id: "thong-tin-hoc-sinh-sinh-vien",
     label: "THÔNG TIN HỌC SINH - SINH VIÊN",
-    href: "/thong-tin-hoc-sinh-sinh-vien",
+    href: "#",
     children: [
       {
         id: "thoi-khoa-bieu",
         label: "Thời khóa biểu",
-        href: "/thoi-khoa-bieu",
+        href: "#",
       },
       {
         id: "thong-bao",
         label: "Thông báo",
-        href: "/thong-bao",
+        href: "#",
       },
       {
         id: "lich-thi",
         label: "Lịch thi",
-        href: "/lich-thi",
+        href: "#",
       },
       {
         id: "cuu-hoc-sinh-sinh-vien",
         label: "Cứu học sinh - Sinh viên",
-        href: "/cuu-hoc-sinh-sinh-vien",
+        href: "#",
       },
       {
         id: "hoat-dong-hs-sv",
         label: "Hoạt động học sinh - Sinh viên",
-        href: "/hoat-dong-hs-sv",
+        href: "#",
       },
       {
         id: "chia-se-kinh-nghiem",
         label: "Chia sẻ kinh nghiệm",
-        href: "/chia-se-kinh-nghiem",
+        href: "#",
       },
       {
         id: "doanh-nghiep-viec-lam",
         label: "Doanh nghiệp - Việc làm",
-        href: "/doanh-nghiep-viec-lam",
+        href: "#",
       },
     ],
   },
   {
     id: "tuyen-sinh",
     label: "TUYỂN SINH",
-    href: "/tuyen-sinh",
+    href: "#",
     layout: "dropdown", // Hiển thị 1 cột dọc
     children: [
       {
         id: "tuyen-sinh-he-trung-cap-9+",
         label: "Tuyển sinh hệ trung cấp 9+",
-        href: "tuyen-sinh/tuyen-sinh-he-trung-cap-9+",
+        // href: "tuyen-sinh/tuyen-sinh-he-trung-cap-9+",
+        href: "#",
       },
       {
         id: "tuyen-sinh-trung-cap-nghe",
         label: "Tuyển sinh trung cấp nghề",
-        href: "tuyen-sinh/tuyen-sinh-trung-cap-nghe",
+        // href: "tuyen-sinh/tuyen-sinh-trung-cap-nghe",
+        href: "#",
       },
       {
         id: "tuyen-sinh-dai-hoc-e-learning",
         label: "Tuyển sinh Đại học E-Learning (Học Online)",
-        href: "tuyen-sinh/tuyen-sinh-dai-hoc-e-learning",
+        // href: "tuyen-sinh/tuyen-sinh-dai-hoc-e-learning",
+        href: "#",
       },
       {
         id: "tuyen-sinh-cac-lop-nghe-ngan-han",
         label: "Tuyển sinh các lớp nghề ngắn hạn",
-        href: "/tuyen-sinh/tuyen-sinh-cac-lop-nghe-ngan-han",
+        // href: "/tuyen-sinh/tuyen-sinh-cac-lop-nghe-ngan-han",
+        href: "#",
       },
       {
         id: "tuyen-sinh-dao-tao-nghe-cho-bo-doi-xuat-ngu",
         label: "Tuyển sinh đào tạo nghề cho bộ đội xuất ngũ",
-        href: "/tuyen-sinh/tuyen-sinh-dao-tao-nghe-cho-bo-doi-xuat-ngu",
+        // href: "/tuyen-sinh/tuyen-sinh-dao-tao-nghe-cho-bo-doi-xuat-ngu",
+        href: "#",
       },
       {
         id: "tuyen-sinh-cao-dang-chinh-quy",
         label: "Tuyển sinh cao đẳng chính quy (Bách khoa Sài Gòn)",
-        href: "/tuyen-sinh/tuyen-sinh-cao-dang-chinh-quy",
+        // href: "/tuyen-sinh/tuyen-sinh-cao-dang-chinh-quy",
+        href: "#",
       },
       {
         id: "tuyen-sinh-cao-dang-9+",
         label: "Tuyển sinh cao đẳng 9+ (Bách Khoa Sài Gòn)",
-        href: "/tuyen-sinh/tuyen-sinh-cao-dang-9+",
+        // href: "/tuyen-sinh/tuyen-sinh-cao-dang-9+",
+        href: "#",
       },
     ],
   },
   {
     id: "lien-he",
     label: "LIÊN HỆ",
-    href: "/lien-he",
+    href: "/dang-ky-tu-van",
     children: [
       {
         id: "lien-he-cong-tac",
         label: "Liên hệ công tác",
-        href: "/lien-he/cong-tac",
+        href: "/dang-ky-tuyen-sinh",
       },
       {
         id: "dang-ky-thong-tin-xet-tuyen-truc-tuyen",
         label: "Đăng ký thông tin xét tuyển trực tuyến",
-        href: "/lien-he/dang-ky-thong-tin-xet-tuyen-truc-tuyen",
+        href: "/dang-ky-tuyen-sinh",
       },
     ],
   },

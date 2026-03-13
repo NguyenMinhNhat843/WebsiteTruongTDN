@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import type { IPost } from "../../types/api.type";
+import type { Post } from "../../types/api.type";
 
 interface PostHorizonProps {
-  post: IPost;
+  post: Post;
 }
 
 const PostHorizon: React.FC<PostHorizonProps> = ({ post }) => {
@@ -19,7 +19,7 @@ const PostHorizon: React.FC<PostHorizonProps> = ({ post }) => {
         />
       </div>
       <div className="flex flex-col justify-center overflow-hidden">
-        <h4 className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-blue-600 transition-colors leading-snug">
+        <h4 className="text-sm font-semibold text-gray-800 line-clamp-2 group-hover:text-school-blue-600 transition-colors leading-snug">
           {post.title}
         </h4>
         <span className="text-[11px] text-gray-400 mt-1">

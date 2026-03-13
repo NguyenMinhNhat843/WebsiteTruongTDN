@@ -7,6 +7,7 @@ import NewsList from "./pages/NewsList";
 import BoMayToChuc from "./pages/BoMayToChuc";
 import PostLayout from "./components/layouts/PostLayout";
 import ChuongTrinhDaoTaoDetail from "./pages/ChuongTrinhDaoTaoDetail";
+import DangKyTuVan from "./pages/DangKyTuVan";
 
 function App() {
   return (
@@ -14,15 +15,19 @@ function App() {
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
         <Route path="/bo-may-to-chuc" element={<BoMayToChuc />} />
+        <Route path="/dang-ky-tuyen-sinh" element={<DangKyTuVan />} />
+
         <Route path="/chuong-trinh-dao-tao">
           <Route path=":heDaoTaoSlug" element={<ChuongTrinhDaoTaoDetail />} />
-
           <Route path=":heDaoTaoSlug/:nganhSlug" element={<PostDetail />} />
         </Route>
+
         <Route path="/tin-tuc" element={<NewsList />} />
         <Route element={<PostLayout />}>
           <Route path="tin-tuc/:slug" element={<PostDetail />} />
+          <Route path="tuyen-dung/:slug" element={<PostDetail />} />
         </Route>
+
         <Route path="/:slug" element={<PostDetail />} />
       </Route>
     </Routes>

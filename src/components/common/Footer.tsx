@@ -34,7 +34,7 @@ const Footer = () => {
           <div>
             <h2 className="text-2xl md:text-2xl font-extrabold uppercase leading-tight tracking-wide">
               Trường Trung cấp Kinh tế - Kỹ thuật <br />
-              <span className="text-blue-400">Trần Đại Nghĩa</span>
+              <span className="text-school-blue-400">Trần Đại Nghĩa</span>
             </h2>
             <div className="h-1 w-20 bg-blue-400 mt-2 rounded-full"></div>
           </div>
@@ -46,7 +46,7 @@ const Footer = () => {
                 key={index}
                 href={item.link}
                 aria-label={item.label}
-                className="p-2.5 rounded-lg bg-blue-800/50 hover:bg-blue-400 hover:text-blue-900 transition-all duration-300 border border-blue-700"
+                className="p-2.5 rounded-lg bg-blue-800/50 hover:bg-blue-400 hover:text-school-blue-900 transition-all duration-300 border border-blue-700"
               >
                 <item.Icon size={20} strokeWidth={2} />
               </a>
@@ -56,23 +56,23 @@ const Footer = () => {
           {/* Chi tiết liên hệ */}
           <div className="space-y-5">
             <div className="flex items-start gap-4">
-              <div className="p-2 bg-blue-800/50 rounded-lg text-blue-400">
+              <div className="p-2 bg-blue-800/50 rounded-lg text-school-blue-400">
                 <MapPin size={20} />
               </div>
               <div>
                 <p className="font-semibold text-white">Địa chỉ:</p>
-                <p className="text-blue-200 text-sm leading-relaxed">
+                <p className="text-school-blue-200 text-sm leading-relaxed">
                   Đường 2/4, Phường Vĩnh Phước, TP. Nha Trang, Khánh Hòa
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="p-2 bg-blue-800/50 rounded-lg text-blue-400">
+              <div className="p-2 bg-blue-800/50 rounded-lg text-school-blue-400">
                 <Phone size={20} />
               </div>
               <div>
-                <p className="text-blue-200 text-sm">
+                <p className="text-school-blue-200 text-sm">
                   <span className="font-semibold text-white uppercase mr-2 text-xs border border-blue-700 px-2 py-0.5 rounded">
                     Hotline
                   </span>
@@ -82,12 +82,12 @@ const Footer = () => {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="p-2 bg-blue-800/50 rounded-lg text-blue-400">
+              <div className="p-2 bg-blue-800/50 rounded-lg text-school-blue-400">
                 <Mail size={20} />
               </div>
               <div>
                 <p className="font-semibold text-white">Email:</p>
-                <p className="text-blue-200 text-sm hover:text-blue-400 cursor-pointer transition-colors">
+                <p className="text-school-blue-200 text-sm hover:text-school-blue-400 cursor-pointer transition-colors">
                   info@trandainghiant.edu.vn
                 </p>
               </div>
@@ -97,7 +97,7 @@ const Footer = () => {
       </div>
 
       {/* Bản quyền phía dưới cùng */}
-      <div className="container mx-auto mt-12 pt-6 border-t border-blue-800 text-center text-blue-400 text-xs">
+      <div className="container mx-auto mt-12 pt-6 border-t border-blue-800 text-center text-school-blue-400 text-xs">
         © 2026 Trường Trung cấp kinh tế - kỹ thuật Trần Đại Nghĩa.
       </div>
     </footer>

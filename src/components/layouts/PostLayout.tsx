@@ -1,10 +1,10 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import type { IPost } from "../../types/api.type";
+import type { Post } from "../../types/api.type";
 import { useEffect, useState } from "react";
 import PostHorizon from "../common/PostCardHorizon";
 
 const PostLayout = () => {
-  const [latestPosts, setLatestPosts] = useState<IPost[]>([]);
+  const [latestPosts, setLatestPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 

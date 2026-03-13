@@ -19,19 +19,19 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({ user }) => {
       {/* 2. Thông tin chi tiết bên phải */}
       <div className="grow p-5 flex flex-col justify-between">
         <div>
-          <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-700 transition-colors leading-tight">
+          <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-school-blue-700 transition-colors leading-tight">
             {user.fullName}
           </h3>
-          <p className="text-xs text-blue-600 font-semibold tracking-wide uppercase mb-3">
+          <p className="text-xs text-school-blue-600 font-semibold tracking-wide uppercase mb-3">
             {user.position}
           </p>
 
           <div className="space-y-2 border-t border-gray-50 pt-3">
-            <div className="flex items-center text-gray-600 hover:text-blue-600 transition-colors">
+            <div className="flex items-center text-gray-600 hover:text-school-blue-600 transition-colors">
               <span className="text-sm mr-2 opacity-70">📞</span>
               <a className="text-sm font-medium">{user.phoneNumber}</a>
             </div>
-            <div className="flex items-center text-gray-600 hover:text-blue-600 transition-colors">
+            <div className="flex items-center text-gray-600 hover:text-school-blue-600 transition-colors">
               <span className="text-sm mr-2 opacity-70">✉️</span>
               <a className="text-sm font-medium truncate max-w-45">
                 {user.email}

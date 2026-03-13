@@ -2,16 +2,17 @@
 
 @theme {
   /* Khai báo màu schoolBlue */
-  --color-school-blue-50: #e8f0ff;
-  --color-school-blue-100: #d1e4ff;
-  --color-school-blue-200: #b8d7ff;
-  --color-school-blue-300: #8cc0ff;
-  --color-school-blue-400: #56a9ff;
-  --color-school-blue-500: #2a88ff;
-  --color-school-blue-600: #1f6fe8;
-  --color-school-blue-700: #1652ba;
-  --color-school-blue-800: #0e3b83;
-  --color-school-blue-900: #0a2960;
+  --color-school-blue-50: #eff6ff;
+  --color-school-blue-100: #dbeafe;
+  --color-school-blue-200: #bfdbfe;
+  --color-school-blue-300: #93c5fd;
+  --color-school-blue-400: #60a5fa;
+  --color-school-blue-500: #3b82f6;
+  --color-school-blue-600: #2563eb;
+  --color-school-blue-700: #1d4ed8;
+  --color-school-blue-800: #1e40af;
+  --color-school-blue-900: #1e3a8a;
+  --color-school-blue-950: #172554;
 
   --text-base: 0.875rem;
 

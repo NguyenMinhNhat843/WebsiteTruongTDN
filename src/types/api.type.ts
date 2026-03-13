@@ -3,7 +3,7 @@ export type CategoryPost =
   | "Tin tức - Sự kiện"
   | "Tin tuyển dụng";
 
-export interface IPost {
+export interface Post {
   id?: string;
   title?: string;
   slug?: string;

@@ -145,7 +145,7 @@ export default function ConsultationForm() {
           <div className="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <button
               type="submit"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white py-2.5 px-6 text-sm font-semibold transition shadow-md active:scale-95 disabled:opacity-70"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-school-blue-600 hover:bg-school-700 text-white py-2.5 px-6 text-sm font-semibold transition shadow-md active:scale-95 disabled:opacity-70"
               disabled={submitting}
             >
               {submitting ? "Đang gửi..." : "Gửi đăng ký"}

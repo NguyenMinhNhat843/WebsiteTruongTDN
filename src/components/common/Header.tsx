@@ -24,7 +24,7 @@ const TopBar = () => {
           {SOCIAL_LINKS.map(({ Icon, label, href }) => (
             <a
               href={href}
-              className="hover:text-blue-200 transition-colors"
+              className="hover:text-school-blue-200 transition-colors"
               aria-label={label}
               key={label}
             >
@@ -61,7 +61,7 @@ const HeaderNav = () => {
             <div className="text-sm text-center font-normal text-gray-500 tracking-wide uppercase">
               Sở Lao Động Thương Binh Và Xã Hội Khánh Hòa
             </div>
-            <div className="text-lg md:text-xl text-center font-bold text-blue-800 mt-0.5 tracking-tight">
+            <div className="text-lg md:text-xl text-center font-bold text-school-blue-800 mt-0.5 tracking-tight">
               Trường Trung Cấp Kinh Tế – Kỹ Thuật Trần Đại Nghĩa
             </div>
           </div>

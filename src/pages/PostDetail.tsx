@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import type { IPost } from "../types/api.type";
+import type { Post } from "../types/api.type";
 
 const PostDetail = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const [post, setPost] = useState<IPost | null>(null);
+  const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
