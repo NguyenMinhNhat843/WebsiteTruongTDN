@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import ChuongTrinhDaoTao from "../components/home/ChuongTrinhDaoTao";
-import ConsultationForm from "../components/home/DangKyTuVan";
 import MainBanner from "../components/home/MainBanner";
 import MediaSection from "../components/home/MediaTabs";
 import NewsSection from "../components/home/NewsSection";
 import { useLocation } from "react-router-dom";
+import DangKyTuVan from "../components/home/DangKyTuVan";
 
 const Home = () => {
   const { hash } = useLocation();
@@ -24,7 +24,7 @@ const Home = () => {
     <div>
       <MainBanner />
       <ChuongTrinhDaoTao />
-      <ConsultationForm />
+      <DangKyTuVan />
       <MediaSection />
       <NewsSection />
     </div>

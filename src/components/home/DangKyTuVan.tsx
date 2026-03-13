@@ -2,47 +2,80 @@ import { Trophy, Users, Zap, ArrowRight, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const DangKyTuVan = () => {
+  const colors = {
+    primary: "#1E4E8C", // deep blue
+    primaryLight: "#3A78D8", // lighter blue for hover
+    secondary: "#A5D8FF", // light sky blue
+    secondaryDark: "#0D5E93", // dark blue for contrasts
+    accent: "#10B981", // emerald/green accent (CTA subtle)
+    bgPanel: "#F1F7FB", // very light blue-ish background
+    text: "#0F1B2A", // dark slate for readability
+    muted: "#64748B", // slate-500 for secondary text
+  };
+
   const benefits = [
     {
-      icon: <Trophy className="w-5 h-5 text-yellow-500" />,
+      icon: <Trophy className="w-5 h-5" />,
       title: "Chương trình thực tiễn",
-      bgColor: "bg-yellow-50",
+      bgColor: "bg-[#E7F0FF]", // soft blue background
     },
     {
-      icon: <Users className="w-5 h-5 text-school-blue-500" />,
+      icon: <Users className="w-5 h-5" />,
       title: "Môi trường năng động",
-      bgColor: "bg-school-blue-50",
+      bgColor: "bg-[#E6F6FF]", // very light blue
     },
     {
-      icon: <Zap className="w-5 h-5 text-orange-500" />,
+      icon: <Zap className="w-5 h-5" />,
       title: "70% thời lượng thực hành",
-      bgColor: "bg-orange-50",
+      bgColor: "bg-[#FFF4E6]", // light amber
     },
   ];
 
   return (
-    <section className="py-20 px-4 bg-white overflow-hidden">
+    <section className="py-20 px-4" style={{ background: "#ffffff" }}>
       <div className="max-w-6xl mx-auto">
-        <div className="relative bg-slate-900 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-school-blue-900/20">
+        <div
+          className="relative rounded-[2.5rem] overflow-hidden shadow-2xl"
+          style={{ background: colors.bgPanel }}
+        >
           {/* Background Elements */}
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-linear-to-l from-school-blue-600/20 to-transparent z-0" />
-          <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-school-blue-500 rounded-full blur-[100px] opacity-20" />
+          <div
+            className="absolute top-0 right-0 w-1/2 h-full"
+            style={{
+              background: `linear-gradient(to left, rgba(14,94,168,0.25), transparent 60%)`,
+            }}
+          />
+          <div
+            className="absolute -bottom-24 -right-24 w-64 h-64"
+            style={{
+              background: colors.primary,
+              borderRadius: "999px",
+              filter: "blur(60px)",
+              opacity: 0.2,
+            }}
+          />
 
           <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-0">
             {/* CỘT TRÁI: THÔNG TIN CHIÊU MỘ */}
             <div className="p-8 md:p-14 lg:p-16 space-y-8">
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-school-blue-400 font-semibold tracking-wider uppercase text-sm">
+                <div className="flex items-center gap-2 text-[#3B82F6] font-semibold tracking-wider uppercase text-sm">
                   <Sparkles size={18} />
                   <span>Cơ hội nghề nghiệp rộng mở</span>
                 </div>
-                <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight">
+                <h2
+                  className="text-3xl md:text-5xl font-bold"
+                  style={{ color: "#0F1B2A", lineHeight: 1.1 }}
+                >
                   Sẵn sàng cho <br />
-                  <span className="text-school-blue-400">
+                  <span style={{ color: colors.primary }}>
                     hành trình tương lai?
                   </span>
                 </h2>
-                <p className="text-slate-400 text-lg max-w-md leading-relaxed">
+                <p
+                  className="text-slate-600 text-lg max-w-md leading-relaxed"
+                  style={{ color: "#475569" }}
+                >
                   Đừng bỏ lỡ đợt tuyển sinh lớn nhất trong năm. Hãy để chúng tôi
                   đồng hành cùng bạn xây dựng sự nghiệp vững chắc.
                 </p>
@@ -57,7 +90,10 @@ const DangKyTuVan = () => {
                     >
                       {item.icon}
                     </div>
-                    <span className="text-slate-300 font-medium">
+                    <span
+                      className="text-slate-700 font-medium"
+                      style={{ color: "#0F1B2A" }}
+                    >
                       {item.title}
                     </span>
                   </div>
@@ -66,7 +102,13 @@ const DangKyTuVan = () => {
             </div>
 
             {/* CỘT PHẢI: CHIẾN DỊCH HÌNH ẢNH + NÚT BẤM (CTA) */}
-            <div className="relative min-h-87.5 lg:min-h-full flex items-center justify-center p-8 bg-slate-800/50">
+            <div
+              className="relative min-h-87.5 lg:min-h-full flex items-center justify-center p-8"
+              style={{
+                background:
+                  "linear-gradient(to bottom right, rgba(14,94,168,0.15), rgba(255,255,255,0))",
+              }}
+            >
               {/* Ảnh nền mờ ảo tạo vibe giáo dục */}
               <div className="absolute inset-0 z-0">
                 <img
@@ -74,23 +116,40 @@ const DangKyTuVan = () => {
                   alt="Students"
                   className="w-full h-full object-cover opacity-30 grayscale hover:grayscale-0 transition-all duration-700"
                 />
-                <div className="absolute inset-0 bg-linear-to-t from-slate-900 via-slate-900/40 to-transparent" />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background:
+                      "linear-gradient(to top, rgba(15,23,42,0.8), rgba(15,23,42,0.0))",
+                  }}
+                />
               </div>
 
               {/* NÚT BẤM TỔNG LỰC */}
               <div className="relative z-10 text-center space-y-6 w-full max-w-xs">
                 <div className="space-y-2">
-                  <p className="text-white text-xl font-medium">
+                  <p
+                    className="text-white text-xl font-medium"
+                    style={{ letterSpacing: 0.5 }}
+                  >
                     Bạn đã sẵn sàng?
-                  </p>
-                  <p className="text-slate-400 text-sm">
-                    Chỉ mất 1 phút để thay đổi tương lai
                   </p>
                 </div>
 
                 <Link
                   to="/dang-ky-tuyen-sinh"
-                  className="group relative flex items-center justify-center gap-3 w-full bg-school-blue-600 hover:bg-school-blue-500 text-white font-bold py-5 px-8 rounded-2xl shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all duration-300 hover:-translate-y-1 active:scale-95"
+                  className="group relative flex items-center justify-center gap-3 w-full"
+                  style={{
+                    background: colors.primary,
+                    color: "white",
+                    fontWeight: 700,
+                    padding: "0.75rem 1.75rem",
+                    borderRadius: "1.25rem",
+                    boxShadow: "0 0 20px rgba(30,88,180,.4)",
+                    textTransform: "uppercase",
+                    letterSpacing: 0.5,
+                    transition: "transform .3s",
+                  }}
                 >
                   <span className="relative z-10">ĐĂNG KÝ TƯ VẤN NGAY</span>
                   <ArrowRight
@@ -99,8 +158,17 @@ const DangKyTuVan = () => {
                   />
 
                   {/* Hiệu ứng tia sáng quét qua nút */}
-                  <div className="absolute inset-0 rounded-2xl overflow-hidden">
-                    <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                  <div
+                    className="absolute inset-0 rounded-2xl overflow-hidden"
+                    aria-hidden="true"
+                  >
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        background:
+                          "linear-gradient(to right, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%)",
+                      }}
+                    />
                   </div>
                 </Link>
               </div>
@@ -109,7 +177,7 @@ const DangKyTuVan = () => {
         </div>
       </div>
 
-      {/* Tailwind Animation Customization (Thêm vào file CSS của bạn nếu chưa có) */}
+      {/* Inline keyframes for shimmer (if needed) */}
       <style>{`
         @keyframes shimmer {
           100% { transform: translateX(100%); }
