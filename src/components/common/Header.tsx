@@ -58,9 +58,6 @@ const HeaderNav = () => {
           </Link>
 
           <div className="leading-tight">
-            <div className="text-sm text-center font-normal text-gray-500 tracking-wide uppercase">
-              Sở Lao Động Thương Binh Và Xã Hội Khánh Hòa
-            </div>
             <div className="text-lg md:text-xl text-center font-bold text-school-blue-800 mt-0.5 tracking-tight">
               Trường Trung Cấp Kinh Tế – Kỹ Thuật Trần Đại Nghĩa
             </div>

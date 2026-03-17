@@ -34,15 +34,8 @@ export default function KhoaCard({
           alt={tenKhoa}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        {/* Overlay gradient xịn hơn */}
+        {/* Overlay gradient */}
         <div className="absolute inset-0 bg-linear-to-t from-school-blue-900/80 via-school-blue-900 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
-
-        {/* Badge trang trí góc trên */}
-        <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
-          <span className="text-[10px] font-bold text-school-blue-900 uppercase tracking-tighter">
-            Chương trình đào tạo
-          </span>
-        </div>
       </div>
 
       {/* Nội dung Card */}

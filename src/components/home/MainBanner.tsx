@@ -25,7 +25,7 @@ const BANNERS = [
 
 const MainBanner = () => {
   return (
-    <div className="relative group w-full h-75 overflow-hidden">
+    <div className="relative group w-full h-110 overflow-hidden">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         effect="fade"
