@@ -23,7 +23,7 @@ export const navData: MenuItem[] = [
       },
       {
         id: "tam-nhin-su-mang-gia-tri-cot-loi",
-        label: "Tầm nhìn, sứ mệnh, giá trị cốt lõi",
+        label: "Tầm nhì - Sứ mạng - Giá trị cốt lõi",
         href: "/tam-nhin-su-mang-gia-tri-cot-loi",
       },
       {

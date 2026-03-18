@@ -9,6 +9,7 @@ import PostLayout from "./components/layouts/PostLayout";
 import ChuongTrinhDaoTaoDetail from "./pages/ChuongTrinhDaoTaoDetail";
 import DangKyTuVan from "./pages/DangKyTuVan";
 import GioiThieuVeTruong from "./pages/GioiThieuVeTruong";
+import TamNhinSuMang from "./pages/TamNhinSuMang";
 
 function App() {
   return (
@@ -17,6 +18,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/gioi-thieu-chung" element={<GioiThieuVeTruong />} />
         <Route path="/bo-may-to-chuc" element={<BoMayToChuc />} />
+        <Route
+          path="/tam-nhin-su-mang-gia-tri-cot-loi"
+          element={<TamNhinSuMang />}
+        />
         <Route path="/dang-ky-tuyen-sinh" element={<DangKyTuVan />} />
 
         <Route path="/chuong-trinh-dao-tao">
