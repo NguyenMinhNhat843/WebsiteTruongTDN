@@ -8,12 +8,14 @@ import BoMayToChuc from "./pages/BoMayToChuc";
 import PostLayout from "./components/layouts/PostLayout";
 import ChuongTrinhDaoTaoDetail from "./pages/ChuongTrinhDaoTaoDetail";
 import DangKyTuVan from "./pages/DangKyTuVan";
+import GioiThieuVeTruong from "./pages/GioiThieuVeTruong";
 
 function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
+        <Route path="/gioi-thieu-chung" element={<GioiThieuVeTruong />} />
         <Route path="/bo-may-to-chuc" element={<BoMayToChuc />} />
         <Route path="/dang-ky-tuyen-sinh" element={<DangKyTuVan />} />
 
