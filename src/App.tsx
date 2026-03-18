@@ -10,6 +10,8 @@ import ChuongTrinhDaoTaoDetail from "./pages/ChuongTrinhDaoTaoDetail";
 import DangKyTuVan from "./pages/DangKyTuVan";
 import GioiThieuVeTruong from "./pages/GioiThieuVeTruong";
 import TamNhinSuMang from "./pages/TamNhinSuMang";
+import SoDoToChuc from "./pages/SoDoToChuc";
+import HopTacQuocTe from "./pages/HopTacQuocTe";
 
 function App() {
   return (
@@ -22,6 +24,8 @@ function App() {
           path="/tam-nhin-su-mang-gia-tri-cot-loi"
           element={<TamNhinSuMang />}
         />
+        <Route path="/so-do-to-chuc" element={<SoDoToChuc />} />
+        <Route path="/hop-tac-quoc-te" element={<HopTacQuocTe />} />
         <Route path="/dang-ky-tuyen-sinh" element={<DangKyTuVan />} />
 
         <Route path="/chuong-trinh-dao-tao">
