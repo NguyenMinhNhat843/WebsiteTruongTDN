@@ -12,12 +12,15 @@ import GioiThieuVeTruong from "./pages/GioiThieuVeTruong";
 import TamNhinSuMang from "./pages/TamNhinSuMang";
 import SoDoToChuc from "./pages/SoDoToChuc";
 import HopTacQuocTe from "./pages/HopTacQuocTe";
+import LienHe from "./pages/LienHe";
 
 function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
+
+        {/* Giới thiệu về trường */}
         <Route path="/gioi-thieu-chung" element={<GioiThieuVeTruong />} />
         <Route path="/bo-may-to-chuc" element={<BoMayToChuc />} />
         <Route
@@ -26,6 +29,9 @@ function App() {
         />
         <Route path="/so-do-to-chuc" element={<SoDoToChuc />} />
         <Route path="/hop-tac-quoc-te" element={<HopTacQuocTe />} />
+
+        {/* Liên hệ */}
+        <Route path="/lien-he-cong-tac" element={<LienHe />} />
         <Route path="/dang-ky-tuyen-sinh" element={<DangKyTuVan />} />
 
         <Route path="/chuong-trinh-dao-tao">

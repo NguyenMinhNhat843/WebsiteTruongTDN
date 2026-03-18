@@ -1,20 +1,29 @@
-import { GraduationCap, Headset, Mail, MapPin, Phone } from "lucide-react";
+import { BookOpen, GraduationCap, Headset, Mail, Phone } from "lucide-react";
 
 const ContactInfo = () => {
   const departments = [
     {
-      name: "Phòng Tuyển sinh & Quản lý đào tạo",
+      name: "Phòng Tuyển sinh",
       description: "Hỗ trợ tư vấn chọn ngành, nộp hồ sơ và thủ tục nhập học.",
-      phone: "0982 626 111",
-      email: "tuyensinh@trandainghia.edu.vn",
+      phone: "081.439.3535  -  0379.112.491 (Ms.Đỗ Thị Ngọc An)",
+      email: "tuyensinh@trandainghiant.edu.vn",
       icon: <GraduationCap className="w-6 h-6 text-school-blue-600" />,
       color: "bg-blue-50",
     },
     {
+      name: "Phòng Đào tạo",
+      description:
+        "Quản lý kế hoạch giảng dạy, thời khóa biểu và kết quả học tập.", // Cập nhật mô tả cho đúng chuyên môn
+      phone: "(0258) 224 1999 - 0988.904.906 (Nguyễn Thị Thảo)",
+      email: "daotao@trandainghiant.edu.vn",
+      icon: <BookOpen className="w-6 h-6 text-amber-600" />,
+      color: "bg-amber-50",
+    },
+    {
       name: "Phòng Hành chính - Nhân sự",
       description: "Giải đáp các vấn đề về thủ tục hành chính và nhân sự.",
-      phone: "0258 388 123",
-      email: "hanhchinh@trandainghia.edu.vn",
+      phone: "(0258) 222 0999  -  0962.848.951 (Ms.Nguyễn Thị Phương Loan)",
+      email: "tuyensinh@trandainghiant.edu.vn",
       icon: <Headset className="w-6 h-6 text-emerald-600" />,
       color: "bg-emerald-50",
     },
@@ -24,12 +33,12 @@ const ContactInfo = () => {
     <div className="space-y-8 animate-in fade-in slide-in-from-left duration-700">
       {/* Header cho phần liên hệ */}
       <div>
-        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
-          Liên hệ với <span className="text-blue-600">chúng tôi</span>
+        <h2 className="text-center text-3xl md:text-4xl font-extrabold text-slate-900 leading-tight">
+          Thông tin <span className="text-blue-600">liên hệ</span>
         </h2>
         <p className="mt-4 text-slate-600 text-lg leading-relaxed">
-          Bạn cần hỗ trợ nhanh? Đội ngũ cán bộ của nhà trường luôn sẵn sàng giải
-          đáp mọi thắc mắc của bạn qua các kênh trực tiếp.
+          Đội ngũ cán bộ của nhà trường luôn sẵn sàng giải đáp mọi thắc mắc của
+          bạn qua các kênh trực tiếp.
         </p>
       </div>
 
@@ -76,21 +85,6 @@ const ContactInfo = () => {
             </div>
           </div>
         ))}
-      </div>
-
-      {/* Thông tin thêm/Địa chỉ */}
-      <div className="flex items-center gap-4 p-4 rounded-2xl bg-school-blue-900 text-white">
-        <div className="p-3 bg-white/10 rounded-xl">
-          <MapPin size={24} />
-        </div>
-        <div>
-          <p className="text-xs text-blue-200 uppercase font-semibold">
-            Địa chỉ cơ sở chính
-          </p>
-          <p className="text-sm font-medium">
-            25 Lê Lơi, Vạn Thạnh, TP.Nha Trang, tỉnh Khánh Hòa
-          </p>
-        </div>
       </div>
     </div>
   );

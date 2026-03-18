@@ -133,43 +133,36 @@ export const navData: MenuItem[] = [
       {
         id: "tuyen-sinh-he-trung-cap-9+",
         label: "Tuyển sinh hệ trung cấp 9+",
-        // href: "tuyen-sinh/tuyen-sinh-he-trung-cap-9+",
         href: "#",
       },
       {
         id: "tuyen-sinh-trung-cap-nghe",
         label: "Tuyển sinh trung cấp nghề",
-        // href: "tuyen-sinh/tuyen-sinh-trung-cap-nghe",
         href: "#",
       },
       {
         id: "tuyen-sinh-dai-hoc-e-learning",
         label: "Tuyển sinh Đại học E-Learning (Học Online)",
-        // href: "tuyen-sinh/tuyen-sinh-dai-hoc-e-learning",
         href: "#",
       },
       {
         id: "tuyen-sinh-cac-lop-nghe-ngan-han",
         label: "Tuyển sinh các lớp nghề ngắn hạn",
-        // href: "/tuyen-sinh/tuyen-sinh-cac-lop-nghe-ngan-han",
         href: "#",
       },
       {
         id: "tuyen-sinh-dao-tao-nghe-cho-bo-doi-xuat-ngu",
         label: "Tuyển sinh đào tạo nghề cho bộ đội xuất ngũ",
-        // href: "/tuyen-sinh/tuyen-sinh-dao-tao-nghe-cho-bo-doi-xuat-ngu",
         href: "#",
       },
       {
         id: "tuyen-sinh-cao-dang-chinh-quy",
         label: "Tuyển sinh cao đẳng chính quy (Bách khoa Sài Gòn)",
-        // href: "/tuyen-sinh/tuyen-sinh-cao-dang-chinh-quy",
         href: "#",
       },
       {
         id: "tuyen-sinh-cao-dang-9+",
         label: "Tuyển sinh cao đẳng 9+ (Bách Khoa Sài Gòn)",
-        // href: "/tuyen-sinh/tuyen-sinh-cao-dang-9+",
         href: "#",
       },
     ],
@@ -182,7 +175,7 @@ export const navData: MenuItem[] = [
       {
         id: "lien-he-cong-tac",
         label: "Liên hệ công tác",
-        href: "/dang-ky-tuyen-sinh",
+        href: "/lien-he-cong-tac",
       },
       {
         id: "dang-ky-thong-tin-xet-tuyen-truc-tuyen",
