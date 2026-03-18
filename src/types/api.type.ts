@@ -14,18 +14,3 @@ export interface Post {
   status?: string;
   published_at?: string;
 }
-
-export type Role =
-  | "Lãnh đạo nhà trường"
-  | "Phòng Tài chính - Kế toán"
-  | "Phòng Đào tạo - Quản sinh"
-  | "Phòng Hành chính - Nhân sự";
-
-export interface Employee {
-  readonly id: string;
-  fullName: string;
-  position: Role;
-  phoneNumber: string;
-  email: string;
-  avatar?: string;
-}
