@@ -96,14 +96,11 @@ export default function ConsultationForm() {
   };
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="">
       <div className="bg-white rounded-xl p-4 md:p-6 border border-slate-100 shadow-sm">
         <h3 className="text-xl font-semibold text-slate-800">
-          Đăng ký tư vấn miễn phí
+          Đăng ký xét tuyển
         </h3>
-        <p className="text-sm text-slate-500 mt-1">
-          Để lại thông tin, chuyên viên sẽ liên hệ với bạn sớm nhất.
-        </p>
 
         <form
           className="mt-6 grid grid-cols-1 gap-4"
