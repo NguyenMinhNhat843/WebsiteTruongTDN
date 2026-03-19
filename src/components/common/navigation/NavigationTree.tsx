@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Menu, X, ChevronDown, ChevronRight } from "lucide-react";
-import { navData } from "./navData";
 import type { MenuItem } from "./types";
+import { navData } from "./navData";
 
 type Props = {
   data?: MenuItem[];
@@ -124,7 +124,7 @@ const DropdownMenu = ({ item }: { item: MenuItem }) => (
     {item.children?.map((child) => (
       <a
         key={child.id}
-        href={child.href}
+        href={child.href || "#"}
         className="block px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-md transition-all"
       >
         {child.label}

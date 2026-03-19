@@ -15,6 +15,9 @@ const PostHorizon: React.FC<PostHorizonProps> = ({ post }) => {
         <img
           src={post.image}
           alt={post.title}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
         />
       </div>

@@ -7,16 +7,69 @@ import {
   Music2, // TikTok thường dùng icon nốt nhạc trong Lucide
 } from "lucide-react";
 
+interface ContactInfoItemProp {
+  Icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
+  label: string;
+  content: string;
+  isLink?: boolean;
+  href?: string;
+}
+
 const SOCIAL_LINKS = [
   { Icon: Facebook, label: "Facebook", link: "#" },
   { Icon: Music2, label: "TikTok", link: "#" },
   { Icon: Youtube, label: "Youtube", link: "#" },
 ] as const;
 
+const CONTACT_INFO: ContactInfoItemProp[] = [
+  {
+    Icon: MapPin,
+    label: "Địa chỉ:",
+    content: "Đường 2/4, Phường Vĩnh Phước, TP. Nha Trang, Khánh Hòa",
+    isLink: false,
+  },
+  {
+    Icon: Phone,
+    label: "Hotline:",
+    content: "+84-258-2220999 | +84-258-2241999",
+    isLink: false,
+  },
+  {
+    Icon: Mail,
+    label: "Email:",
+    content: "info@trandainghiant.edu.vn",
+    isLink: true,
+    href: "mailto:info@trandainghiant.edu.vn",
+  },
+];
+
+const InfoItem = ({ item }: { item: ContactInfoItemProp }) => {
+  return (
+    <div className="flex items-start gap-4">
+      <div className="p-2 bg-blue-800/50 rounded-lg text-school-blue-400">
+        <item.Icon size={20} />
+      </div>
+      <div>
+        <p className="font-semibold text-white">{item.label}</p>
+        {item.isLink ? (
+          <a
+            href={item.href}
+            className="text-school-blue-200 text-sm hover:text-school-blue-400 cursor-pointer transition-colors"
+          >
+            {item.content}
+          </a>
+        ) : (
+          <p className="text-school-blue-200 text-sm">{item.content}</p>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const Footer = () => {
   return (
     <footer className="bg-blue-900 text-white pt-12 pb-4 px-4">
-      <div className="container mx-auto flex flex-col md:flex-row items-start gap-12">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start gap-12">
         {/* Cột 1: Bản đồ */}
         <div className="w-full md:w-1/2 aspect-video rounded-2xl overflow-hidden shadow-2xl border border-blue-700/50">
           <iframe
@@ -41,9 +94,9 @@ const Footer = () => {
 
           {/* Mạng xã hội */}
           <div className="flex gap-3">
-            {SOCIAL_LINKS.map((item, index) => (
+            {SOCIAL_LINKS.map((item) => (
               <a
-                key={index}
+                key={item.label}
                 href={item.link}
                 aria-label={item.label}
                 className="p-2.5 rounded-lg bg-blue-800/50 hover:bg-blue-400 hover:text-school-blue-900 transition-all duration-300 border border-blue-700"
@@ -53,46 +106,10 @@ const Footer = () => {
             ))}
           </div>
 
-          {/* Chi tiết liên hệ */}
-          <div className="space-y-5">
-            <div className="flex items-start gap-4">
-              <div className="p-2 bg-blue-800/50 rounded-lg text-school-blue-400">
-                <MapPin size={20} />
-              </div>
-              <div>
-                <p className="font-semibold text-white">Địa chỉ:</p>
-                <p className="text-school-blue-200 text-sm leading-relaxed">
-                  Đường 2/4, Phường Vĩnh Phước, TP. Nha Trang, Khánh Hòa
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="p-2 bg-blue-800/50 rounded-lg text-school-blue-400">
-                <Phone size={20} />
-              </div>
-              <div>
-                <p className="text-school-blue-200 text-sm">
-                  <span className="font-semibold text-white uppercase mr-2 text-xs border border-blue-700 px-2 py-0.5 rounded">
-                    Hotline
-                  </span>
-                  +84-258-2220999 | +84-258-2241999
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <div className="p-2 bg-blue-800/50 rounded-lg text-school-blue-400">
-                <Mail size={20} />
-              </div>
-              <div>
-                <p className="font-semibold text-white">Email:</p>
-                <p className="text-school-blue-200 text-sm hover:text-school-blue-400 cursor-pointer transition-colors">
-                  info@trandainghiant.edu.vn
-                </p>
-              </div>
-            </div>
-          </div>
+          {/* Thông tin liên hệ */}
+          {CONTACT_INFO.map((item) => (
+            <InfoItem key={item.label} item={item} />
+          ))}
         </div>
       </div>
 

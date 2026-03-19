@@ -1,37 +1,36 @@
 import { useState } from "react";
 import { ChevronDown, HelpCircle } from "lucide-react";
 
+const faqData = [
+  {
+    question: "Trường có hỗ trợ giới thiệu việc làm sau khi tốt nghiệp không?",
+    answer:
+      "Có. Với phương châm 'Đào tạo gắn liền với việc làm', nhà trường liên kết chặt chẽ với các doanh nghiệp để sinh viên thực tập và được ưu tiên tuyển dụng ngay sau khi tốt nghiệp.",
+  },
+  {
+    question: "Hồ sơ xét tuyển vào trường bao gồm những gì?",
+    answer:
+      "Hồ sơ cơ bản bao gồm: Phiếu đăng ký dự tuyển, bản sao bằng tốt nghiệp (hoặc giấy chứng nhận tốt nghiệp tạm thời), bản sao học bạ và các giấy tờ ưu tiên (nếu có).",
+  },
+  {
+    question: "Trung tâm ASIA của trường có chức năng gì?",
+    answer:
+      "Trung tâm ASIA chuyên về đào tạo ngắn hạn, tư vấn du học, trao đổi sinh viên quốc tế và chuyển giao công nghệ, giúp sinh viên tiếp cận môi trường học tập toàn cầu.",
+  },
+  {
+    question: "Học sinh tốt nghiệp THCS có thể theo học tại trường không?",
+    answer:
+      "Hoàn toàn được. Trường có các chương trình đào tạo hệ Trung cấp dành riêng cho đối tượng tốt nghiệp THCS, giúp các em rút ngắn thời gian và sớm có nghề nghiệp vững chắc.",
+  },
+  {
+    question: "Trường có đào tạo các kỹ năng mềm và ngoại ngữ không?",
+    answer:
+      "Ngoài chuyên môn, trường rất chú trọng rèn luyện kỹ năng giao tiếp, tác phong công nghiệp và bồi dưỡng ngoại ngữ để sinh viên thích nghi tốt với mọi môi trường làm việc.",
+  },
+];
+
 const CauHoiThuongGap = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const faqData = [
-    {
-      question:
-        "Trường có hỗ trợ giới thiệu việc làm sau khi tốt nghiệp không?",
-      answer:
-        "Có. Với phương châm 'Đào tạo gắn liền với việc làm', nhà trường liên kết chặt chẽ với các doanh nghiệp để sinh viên thực tập và được ưu tiên tuyển dụng ngay sau khi tốt nghiệp.",
-    },
-    {
-      question: "Hồ sơ xét tuyển vào trường bao gồm những gì?",
-      answer:
-        "Hồ sơ cơ bản bao gồm: Phiếu đăng ký dự tuyển, bản sao bằng tốt nghiệp (hoặc giấy chứng nhận tốt nghiệp tạm thời), bản sao học bạ và các giấy tờ ưu tiên (nếu có).",
-    },
-    {
-      question: "Trung tâm ASIA của trường có chức năng gì?",
-      answer:
-        "Trung tâm ASIA chuyên về đào tạo ngắn hạn, tư vấn du học, trao đổi sinh viên quốc tế và chuyển giao công nghệ, giúp sinh viên tiếp cận môi trường học tập toàn cầu.",
-    },
-    {
-      question: "Học sinh tốt nghiệp THCS có thể theo học tại trường không?",
-      answer:
-        "Hoàn toàn được. Trường có các chương trình đào tạo hệ Trung cấp dành riêng cho đối tượng tốt nghiệp THCS, giúp các em rút ngắn thời gian và sớm có nghề nghiệp vững chắc.",
-    },
-    {
-      question: "Trường có đào tạo các kỹ năng mềm và ngoại ngữ không?",
-      answer:
-        "Ngoài chuyên môn, trường rất chú trọng rèn luyện kỹ năng giao tiếp, tác phong công nghiệp và bồi dưỡng ngoại ngữ để sinh viên thích nghi tốt với mọi môi trường làm việc.",
-    },
-  ];
 
   const toggleAccordion = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);

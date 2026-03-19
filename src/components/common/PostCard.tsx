@@ -8,10 +8,19 @@ const PostCard = ({ post }: { post: Post }) => {
 
   const isNewPost = (dateString?: string) => {
     if (!dateString) return false;
-    const postDate = new Date(dateString).getTime();
-    const now = new Date().getTime();
-    const diffInDays = (now - postDate) / (1000 * 60 * 60 * 24);
-    return diffInDays >= 0 && diffInDays <= 7;
+    const postDate = new Date(dateString);
+    const now = new Date();
+
+    const start = new Date(now);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(start);
+    end.setDate(end.getDate() - 7);
+
+    return (
+      postDate >= end &&
+      postDate <= new Date(start.getTime() + 24 * 60 * 60 * 1000 - 1)
+    );
   };
   const isNew = isNewPost(published_at);
 
@@ -24,6 +33,9 @@ const PostCard = ({ post }: { post: Post }) => {
             <img
               src={image}
               alt={title}
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
             {/* Badge ngày tháng đè lên ảnh (Tùy chọn nếu muốn nổi bật) */}

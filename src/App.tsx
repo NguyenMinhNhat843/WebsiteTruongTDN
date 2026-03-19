@@ -34,18 +34,18 @@ function App() {
         <Route path="/lien-he-cong-tac" element={<LienHe />} />
         <Route path="/dang-ky-tuyen-sinh" element={<DangKyTuVan />} />
 
+        {/* Chương trình đào tạo */}
         <Route path="/chuong-trinh-dao-tao">
           <Route path=":heDaoTaoSlug" element={<ChuongTrinhDaoTaoDetail />} />
           <Route path=":heDaoTaoSlug/:nganhSlug" element={<PostDetail />} />
         </Route>
 
+        {/* tin tức */}
         <Route path="/tin-tuc" element={<NewsList />} />
         <Route element={<PostLayout />}>
           <Route path="tin-tuc/:slug" element={<PostDetail />} />
           <Route path="tuyen-dung/:slug" element={<PostDetail />} />
         </Route>
-
-        <Route path="/:slug" element={<PostDetail />} />
       </Route>
     </Routes>
   );

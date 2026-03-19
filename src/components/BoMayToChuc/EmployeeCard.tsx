@@ -4,15 +4,18 @@ interface EmployeeCardProps {
   user: Employee;
 }
 
-const EmployeeCard: React.FC<EmployeeCardProps> = ({ user }) => {
+const EmployeeCard = ({ user }: EmployeeCardProps) => {
   return (
     <div className="relative bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-300 border border-gray-100 flex items-stretch overflow-hidden group">
       {/* 1. Avatar hình chữ nhật bên trái */}
-      <div className="w-42 h-52 shrink-0 overflow-hidden">
+      <div className="w-44 h-52 shrink-0 overflow-hidden">
         <img
           src={user.avatar}
           alt={user.fullName}
           className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
         />
       </div>
 

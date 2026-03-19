@@ -1,13 +1,5 @@
-/**
- * FormInput
- * Component input tái sử dụng cho form (text, email, tel).
- */
-
 import React from "react";
 
-/**
- * Props for FormInput component
- */
 export interface FormInputProps {
   label: string;
   name: string;
@@ -21,10 +13,6 @@ export interface FormInputProps {
   textarea?: boolean;
 }
 
-/**
- * Component FormInput
- * Hiển thị label và input/textarea với styles nhất quán.
- */
 export default function FormInput({
   label,
   name,

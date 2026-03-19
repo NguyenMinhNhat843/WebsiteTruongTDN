@@ -85,9 +85,12 @@ const ChuongTrinhDaoTaoDetail = () => {
               Liên hệ với bộ phận tuyển sinh để được tư vấn lộ trình học tập phù
               hợp nhất với bạn.
             </p>
-            <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-200">
+            <Link
+              to={"dang-ky-tuyen-sinh"}
+              className="w-full block text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-200"
+            >
               Nhận tư vấn miễn phí
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -97,9 +100,6 @@ const ChuongTrinhDaoTaoDetail = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
             <div>
-              <span className="text-amber-500 font-bold uppercase tracking-widest text-xs">
-                Danh mục
-              </span>
               <h2 className="text-3xl font-black text-blue-900 uppercase">
                 Các ngành đào tạo
               </h2>
