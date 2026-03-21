@@ -1,5 +1,5 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, CheckCircle2, GraduationCap } from "lucide-react";
+import { BookOpen, CheckCircle2, GraduationCap } from "lucide-react";
 import { danhSachKhoa } from "../components/home/DaoTaoDataTemplate";
 
 const ChuongTrinhDaoTaoDetail = () => {
@@ -32,12 +32,6 @@ const ChuongTrinhDaoTaoDetail = () => {
         />
         <div className="absolute inset-0 bg-blue-900/70" /> {/* Overlay */}
         <div className="relative z-10 text-center px-6">
-          <button
-            onClick={() => navigate(-1)}
-            className="mb-6 inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors text-sm font-medium"
-          >
-            <ArrowLeft size={18} /> Quay lại danh sách
-          </button>
           <h1 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight">
             {khoa.tenKhoa}
           </h1>
