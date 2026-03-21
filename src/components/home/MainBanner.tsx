@@ -57,7 +57,7 @@ const MainBanner = () => {
               />
 
               {/* Overlay - Giúp chữ nổi bật hơn trên ảnh */}
-              <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white px-4 text-center">
+              <div className="absolute inset-0 bg-black/20 flex flex-col items-center justify-center text-white px-4 text-center">
                 <h2 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-up">
                   {banner.title}
                 </h2>

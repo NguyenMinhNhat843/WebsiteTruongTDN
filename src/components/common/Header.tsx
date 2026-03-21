@@ -42,10 +42,67 @@ const TopBar = () => {
   );
 };
 
+const GeometricLines = () => (
+  <svg
+    className="absolute inset-0 w-full h-full pointer-events-none"
+    viewBox="0 0 900 110"
+    preserveAspectRatio="xMidYMid slice"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <line
+      x1="0"
+      y1="0"
+      x2="900"
+      y2="110"
+      stroke="rgba(96,165,250,0.12)"
+      strokeWidth="1"
+    />
+    <line
+      x1="0"
+      y1="30"
+      x2="900"
+      y2="140"
+      stroke="rgba(96,165,250,0.09)"
+      strokeWidth="1"
+    />
+    <line
+      x1="900"
+      y1="0"
+      x2="0"
+      y2="110"
+      stroke="rgba(251,191,36,0.07)"
+      strokeWidth="1"
+    />
+    <rect
+      x="700"
+      y="-20"
+      width="260"
+      height="160"
+      rx="2"
+      fill="rgba(96,165,250,0.04)"
+      transform="rotate(-12 800 55)"
+    />
+    <rect
+      x="720"
+      y="-10"
+      width="200"
+      height="130"
+      rx="2"
+      fill="none"
+      stroke="rgba(96,165,250,0.08)"
+      strokeWidth="0.8"
+      transform="rotate(-12 800 55)"
+    />
+  </svg>
+);
+
 const HeaderNav = () => {
   return (
-    // <header className="relative w-full shadow-md bg-[url('/logo_tmp.jpg')] bg-cover bg-center">
-    <div className="relative w-full">
+    // <div className="relative w-full shadow-md bg-[url('/banner.png')] bg-cover bg-center">
+    <div className="relative w-full " style={{ background: "#0e2a4a" }}>
+      {/* SVG trang trí tuyệt đối */}
+      <GeometricLines />
+
       {/* <div className="absolute inset-0 bg-black/50 md:bg-black/40 shadow-inner"></div> */}
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-center relative z-10">
         <div className="flex items-center space-x-3">
@@ -67,13 +124,13 @@ const HeaderNav = () => {
           </Link>
 
           <div className="leading-tight">
-            <div className="text-lg md:text-2xl text-center font-bold text-school-blue-700 mt-0.5 tracking-tight">
+            <div className="text-lg md:text-2xl text-center font-bold text-white mt-0.5 tracking-tight">
               Trường Trung Cấp Kinh Tế – Kỹ Thuật Trần Đại Nghĩa
             </div>
             <div className="flex items-center justify-center gap-2">
               {/* Đường kẻ nhỏ trang trí trước slogan */}
               <div className="w-8 h-px bg-blue-300 hidden md:block"></div>
-              <p className="text-sm md:text-base font-medium text-amber-600 italic tracking-wide">
+              <p className="text-sm md:text-base font-medium text-amber-300 italic tracking-wide">
                 "Chất lượng vàng – Niềm tin vàng"
               </p>
               <div className="w-8 h-px bg-blue-300 hidden md:block"></div>
@@ -81,12 +138,6 @@ const HeaderNav = () => {
           </div>
         </div>
       </div>
-
-      <nav className="w-full bg-blue-800">
-        <div className="max-w-5xl mx-auto">
-          <NavigationTree className="shadow-sm" />
-        </div>
-      </nav>
     </div>
   );
 };
@@ -95,7 +146,14 @@ const Header = () => {
   return (
     <header>
       <TopBar />
+
       <HeaderNav />
+
+      <nav className="w-full bg-blue-800">
+        <div className="max-w-5xl mx-auto">
+          <NavigationTree className="shadow-sm" />
+        </div>
+      </nav>
     </header>
   );
 };

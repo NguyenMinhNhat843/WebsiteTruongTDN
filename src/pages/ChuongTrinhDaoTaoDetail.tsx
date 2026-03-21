@@ -86,7 +86,7 @@ const ChuongTrinhDaoTaoDetail = () => {
               hợp nhất với bạn.
             </p>
             <Link
-              to={"dang-ky-tuyen-sinh"}
+              to={"/dang-ky-tuyen-sinh"}
               className="w-full block text-center bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-all shadow-lg shadow-blue-200"
             >
               Nhận tư vấn miễn phí

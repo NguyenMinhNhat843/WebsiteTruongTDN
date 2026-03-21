@@ -1,4 +1,5 @@
 import { Handshake, BookOpen, PlaneTakeoff, Microscope } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const HopTacQuocTe = () => {
   const functions = [
@@ -154,9 +155,12 @@ const HopTacQuocTe = () => {
               ASIA Center cung cấp đầy đủ thông tin về học bổng, các khóa học
               ngắn hạn và trao đổi sinh viên tại nhiều quốc gia.
             </p>
-            <button className="bg-white text-blue-900 px-8 py-3 rounded-full font-bold hover:bg-blue-50 transition-colors uppercase text-sm tracking-widest">
+            <Link
+              to={"/dang-ky-tuyen-sinh"}
+              className="cursor-pointer bg-white text-blue-900 px-8 py-3 rounded-full font-bold hover:bg-blue-50 transition-colors uppercase text-sm tracking-widest"
+            >
               Liên hệ tư vấn ngay
-            </button>
+            </Link>
           </div>
           {/* Decorative circles */}
           <div className="absolute -top-10 -right-10 w-40 h-40 bg-blue-800 rounded-full opacity-50"></div>
