@@ -13,6 +13,8 @@ import TamNhinSuMang from "./pages/TamNhinSuMang";
 import SoDoToChuc from "./pages/SoDoToChuc";
 import HopTacQuocTe from "./pages/HopTacQuocTe";
 import LienHe from "./pages/LienHe";
+import CreatePost from "./pages/admin/CreatePost";
+import AdminLayout from "./components/layouts/AdminLayout";
 
 function App() {
   return (
@@ -46,6 +48,11 @@ function App() {
           <Route path="tin-tuc/:slug" element={<PostDetail />} />
           <Route path="tuyen-dung/:slug" element={<PostDetail />} />
         </Route>
+      </Route>
+
+      <Route path="/admin" element={<AdminLayout />}>
+        <Route path="create-post" element={<CreatePost />} />
+        <Route path="dashboard" element={<div>Dashboard</div>} />
       </Route>
     </Routes>
   );

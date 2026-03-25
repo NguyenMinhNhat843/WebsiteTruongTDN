@@ -100,7 +100,7 @@ const HeaderNav = () => {
   return (
     // <div className="relative w-full shadow-md bg-[url('/banner.png')] bg-cover bg-center">
     <div className="relative w-full " style={{ background: "#0e2a4a" }}>
-      {/* SVG trang trí tuyệt đối */}
+      {/* SVG trang trí */}
       <GeometricLines />
 
       {/* <div className="absolute inset-0 bg-black/50 md:bg-black/40 shadow-inner"></div> */}
