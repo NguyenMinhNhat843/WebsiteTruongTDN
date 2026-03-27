@@ -32,7 +32,7 @@ function NavNode({
   };
 
   const paddingLeft = collapsed
-    ? "pl-0"
+    ? "pl-3"
     : depth === 0
       ? "pl-3"
       : `pl-${3 + depth * 4}`;
@@ -56,7 +56,7 @@ function NavNode({
           <span
             className={[
               "flex shrink-0 items-center justify-center transition-all duration-300",
-              collapsed ? "h-12 w-12 text-2xl" : "h-8 w-8 text-lg",
+              collapsed ? "h-12 w-12 text-4xl" : "h-8 w-8 text-lg",
               isActive ? "text-indigo-400 bg-indigo-500/10" : "text-slate-400",
             ].join(" ")}
           >

@@ -10,23 +10,23 @@ export type CategoryValue =
   | "tuyen-sinh"
   | "tuyen-dung";
 
-export type AudienceValue =
-  | "Toàn trường"
-  | "Học sinh"
-  | "Giáo viên"
-  | "Phụ huynh"
-  | "Ban giám hiệu";
+export type AudienceValue = "toan-truong" | "hoc-sinh" | "giao-vien";
+export type Status = "cho-duyet" | "da-duyet";
 
 export interface Post {
   id?: string;
   title?: string;
   slug?: string;
   category?: CategoryValue;
+  audience?: AudienceValue;
   image?: string;
   summary?: string;
   content?: string; // Nội dung HTML
-  status?: string;
+  author?: string;
+  status?: Status;
   published_at?: string;
+  createdAt: string; // ISO date string
+  views?: number;
 }
 
 // ─── Form state ───────────────────────────────────────────────────────────────

@@ -15,6 +15,7 @@ import ChuongTrinhDaoTaoDetail from "./pages/client/ChuongTrinhDaoTaoDetail";
 import PostDetail from "./pages/client/PostDetail";
 import Home from "./pages/client/Home/Home";
 import AdminMainLayout from "./pages/admin/AdminMainLayout/AdminMainLayout";
+import PostList from "./pages/admin/PostList";
 
 function App() {
   return (
@@ -54,7 +55,7 @@ function App() {
       <Route path="/admin" element={<AdminMainLayout />}>
         <Route path="create-post" element={<CreatePost />} />
         <Route path="dashboard" element={<div>Dashboard</div>} />
-        <Route path="posts" element={<div>Posts</div>} />
+        <Route path="posts" element={<PostList />} />
       </Route>
 
       {/* Route 404 - Luôn để ở cuối cùng */}
