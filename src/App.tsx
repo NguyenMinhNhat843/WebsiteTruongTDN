@@ -8,13 +8,13 @@ import TamNhinSuMang from "./pages/client/TamNhinSuMang";
 import SoDoToChuc from "./pages/client/SoDoToChuc";
 import HopTacQuocTe from "./pages/client/HopTacQuocTe";
 import CreatePost from "./pages/admin/CreatePost";
-import AdminLayout from "./components/layouts/AdminLayout";
 import BoMayToChuc from "./pages/client/BoMayToChuc/BoMayToChuc";
 import LienHe from "./pages/client/LienHe/LienHe";
 import DangKyTuVan from "./pages/client/DangKyTuVan/DangKyTuVan";
 import ChuongTrinhDaoTaoDetail from "./pages/client/ChuongTrinhDaoTaoDetail";
 import PostDetail from "./pages/client/PostDetail";
 import Home from "./pages/client/Home/Home";
+import AdminMainLayout from "./pages/admin/AdminMainLayout/AdminMainLayout";
 
 function App() {
   return (
@@ -50,10 +50,15 @@ function App() {
         </Route>
       </Route>
 
-      <Route path="/admin" element={<AdminLayout />}>
+      {/* Admin */}
+      <Route path="/admin" element={<AdminMainLayout />}>
         <Route path="create-post" element={<CreatePost />} />
         <Route path="dashboard" element={<div>Dashboard</div>} />
+        <Route path="posts" element={<div>Posts</div>} />
       </Route>
+
+      {/* Route 404 - Luôn để ở cuối cùng */}
+      <Route path="*" element={<div>Page Not Found</div>} />
     </Routes>
   );
 }
