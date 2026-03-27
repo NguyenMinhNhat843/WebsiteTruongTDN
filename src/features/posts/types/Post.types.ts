@@ -17,6 +17,18 @@ export type AudienceValue =
   | "Phụ huynh"
   | "Ban giám hiệu";
 
+export interface Post {
+  id?: string;
+  title?: string;
+  slug?: string;
+  category?: CategoryValue;
+  image?: string;
+  summary?: string;
+  content?: string; // Nội dung HTML
+  status?: string;
+  published_at?: string;
+}
+
 // ─── Form state ───────────────────────────────────────────────────────────────
 export interface PostFormValues {
   title: string;

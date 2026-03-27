@@ -1,12 +1,12 @@
-import { usePostForm } from "./hooks/usePostForm";
-import SuccessSubmitScreen from "./components/SuccessSubmitScreen";
-import PostCoverImage from "./components/PostCoverImage";
-import PostContentEditor from "./components/PostContentEditor";
-import PostTagInput from "./components/PostTagInput";
-import PostCategoryPicker from "./components/PostCategoryPicker";
-import PostAudiencePicker from "./components/PostAudiencePicker";
-import PostPublishSetting from "./components/PostPublishSetting";
-import PostButtonActions from "./components/PostButtonActions";
+import PostAudiencePicker from "../../features/posts/components/PostAudiencePicker";
+import PostButtonActions from "../../features/posts/components/PostButtonActions";
+import PostCategoryPicker from "../../features/posts/components/PostCategoryPicker";
+import PostContentEditor from "../../features/posts/components/PostContentEditor";
+import PostCoverImage from "../../features/posts/components/PostCoverImage";
+import PostPublishSetting from "../../features/posts/components/PostPublishSetting";
+import PostTagInput from "../../features/posts/components/PostTagInput";
+import SuccessSubmitScreen from "../../features/posts/components/SuccessSubmitScreen";
+import { usePostForm } from "../../features/posts/hooks/usePostForm";
 
 export default function CreatePost() {
   const { values, submitted, errors, handleTitleChange, handleSubmit } =

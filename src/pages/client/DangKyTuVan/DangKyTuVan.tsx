@@ -1,5 +1,5 @@
-import CauHoiThuongGap from "../components/DangKyTuVan/CauHoiThuongGap";
-import ConsultationForm from "../components/DangKyTuVan/ConsulationForm";
+import CauHoiThuongGap from "./components/CauHoiThuongGap";
+import ConsultationForm from "./components/ConsulationForm";
 
 const DangKyTuVan = () => {
   return (

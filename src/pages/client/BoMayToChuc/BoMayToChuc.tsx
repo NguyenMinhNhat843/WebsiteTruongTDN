@@ -1,4 +1,4 @@
-import EmployeeCard from "../components/BoMayToChuc/EmployeeCard";
+import EmployeeCard from "./components/EmployeeCard";
 
 type Role =
   | "Lãnh đạo nhà trường"

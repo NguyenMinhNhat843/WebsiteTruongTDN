@@ -1,32 +1,10 @@
-import { useEffect, useState } from "react";
-import PostCard from "../common/PostCard";
-import type { Post } from "../../types/api.type";
 import { ExternalLink } from "lucide-react";
 import { Link } from "react-router-dom";
+import { usePosts } from "../../../../features/posts/hooks/usePosts";
+import PostCard from "../../../../features/posts/components/PostCard";
 
 const NewsSection = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setLoading(true);
-        // Lấy 3 bài viết mới nhất (limit=3) để hiển thị ở trang chủ
-        const response = await fetch(
-          "https://69b11335adac80b427c3e8a9.mockapi.io/news?page=1&limit=10",
-        );
-        const data = await response.json();
-        setPosts(data);
-      } catch (error) {
-        console.error("Lỗi khi lấy tin tức:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
+  const { loading, posts } = usePosts(1, 10);
 
   return (
     <section className="py-12 bg-gray-50">

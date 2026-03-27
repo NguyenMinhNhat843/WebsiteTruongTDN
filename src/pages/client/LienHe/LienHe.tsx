@@ -1,5 +1,5 @@
-import ContactInfo from "../components/LienHe/ContactInfo";
-import DiaChi from "../components/LienHe/DiaChi";
+import ContactInfo from "./components/ContactInfo";
+import DiaChi from "./components/DiaChi";
 
 const LienHe = () => {
   return (

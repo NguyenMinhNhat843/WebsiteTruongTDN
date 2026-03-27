@@ -1,4 +1,4 @@
-import type { Employee } from "../../pages/BoMayToChuc";
+import type { Employee } from "../BoMayToChuc";
 
 interface EmployeeCardProps {
   user: Employee;

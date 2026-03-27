@@ -1,6 +1,6 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { BookOpen, CheckCircle2, GraduationCap } from "lucide-react";
-import { danhSachKhoa } from "../components/home/DaoTaoDataTemplate";
+import { danhSachKhoa } from "./Home/components/DaoTaoDataTemplate";
 
 const ChuongTrinhDaoTaoDetail = () => {
   const { heDaoTaoSlug } = useParams();

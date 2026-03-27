@@ -1,20 +1,20 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import PostDetail from "./pages/PostDetail";
 import MainLayout from "./components/layouts/MainLayout";
-import NewsList from "./pages/NewsList";
-import BoMayToChuc from "./pages/BoMayToChuc";
+import NewsList from "./pages/client/NewsList";
 import PostLayout from "./components/layouts/PostLayout";
-import ChuongTrinhDaoTaoDetail from "./pages/ChuongTrinhDaoTaoDetail";
-import DangKyTuVan from "./pages/DangKyTuVan";
-import GioiThieuVeTruong from "./pages/GioiThieuVeTruong";
-import TamNhinSuMang from "./pages/TamNhinSuMang";
-import SoDoToChuc from "./pages/SoDoToChuc";
-import HopTacQuocTe from "./pages/HopTacQuocTe";
-import LienHe from "./pages/LienHe";
+import GioiThieuVeTruong from "./pages/client/GioiThieuVeTruong";
+import TamNhinSuMang from "./pages/client/TamNhinSuMang";
+import SoDoToChuc from "./pages/client/SoDoToChuc";
+import HopTacQuocTe from "./pages/client/HopTacQuocTe";
 import CreatePost from "./pages/admin/CreatePost";
 import AdminLayout from "./components/layouts/AdminLayout";
+import BoMayToChuc from "./pages/client/BoMayToChuc/BoMayToChuc";
+import LienHe from "./pages/client/LienHe/LienHe";
+import DangKyTuVan from "./pages/client/DangKyTuVan/DangKyTuVan";
+import ChuongTrinhDaoTaoDetail from "./pages/client/ChuongTrinhDaoTaoDetail";
+import PostDetail from "./pages/client/PostDetail";
+import Home from "./pages/client/Home/Home";
 
 function App() {
   return (
