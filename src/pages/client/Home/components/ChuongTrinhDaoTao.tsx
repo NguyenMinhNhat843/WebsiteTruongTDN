@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { danhSachKhoa } from "./DaoTaoDataTemplate";
 import KhoaCard from "./KhoaCard";
 
@@ -5,26 +6,19 @@ const ChuongTrinhDaoTao = () => {
   return (
     <div className="">
       <section
-        className="max-w-6xl mx-auto bg-slate-50 py-20 px-6"
+        className="max-w-7xl mx-auto py-20 px-6"
         id="chuong-trinh-dao-tao"
       >
         {/* Header Section */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-black uppercase tracking-tight italic">
-            <span className="text-school-blue-800">Chương trình </span>
-            <span className="text-school-blue-600">Đào Tạo</span>
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4 uppercase">
+            Chương trình đào tạo
           </h2>
-
-          {/* Line trang trí kiểu giáo dục */}
-          <div className="flex items-center justify-center gap-2 mt-4">
-            <div className="h-1 w-12 bg-school-blue-900 rounded-full" />
-            <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-            <div className="h-1 w-12 bg-school-blue-700 rounded-full" />
-          </div>
-
-          <p className="mt-6 text-slate-500 text-sm md:text-base max-w-xl mx-auto font-medium">
-            Hệ thống ngành nghề đa dạng, chú trọng thực hành và kỹ năng chuyên
-            sâu, đáp ứng tiêu chuẩn tuyển dụng khắt khe nhất.
+          <div className="w-24 h-1 bg-yellow-500 mx-auto mb-6"></div>
+          <p className="text-gray-600 max-w-2xl mx-auto">
+            Chương trình đào tạo thực tiễn, bám sát nhu cầu doanh nghiệp. Cung
+            cấp nền tảng kiến thức và kỹ năng chuyên sâu giúp bạn tự tin làm chủ
+            sự nghiệp.
           </p>
         </div>
 
@@ -33,6 +27,14 @@ const ChuongTrinhDaoTao = () => {
           {danhSachKhoa.map((k) => (
             <KhoaCard key={k.tenKhoa} {...k} />
           ))}
+        </div>
+        <div className="flex justify-center mt-12 w-full">
+          <Link
+            to="/dang-ky-tuyen-sinh"
+            className="bg-blue-900 text-white px-8 py-3 rounded-full font-medium hover:bg-blue-800 transition-all shadow-md hover:shadow-lg active:scale-95 cursor-pointer"
+          >
+            Đăng ký tư vấn ngay
+          </Link>
         </div>
       </section>
     </div>

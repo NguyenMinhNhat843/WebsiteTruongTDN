@@ -35,19 +35,18 @@ const navItems: NavItem[] = [
       {
         id: "menuchildren1",
         label: "Menu con 1",
-        href: "/admin/settings/profile",
+        href: "/admin/menu1",
       },
       {
         id: "menuchildren2",
         label: "Menu con 2",
-        href: "/admin/settings/security",
+        href: "/admin/menu2",
       },
       {
         id: "menuchildren3",
         label: "Menu con 3",
-        href: "/admin/settings/billing",
+        href: "/admin/menu3",
       },
-      { id: "menuchildren4", label: "Menu con 4", href: "/admin/settings/api" },
     ],
   },
 ];

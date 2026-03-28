@@ -50,7 +50,7 @@ export const MOCK_POSTS: Post[] = [
     audience: "hoc-sinh",
     status: "da-duyet",
     author: "Tổ Văn",
-    createdAt: "2024-12-03",
+    createdAt: "2026-12-03",
     views: 1875,
   },
   {

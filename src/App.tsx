@@ -56,6 +56,9 @@ function App() {
         <Route path="create-post" element={<CreatePost />} />
         <Route path="dashboard" element={<div>Dashboard</div>} />
         <Route path="posts" element={<PostList />} />
+        <Route path="menu1" element={<div>Tesst menu sidebar 1</div>} />
+        <Route path="menu2" element={<div>Tesst menu sidebar 2</div>} />
+        <Route path="menu3" element={<div>Tesst menu sidebar 3</div>} />
       </Route>
 
       {/* Route 404 - Luôn để ở cuối cùng */}

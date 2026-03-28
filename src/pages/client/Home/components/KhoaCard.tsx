@@ -34,8 +34,6 @@ export default function KhoaCard({
           alt={tenKhoa}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
         />
-        {/* Overlay gradient */}
-        <div className="absolute inset-0 bg-linear-to-t from-school-blue-900/80 via-school-blue-900 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
       </div>
 
       {/* Nội dung Card */}
@@ -48,7 +46,7 @@ export default function KhoaCard({
         </h3>
 
         {description && (
-          <p className="text-slate-500 text-sm line-clamp-2 mb-6">
+          <p className="text-slate-500 text-sm line-clamp-2 mb-4">
             {description}
           </p>
         )}

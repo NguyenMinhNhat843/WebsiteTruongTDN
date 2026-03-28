@@ -95,11 +95,6 @@ function NavNode({
             ▶
           </span>
         )}
-
-        {/* Active indicator bar */}
-        {isActive && (
-          <span className="absolute inset-y-1 left-0 w-1 rounded-full bg-white/50" />
-        )}
       </button>
 
       {/* Children */}

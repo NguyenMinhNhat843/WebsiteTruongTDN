@@ -1,8 +1,7 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import NavNode from "./NavNode";
 import type { NavItem } from "./navItem";
-import { useNavigate } from "react-router-dom";
-import navItems from "./navItem";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export interface SidebarProps {
   items: NavItem[];
@@ -11,6 +10,29 @@ export interface SidebarProps {
   onCollapsedChange?: (collapsed: boolean) => void;
 }
 
+// 1. Hàm helper để tìm activeId và tất cả các parentIds của nó
+const findActiveAndParents = (
+  nodes: NavItem[],
+  targetPath: string,
+  parents: string[] = [],
+): { activeId: string | null; parentIds: string[] } => {
+  for (const node of nodes) {
+    // Nếu tìm thấy node khớp với URL
+    if (node.href === targetPath) {
+      return { activeId: node.id, parentIds: parents };
+    }
+    // Nếu có con, tìm tiếp trong con
+    if (node.children) {
+      const result = findActiveAndParents(node.children, targetPath, [
+        ...parents,
+        node.id,
+      ]);
+      if (result.activeId) return result;
+    }
+  }
+  return { activeId: null, parentIds: [] };
+};
+
 export default function Sidebar({
   items,
   defaultOpenIds = [],
@@ -18,13 +40,30 @@ export default function Sidebar({
   onCollapsedChange,
 }: SidebarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // 2. Tính toán active và parents ngay khi render
+  const { activeId, autoParentIds } = useMemo(() => {
+    const { activeId, parentIds } = findActiveAndParents(
+      items,
+      location.pathname,
+    );
+    return { activeId, autoParentIds: parentIds };
+  }, [location.pathname, items]);
+
   const [internalCollapsed, setInternalCollapsed] = useState(false);
-  const [openIds, setOpenIds] = useState<Set<string>>(new Set(defaultOpenIds));
-  const [activeId, setActiveId] = useState<string | null>(
-    navItems[0]?.id ?? null,
+  const [userOpenIds, setUserOpenIds] = useState<Set<string>>(
+    new Set(defaultOpenIds),
   );
 
   const isCollapsed = controlledCollapsed ?? internalCollapsed;
+
+  // Kết hợp: Những cái user click + Những cái là cha của menu đang active
+  const openIds = useMemo(() => {
+    const combined = new Set(userOpenIds);
+    autoParentIds.forEach((id) => combined.add(id));
+    return combined;
+  }, [userOpenIds, autoParentIds]);
 
   const toggleCollapsed = () => {
     setInternalCollapsed(!isCollapsed);
@@ -32,7 +71,7 @@ export default function Sidebar({
   };
 
   const handleToggle = useCallback((id: string) => {
-    setOpenIds((prev) => {
+    setUserOpenIds((prev) => {
       const next = new Set(prev);
       if (next.has(id)) {
         next.delete(id);
@@ -45,7 +84,6 @@ export default function Sidebar({
 
   const handleActivate = useCallback(
     (item: NavItem) => {
-      setActiveId(item.id);
       if (item.href) {
         navigate(item.href);
       }
