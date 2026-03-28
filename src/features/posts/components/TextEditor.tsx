@@ -1,9 +1,12 @@
+import { usePostForm } from "../hooks/usePostForm";
 import ToolbarButton from "./ToolbarButton";
 
 const TextEditor = () => {
   const insertFormat = (formatStart: string, formatEnd: string = "") => {
     return null;
   };
+
+  const { textareaRef, charCount, wordCount } = usePostForm();
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
@@ -70,11 +73,11 @@ const TextEditor = () => {
 
       <textarea
         ref={textareaRef}
-        value={content}
-        onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
-          setContent(e.target.value);
-          setErrors((p) => ({ ...p, content: undefined }));
-        }}
+        // value={content}
+        // onChange={(e: ChangeEvent<HTMLTextAreaElement>) => {
+        //   setContent(e.target.value);
+        //   setErrors((p) => ({ ...p, content: undefined }));
+        // }}
         placeholder="Soạn nội dung bài viết tại đây... Hỗ trợ định dạng Markdown."
         className="w-full min-h-64 p-6 text-slate-700 placeholder-slate-300 border-none outline-none resize-none text-base leading-relaxed bg-transparent"
         style={{ fontFamily: "'Source Sans 3', sans-serif" }}
@@ -86,11 +89,11 @@ const TextEditor = () => {
           {charCount} ký tự · {wordCount} từ
         </span>
       </div>
-      {errors.content && (
+      {/* {errors.content && (
         <p className="text-red-500 text-xs px-6 pb-3 flex items-center gap-1">
           ⚠️ {errors.content}
         </p>
-      )}
+      )} */}
     </div>
   );
 };

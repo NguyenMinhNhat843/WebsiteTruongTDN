@@ -29,7 +29,7 @@ const TuyenSinhSection = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4 uppercase">
             Thông Tin Tuyển Sinh
           </h2>
-          <div className="w-24 h-1 bg-yellow-500 mx-auto mb-6"></div>
+          <div className="w-24 h-0.5 bg-blue-500 mx-auto mb-6"></div>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Hệ thống ngành học trọng điểm, bám sát nhu cầu thực tế của thị
             trường. Chúng tôi cam kết trang bị kiến thức và kỹ năng chuyên sâu

@@ -36,9 +36,7 @@ export const CATEGORIES: Category[] = [
 ];
 
 export const AUDIENCES: AudienceValue[] = [
-  "Toàn trường",
-  "Học sinh",
-  "Giáo viên",
-  "Phụ huynh",
-  "Ban giám hiệu",
+  "toan-truong",
+  "hoc-sinh",
+  "giao-vien",
 ];

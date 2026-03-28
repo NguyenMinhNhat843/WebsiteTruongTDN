@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import type { ChangeEvent, KeyboardEvent, FormEvent, RefObject } from "react";
+import type { ChangeEvent, KeyboardEvent, FormEvent } from "react";
 import type {
   AudienceValue,
   CategoryValue,
@@ -20,8 +20,8 @@ interface UsePostFormReturn {
   charCount: number;
 
   // Refs (cần thiết cho insertFormat, vì phải truy cập DOM)
-  fileRef: RefObject<HTMLInputElement>;
-  textareaRef: RefObject<HTMLTextAreaElement>;
+  fileRef: React.RefObject<HTMLInputElement | null>;
+  textareaRef: React.RefObject<HTMLTextAreaElement | null>;
 
   // Validation
   errors: ReturnType<typeof usePostValidation>["errors"];
