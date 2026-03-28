@@ -3,7 +3,7 @@ import ToolbarButton from "./ToolbarButton";
 
 const TextEditor = () => {
   const insertFormat = (formatStart: string, formatEnd: string = "") => {
-    return null;
+    return formatStart + formatEnd; // Placeholder, logic sẽ được implement trong hook usePostForm
   };
 
   const { textareaRef, charCount, wordCount } = usePostForm();
