@@ -110,7 +110,7 @@ const MediaSection = () => {
 
   return (
     <section className="py-12 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-4">
         {/* Tiêu đề Section */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold text-gray-800 border-l-4 border-school-blue-600 pl-3">

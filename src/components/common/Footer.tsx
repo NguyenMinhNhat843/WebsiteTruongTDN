@@ -69,7 +69,7 @@ const InfoItem = ({ item }: { item: ContactInfoItemProp }) => {
 const Footer = () => {
   return (
     <footer className="bg-blue-900 text-white pt-12 pb-4 px-4">
-      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start gap-12">
+      <div className="max-w-7xl px-4 sm:px-4 mx-auto flex flex-col md:flex-row items-start gap-12">
         {/* Cột 1: Bản đồ */}
         <div className="w-full md:w-1/2 aspect-video rounded-2xl overflow-hidden shadow-2xl border border-blue-700/50">
           <iframe

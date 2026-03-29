@@ -39,11 +39,11 @@ const stats = [
 
 const ThanhTichSection = () => {
   return (
-    <section className="relative py-20 bg-white overflow-hidden">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 relative py-20 bg-white overflow-hidden">
       {/* Subtle blue tint gradient */}
       <div className="absolute inset-0 bg-linear-to-br from-blue-50/60 via-white to-sky-50/40 pointer-events-none" />
 
-      <div className="relative max-w-7xl mx-auto px-4">
+      <div className="relative">
         {/* Section Header */}
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4 uppercase">

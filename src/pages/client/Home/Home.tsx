@@ -1,5 +1,4 @@
 import ChuongTrinhDaoTao from "./components/ChuongTrinhDaoTao";
-import FloatingContact from "./components/FloatingContact";
 import MainBanner from "./components/MainBanner";
 import MediaSection from "./components/MediaTabs";
 import NewsSection from "./components/NewsSection";
@@ -15,7 +14,6 @@ const Home = () => {
       <ThanhTichSection />
       <NewsSection />
       <MediaSection />
-      <FloatingContact />
     </div>
   );
 };

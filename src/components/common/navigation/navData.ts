@@ -170,19 +170,12 @@ export const navData: MenuItem[] = [
   {
     id: "lien-he",
     label: "LIÊN HỆ",
-    href: "/dang-ky-tu-van",
-    children: [
-      {
-        id: "lien-he-cong-tac",
-        label: "Liên hệ công tác",
-        href: "/lien-he-cong-tac",
-      },
-      {
-        id: "dang-ky-thong-tin-xet-tuyen-truc-tuyen",
-        label: "Đăng ký thông tin xét tuyển trực tuyến",
-        href: "/dang-ky-tuyen-sinh",
-      },
-    ],
+    href: "/lien-he-cong-tac",
+  },
+  {
+    id: "tuyen-sinh-online",
+    label: "TUYỂN SINH ONLINE",
+    href: "/dang-ky-tuyen-sinh",
   },
   {
     id: "tuyen-dung",

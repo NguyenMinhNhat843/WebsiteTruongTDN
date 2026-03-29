@@ -1,134 +1,39 @@
-import { Facebook, Instagram, Youtube } from "lucide-react";
+import { Facebook, Phone, Search } from "lucide-react";
 import NavigationTree from "./navigation/NavigationTree";
 import { Link } from "react-router-dom";
 
-const SOCIAL_LINKS = [
-  { Icon: Facebook, label: "Facebook", href: "#" },
-  { Icon: Instagram, label: "Instagram", href: "#" },
-  {
-    Icon: Youtube,
-    label: "Youtube",
-    href: "https://www.youtube.com/@truongtckt-kttrandainghia",
-  },
-] as const;
-const HOTLINE = "0982 626 111";
-
-const TopBar = () => {
-  return (
-    <div className="w-full bg-blue-900 text-white">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-10">
-        <a
-          href={`tel:${HOTLINE}`}
-          className="text-sm font-semibold tracking-wider"
-        >
-          HOTLINE: {HOTLINE}
-        </a>
-        <div className="flex items-center space-x-4">
-          {SOCIAL_LINKS.map(({ Icon, label, href }) => (
-            <a
-              href={href}
-              className="hover:text-school-blue-200 transition-colors"
-              aria-label={label}
-              key={label}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <Icon size={16} strokeWidth={2.5} />
-            </a>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const GeometricLines = () => (
-  <svg
-    className="absolute inset-0 w-full h-full pointer-events-none"
-    viewBox="0 0 900 110"
-    preserveAspectRatio="xMidYMid slice"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <line
-      x1="0"
-      y1="0"
-      x2="900"
-      y2="110"
-      stroke="rgba(96,165,250,0.12)"
-      strokeWidth="1"
-    />
-    <line
-      x1="0"
-      y1="30"
-      x2="900"
-      y2="140"
-      stroke="rgba(96,165,250,0.09)"
-      strokeWidth="1"
-    />
-    <line
-      x1="900"
-      y1="0"
-      x2="0"
-      y2="110"
-      stroke="rgba(251,191,36,0.07)"
-      strokeWidth="1"
-    />
-    <rect
-      x="700"
-      y="-20"
-      width="260"
-      height="160"
-      rx="2"
-      fill="rgba(96,165,250,0.04)"
-      transform="rotate(-12 800 55)"
-    />
-    <rect
-      x="720"
-      y="-10"
-      width="200"
-      height="130"
-      rx="2"
-      fill="none"
-      stroke="rgba(96,165,250,0.08)"
-      strokeWidth="0.8"
-      transform="rotate(-12 800 55)"
-    />
-  </svg>
-);
-
 const HeaderNav = () => {
-  return (
-    // <div className="relative w-full shadow-md bg-[url('/banner.png')] bg-cover bg-center">
-    <div className="relative w-full " style={{ background: "#0e2a4a" }}>
-      {/* SVG trang trí */}
-      <GeometricLines />
+  // Type-safe cho hàm xử lý lỗi ảnh
+  const handleImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>,
+  ) => {
+    const img = e.currentTarget;
+    if (img.src.includes("logo-fallback.png")) return;
+    img.src = "/logo-fallback.png";
+  };
 
-      {/* <div className="absolute inset-0 bg-black/50 md:bg-black/40 shadow-inner"></div> */}
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-center relative z-10">
-        <div className="flex items-center space-x-3">
-          {/* Logo/Brand */}
+  return (
+    <header className="relative w-full bg-school-blue-950">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row items-center justify-between relative z-10 gap-6">
+        {/* LEFT: Logo + Tên trường */}
+        <div className="flex flex-col sm:flex-row items-center space-x-0 sm:space-x-3 shrink-0 text-center sm:text-left">
           <Link
             to="/"
-            className="h-20 w-20 rounded-full overflow-hidden border-2 border-blue-200 shadow-sm shrink-0 hover:opacity-80 transition-opacity block"
+            className="h-14 w-14 md:h-16 md:w-16 rounded-full overflow-hidden border-2 border-blue-200 shadow-sm shrink-0 hover:opacity-80 transition-opacity block mb-3 sm:mb-0"
           >
             <img
               src="/logo.png"
               alt="Logo Trường Trần Đại Nghĩa"
               className="h-full w-full object-cover"
-              onError={(e) => {
-                const img = e.currentTarget;
-                if (img.src.includes("logo-fallback.png")) return;
-                img.src = "/logo-fallback.png";
-              }}
+              onError={handleImageError}
             />
           </Link>
 
           <div className="leading-tight">
-            <div className="text-lg md:text-2xl text-center font-bold text-white mt-0.5 tracking-tight">
+            <h1 className="text-lg md:text-xl font-bold text-white mt-0.5 tracking-tight uppercase">
               Trường Trung Cấp Kinh Tế – Kỹ Thuật Trần Đại Nghĩa
-            </div>
-            <div className="flex items-center justify-center gap-2">
-              {/* Đường kẻ nhỏ trang trí trước slogan */}
+            </h1>
+            <div className="flex items-center justify-center sm:justify-start gap-2">
               <div className="w-8 h-px bg-blue-300 hidden md:block"></div>
               <p className="text-sm md:text-base font-medium text-amber-300 italic tracking-wide">
                 "Chất lượng vàng – Niềm tin vàng"
@@ -137,20 +42,80 @@ const HeaderNav = () => {
             </div>
           </div>
         </div>
+
+        {/* RIGHT: Liên hệ + Mạng xã hội + Tìm kiếm */}
+        <div className="flex flex-col items-center md:items-end gap-3 shrink-0 w-full md:w-auto">
+          {/* Hàng 1: Thông tin liên hệ */}
+          <div className="flex items-center justify-center md:justify-end gap-3 w-full">
+            {/* Điện thoại */}
+            <a
+              href="tel:0123456789"
+              className="flex items-center gap-1.5 text-white hover:text-amber-300 transition-colors text-sm font-medium"
+            >
+              <Phone size={16} strokeWidth={2.5} />
+              <span className="whitespace-nowrap">0123 456 789</span>
+            </a>
+
+            <div className="w-px h-4 bg-blue-300/50"></div>
+
+            {/* Facebook */}
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-white hover:text-blue-300 transition-colors text-sm font-medium"
+              title="Facebook"
+            >
+              <Facebook size={16} strokeWidth={2.5} />
+              <span className="hidden lg:inline">Facebook</span>
+            </a>
+
+            {/* Zalo */}
+            <a
+              href="https://zalo.me/0123456789"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-white hover:text-blue-300 transition-colors text-sm font-medium"
+              title="Zalo"
+            >
+              <span className="bg-blue-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded leading-none shrink-0">
+                Zalo
+              </span>
+              <span className="hidden lg:inline text-sm">Zalo</span>
+            </a>
+          </div>
+
+          {/* Hàng 2: Ô tìm kiếm */}
+          <div className="relative w-full max-w-75 md:w-full">
+            <input
+              type="text"
+              placeholder="Tìm kiếm..."
+              className="w-full pl-3 pr-9 py-1.5 rounded-full text-sm bg-white/15 backdrop-blur-sm 
+                         border border-white/30 text-white placeholder-white/60 
+                         focus:outline-none focus:bg-white/25 focus:border-white/60 transition-all"
+            />
+            <button
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-white/70 hover:text-white transition-colors"
+              aria-label="Tìm kiếm"
+            >
+              <Search size={16} strokeWidth={2.5} />
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    </header>
   );
 };
 
 const Header = () => {
   return (
     <header>
-      <TopBar />
+      {/* <TopBar /> */}
 
       <HeaderNav />
 
       <nav className="w-full bg-blue-800">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <NavigationTree className="shadow-sm" />
         </div>
       </nav>

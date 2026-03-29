@@ -8,7 +8,7 @@ const NewsSection = () => {
 
   return (
     <section className="py-12 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Tiêu đề Section */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-2xl font-bold text-gray-800 border-l-4 border-school-blue-600 pl-3">
