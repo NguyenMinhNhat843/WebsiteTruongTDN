@@ -17,6 +17,9 @@ import AdminMainLayout from "./pages/admin/AdminMainLayout/AdminMainLayout";
 import PostList from "./pages/admin/PostList";
 import PostDetail from "./pages/client/PostDetail/PostDetail";
 import LoginPage from "./pages/admin/Login";
+import ProtectedRoute from "./features/auth/components/ProtectedRoute";
+import { USER_ROLE } from "./features/users/types/User.types";
+import Dashboard from "./pages/admin/Dashboard";
 
 function App() {
   return (
@@ -46,12 +49,19 @@ function App() {
 
       {/* Admin */}
       <Route path="/admin/login" element={<LoginPage />} />
-      <Route path="/admin" element={<AdminMainLayout />}>
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute allowedRoles={[USER_ROLE.ADMIN]}>
+            <AdminMainLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route
           path="truyen-thong-bao-chi/tao-bai-viet"
           element={<CreatePost />}
         />
-        <Route path="dashboard" element={<div>Dashboard</div>} />
+        <Route path="dashboard" element={<Dashboard />} />
         <Route path="truyen-thong-bao-chi/bai-viet" element={<PostList />} />
         <Route path="users" element={<div>Quản lý người dùng</div>} />
         <Route

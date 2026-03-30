@@ -29,17 +29,14 @@ function Inner() {
   } = usePostListContext();
 
   return (
-    <div
-      className="min-h-screen bg-slate-50 font-sans"
-      style={{ fontFamily: "'DM Sans', 'Segoe UI', sans-serif" }}
-    >
+    <div className="min-h-screen bg-slate-50">
       <PostListHeader />
 
       <div className="mx-auto max-w-7xl px-8 py-6 space-y-5">
         <PostListFilterPanel />
 
         {/* ── Table ── */}
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm">
           {/* Table header */}
           <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
             <p className="text-sm text-slate-500">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { USER_ROLE } from "../../features/users/types/User.types";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -18,6 +19,10 @@ const LoginPage = () => {
       setIsLoading(false);
       // Logic điều hướng dựa trên Role sẽ ở đây
       navigate("/admin/dashboard");
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ email, role: USER_ROLE.ADMIN, name: "Admin User" }),
+      );
     }, 1500);
   };
 
