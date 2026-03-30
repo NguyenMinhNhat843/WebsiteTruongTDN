@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import type { Post } from "../../features/posts/types/Post.types";
+import type { Post } from "../../../features/posts/types/Post.types";
 
 const PostDetail = () => {
   const { slug } = useParams();
