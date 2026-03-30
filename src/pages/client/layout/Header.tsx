@@ -1,5 +1,5 @@
 import { Facebook, Phone, Search } from "lucide-react";
-import NavigationTree from "./navigation/NavigationTree";
+import NavigationTree from "../navigation/NavigationTree";
 import { Link } from "react-router-dom";
 
 const HeaderNav = () => {

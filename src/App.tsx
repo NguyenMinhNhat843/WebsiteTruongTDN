@@ -1,8 +1,8 @@
 import "./App.css";
 import { Routes, Route } from "react-router-dom";
-import MainLayout from "./components/layouts/MainLayout";
+import MainLayout from "./pages/client/layout/MainLayout";
 import NewsList from "./pages/client/NewsList";
-import PostLayout from "./components/layouts/PostLayout";
+import PostLayout from "./pages/client/PostDetail/PostLayout";
 import GioiThieuVeTruong from "./pages/client/GioiThieuVeTruong";
 import TamNhinSuMang from "./pages/client/TamNhinSuMang";
 import SoDoToChuc from "./pages/client/SoDoToChuc";
@@ -12,18 +12,16 @@ import BoMayToChuc from "./pages/client/BoMayToChuc/BoMayToChuc";
 import LienHe from "./pages/client/LienHe/LienHe";
 import DangKyTuVan from "./pages/client/DangKyTuVan/DangKyTuVan";
 import ChuongTrinhDaoTaoDetail from "./pages/client/ChuongTrinhDaoTaoDetail";
-import PostDetail from "./pages/client/PostDetail";
 import Home from "./pages/client/Home/Home";
 import AdminMainLayout from "./pages/admin/AdminMainLayout/AdminMainLayout";
 import PostList from "./pages/admin/PostList";
+import PostDetail from "./pages/client/PostDetail/PostDetail";
 
 function App() {
   return (
     <Routes>
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
-
-        {/* Giới thiệu về trường */}
         <Route path="/gioi-thieu-chung" element={<GioiThieuVeTruong />} />
         <Route path="/bo-may-to-chuc" element={<BoMayToChuc />} />
         <Route
@@ -32,18 +30,12 @@ function App() {
         />
         <Route path="/so-do-to-chuc" element={<SoDoToChuc />} />
         <Route path="/hop-tac-quoc-te" element={<HopTacQuocTe />} />
-
-        {/* Liên hệ */}
         <Route path="/lien-he-cong-tac" element={<LienHe />} />
         <Route path="/dang-ky-tuyen-sinh" element={<DangKyTuVan />} />
-
-        {/* Chương trình đào tạo */}
         <Route path="/chuong-trinh-dao-tao">
           <Route path=":heDaoTaoSlug" element={<ChuongTrinhDaoTaoDetail />} />
           <Route path=":heDaoTaoSlug/:nganhSlug" element={<PostDetail />} />
         </Route>
-
-        {/* tin tức */}
         <Route path="/tin-tuc" element={<NewsList />} />
         <Route element={<PostLayout />}>
           <Route path="tin-tuc/:slug" element={<PostDetail />} />
@@ -53,9 +45,17 @@ function App() {
 
       {/* Admin */}
       <Route path="/admin" element={<AdminMainLayout />}>
-        <Route path="create-post" element={<CreatePost />} />
+        <Route
+          path="truyen-thong-bao-chi/tao-bai-viet"
+          element={<CreatePost />}
+        />
         <Route path="dashboard" element={<div>Dashboard</div>} />
-        <Route path="posts" element={<PostList />} />
+        <Route path="truyen-thong-bao-chi/bai-viet" element={<PostList />} />
+        <Route path="users" element={<div>Quản lý người dùng</div>} />
+        <Route
+          path="quanlychuongtrinhdaotao"
+          element={<div>Quản lý chương trình đào tạo</div>}
+        />
         <Route path="menu1" element={<div>Tesst menu sidebar 1</div>} />
         <Route path="menu2" element={<div>Tesst menu sidebar 2</div>} />
         <Route path="menu3" element={<div>Tesst menu sidebar 3</div>} />

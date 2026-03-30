@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import type { Post } from "../../types/api.type";
-import PostCard from "../../components/common/PostCard";
+import type { Post } from "../../features/posts/types/Post.types";
+import PostCard from "../../features/posts/components/PostCard";
 
 const NewsList = () => {
   const [posts, setPosts] = useState<Post[]>([]);

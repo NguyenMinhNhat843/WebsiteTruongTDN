@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import type { Post } from "../../types/api.type";
+import type { Post } from "../types/Post.types";
 
 interface PostHorizonProps {
   post: Post;

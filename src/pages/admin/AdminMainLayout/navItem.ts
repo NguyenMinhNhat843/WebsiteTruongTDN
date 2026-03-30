@@ -15,16 +15,34 @@ const navItems: NavItem[] = [
     href: "/admin/dashboard",
   },
   {
-    id: "posts",
-    label: "Bài viết",
-    icon: "📝",
-    href: "/admin/posts",
+    id: "truyen-thong-bao-chi",
+    label: "Truyền thông",
+    icon: "📰",
+    href: "/admin/truyen-thong-bao-chi",
+    children: [
+      {
+        id: "bai-viet",
+        label: "Bài viết",
+        href: "/admin/truyen-thong-bao-chi/bai-viet",
+      },
+      {
+        id: "tao-bai-viet",
+        label: "Tạo bài viết",
+        href: "/admin/truyen-thong-bao-chi/tao-bai-viet",
+      },
+    ],
   },
   {
-    id: "createpost",
-    label: "Tạo bài viết",
-    icon: "✍",
-    href: "/admin/create-post",
+    id: "quanlychuongtrinhdaotao",
+    label: "Chương trình đào tạo",
+    icon: "📚",
+    href: "/admin/quanlychuongtrinhdaotao",
+  },
+  {
+    id: "quan-ly-nguoi-dung",
+    label: "Quản lý người dùng",
+    icon: "👥",
+    href: "/admin/users",
   },
   {
     id: "test",

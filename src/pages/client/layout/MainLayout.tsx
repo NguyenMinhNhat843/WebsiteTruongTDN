@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
-import Footer from "../common/Footer";
-import Header from "../common/Header";
-import FloatingContact from "../../pages/client/Home/components/FloatingContact";
+import Footer from "./Footer";
+import Header from "./Header";
+import FloatingContact from "../Home/components/FloatingContact";
 
 const MainLayout = () => {
   return (

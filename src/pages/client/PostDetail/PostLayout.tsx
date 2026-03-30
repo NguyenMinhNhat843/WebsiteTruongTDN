@@ -1,7 +1,7 @@
 import { Outlet, useNavigate } from "react-router-dom";
-import type { Post } from "../../types/api.type";
 import { useEffect, useState } from "react";
-import PostHorizon from "../common/PostCardHorizon";
+import PostHorizon from "../../../features/posts/components/PostCardHorizon";
+import type { Post } from "../../../features/posts/types/Post.types";
 
 const PostLayout = () => {
   const [latestPosts, setLatestPosts] = useState<Post[]>([]);
