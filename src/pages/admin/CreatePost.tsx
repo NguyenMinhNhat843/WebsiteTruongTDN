@@ -6,7 +6,6 @@ import PostCoverImage from "../../features/posts/components/PostCoverImage";
 import PostPublishSetting from "../../features/posts/components/PostPublishSetting";
 import PostTagInput from "../../features/posts/components/PostTagInput";
 import SuccessSubmitScreen from "../../features/posts/components/SuccessSubmitScreen";
-import SchoolEditor from "../../features/posts/components/TipTap";
 import { usePostForm } from "../../features/posts/hooks/usePostForm";
 
 export default function CreatePost() {
@@ -48,7 +47,6 @@ export default function CreatePost() {
             <PostCoverImage />
             <PostContentEditor />
             <PostTagInput />
-            <SchoolEditor />
           </div>
 
           {/* ── Sidebar ── */}
