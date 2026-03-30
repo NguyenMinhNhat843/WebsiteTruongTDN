@@ -16,6 +16,7 @@ import Home from "./pages/client/Home/Home";
 import AdminMainLayout from "./pages/admin/AdminMainLayout/AdminMainLayout";
 import PostList from "./pages/admin/PostList";
 import PostDetail from "./pages/client/PostDetail/PostDetail";
+import LoginPage from "./pages/admin/Login";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
       </Route>
 
       {/* Admin */}
+      <Route path="/admin/login" element={<LoginPage />} />
       <Route path="/admin" element={<AdminMainLayout />}>
         <Route
           path="truyen-thong-bao-chi/tao-bai-viet"

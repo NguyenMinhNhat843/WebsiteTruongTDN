@@ -17,7 +17,7 @@ const PostListHeader = () => {
               Danh sách bài viết
             </h1>
           </div>
-          <Link to={"/admin/create-post"}>
+          <Link to={"/admin/truyen-thong-bao-chi/tao-bai-viet"}>
             <button className="cursor-pointer flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-200 transition hover:bg-blue-700 active:scale-95">
               <span className="text-base">+</span>
               Tạo bài viết
