@@ -1,7 +1,8 @@
+import ContentEditor from "../../components/ui/ContentEditor";
 import PostAudiencePicker from "../../features/posts/components/PostAudiencePicker";
 import PostButtonActions from "../../features/posts/components/PostButtonActions";
 import PostCategoryPicker from "../../features/posts/components/PostCategoryPicker";
-import PostContentEditor from "../../features/posts/components/PostContentEditor";
+// import PostContentEditor from "../../features/posts/components/PostContentEditor";
 import PostCoverImage from "../../features/posts/components/PostCoverImage";
 import PostPublishSetting from "../../features/posts/components/PostPublishSetting";
 import PostTagInput from "../../features/posts/components/PostTagInput";
@@ -45,7 +46,8 @@ export default function CreatePost() {
             </div>
 
             <PostCoverImage />
-            <PostContentEditor />
+            {/* <PostContentEditor /> */}
+            <ContentEditor />
             <PostTagInput />
           </div>
 
