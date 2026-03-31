@@ -20,6 +20,7 @@ import LoginPage from "./pages/admin/Login";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { USER_ROLE } from "./features/users/types/User.types";
 import Dashboard from "./pages/admin/Dashboard";
+import QuanLyNguoiDung from "./pages/admin/QuanLyNguoiDung";
 
 function App() {
   return (
@@ -63,7 +64,7 @@ function App() {
         />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="truyen-thong-bao-chi/bai-viet" element={<PostList />} />
-        <Route path="users" element={<div>Quản lý người dùng</div>} />
+        <Route path="users" element={<QuanLyNguoiDung />} />
         <Route
           path="quanlychuongtrinhdaotao"
           element={<div>Quản lý chương trình đào tạo</div>}
