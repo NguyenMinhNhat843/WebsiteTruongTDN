@@ -147,7 +147,7 @@ export default function UserDetailModal({
               label="Giới tính"
               value={
                 { MALE: "Nam", FEMALE: "Nữ", OTHER: "Khác" }[
-                  user.studentProfile.gender
+                  user.studentProfile.gender ?? "OTHER"
                 ]
               }
             />
@@ -163,7 +163,7 @@ export default function UserDetailModal({
                   GRADUATED: "Tốt nghiệp",
                   TRANSFERRED: "Chuyển trường",
                   DROPPED_OUT: "Nghỉ học",
-                }[user.studentProfile.status]
+                }[user.studentProfile.status ?? "STUDYING"]
               }
             />
           </InfoSection>
