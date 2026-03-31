@@ -22,6 +22,8 @@ import { USER_ROLE } from "./features/users/types/User.types";
 import Dashboard from "./pages/admin/Dashboard";
 import QuanLyNguoiDung from "./pages/admin/QuanLyNguoiDung";
 import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung";
+import ClassManagement from "./pages/admin/LopHocVaKhoaHoc";
+import TimetablePage from "./pages/admin/ThoiKhoaBieu";
 
 function App() {
   return (
@@ -70,6 +72,8 @@ function App() {
           path="dao-tao/chuong-trinh-khung"
           element={<ChuongTrinhKhung />}
         />
+        <Route path="dao-tao/lop-hoc" element={<ClassManagement />} />
+        <Route path="dao-tao/thoi-khoa-bieu" element={<TimetablePage />} />
       </Route>
 
       {/* Route 404 - Luôn để ở cuối cùng */}
