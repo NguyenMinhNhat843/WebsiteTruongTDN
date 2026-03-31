@@ -21,6 +21,7 @@ import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { USER_ROLE } from "./features/users/types/User.types";
 import Dashboard from "./pages/admin/Dashboard";
 import QuanLyNguoiDung from "./pages/admin/QuanLyNguoiDung";
+import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung";
 
 function App() {
   return (
@@ -66,12 +67,9 @@ function App() {
         <Route path="truyen-thong-bao-chi/bai-viet" element={<PostList />} />
         <Route path="users" element={<QuanLyNguoiDung />} />
         <Route
-          path="quanlychuongtrinhdaotao"
-          element={<div>Quản lý chương trình đào tạo</div>}
+          path="dao-tao/chuong-trinh-khung"
+          element={<ChuongTrinhKhung />}
         />
-        <Route path="menu1" element={<div>Tesst menu sidebar 1</div>} />
-        <Route path="menu2" element={<div>Tesst menu sidebar 2</div>} />
-        <Route path="menu3" element={<div>Tesst menu sidebar 3</div>} />
       </Route>
 
       {/* Route 404 - Luôn để ở cuối cùng */}

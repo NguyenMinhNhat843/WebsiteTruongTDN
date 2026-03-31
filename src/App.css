@@ -1,0 +1,19 @@
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0); /* Mặc định trong suốt */
+    border-radius: 10px;
+    transition: background 0.3s ease;
+  }
+
+  .custom-scrollbar:hover::-webkit-scrollbar-thumb {
+    background: rgba(156, 163, 175, 0.5); /* Hiện lên khi hover vào nav */
+  }
+}

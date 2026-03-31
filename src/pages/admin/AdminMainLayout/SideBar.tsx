@@ -95,8 +95,8 @@ export default function Sidebar({
     <aside
       className={[
         "relative flex h-screen flex-col transition-all duration-300 ease-in-out",
-        "bg-[#0f172a] text-slate-300", // Chuyển sang Navy đậm (Slate 900) cho sang trọng
-        isCollapsed ? "w-20" : "w-72", // Điều chỉnh lại độ rộng một chút cho cân đối
+        "bg-[#0f172a] text-slate-300",
+        isCollapsed ? "w-20" : "w-72",
         "border-r border-blue-500/10 shadow-xl",
       ].join(" ")}
     >
@@ -104,7 +104,7 @@ export default function Sidebar({
       <div
         className={[
           "relative flex items-center border-b border-blue-500/10 px-4 py-8 transition-all duration-300",
-          "bg-gradient-to-b from-blue-600/10 to-transparent", // Hiệu ứng đổ màu nhẹ từ trên xuống
+          "bg-linear-to-b from-blue-600/10 to-transparent",
           isCollapsed ? "justify-center px-2" : "gap-4",
         ].join(" ")}
       >
@@ -134,7 +134,7 @@ export default function Sidebar({
       </div>
 
       {/* Nav - Tối ưu thanh cuộn */}
-      <nav className="relative flex-1 overflow-y-auto overflow-x-hidden px-3 py-6 scrollbar-thin scrollbar-thumb-blue-900/50 hover:scrollbar-thumb-blue-800">
+      <nav className="relative flex-1 overflow-y-auto px-3 py-6 custom-scrollbar">
         <ul className="space-y-1.5">
           {items.map((item) => (
             <NavNode
