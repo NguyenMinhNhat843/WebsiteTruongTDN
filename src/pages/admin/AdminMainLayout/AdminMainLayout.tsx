@@ -5,12 +5,12 @@ import UserProfileHeader from "./UserProfileHeader.tsx";
 
 const AdminMainLayout = () => {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen max-w-full">
       <aside className="sticky top-0 h-screen">
         <Sidebar items={navItems} defaultOpenIds={["products", "orders"]} />
       </aside>
 
-      <main className="grow">
+      <main className="grow min-w-0">
         <div className="relative z-999">
           <UserProfileHeader />
         </div>
