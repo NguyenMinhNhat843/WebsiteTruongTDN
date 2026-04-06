@@ -21,9 +21,11 @@ import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { USER_ROLE } from "./features/users/types/User.types";
 import Dashboard from "./pages/admin/Dashboard";
 import QuanLyNguoiDung from "./pages/admin/QuanLyNguoiDung";
-import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung";
+import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung/ChuongTrinhKhung";
 import ClassManagement from "./pages/admin/LopHocVaKhoaHoc";
 import TimetablePage from "./pages/admin/ThoiKhoaBieu";
+import GradeManagement from "./pages/admin/QuanLyDiemThi";
+import HoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinh";
 
 function App() {
   return (
@@ -74,6 +76,10 @@ function App() {
         />
         <Route path="dao-tao/lop-hoc" element={<ClassManagement />} />
         <Route path="dao-tao/thoi-khoa-bieu" element={<TimetablePage />} />
+        <Route path="dao-tao/diem-thi" element={<GradeManagement />} />
+
+        {/* Công tác học sinh */}
+        <Route path="hoc-sinh/ho-so" element={<HoSoHocSinh />} />
       </Route>
 
       {/* Route 404 - Luôn để ở cuối cùng */}
