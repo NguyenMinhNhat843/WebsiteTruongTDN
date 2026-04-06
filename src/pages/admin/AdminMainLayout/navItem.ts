@@ -156,7 +156,7 @@ const navItems: NavItem[] = [
       {
         id: "phan-quyen",
         label: "Phân quyền (Roles)",
-        href: "/admin/settings/roles",
+        href: "/admin/cai-dat/phan-quyen",
       },
       {
         id: "nhat-ky-hoat-dong",

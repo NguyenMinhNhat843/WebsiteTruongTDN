@@ -26,6 +26,7 @@ import ClassManagement from "./pages/admin/LopHocVaKhoaHoc";
 import TimetablePage from "./pages/admin/ThoiKhoaBieu";
 import GradeManagement from "./pages/admin/QuanLyDiemThi";
 import HoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinh";
+import PhanQuyenNguoiDung from "./pages/admin/CaiDatHeThong/PhanQuyenNguoiDung/PhanQuyenNguoiDung";
 
 function App() {
   return (
@@ -80,6 +81,9 @@ function App() {
 
         {/* Công tác học sinh */}
         <Route path="hoc-sinh/ho-so" element={<HoSoHocSinh />} />
+
+        {/* Cài đặt hệ thống */}
+        <Route path="cai-dat/phan-quyen" element={<PhanQuyenNguoiDung />} />
       </Route>
 
       {/* Route 404 - Luôn để ở cuối cùng */}
