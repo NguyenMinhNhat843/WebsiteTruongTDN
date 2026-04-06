@@ -27,6 +27,30 @@ interface StatCardProps {
   description?: ReactNode;
 }
 
+const getDynamicStyles = (hex: string) => {
+  return {
+    container: {
+      backgroundColor: "#ffffff", // Giữ nền trắng để text nổi bật
+      borderColor: `${hex}30`,
+      boxShadow: `0 10px 15px -3px ${hex}15`, // Đổ bóng theo màu card
+    },
+    // Hiệu ứng dải màu gradient nhẹ ở nền
+    overlay: {
+      background: `linear-gradient(135deg, ${hex}10 0%, ${hex}05 100%)`,
+    },
+    valueText: {
+      color: hex,
+      // Hiệu ứng text-shadow nhẹ để chữ "đậm đà" hơn
+      textShadow: `0px 2px 4px ${hex}20`,
+    },
+    iconBox: {
+      background: `linear-gradient(135deg, ${hex} 0%, ${hex}dd 100%)`,
+      color: "#ffffff", // Icon trắng trên nền đậm nhìn sẽ sang hơn
+      boxShadow: `0 4px 12px ${hex}40`,
+    },
+  };
+};
+
 export const StatCard: FunctionComponent<StatCardProps> = ({
   label,
   value,
@@ -34,65 +58,52 @@ export const StatCard: FunctionComponent<StatCardProps> = ({
   color = "blue",
   description,
 }) => {
-  // 1. Lấy mã Hex gốc
   const baseColor =
     DEFAULT_COLORS[color] || (color.startsWith("#") ? color : "#3b82f6");
-
-  // 2. Helper tạo styles động
-  const getDynamicStyles = (hex: string) => {
-    return {
-      container: {
-        // Nền rất nhạt (6% - mã Hex 10)
-        backgroundColor: `${hex}10`,
-        // Viền rõ hơn chút (25% - mã Hex 40)
-        borderColor: `${hex}50`,
-      },
-      iconBox: {
-        // Nền icon đậm hơn nền card (15% - mã Hex 26)
-        backgroundColor: `${hex}26`,
-        borderColor: `${hex}50`,
-        color: hex,
-      },
-      dot: {
-        backgroundColor: hex,
-      },
-    };
-  };
-
   const styles = getDynamicStyles(baseColor);
 
   return (
     <div
       style={styles.container}
-      className="p-5 rounded-2xl border transition-all duration-300 hover:shadow-lg group relative overflow-hidden"
+      className="p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group relative overflow-hidden"
     >
-      {/* Hiệu ứng vết sáng nhẹ ở góc */}
-      {/* <div
-        className="absolute -right-4 -top-4 w-24 h-24 rounded-full opacity-10 pointer-events-none"
-        style={{ backgroundColor: baseColor }}
-      /> */}
+      {/* Background Gradient Overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={styles.overlay}
+      />
 
-      <div className="flex items-center justify-between relative z-10">
-        <div>
-          <p className="text-xs font-bold text-slate-500 mb-1 uppercase tracking-widest opacity-80">
+      <div className="flex items-start justify-between relative z-10">
+        <div className="space-y-1">
+          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">
             {label}
           </p>
-          <h3 className="text-3xl font-extrabold text-slate-800 tracking-tight">
+
+          {/* Value hiển thị màu đậm đà */}
+          <h3
+            style={styles.valueText}
+            className="text-3xl font-black tracking-tight"
+          >
             {value}
           </h3>
 
           {description && (
-            <p className="text-xs mt-2 font-medium text-slate-500 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full" style={styles.dot} />
-              {description}
-            </p>
+            <div className="flex items-center gap-2 mt-3">
+              <span
+                className="flex h-2 w-2 rounded-full"
+                style={{ backgroundColor: baseColor }}
+              />
+              <span className="text-xs font-semibold text-slate-500">
+                {description}
+              </span>
+            </div>
           )}
         </div>
 
         {icon && (
           <div
             style={styles.iconBox}
-            className="w-14 h-14 flex items-center justify-center rounded-2xl text-3xl border transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 shadow-sm"
+            className="w-12 h-12 flex items-center justify-center rounded-xl text-2xl transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6"
           >
             {icon}
           </div>

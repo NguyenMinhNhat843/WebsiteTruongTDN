@@ -24,7 +24,7 @@ import QuanLyNguoiDung from "./pages/admin/QuanLyNguoiDung";
 import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung/ChuongTrinhKhung";
 import ClassManagement from "./pages/admin/LopHocVaKhoaHoc/LopHocVaKhoaHoc";
 import TimetablePage from "./pages/admin/ThoiKhoaBieu/ThoiKhoaBieu";
-import GradeManagement from "./pages/admin/QuanLyDiemThi";
+import GradeManagement from "./pages/admin/QuanLyDiem/QuanLyDiemThi";
 import HoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinh";
 import PhanQuyenNguoiDung from "./pages/admin/CaiDatHeThong/PhanQuyenNguoiDung/PhanQuyenNguoiDung";
 
