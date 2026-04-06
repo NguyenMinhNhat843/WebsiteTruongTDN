@@ -1,4 +1,4 @@
-import React, { type FunctionComponent } from "react";
+import React, { type FunctionComponent, type ReactNode } from "react";
 
 // Định nghĩa các màu mặc định (Brand Colors)
 const DEFAULT_COLORS: Record<string, string> = {
@@ -24,7 +24,7 @@ interface StatCardProps {
   value: string | number;
   icon?: React.ReactNode;
   color?: StatColor;
-  description?: string;
+  description?: ReactNode;
 }
 
 export const StatCard: FunctionComponent<StatCardProps> = ({
