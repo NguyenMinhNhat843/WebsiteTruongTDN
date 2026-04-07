@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
 import type { FilterState, HocSinhRow, SortState, ViewMode } from "./mockType";
-import { MOCK_DATA } from "./mockData";
+import { MOCK_DATA } from "./mockData/mockData";
 import { useNavigate } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 8;

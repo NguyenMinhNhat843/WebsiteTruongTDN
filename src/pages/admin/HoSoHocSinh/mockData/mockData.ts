@@ -1,5 +1,5 @@
-import type { HocSinhRow } from "./mockType";
-import type { Student } from "./typeDataResponse";
+import type { HocSinhRow } from "../mockType";
+import type { Student } from "../typeDataResponse";
 
 export const INITIAL_STUDENTS: Student[] = [
   {

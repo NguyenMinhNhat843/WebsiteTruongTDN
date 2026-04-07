@@ -12,6 +12,50 @@ export type GioiTinh = "Nam" | "Nữ" | "Khác";
 export type SortDir = "asc" | "desc";
 export type ViewMode = "table" | "card";
 
+export interface HocSinh {
+  id: string;
+  maSoHocSinh: string;
+  hoTen: string;
+  ngaySinh: string;
+  gioiTinh: GioiTinh;
+  danToc: string;
+  tonGiao: string;
+  cccd: string;
+  ngayCap: string;
+  noiCap: string;
+  diaChiThuongTru: string;
+  diaChiTamTru: string;
+  soDienThoai: string;
+  email: string;
+  // Gia đình
+  hoTenCha: string;
+  sdtCha: string;
+  ngheNghiepCha: string;
+  hoTenMe: string;
+  sdtMe: string;
+  ngheNghiepMe: string;
+  nguoiLienHeKhac: string;
+  sdtLienHe: string;
+  // Học vấn
+  heDaoTao: HeDaoTao;
+  nganh: string;
+  chuyenNganh: string;
+  lop: string;
+  khoaHoc: string;
+  namNhapHoc: number;
+  trangThai: TrangThaiHocSinh;
+  hocBongHienTai: string;
+  // Sức khỏe
+  nhomMau: string;
+  chieuCao: number;
+  canNang: number;
+  tinhTrangSucKhoe: string;
+  // Hồ sơ
+  daNopHoSo: string[];
+  chuaNopHoSo: string[];
+  ghiChu: string;
+}
+
 export interface HocSinhRow {
   id: string;
   maSoHocSinh: string;

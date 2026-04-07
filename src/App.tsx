@@ -25,9 +25,9 @@ import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung/ChuongTrinhKhung";
 import ClassManagement from "./pages/admin/LopHocVaKhoaHoc/LopHocVaKhoaHoc";
 import TimetablePage from "./pages/admin/ThoiKhoaBieu/ThoiKhoaBieu";
 import GradeManagement from "./pages/admin/QuanLyDiem/QuanLyDiemThi";
-import HoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinhList";
 import PhanQuyenNguoiDung from "./pages/admin/CaiDatHeThong/PhanQuyenNguoiDung/PhanQuyenNguoiDung";
-import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne";
+import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne";
+import DanhSachHoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoHocSinhList";
 
 function App() {
   return (
@@ -81,7 +81,7 @@ function App() {
         <Route path="dao-tao/diem-thi" element={<GradeManagement />} />
 
         {/* Công tác học sinh */}
-        <Route path="hoc-sinh/ho-so" element={<HoSoHocSinh />} />
+        <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
         <Route path="hoc-sinh/ho-so/:id" element={<HoSoHocSinhOne />} />
 
         {/* Cài đặt hệ thống */}

@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
-import StudentCard from "./components/CardViewItem";
+import StudentCard from "./HoSoHocSinhList/components/CardViewItem";
 import { useHoSoHocSinhContext } from "./HoSoHocSinhProvider";
 
 const CardViewList = () => {

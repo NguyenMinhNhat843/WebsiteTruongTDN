@@ -1,8 +1,8 @@
 import { BookOpen, Edit3, Eye, GraduationCap } from "lucide-react";
-import { TrangThaiBadge } from "../../../../components/ui/BadgeStatus";
-import { HeDaoTaoBadge } from "../../../../components/ui/HeDaoTaoBadge";
-import { avatarColor, getAvatar } from "../helpers";
-import type { HocSinhRow } from "../mockType";
+import { TrangThaiBadge } from "../../../../../components/ui/BadgeStatus";
+import { HeDaoTaoBadge } from "../../../../../components/ui/HeDaoTaoBadge";
+import { avatarColor, getAvatar } from "../../helpers";
+import type { HocSinhRow } from "../../mockType";
 import HoSoProgress from "./HoSoProgress";
 
 interface StudentCardProps {

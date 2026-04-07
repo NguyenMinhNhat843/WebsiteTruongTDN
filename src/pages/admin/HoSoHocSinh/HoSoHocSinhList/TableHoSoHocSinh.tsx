@@ -1,11 +1,11 @@
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import SortBtn from "./components/SortButton";
-import { useHoSoHocSinhContext } from "./HoSoHocSinhProvider";
-import { HeDaoTaoBadge } from "../../../components/ui/HeDaoTaoBadge";
-import { TrangThaiBadge } from "../../../components/ui/BadgeStatus";
+import { useHoSoHocSinhContext } from "../HoSoHocSinhProvider";
+import { HeDaoTaoBadge } from "../../../../components/ui/HeDaoTaoBadge";
+import { TrangThaiBadge } from "../../../../components/ui/BadgeStatus";
 import HoSoProgress from "./components/HoSoProgress";
 import RowActions from "./components/RowAction";
-import { avatarColor, fmtDate, getAvatar } from "./helpers";
+import { avatarColor, fmtDate, getAvatar } from "../helpers";
 
 const TableHoSoHocSinh = () => {
   const {

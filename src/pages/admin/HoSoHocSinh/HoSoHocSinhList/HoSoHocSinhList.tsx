@@ -11,15 +11,15 @@ import {
   LayoutGrid,
   List,
 } from "lucide-react";
-import type { FilterState, HeDaoTao, TrangThaiHocSinh } from "./mockType";
-import { ALL_HE_DAO_TAO, ALL_TRANG_THAI } from "./mockStyleMapEnum";
-import { StatCard } from "../../../components/ui/StatCard";
 import {
   HoSoHocSinhProvider,
   useHoSoHocSinhContext,
-} from "./HoSoHocSinhProvider";
+} from "../HoSoHocSinhProvider";
+import { StatCard } from "../../../../components/ui/StatCard";
+import type { FilterState, HeDaoTao, TrangThaiHocSinh } from "../mockType";
+import { ALL_HE_DAO_TAO, ALL_TRANG_THAI } from "../mockStyleMapEnum";
 import TableHoSoHocSinh from "./TableHoSoHocSinh";
-import CardViewList from "./CardViewList";
+import CardViewList from "../CardViewList";
 
 export default function DanhSachHoSoHocSinh() {
   return (

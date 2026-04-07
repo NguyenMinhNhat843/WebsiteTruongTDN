@@ -1,5 +1,5 @@
 import { ArrowUpDown, ChevronDown, ChevronUp } from "lucide-react";
-import type { HocSinhRow, SortState } from "../mockType";
+import type { HocSinhRow, SortState } from "../../mockType";
 
 interface SortBtnProps {
   field: keyof HocSinhRow;
