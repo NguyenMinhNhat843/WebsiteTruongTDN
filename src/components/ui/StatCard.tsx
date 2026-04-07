@@ -65,13 +65,21 @@ export const StatCard: FunctionComponent<StatCardProps> = ({
   return (
     <div
       style={styles.container}
-      className="p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group relative overflow-hidden"
+      className="flex items-center gap-4 p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group relative overflow-hidden"
     >
       {/* Background Gradient Overlay */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={styles.overlay}
       />
+
+      {icon && (
+        <div
+          className={`w-11 h-11 rounded-xl flex items-center justify-center ${color} shrink-0`}
+        >
+          {icon}
+        </div>
+      )}
 
       <div className="flex items-start justify-between relative z-10">
         <div className="space-y-1">
@@ -99,15 +107,6 @@ export const StatCard: FunctionComponent<StatCardProps> = ({
             </div>
           )}
         </div>
-
-        {icon && (
-          <div
-            style={styles.iconBox}
-            className="w-12 h-12 flex items-center justify-center rounded-xl text-2xl transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6"
-          >
-            {icon}
-          </div>
-        )}
       </div>
     </div>
   );
