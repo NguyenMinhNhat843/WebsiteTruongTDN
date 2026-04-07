@@ -9,7 +9,6 @@ import {
   Edit3,
   Save,
   X,
-  ChevronRight,
   GraduationCap,
   Download,
   Printer,
@@ -24,6 +23,7 @@ import TabThongTin from "./Tabs/TabThongTin";
 import TabGiaDinh from "./Tabs/TabGiaDinh";
 import TabSucKhoe from "./Tabs/TabSucKhoe";
 import TabHoSo from "./Tabs/TabHoSo";
+import Breadcrumb from "../../../../components/ui/Breadcrum";
 
 type TabKey = "thongTin" | "hocTap" | "giaoDinh" | "sucKhoe" | "hoSo";
 const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
@@ -49,13 +49,13 @@ const HoSoHocSinhOne: React.FC = () => {
     <div className="min-h-screen bg-slate-50 font-sans">
       {/* ── Top bar ── */}
       <div className="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between">
-        <nav className="flex items-center gap-2 text-[12px] text-slate-400">
-          <span>Quản lý học sinh</span>
-          <ChevronRight size={12} />
-          <span>Danh sách</span>
-          <ChevronRight size={12} />
-          <span className="text-slate-700 font-semibold">{hs.hoTen}</span>
-        </nav>
+        <Breadcrumb
+          items={[
+            { label: "Quản lý học sinh", link: "/quan-ly-hoc-sinh" },
+            { label: "Danh sách", link: "/admin/hoc-sinh/ho-so" },
+            { label: hs.hoTen, active: true },
+          ]}
+        />
         <div className="flex items-center gap-2">
           <button className="inline-flex items-center gap-1.5 px-3 py-1.5 text-[12px] font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 transition-all">
             <Printer size={13} /> In hồ sơ
