@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import SortBtn from "./components/SortButton";
-import { useHoSoHocSinhListContext } from "./HoSoHocSinhListProvider";
+import { useHoSoHocSinhContext } from "./HoSoHocSinhProvider";
 import { HeDaoTaoBadge } from "../../../components/ui/HeDaoTaoBadge";
 import { TrangThaiBadge } from "../../../components/ui/BadgeStatus";
 import HoSoProgress from "./components/HoSoProgress";
@@ -22,7 +22,8 @@ const TableHoSoHocSinh = () => {
     totalPages,
     safePage,
     setPage,
-  } = useHoSoHocSinhListContext();
+    navigate,
+  } = useHoSoHocSinhContext();
   return (
     <div>
       {viewMode === "table" && (
@@ -183,7 +184,10 @@ const TableHoSoHocSinh = () => {
 
                       <td className="px-4 py-3">
                         <RowActions
-                          onView={() => console.log("👁 Xem:", row)}
+                          onView={() => {
+                            console.log("👁 Xem:", row);
+                            navigate(`/admin/hoc-sinh/ho-so/${row.id}`);
+                          }}
                           onEdit={() => console.log("✏️ Sửa:", row)}
                           onDelete={() => console.log("🗑 Xóa:", row)}
                         />

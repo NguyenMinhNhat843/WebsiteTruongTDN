@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
 import StudentCard from "./components/CardViewItem";
-import { useHoSoHocSinhListContext } from "./HoSoHocSinhListProvider";
+import { useHoSoHocSinhContext } from "./HoSoHocSinhProvider";
 
 const CardViewList = () => {
   const {
@@ -11,7 +11,7 @@ const CardViewList = () => {
     totalPages,
     safePage,
     setPage,
-  } = useHoSoHocSinhListContext();
+  } = useHoSoHocSinhContext();
   return (
     <div>
       {viewMode === "card" &&

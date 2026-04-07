@@ -15,17 +15,17 @@ import type { FilterState, HeDaoTao, TrangThaiHocSinh } from "./mockType";
 import { ALL_HE_DAO_TAO, ALL_TRANG_THAI } from "./mockStyleMapEnum";
 import { StatCard } from "../../../components/ui/StatCard";
 import {
-  HoSoHocSinhListProvider,
-  useHoSoHocSinhListContext,
-} from "./HoSoHocSinhListProvider";
+  HoSoHocSinhProvider,
+  useHoSoHocSinhContext,
+} from "./HoSoHocSinhProvider";
 import TableHoSoHocSinh from "./TableHoSoHocSinh";
 import CardViewList from "./CardViewList";
 
 export default function DanhSachHoSoHocSinh() {
   return (
-    <HoSoHocSinhListProvider>
+    <HoSoHocSinhProvider>
       <Inner />
-    </HoSoHocSinhListProvider>
+    </HoSoHocSinhProvider>
   );
 }
 
@@ -48,7 +48,7 @@ const Inner: React.FC = () => {
     filter,
     filtered,
     setSelected,
-  } = useHoSoHocSinhListContext();
+  } = useHoSoHocSinhContext();
 
   // ─────────────────────────────────────────────────────────────────────────
   return (

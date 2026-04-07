@@ -2,11 +2,13 @@ import { useCallback, useMemo, useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
 import type { FilterState, HocSinhRow, SortState, ViewMode } from "./mockType";
 import { MOCK_DATA } from "./mockData";
+import { useNavigate } from "react-router-dom";
 
 const ITEMS_PER_PAGE = 8;
 
-export const [HoSoHocSinhListProvider, useHoSoHocSinhListContext] =
+export const [HoSoHocSinhProvider, useHoSoHocSinhContext] =
   createContextProvider(() => {
+    const navigate = useNavigate();
     const [data] = useState<HocSinhRow[]>(MOCK_DATA);
     const [search, setSearch] = useState<string>("");
     const [filter, setFilter] = useState<FilterState>({
@@ -170,5 +172,7 @@ export const [HoSoHocSinhListProvider, useHoSoHocSinhListContext] =
       filtered,
       sort,
       setPage,
+
+      navigate,
     };
   });

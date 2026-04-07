@@ -556,7 +556,7 @@ const TabHoSo = ({ hs }: { hs: HocSinh }) => (
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
-const HoSoHocSinh: React.FC = () => {
+const HoSoHocSinhOne: React.FC = () => {
   const [hs] = useState<HocSinh>(MOCK);
   const [activeTab, setActiveTab] = useState<TabKey>("thongTin");
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -787,4 +787,4 @@ const HoSoHocSinh: React.FC = () => {
   );
 };
 
-export default HoSoHocSinh;
+export default HoSoHocSinhOne;
