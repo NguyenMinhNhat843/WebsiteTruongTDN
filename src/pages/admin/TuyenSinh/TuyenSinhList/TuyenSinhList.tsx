@@ -1,11 +1,11 @@
-import type { AdmissionStatus, TrainingSystem } from "../type";
-import { STATUS_LABELS, TRAINING_SYSTEM_LABELS } from "../constants";
 import { fillRate } from "../helpers";
 import { StatCard } from "../../../../components/ui/StatCard";
 import AdmissionForm from "../TuyenSinhCreate/TuyenSInhCreateForm";
 import { useTuyenSinhContext } from "../TuyenSinhProvider";
 import TuyenSinhTable from "./TuyenSinhTable";
 import DeleteModal from "../DeleteModal";
+import ToolBar from "./ToolBar";
+import { X } from "lucide-react";
 
 export default function DotTuyenSinhList() {
   const {
@@ -15,13 +15,11 @@ export default function DotTuyenSinhList() {
     handleEdit,
     selectedRound,
     setDeleteTarget,
-    setStatusFilter,
-    setSystemFilter,
     setView,
-    statusFilter,
-    systemFilter,
     view,
     rounds,
+    openFormCreate,
+    setOpenFormCreate,
   } = useTuyenSinhContext();
 
   const totalQuota = rounds
@@ -33,7 +31,7 @@ export default function DotTuyenSinhList() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <main className="flex-1 p-5 sm:p-8 max-w-6xl">
+      <main className="flex-1 p-5 sm:p-8">
         {/* Header */}
         <div className="mb-6 flex items-center justify-between">
           <div>
@@ -46,7 +44,6 @@ export default function DotTuyenSinhList() {
           </div>
         </div>
 
-        {/* Views */}
         <div className="space-y-5">
           {/* Top stats */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -54,16 +51,25 @@ export default function DotTuyenSinhList() {
               {
                 label: "Tổng đợt chỉ tiêu",
                 value: rounds.length,
+                color: "#6366f1", // Indigo
               },
               {
                 label: "Chỉ tiêu đang mở",
                 value: totalQuota.toLocaleString(),
                 sub: `${fillRate(totalRegistered, totalQuota)}% lấp đầy`,
+                color: "#0ea5e9", // Sky Blue
               },
               {
-                label: "Đã đăng ký (đang mở)",
+                label: "Đã đăng ký",
                 value: totalRegistered.toLocaleString(),
                 sub: `${fillRate(totalRegistered, totalQuota)}% lấp đầy`,
+                color: "#f59e0b", // Amber
+              },
+              {
+                label: "Hồ sơ đã duyệt",
+                value: 100,
+                sub: "75% tiến độ",
+                color: "#10b981", // Emerald
               },
             ].map((stat) => (
               <StatCard
@@ -71,64 +77,42 @@ export default function DotTuyenSinhList() {
                 label={stat.label}
                 value={stat.value}
                 description={stat.sub}
+                color={stat.color}
               />
             ))}
           </div>
 
-          {/* Toolbar */}
-          <div className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-wrap items-center gap-3">
-            <div className="flex-1 min-w-0 flex flex-wrap gap-2">
-              <select
-                value={statusFilter}
-                onChange={(e) =>
-                  setStatusFilter(e.target.value as AdmissionStatus | "all")
-                }
-                className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">Tất cả trạng thái</option>
-                {(
-                  Object.entries(STATUS_LABELS) as [AdmissionStatus, string][]
-                ).map(([k, v]) => (
-                  <option key={k} value={k}>
-                    {v}
-                  </option>
-                ))}
-              </select>
-              <select
-                value={systemFilter}
-                onChange={(e) =>
-                  setSystemFilter(e.target.value as TrainingSystem | "all")
-                }
-                className="border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="all">Tất cả hệ đào tạo</option>
-                {(
-                  Object.entries(TRAINING_SYSTEM_LABELS) as [
-                    TrainingSystem,
-                    string,
-                  ][]
-                ).map(([k, v]) => (
-                  <option key={k} value={k}>
-                    {v}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <button className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-1.5">
-              <span className="text-base leading-none">+</span> Tạo đợt mới
-            </button>
-          </div>
+          <ToolBar />
 
           <TuyenSinhTable rounds={rounds} />
         </div>
 
-        {view === "create" && (
-          <AdmissionForm
-            onSave={handleCreate}
-            onCancel={() => setView("list")}
-          />
-        )}
+        {openFormCreate && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            {/* Backdrop: Làm tối và mờ nền sau */}
+            <div
+              className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-300"
+              onClick={() => setOpenFormCreate(false)} // Đóng khi click ra ngoài
+            />
 
+            {/* Modal Content Container */}
+            <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl shadow-black/20 animate-in zoom-in-95 duration-300">
+              {/* Nút đóng nhanh (X) ở góc trên bên phải */}
+              <button
+                onClick={() => setOpenFormCreate(false)}
+                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors z-10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Form chính */}
+              <AdmissionForm
+                onSave={handleCreate}
+                onCancel={() => setOpenFormCreate(false)}
+              />
+            </div>
+          </div>
+        )}
         {view === "edit" && selectedRound && (
           <AdmissionForm
             initial={selectedRound}

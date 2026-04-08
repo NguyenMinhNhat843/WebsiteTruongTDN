@@ -9,6 +9,7 @@ export type View = "list" | "detail" | "create" | "edit";
 export const [TuyenSinhProvider, useTuyenSinhContext] = createContextProvider(
   () => {
     const navigate = useNavigate();
+    const [openFormCreate, setOpenFormCreate] = useState(false);
     const [rounds, setRounds] = useState<AdmissionRound[]>(MOCK_DATA);
     const [view, setView] = useState<View>("list");
     const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -81,6 +82,8 @@ export const [TuyenSinhProvider, useTuyenSinhContext] = createContextProvider(
       setSelectedId,
 
       navigate,
+      openFormCreate,
+      setOpenFormCreate,
     };
   },
 );
