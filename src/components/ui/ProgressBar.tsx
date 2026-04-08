@@ -9,7 +9,7 @@ export default function ProgressBar({ value, max }: ProgressBarProps) {
     pct >= 90 ? "bg-red-400" : pct >= 70 ? "bg-blue-400" : "bg-gray-300";
   return (
     <div className="flex items-center gap-2">
-      <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
+      <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full ${color}`}
           style={{ width: `${pct}%` }}

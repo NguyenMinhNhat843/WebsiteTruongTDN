@@ -31,6 +31,8 @@ import DanhSachHoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoH
 import DotTuyenSinhList from "./pages/admin/TuyenSinh/TuyenSinhList/TuyenSinhList";
 import TuyenSinh from "./pages/admin/TuyenSinh/TuyenSinh";
 import DotTuyenSinhOne from "./pages/admin/TuyenSinh/TuyenSinhOne/TuyenSinhOne";
+import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
+import NguonTuyenSinh from "./pages/admin/NguonTuyenSinh/NguonTuyenSinh";
 
 function App() {
   return (
@@ -91,7 +93,11 @@ function App() {
         <Route path="tuyen-sinh" element={<TuyenSinh />}>
           <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
           <Route path="dot-tuyen-sinh/:id" element={<DotTuyenSinhOne />} />
+          <Route path="thong-ke" element={<NguonTuyenSinh />} />
         </Route>
+
+        {/* Xét tốt nghiệp */}
+        <Route path="hoc-sinh/tot-nghiep" element={<XetTotNghiep />} />
 
         {/* Cài đặt hệ thống */}
         <Route path="cai-dat/phan-quyen" element={<PhanQuyenNguoiDung />} />
