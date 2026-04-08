@@ -28,6 +28,9 @@ import GradeManagement from "./pages/admin/QuanLyDiem/QuanLyDiemThi";
 import PhanQuyenNguoiDung from "./pages/admin/CaiDatHeThong/PhanQuyenNguoiDung/PhanQuyenNguoiDung";
 import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne";
 import DanhSachHoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoHocSinhList";
+import DotTuyenSinhList from "./pages/admin/TuyenSinh/TuyenSinhList/TuyenSinhList";
+import TuyenSinh from "./pages/admin/TuyenSinh/TuyenSinh";
+import DotTuyenSinhOne from "./pages/admin/TuyenSinh/TuyenSinhOne/TuyenSinhOne";
 
 function App() {
   return (
@@ -83,6 +86,12 @@ function App() {
         {/* Công tác học sinh */}
         <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
         <Route path="hoc-sinh/ho-so/:id" element={<HoSoHocSinhOne />} />
+
+        {/* Tuyển sinh */}
+        <Route path="tuyen-sinh" element={<TuyenSinh />}>
+          <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
+          <Route path="dot-tuyen-sinh/:id" element={<DotTuyenSinhOne />} />
+        </Route>
 
         {/* Cài đặt hệ thống */}
         <Route path="cai-dat/phan-quyen" element={<PhanQuyenNguoiDung />} />
