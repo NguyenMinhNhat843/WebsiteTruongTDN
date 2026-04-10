@@ -19,7 +19,7 @@ import PostDetail from "./pages/client/PostDetail/PostDetail";
 import LoginPage from "./pages/admin/Login";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { USER_ROLE } from "./features/users/types/User.types";
-import Dashboard from "./pages/admin/Dashboard";
+import Dashboard from "./pages/admin/Home";
 import QuanLyNguoiDung from "./pages/admin/QuanLyNguoiDung";
 import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung/ChuongTrinhKhung";
 import ClassManagement from "./pages/admin/LopHocVaKhoaHoc/LopHocVaKhoaHoc";
@@ -32,7 +32,9 @@ import DotTuyenSinhList from "./pages/admin/TuyenSinh/TuyenSinhList/TuyenSinhLis
 import TuyenSinh from "./pages/admin/TuyenSinh/TuyenSinh";
 import DotTuyenSinhOne from "./pages/admin/TuyenSinh/TuyenSinhOne/TuyenSinhOne";
 import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
-import NguonTuyenSinh from "./pages/admin/NguonTuyenSinh/NguonTuyenSinh";
+import NguonTuyenSinh from "./pages/admin/TuyenSinh/NguonTuyenSinh/NguonTuyenSinh";
+import TuitionFee from "./pages/admin/ThuHocPhi/ThuHocPhi";
+import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
 
 function App() {
   return (
@@ -74,7 +76,7 @@ function App() {
           path="truyen-thong-bao-chi/tao-bai-viet"
           element={<CreatePost />}
         />
-        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="home" element={<Dashboard />} />
         <Route path="truyen-thong-bao-chi/bai-viet" element={<PostList />} />
         <Route path="users" element={<QuanLyNguoiDung />} />
         <Route
@@ -94,6 +96,12 @@ function App() {
           <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
           <Route path="dot-tuyen-sinh/:id" element={<DotTuyenSinhOne />} />
           <Route path="thong-ke" element={<NguonTuyenSinh />} />
+        </Route>
+
+        {/* Tài chính */}
+        <Route>
+          <Route path="tai-chinh/thu-hoc-phi" element={<TuitionFee />} />
+          <Route path="tai-chinh/mien-giam" element={<ExemptionManagement />} />
         </Route>
 
         {/* Xét tốt nghiệp */}

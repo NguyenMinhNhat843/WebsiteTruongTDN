@@ -9,10 +9,10 @@ export interface NavItem {
 
 const navItems: NavItem[] = [
   {
-    id: "dashboard",
-    label: "Dashboard",
+    id: "home",
+    label: "Home",
     icon: "⬡",
-    href: "/admin/dashboard",
+    href: "/admin/home",
   },
   // --- NHÓM ĐÀO TẠO & HỌC TẬP ---
   {
