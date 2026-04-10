@@ -18,7 +18,7 @@ const LoginPage = () => {
     setTimeout(() => {
       setIsLoading(false);
       // Logic điều hướng dựa trên Role sẽ ở đây
-      navigate("/admin/dashboard");
+      navigate("/admin/home");
       localStorage.setItem(
         "user",
         JSON.stringify({ email, role: USER_ROLE.ADMIN, name: "Admin User" }),

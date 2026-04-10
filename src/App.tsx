@@ -37,6 +37,8 @@ import TuitionFee from "./pages/admin/ThuHocPhi/ThuHocPhi";
 import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
 import AdmissionApplication from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSo";
 import MediaLibrary from "./pages/admin/QuanLyMedia/QuanLyMedia";
+import QuanLyVanBang from "./pages/admin/QuanLyVanBang/QuanLyVanBang";
+import PhanCongGiangDay from "./pages/admin/PhanCongGiangDay/PhanCongGiangDay";
 
 function App() {
   return (
@@ -86,18 +88,24 @@ function App() {
           <Route path="truyen-thong-bao-chi/media" element={<MediaLibrary />} />
         </Route>
 
-        <Route path="users" element={<QuanLyNguoiDung />} />
-        <Route
-          path="dao-tao/chuong-trinh-khung"
-          element={<ChuongTrinhKhung />}
-        />
-        <Route path="dao-tao/lop-hoc" element={<ClassManagement />} />
-        <Route path="dao-tao/thoi-khoa-bieu" element={<TimetablePage />} />
-        <Route path="dao-tao/diem-thi" element={<GradeManagement />} />
+        {/* Quản lý đào tạo */}
+        <Route>
+          <Route
+            path="dao-tao/chuong-trinh-khung"
+            element={<ChuongTrinhKhung />}
+          />
+          <Route path="dao-tao/lop-hoc" element={<ClassManagement />} />
+          <Route path="dao-tao/thoi-khoa-bieu" element={<TimetablePage />} />
+          <Route path="dao-tao/diem-thi" element={<GradeManagement />} />
+        </Route>
 
         {/* Công tác học sinh */}
-        <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
-        <Route path="hoc-sinh/ho-so/:id" element={<HoSoHocSinhOne />} />
+        <Route>
+          <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
+          <Route path="hoc-sinh/ho-so/:id" element={<HoSoHocSinhOne />} />
+          <Route path="hoc-sinh/tot-nghiep" element={<HoSoHocSinhOne />} />
+          <Route path="hoc-sinh/van-bang" element={<QuanLyVanBang />} />
+        </Route>
 
         {/* Tuyển sinh */}
         <Route path="tuyen-sinh" element={<TuyenSinh />}>
@@ -115,6 +123,12 @@ function App() {
 
         {/* Xét tốt nghiệp */}
         <Route path="hoc-sinh/tot-nghiep" element={<XetTotNghiep />} />
+
+        {/* Quản trị nhân sự */}
+        <Route>
+          <Route path="phan-cong-giang-day" element={<PhanCongGiangDay />} />
+          <Route path="users" element={<QuanLyNguoiDung />} />
+        </Route>
 
         {/* Cài đặt hệ thống */}
         <Route path="cai-dat/phan-quyen" element={<PhanQuyenNguoiDung />} />
