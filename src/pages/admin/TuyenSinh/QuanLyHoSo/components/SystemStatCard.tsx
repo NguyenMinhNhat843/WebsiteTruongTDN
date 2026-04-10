@@ -45,7 +45,7 @@ const SystemStatCard = ({ stat }: { stat: SystemStat }) => {
         {/* Progress Bar Container */}
         <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden flex shadow-inner">
           <div
-            className="bg-gradient-to-r from-green-400 to-green-500 h-full rounded-full transition-all duration-500 ease-out relative"
+            className="bg-linear-to-r from-green-400 to-green-500 h-full rounded-full transition-all duration-500 ease-out relative"
             style={{
               width: `${stat.count > 0 ? (stat.approved / stat.count) * 100 : 0}%`,
             }}

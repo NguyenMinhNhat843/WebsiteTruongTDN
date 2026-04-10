@@ -422,7 +422,7 @@ function Inner() {
                   </button>
                   <button
                     type="submit"
-                    className="flex-1 px-4 py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all font-medium"
+                    className="flex-1 px-4 py-3 bg-linear-to-r from-cyan-500 to-blue-600 text-white rounded-lg hover:from-cyan-600 hover:to-blue-700 transition-all font-medium"
                   >
                     Tiếp nhận hồ sơ
                   </button>
@@ -436,7 +436,7 @@ function Inner() {
         {showReviewModal && selectedApplication && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
-              <div className="bg-gradient-to-r from-cyan-500 to-blue-600 text-white p-6 rounded-t-2xl">
+              <div className="bg-linear-to-r from-cyan-500 to-blue-600 text-white p-6 rounded-t-2xl">
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-xl font-bold">Xét Duyệt Hồ Sơ</h2>
                   <button

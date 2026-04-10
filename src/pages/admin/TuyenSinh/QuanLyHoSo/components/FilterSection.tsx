@@ -67,7 +67,7 @@ const FilterSection = () => {
           <label className="text-sm font-semibold text-gray-700 ml-1">
             Tìm kiếm
           </label>
-          <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 h-[46px] transition-all focus-within:ring-2 focus-within:ring-cyan-500/20 focus-within:border-cyan-500">
+          <div className="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-xl px-4 h-11.5 transition-all focus-within:ring-2 focus-within:ring-cyan-500/20 focus-within:border-cyan-500">
             <Search className="w-4 h-4 text-gray-400" />
             <input
               type="text"
