@@ -5,17 +5,21 @@ export interface HeaderProps {
   sub?: ReactNode;
   icon?: ReactNode;
   className?: string;
+  renderLeft?: ReactNode;
 }
 
-const Header: React.FC<HeaderProps> = ({
+const HeaderPage: React.FC<HeaderProps> = ({
   title,
   sub,
   icon,
-  className = "mb-8", // Tăng margin-bottom một chút cho thoáng
+  className = "", // Tăng margin-bottom một chút cho thoáng
+  renderLeft,
 }) => {
   return (
     <div className={className}>
       <div className="flex items-center gap-4">
+        {renderLeft}
+
         {/* Icon với hiệu ứng mềm mại: Nền nhẹ hoặc đổ bóng nhẹ */}
         {icon && (
           <div className="shrink-0 p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-slate-600 shadow-sm">
@@ -39,4 +43,4 @@ const Header: React.FC<HeaderProps> = ({
   );
 };
 
-export default Header;
+export default HeaderPage;

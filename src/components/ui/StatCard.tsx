@@ -1,4 +1,5 @@
 import React, { type FunctionComponent, type ReactNode } from "react";
+import { clsx } from "clsx";
 
 // Định nghĩa các màu mặc định (Brand Colors)
 const DEFAULT_COLORS: Record<string, string> = {
@@ -25,6 +26,7 @@ interface StatCardProps {
   icon?: React.ReactNode;
   color?: StatColor;
   description?: ReactNode;
+  className?: string;
 }
 
 const getDynamicStyles = (hex: string) => {
@@ -57,6 +59,7 @@ export const StatCard: FunctionComponent<StatCardProps> = ({
   icon,
   color = "blue",
   description,
+  className = "",
 }) => {
   const baseColor =
     DEFAULT_COLORS[color] || (color.startsWith("#") ? color : "#3b82f6");
@@ -65,7 +68,13 @@ export const StatCard: FunctionComponent<StatCardProps> = ({
   return (
     <div
       style={styles.container}
-      className="flex items-center gap-4 p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl group relative overflow-hidden"
+      className={clsx(
+        // Các class cố định luôn có
+        "flex items-center gap-4 p-6 rounded-2xl border transition-all duration-300",
+        "group relative overflow-hidden",
+        "hover:-translate-y-1 hover:shadow-xl",
+        className,
+      )}
     >
       {/* Background Gradient Overlay */}
       <div
@@ -83,17 +92,12 @@ export const StatCard: FunctionComponent<StatCardProps> = ({
 
       <div className="flex items-start justify-between relative z-10">
         <div className="space-y-1">
-          <p className="text-[11px] font-bold text-slate-400 uppercase tracking-[0.15em]">
+          <p className="text-[11px] font-bold uppercase tracking-[0.15em]">
             {label}
           </p>
 
           {/* Value hiển thị màu đậm đà */}
-          <h3
-            style={styles.valueText}
-            className="text-3xl font-black tracking-tight"
-          >
-            {value}
-          </h3>
+          <h3 className="text-3xl font-black tracking-tight">{value}</h3>
 
           {description && (
             <div className="flex items-center gap-2 mt-3">

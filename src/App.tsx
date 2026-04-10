@@ -39,6 +39,8 @@ import AdmissionApplication from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSo"
 import MediaLibrary from "./pages/admin/QuanLyMedia/QuanLyMedia";
 import QuanLyVanBang from "./pages/admin/QuanLyVanBang/QuanLyVanBang";
 import PhanCongGiangDay from "./pages/admin/PhanCongGiangDay/PhanCongGiangDay";
+import HoSoTuyenSinhOne from "./pages/admin/TuyenSinh/QuanLyHoSo/HoSoTuyenSinhOne/HoSoTuyenSinhOne";
+import QuanLyHoSoLayout from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSoLayout";
 
 function App() {
   return (
@@ -103,7 +105,7 @@ function App() {
         <Route>
           <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
           <Route path="hoc-sinh/ho-so/:id" element={<HoSoHocSinhOne />} />
-          <Route path="hoc-sinh/tot-nghiep" element={<HoSoHocSinhOne />} />
+          <Route path="hoc-sinh/tot-nghiep" element={<XetTotNghiep />} />
           <Route path="hoc-sinh/van-bang" element={<QuanLyVanBang />} />
         </Route>
 
@@ -112,7 +114,10 @@ function App() {
           <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
           <Route path="dot-tuyen-sinh/:id" element={<DotTuyenSinhOne />} />
           <Route path="thong-ke" element={<NguonTuyenSinh />} />
-          <Route path="ho-so-moi" element={<AdmissionApplication />} />
+          <Route element={<QuanLyHoSoLayout />}>
+            <Route path="ho-so-moi" element={<AdmissionApplication />} />
+            <Route path="ho-so-tuyen-sinh/:id" element={<HoSoTuyenSinhOne />} />
+          </Route>
         </Route>
 
         {/* Tài chính */}
