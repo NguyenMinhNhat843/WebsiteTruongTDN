@@ -16,6 +16,7 @@ import {
 import HeaderPage from "../../../../../components/ui/HeaderPage";
 import InfoItem from "../../../../../components/ui/InfoItem";
 import InfoItemv2 from "../../../../../components/ui/InfoItemv2";
+import { Timeline } from "../../../../../components/ui/TimeLine";
 
 const HoSoTuyenSinhOne = () => {
   return (
@@ -24,17 +25,6 @@ const HoSoTuyenSinhOne = () => {
     </HoSoTuyenSinhOneProvider>
   );
 };
-
-// Hiển thị timeline nhỏ gọn
-const TimelineItem = ({ label, value, active }) => (
-  <div className="relative pl-8">
-    <div
-      className={`absolute left-0 top-1.5 w-5 h-5 rounded-full border-4 border-white shadow-sm ${active ? "bg-cyan-500" : "bg-gray-200"}`}
-    />
-    <p className="text-xs text-gray-400">{label}</p>
-    <p className="text-sm font-semibold text-gray-700">{value}</p>
-  </div>
-);
 
 const Inner = () => {
   const { getStatusBadge } = useQuanLyHoSoContext();
@@ -173,37 +163,36 @@ const Inner = () => {
                   {getStatusBadge(applicant.status)}
                 </div>
 
-                <div className="space-y-4 relative">
-                  {/* Đường line giả lập timeline */}
-                  <div className="absolute left-2.5 top-0 bottom-0 w-0.5 bg-gray-50" />
-
-                  <TimelineItem
-                    label="Ngày nộp hồ sơ"
-                    value={new Date(applicant.submitDate).toLocaleDateString(
-                      "vi-VN",
-                    )}
-                    active
-                  />
-                  {applicant.reviewDate && (
-                    <>
-                      <TimelineItem
-                        label="Ngày xét duyệt"
-                        value={new Date(
-                          applicant.reviewDate,
-                        ).toLocaleDateString("vi-VN")}
-                        active
-                      />
-                      <div className="pl-8">
-                        <p className="text-xs text-gray-400">
-                          Người thực hiện:
-                        </p>
-                        <p className="text-sm font-medium text-gray-700">
-                          {applicant.reviewer}
-                        </p>
-                      </div>
-                    </>
-                  )}
-                </div>
+                <Timeline
+                  items={[
+                    {
+                      label: "Ngày nộp hồ sơ",
+                      value: new Date(applicant.submitDate).toLocaleDateString(
+                        "vi-VN",
+                      ),
+                      active: true,
+                    },
+                    ...(applicant.reviewDate
+                      ? [
+                          {
+                            label: "Ngày xét duyệt",
+                            value: new Date(
+                              applicant.reviewDate,
+                            ).toLocaleDateString("vi-VN"),
+                            active: true,
+                            description: (
+                              <p>
+                                Người thực hiện:{" "}
+                                <span className="font-medium text-gray-700">
+                                  {applicant.reviewer}
+                                </span>
+                              </p>
+                            ),
+                          },
+                        ]
+                      : []),
+                  ]}
+                />
 
                 {applicant.notes && (
                   <div className="mt-6 p-4 bg-gray-50 rounded-xl border border-dashed border-gray-200">
