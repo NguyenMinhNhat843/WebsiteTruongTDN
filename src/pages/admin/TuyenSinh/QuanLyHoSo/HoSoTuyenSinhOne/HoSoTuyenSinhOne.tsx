@@ -17,6 +17,8 @@ import HeaderPage from "../../../../../components/ui/HeaderPage";
 import InfoItem from "../../../../../components/ui/InfoItem";
 import InfoItemv2 from "../../../../../components/ui/InfoItemv2";
 import { Timeline } from "../../../../../components/ui/TimeLine";
+import ButtonBack from "../../../../../components/ui/ButtonBack";
+import { useNavigate } from "react-router-dom";
 
 const HoSoTuyenSinhOne = () => {
   return (
@@ -29,22 +31,29 @@ const HoSoTuyenSinhOne = () => {
 const Inner = () => {
   const { getStatusBadge } = useQuanLyHoSoContext();
   const { applicant } = useHoSoTuyenSinhOneContext();
+  const navigate = useNavigate();
 
   if (!applicant) {
     return <div>Không tìm thấy hồ sơ</div>;
   }
 
   return (
-    <div className="flex items-center justify-center pb-6">
+    <div className="flex items-center justify-center p-6">
       <div className="w-full">
-        <HeaderPage
-          title={"Hồ sơ tuyển sinh"}
-          icon={<BookOpen className="w-10 h-10 text-cyan-600" />}
-          sub={`Ứng viên: ${applicant.applicantName} - Đợt: ${applicant.batchLabel}`}
-          className="px-6 pt-6"
-        />
+        <div className="flex justify-between items-center">
+          <HeaderPage
+            title={"Hồ sơ tuyển sinh"}
+            icon={<BookOpen className="w-10 h-10 text-cyan-600" />}
+            sub={`Ứng viên: ${applicant.applicantName} - Đợt: ${applicant.batchLabel}`}
+          />
 
-        <div className="p-6">
+          <ButtonBack
+            onClick={() => navigate("/admin/tuyen-sinh/ho-so-moi")}
+            className="py-3 px-6 cursor-pointer"
+          />
+        </div>
+
+        <div className="pt-6">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* CỘT TRÁI (Main Content - Chiếm 2/3) */}
             <div className="lg:col-span-2 space-y-8">
