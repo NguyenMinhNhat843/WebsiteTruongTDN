@@ -131,13 +131,31 @@ const navItems: NavItem[] = [
       },
     ],
   },
-  // --- HỆ THỐNG ---
   {
-    id: "quan-ly-nguoi-dung",
-    label: "Cán bộ & Nhân viên",
-    icon: "👥",
-    href: "/admin/users",
+    id: "quan-tri-nhan-su",
+    label: "Quản trị nhân sự",
+    icon: "👔",
+    children: [
+      {
+        id: "quan-ly-nguoi-dung",
+        label: "Cán bộ & Nhân viên",
+        icon: "👥",
+        href: "/admin/users",
+      },
+      {
+        id: "phan-cong-giang-day",
+        label: "Phân công giảng dạy",
+        icon: "📖",
+        href: "/admin/phan-cong-giang-day",
+      },
+    ],
   },
+  {
+    id: "quan-ly-co-so-vat-chat",
+    label: "Quản lý cơ sở vật chất",
+    icon: "🏢",
+  },
+  // --- HỆ THỐNG ---
   {
     id: "he-thong",
     label: "Cài đặt hệ thống",

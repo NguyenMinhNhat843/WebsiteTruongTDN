@@ -35,6 +35,8 @@ import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
 import NguonTuyenSinh from "./pages/admin/TuyenSinh/NguonTuyenSinh/NguonTuyenSinh";
 import TuitionFee from "./pages/admin/ThuHocPhi/ThuHocPhi";
 import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
+import AdmissionApplication from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSo";
+import MediaLibrary from "./pages/admin/QuanLyMedia/QuanLyMedia";
 
 function App() {
   return (
@@ -72,12 +74,18 @@ function App() {
           </ProtectedRoute>
         }
       >
-        <Route
-          path="truyen-thong-bao-chi/tao-bai-viet"
-          element={<CreatePost />}
-        />
         <Route path="home" element={<Dashboard />} />
-        <Route path="truyen-thong-bao-chi/bai-viet" element={<PostList />} />
+
+        {/* Truyền thông */}
+        <Route>
+          <Route
+            path="truyen-thong-bao-chi/tao-bai-viet"
+            element={<CreatePost />}
+          />
+          <Route path="truyen-thong-bao-chi/bai-viet" element={<PostList />} />
+          <Route path="truyen-thong-bao-chi/media" element={<MediaLibrary />} />
+        </Route>
+
         <Route path="users" element={<QuanLyNguoiDung />} />
         <Route
           path="dao-tao/chuong-trinh-khung"
@@ -96,6 +104,7 @@ function App() {
           <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
           <Route path="dot-tuyen-sinh/:id" element={<DotTuyenSinhOne />} />
           <Route path="thong-ke" element={<NguonTuyenSinh />} />
+          <Route path="ho-so-moi" element={<AdmissionApplication />} />
         </Route>
 
         {/* Tài chính */}
