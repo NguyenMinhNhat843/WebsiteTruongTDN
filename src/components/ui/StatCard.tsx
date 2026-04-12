@@ -101,10 +101,6 @@ export const StatCard: FunctionComponent<StatCardProps> = ({
 
           {description && (
             <div className="flex items-center gap-2 mt-3">
-              <span
-                className="flex h-2 w-2 rounded-full"
-                style={{ backgroundColor: baseColor }}
-              />
               <span className="text-xs font-semibold text-slate-500">
                 {description}
               </span>
