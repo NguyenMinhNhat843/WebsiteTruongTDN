@@ -7,17 +7,43 @@ export const [NguonTuyenSInhProvider, useNguonTuyenSinhContext] =
       {
         name: "Trung cấp nghề",
         students: 450,
-        color: "#3b82f6",
         growth: "+12%",
+        // Gradient Xanh dương
+        cardClass:
+          "bg-gradient-to-br from-blue-600 to-blue-700 border-blue-500",
+        iconBox: "bg-white/20",
+        iconColor: "text-white",
       },
-      { name: "Sơ cấp nghề", students: 320, color: "#10b981", growth: "+8%" },
+      {
+        name: "Sơ cấp nghề",
+        students: 320,
+        growth: "+8%",
+        // Gradient Xanh lá/Emerald
+        cardClass:
+          "bg-gradient-to-br from-green-500 to-emerald-600 border-emerald-400",
+        iconBox: "bg-white/20",
+        iconColor: "text-white",
+      },
       {
         name: "Đại học liên kết",
         students: 180,
-        color: "#8b5cf6",
         growth: "+15%",
+        // Gradient Tím/Indigo
+        cardClass:
+          "bg-gradient-to-br from-violet-600 to-indigo-700 border-violet-500",
+        iconBox: "bg-white/20",
+        iconColor: "text-white",
       },
-      { name: "Hệ 9+", students: 250, color: "#f59e0b", growth: "+10%" },
+      {
+        name: "Hệ 9+",
+        students: 250,
+        growth: "+10%",
+        // Gradient Cam/Vàng đậm
+        cardClass:
+          "bg-gradient-to-br from-amber-500 to-orange-600 border-amber-400",
+        iconBox: "bg-white/20",
+        iconColor: "text-white",
+      },
     ];
 
     // Dữ liệu nguồn tuyển sinh
@@ -28,8 +54,14 @@ export const [NguonTuyenSInhProvider, useNguonTuyenSinhContext] =
       { source: "Học viên làm việc", tcn: 40, scn: 0, dhlk: 0, he9: 0 },
     ];
 
+    const totalStudents = trainingSystemData.reduce(
+      (sum, item) => sum + item.students,
+      0,
+    );
+
     return {
       trainingSystemData,
       enrollmentSourceData,
+      totalStudents,
     };
   });
