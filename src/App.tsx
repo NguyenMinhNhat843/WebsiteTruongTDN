@@ -32,7 +32,7 @@ import DotTuyenSinhList from "./pages/admin/TuyenSinh/TuyenSinhList/TuyenSinhLis
 import TuyenSinh from "./pages/admin/TuyenSinh/TuyenSinh";
 import DotTuyenSinhOne from "./pages/admin/TuyenSinh/TuyenSinhOne/TuyenSinhOne";
 import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
-import NguonTuyenSinh from "./pages/admin/TuyenSinh/NguonTuyenSinh/NguonTuyenSinh";
+import NguonTuyenSinh from "./pages/admin/NguonTuyenSinh/NguonTuyenSinh";
 import TuitionFee from "./pages/admin/ThuHocPhi/ThuHocPhi";
 import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
 import AdmissionApplication from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSo";

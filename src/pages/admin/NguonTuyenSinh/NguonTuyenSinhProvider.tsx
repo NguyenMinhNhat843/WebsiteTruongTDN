@@ -1,4 +1,4 @@
-import { createContextProvider } from "../../../../util/createContextProvider";
+import { createContextProvider } from "../../../util/createContextProvider";
 
 export const [NguonTuyenSInhProvider, useNguonTuyenSinhContext] =
   createContextProvider(() => {

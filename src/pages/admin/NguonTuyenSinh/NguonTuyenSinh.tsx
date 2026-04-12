@@ -6,8 +6,8 @@ import {
   NguonTuyenSInhProvider,
   useNguonTuyenSinhContext,
 } from "./NguonTuyenSinhProvider";
-import HeaderPage from "../../../../components/ui/HeaderPage";
-import { StatCard } from "../../../../components/ui/StatCard";
+import HeaderPage from "../../../components/ui/HeaderPage";
+import { StatCard } from "../../../components/ui/StatCard";
 import TableDanhSachChiTiet from "./TableDanhSachChiTiet";
 
 const EnrollmentStats = () => {
