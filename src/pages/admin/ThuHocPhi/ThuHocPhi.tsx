@@ -1,12 +1,9 @@
 import {
   DollarSign,
   User,
-  Calendar,
   CheckCircle,
   XCircle,
   Clock,
-  Printer,
-  Download,
   PieChart,
   AlertCircle,
   ShieldCheck,
@@ -17,6 +14,7 @@ import HeaderPage from "../../../components/ui/HeaderPage";
 import { StatCard } from "../../../components/ui/StatCard";
 import TableThuHocPhi from "./TableThuHocPhi";
 import FilterOption from "./components/FilterOption";
+import ThuHocPhiOne from "./ThuHocPhiOne/ThuHocPhiOneModal";
 
 const TuitionFee = () => {
   return (
@@ -252,165 +250,10 @@ function Inner() {
 
         {/* Modal chi tiết học phí */}
         {showDetailModal && selectedStudent && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white p-6 rounded-t-2xl sticky top-0">
-                <div className="flex items-center justify-between mb-2">
-                  <h2 className="text-xl font-bold">Chi Tiết Học Phí</h2>
-                  <button
-                    onClick={() => {
-                      setShowDetailModal(false);
-                      setSelectedStudent(null);
-                    }}
-                    className="text-white/80 hover:text-white"
-                  >
-                    <XCircle className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="p-6 space-y-6">
-                {/* Thông tin học viên */}
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <h3 className="font-semibold text-gray-900 mb-3">
-                    Thông tin học viên
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div>
-                      <span className="text-gray-600">Mã SV:</span>
-                      <span className="ml-2 font-medium">
-                        {selectedStudent.id}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Họ tên:</span>
-                      <span className="ml-2 font-medium">
-                        {selectedStudent.name}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Lớp:</span>
-                      <span className="ml-2 font-medium">
-                        {selectedStudent.class}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Hệ:</span>
-                      <span className="ml-2 font-medium">
-                        {selectedStudent.system}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">SĐT:</span>
-                      <span className="ml-2 font-medium">
-                        {selectedStudent.phone}
-                      </span>
-                    </div>
-                    <div>
-                      <span className="text-gray-600">Email:</span>
-                      <span className="ml-2 font-medium">
-                        {selectedStudent.email}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Tổng quan học phí */}
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 text-center">
-                    <div className="text-xs text-gray-600 mb-1">
-                      Tổng học phí
-                    </div>
-                    <div className="text-lg font-bold text-gray-900">
-                      {formatCurrency(selectedStudent.totalFee)}
-                    </div>
-                  </div>
-                  <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
-                    <div className="text-xs text-gray-600 mb-1">Đã đóng</div>
-                    <div className="text-lg font-bold text-green-600">
-                      {formatCurrency(selectedStudent.paid)}
-                    </div>
-                  </div>
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-                    <div className="text-xs text-gray-600 mb-1">Còn lại</div>
-                    <div className="text-lg font-bold text-red-600">
-                      {formatCurrency(selectedStudent.remaining)}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Lịch sử thanh toán */}
-                <div>
-                  <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-blue-600" />
-                    Lịch sử thanh toán
-                  </h3>
-                  {selectedStudent.paymentHistory.length > 0 ? (
-                    <div className="space-y-3">
-                      {selectedStudent.paymentHistory.map((payment) => (
-                        <div
-                          key={payment.id}
-                          className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
-                        >
-                          <div className="flex items-start justify-between mb-2">
-                            <div>
-                              <div className="font-semibold text-gray-900">
-                                {formatCurrency(payment.amount)}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                Mã: {payment.id}
-                              </div>
-                            </div>
-                            <div className="text-right">
-                              <div className="text-sm text-gray-700">
-                                {new Date(payment.date).toLocaleDateString(
-                                  "vi-VN",
-                                )}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {payment.method}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="text-sm text-gray-600">
-                            <div>Thu ngân: {payment.receiver}</div>
-                            {payment.note && (
-                              <div className="text-xs text-gray-500 mt-1">
-                                Ghi chú: {payment.note}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-lg">
-                      <Calendar className="w-12 h-12 mx-auto mb-2 opacity-30" />
-                      <p className="text-sm">Chưa có lịch sử thanh toán</p>
-                    </div>
-                  )}
-                </div>
-
-                {/* Nút thao tác */}
-                <div className="flex gap-3 pt-4 border-t">
-                  <button
-                    onClick={() => setShowDetailModal(false)}
-                    className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
-                  >
-                    Đóng
-                  </button>
-                  <button className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium flex items-center justify-center gap-2">
-                    <Printer className="w-4 h-4" />
-                    In biên lai
-                  </button>
-                  <button className="flex-1 px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium flex items-center justify-center gap-2">
-                    <Download className="w-4 h-4" />
-                    Xuất PDF
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ThuHocPhiOne
+            selectedStudent={selectedStudent}
+            onClose={() => setShowDetailModal(false)}
+          />
         )}
       </div>
     </div>
