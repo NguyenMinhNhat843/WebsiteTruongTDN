@@ -13,7 +13,6 @@ export const [ExemtionProvider, useExemtionContext] = createContextProvider(
       useState<Exemption | null>(null);
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [showRegisterModal, setShowRegisterModal] = useState(false);
-    const [showReviewModal, setShowReviewModal] = useState(false);
 
     // Tính toán thống kê
     const stats = {
@@ -55,6 +54,19 @@ export const [ExemtionProvider, useExemtionContext] = createContextProvider(
       return matchSearch && matchType && matchStatus;
     });
 
+    const getTypeColor = (type: string) => {
+      const typeInfo = exemptionTypes.find((t) => t.value === type);
+      const colorMap: Record<string, string> = {
+        red: "bg-red-100 text-red-700 border-red-300",
+        orange: "bg-orange-100 text-orange-700 border-orange-300",
+        yellow: "bg-yellow-100 text-yellow-700 border-yellow-300",
+        purple: "bg-purple-100 text-purple-700 border-purple-300",
+        blue: "bg-blue-100 text-blue-700 border-blue-300",
+        pink: "bg-pink-100 text-pink-700 border-pink-300",
+      };
+      return colorMap[typeInfo?.color || "gray"] || "bg-gray-100 text-gray-700";
+    };
+
     return {
       exemptions,
       searchQuery,
@@ -69,12 +81,11 @@ export const [ExemtionProvider, useExemtionContext] = createContextProvider(
       setShowDetailModal,
       showRegisterModal,
       setShowRegisterModal,
-      showReviewModal,
-      setShowReviewModal,
 
       stats,
       typeStats,
       filteredExemptions,
+      getTypeColor,
     };
   },
 );
