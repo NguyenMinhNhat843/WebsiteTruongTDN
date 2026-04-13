@@ -183,7 +183,7 @@ export default function ContentEditor() {
     ) ?? "left";
 
   return (
-    <div className="w-full max-w-3xl shadow-md">
+    <div className="w-full shadow-md">
       {/* Editor card */}
       <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/60 border border-slate-100 overflow-hidden">
         {/* ── Toolbar ── */}

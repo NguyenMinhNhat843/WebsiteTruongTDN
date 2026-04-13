@@ -1,3 +1,21 @@
+export const EnumAudience = {
+  TOAN_TRUONG: "toan-truong",
+  HOC_SINH: "hoc-sinh",
+  GIAO_VIEN: "giao-vien",
+} as const;
+export type EnumAudience = (typeof EnumAudience)[keyof typeof EnumAudience];
+
+export const EnumCategoryPost = {
+  THONG_BAO: "thong-bao",
+  TUYEN_SINH: "tuyen-sinh",
+  TUYEN_DUNG: "tuyen-dung",
+  SU_KIEN: "su-kien",
+  HOC_TAP: "hoc-tap",
+  TIN_TUC: "tin-tuc",
+} as const;
+export type EnumCategoryPost =
+  (typeof EnumCategoryPost)[keyof typeof EnumCategoryPost];
+
 export const EnumTrangThaiHocPhi = {
   PAID: "paid",
   PARTIAL: "partial",

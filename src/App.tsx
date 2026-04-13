@@ -7,7 +7,7 @@ import GioiThieuVeTruong from "./pages/client/GioiThieuVeTruong";
 import TamNhinSuMang from "./pages/client/TamNhinSuMang";
 import SoDoToChuc from "./pages/client/SoDoToChuc";
 import HopTacQuocTe from "./pages/client/HopTacQuocTe";
-import CreatePost from "./pages/admin/CreatePost";
+import CreatePost from "./pages/admin/QuanLyBaiViet/CreatePost";
 import BoMayToChuc from "./pages/client/BoMayToChuc/BoMayToChuc";
 import LienHe from "./pages/client/LienHe/LienHe";
 import DangKyTuVan from "./pages/client/DangKyTuVan/DangKyTuVan";

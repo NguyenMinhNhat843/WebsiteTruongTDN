@@ -1,9 +1,93 @@
-import { CheckCircle, Clock, XCircle } from "lucide-react";
 import {
+  Bell,
+  BookOpen,
+  Briefcase,
+  Calendar,
+  CheckCircle,
+  Clock,
+  Globe,
+  GraduationCap,
+  Newspaper,
+  School,
+  UserPlus,
+  XCircle,
+} from "lucide-react";
+import {
+  EnumAudience,
+  EnumCategoryPost,
   EnumExemptionStatus,
   EnumHeDaoTao,
   EnumTrangThaiHocPhi,
 } from "../../type/enum";
+
+export const StyleMapEnumAudience = {
+  [EnumAudience.TOAN_TRUONG]: {
+    label: "Toàn trường",
+    // Gradient từ xanh dương nhạt sang xanh teal
+    bgColor: "bg-gradient-to-br from-blue-50 to-cyan-50",
+    border: "border-blue-200",
+    textColor: "text-blue-700",
+    iconColor: "text-blue-500",
+    Icon: Globe,
+  },
+  [EnumAudience.HOC_SINH]: {
+    label: "Học sinh",
+    // Gradient từ xanh lá mạ sang emerald
+    bgColor: "bg-gradient-to-br from-emerald-50 to-teal-50",
+    border: "border-emerald-200",
+    textColor: "text-emerald-700",
+    iconColor: "text-emerald-500",
+    Icon: GraduationCap,
+  },
+  [EnumAudience.GIAO_VIEN]: {
+    label: "Giáo viên",
+    // Gradient từ vàng nắng sang cam nhạt
+    bgColor: "bg-gradient-to-br from-amber-50 to-orange-50",
+    border: "border-amber-200",
+    textColor: "text-amber-700",
+    iconColor: "text-amber-500",
+    Icon: School,
+  },
+};
+
+export const StyleMapEnumCategory = {
+  [EnumCategoryPost.THONG_BAO]: {
+    label: "Thông báo",
+    bgColor: "bg-red-100",
+    textColor: "text-red-800",
+    Icon: Bell,
+  },
+  [EnumCategoryPost.TUYEN_SINH]: {
+    label: "Tuyển sinh",
+    bgColor: "bg-purple-100",
+    textColor: "text-purple-800",
+    Icon: UserPlus,
+  },
+  [EnumCategoryPost.TUYEN_DUNG]: {
+    label: "Tuyển dụng",
+    bgColor: "bg-orange-100",
+    textColor: "text-orange-800",
+    Icon: Briefcase,
+  },
+  [EnumCategoryPost.SU_KIEN]: {
+    label: "Sự kiện",
+    bgColor: "bg-indigo-100",
+    textColor: "text-indigo-800",
+    Icon: Calendar,
+  },
+  [EnumCategoryPost.HOC_TAP]: {
+    label: "Học tập",
+    bgColor: "bg-emerald-100",
+    textColor: "text-emerald-800",
+    Icon: BookOpen,
+  },
+  [EnumCategoryPost.TIN_TUC]: {
+    label: "Tin tức",
+    bgColor: "bg-slate-100",
+    textColor: "text-slate-800",
+    Icon: Newspaper,
+  },
+};
 
 export const StyleMapEnumTrangThaiHocPhi = {
   [EnumTrangThaiHocPhi.PAID]: {
