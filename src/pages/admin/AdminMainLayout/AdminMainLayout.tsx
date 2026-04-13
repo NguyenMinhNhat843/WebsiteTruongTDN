@@ -11,7 +11,7 @@ const AdminMainLayout = () => {
       </aside>
 
       <main className="grow min-w-0">
-        <div className="relative z-999">
+        <div className="relative">
           <UserProfileHeader />
         </div>
         <Outlet />

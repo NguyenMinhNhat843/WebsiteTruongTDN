@@ -1,5 +1,9 @@
 import { CheckCircle, Clock, XCircle } from "lucide-react";
-import { EnumHeDaoTao, EnumTrangThaiHocPhi } from "../../type/enum";
+import {
+  EnumExemptionStatus,
+  EnumHeDaoTao,
+  EnumTrangThaiHocPhi,
+} from "../../type/enum";
 
 export const StyleMapEnumTrangThaiHocPhi = {
   [EnumTrangThaiHocPhi.PAID]: {
@@ -57,5 +61,26 @@ export const StyleMapEnumHeDaoTao = {
     textColor: "text-teal-800",
     borderColor: "border-teal-300",
     Icon: CheckCircle,
+  },
+};
+
+export const StyleMapEnumExemptionStatus = {
+  [EnumExemptionStatus.PENDING]: {
+    label: "Đang chờ duyệt",
+    bgColor: "bg-yellow-100",
+    textColor: "text-yellow-800",
+    Icon: Clock,
+  },
+  [EnumExemptionStatus.APPROVED]: {
+    label: "Đã duyệt",
+    bgColor: "bg-green-100",
+    textColor: "text-green-800",
+    Icon: CheckCircle,
+  },
+  [EnumExemptionStatus.REJECTED]: {
+    label: "Bị từ chối",
+    bgColor: "bg-red-100",
+    textColor: "text-red-800",
+    Icon: XCircle,
   },
 };

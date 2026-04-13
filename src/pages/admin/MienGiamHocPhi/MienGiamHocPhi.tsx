@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Gift,
   Search,
@@ -15,263 +14,40 @@ import {
   AlertCircle,
   Download,
 } from "lucide-react";
+import { exemptionTypes } from "./mockData";
+import { ExemtionProvider, useExemtionContext } from "./ExemtionProvider";
+import { formatCurrency } from "../../../util/format";
+import BadgeStatusExemtion from "../../../components/ui/BadgeStatusExemtion";
+import Input from "../../../components/ui/Form/Input";
 
-interface Exemption {
-  id: string;
-  studentId: string;
-  studentName: string;
-  class: string;
-  system: string;
-  type: string;
-  typeLabel: string;
-  amount: number;
-  percentage: number;
-  reason: string;
-  documents: string[];
-  status: "pending" | "approved" | "rejected";
-  requestDate: string;
-  reviewDate?: string;
-  reviewer?: string;
-  reviewNote?: string;
-  phone: string;
-  totalFee: number;
-}
-
-// Dữ liệu mẫu
-const exemptionsData: Exemption[] = [
-  {
-    id: "MG001",
-    studentId: "SV001",
-    studentName: "Nguyễn Văn An",
-    class: "TCN21A",
-    system: "Trung cấp nghề",
-    type: "policy",
-    typeLabel: "Con gia đình chính sách",
-    amount: 6000000,
-    percentage: 50,
-    reason: "Con liệt sĩ, có giấy xác nhận từ UBND xã",
-    documents: ["Giấy khai sinh", "Giấy xác nhận liệt sĩ", "Sổ hộ khẩu"],
-    status: "approved",
-    requestDate: "2026-01-10",
-    reviewDate: "2026-01-15",
-    reviewer: "Trần Văn B",
-    reviewNote: "Đủ điều kiện, phê duyệt",
-    phone: "0901234567",
-    totalFee: 12000000,
-  },
-  {
-    id: "MG002",
-    studentId: "SV002",
-    studentName: "Trần Thị Bình",
-    class: "SCN21B",
-    system: "Sơ cấp nghề",
-    type: "difficult",
-    typeLabel: "Hoàn cảnh khó khăn",
-    amount: 4000000,
-    percentage: 50,
-    reason: "Gia đình khó khăn, có giấy xác nhận hộ nghèo",
-    documents: ["Giấy xác nhận hộ nghèo", "Sổ hộ khẩu"],
-    status: "pending",
-    requestDate: "2026-04-05",
-    phone: "0902345678",
-    totalFee: 8000000,
-  },
-  {
-    id: "MG003",
-    studentId: "SV003",
-    studentName: "Lê Văn Cường",
-    class: "DHLK21A",
-    system: "Đại học liên kết",
-    type: "excellent",
-    typeLabel: "Học sinh giỏi",
-    amount: 3000000,
-    percentage: 20,
-    reason: "Học sinh giỏi cấp tỉnh năm 2025",
-    documents: ["Bằng khen học sinh giỏi", "Bảng điểm THPT"],
-    status: "approved",
-    requestDate: "2026-01-20",
-    reviewDate: "2026-01-22",
-    reviewer: "Trần Văn B",
-    reviewNote: "Thành tích xuất sắc, được miễn giảm",
-    phone: "0903456789",
-    totalFee: 15000000,
-  },
-  {
-    id: "MG004",
-    studentId: "SV004",
-    studentName: "Phạm Thị Dung",
-    class: "9PLUS21A",
-    system: "Hệ 9+",
-    type: "orphan",
-    typeLabel: "Trẻ mồ côi",
-    amount: 10000000,
-    percentage: 100,
-    reason: "Mồ côi cả cha lẫn mẹ, đang ở trại trẻ mồ côi",
-    documents: ["Giấy xác nhận mồ côi", "Giấy xác nhận từ trại"],
-    status: "approved",
-    requestDate: "2026-02-01",
-    reviewDate: "2026-02-03",
-    reviewer: "Trần Văn B",
-    reviewNote: "Miễn 100% học phí",
-    phone: "0904567890",
-    totalFee: 10000000,
-  },
-  {
-    id: "MG005",
-    studentId: "SV005",
-    studentName: "Hoàng Văn Em",
-    class: "TCN21B",
-    system: "Trung cấp nghề",
-    type: "ethnic",
-    typeLabel: "Dân tộc thiểu số",
-    amount: 3600000,
-    percentage: 30,
-    reason: "Dân tộc thiểu số vùng cao",
-    documents: ["CMND/CCCD", "Giấy xác nhận dân tộc"],
-    status: "pending",
-    requestDate: "2026-04-08",
-    phone: "0905678901",
-    totalFee: 12000000,
-  },
-  {
-    id: "MG006",
-    studentId: "SV006",
-    studentName: "Võ Thị Phương",
-    class: "SCN21C",
-    system: "Sơ cấp nghề",
-    type: "disability",
-    typeLabel: "Người khuyết tật",
-    amount: 6400000,
-    percentage: 80,
-    reason: "Khuyết tật vận động, có sổ khuyết tật",
-    documents: ["Sổ khuyết tật", "Giấy khám sức khỏe"],
-    status: "rejected",
-    requestDate: "2026-03-15",
-    reviewDate: "2026-03-20",
-    reviewer: "Trần Văn B",
-    reviewNote: "Hồ sơ không đầy đủ, cần bổ sung",
-    phone: "0906789012",
-    totalFee: 8000000,
-  },
-  {
-    id: "MG007",
-    studentId: "SV007",
-    studentName: "Đỗ Văn Giang",
-    class: "TCN21C",
-    system: "Trung cấp nghề",
-    type: "policy",
-    typeLabel: "Con gia đình chính sách",
-    amount: 4800000,
-    percentage: 40,
-    reason: "Con thương binh hạng 1/4",
-    documents: ["Sổ thương binh của cha", "Giấy khai sinh"],
-    status: "pending",
-    requestDate: "2026-04-09",
-    phone: "0907890123",
-    totalFee: 12000000,
-  },
-];
-
-const exemptionTypes = [
-  { value: "all", label: "Tất cả loại", color: "gray" },
-  { value: "policy", label: "Gia đình chính sách", color: "red" },
-  { value: "difficult", label: "Hoàn cảnh khó khăn", color: "orange" },
-  { value: "excellent", label: "Học sinh giỏi", color: "yellow" },
-  { value: "orphan", label: "Trẻ mồ côi", color: "purple" },
-  { value: "ethnic", label: "Dân tộc thiểu số", color: "blue" },
-  { value: "disability", label: "Người khuyết tật", color: "pink" },
-];
-
-function ExemptionManagement() {
-  const [exemptions] = useState<Exemption[]>(exemptionsData);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterType, setFilterType] = useState("all");
-  const [filterStatus, setFilterStatus] = useState("all");
-  const [selectedExemption, setSelectedExemption] = useState<Exemption | null>(
-    null,
+const ExemptionManagement = () => {
+  return (
+    <ExemtionProvider>
+      <Inner />
+    </ExemtionProvider>
   );
-  const [showDetailModal, setShowDetailModal] = useState(false);
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-  const [showReviewModal, setShowReviewModal] = useState(false);
+};
 
-  // Tính toán thống kê
-  const stats = {
-    totalExemptions: exemptions.length,
-    totalAmount: exemptions
-      .filter((e) => e.status === "approved")
-      .reduce((sum, e) => sum + e.amount, 0),
-    pendingCount: exemptions.filter((e) => e.status === "pending").length,
-    approvedCount: exemptions.filter((e) => e.status === "approved").length,
-    rejectedCount: exemptions.filter((e) => e.status === "rejected").length,
-  };
-
-  // Thống kê theo loại
-  const typeStats = exemptionTypes.slice(1).map((type) => {
-    const items = exemptions.filter(
-      (e) => e.type === type.value && e.status === "approved",
-    );
-    return {
-      type: type.label,
-      count: items.length,
-      amount: items.reduce((sum, e) => sum + e.amount, 0),
-      color: type.color,
-    };
-  });
-
-  // Lọc danh sách
-  const filteredExemptions = exemptions.filter((exemption) => {
-    const matchSearch =
-      exemption.studentName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exemption.studentId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      exemption.id.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchType = filterType === "all" || exemption.type === filterType;
-    const matchStatus =
-      filterStatus === "all" || exemption.status === filterStatus;
-
-    return matchSearch && matchType && matchStatus;
-  });
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
-  };
-
-  const getStatusBadge = (status: string) => {
-    const badges = {
-      pending: {
-        label: "Chờ duyệt",
-        bg: "bg-yellow-100",
-        text: "text-yellow-700",
-        icon: Clock,
-      },
-      approved: {
-        label: "Đã duyệt",
-        bg: "bg-green-100",
-        text: "text-green-700",
-        icon: CheckCircle,
-      },
-      rejected: {
-        label: "Từ chối",
-        bg: "bg-red-100",
-        text: "text-red-700",
-        icon: XCircle,
-      },
-    };
-    const badge = badges[status as keyof typeof badges];
-    const Icon = badge.icon;
-
-    return (
-      <span
-        className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium ${badge.bg} ${badge.text}`}
-      >
-        <Icon className="w-3 h-3" />
-        {badge.label}
-      </span>
-    );
-  };
+function Inner() {
+  const {
+    filterStatus,
+    filterType,
+    searchQuery,
+    selectedExemption,
+    setFilterStatus,
+    setFilterType,
+    setSearchQuery,
+    setSelectedExemption,
+    setShowDetailModal,
+    setShowRegisterModal,
+    setShowReviewModal,
+    showDetailModal,
+    showRegisterModal,
+    showReviewModal,
+    stats,
+    typeStats,
+    filteredExemptions,
+  } = useExemtionContext();
 
   const getTypeColor = (type: string) => {
     const typeInfo = exemptionTypes.find((t) => t.value === type);
@@ -287,13 +63,13 @@ function ExemptionManagement() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
-      <div className="max-w-[1600px] mx-auto px-8 py-8">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-pink-50">
+      <div className="max-w-400 mx-auto px-8 py-8">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-gradient-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg">
+              <div className="p-3 bg-linear-to-br from-purple-500 to-pink-600 rounded-xl shadow-lg">
                 <Gift className="w-8 h-8 text-white" />
               </div>
               <div>
@@ -307,7 +83,7 @@ function ExemptionManagement() {
             </div>
             <button
               onClick={() => setShowRegisterModal(true)}
-              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-xl hover:from-purple-600 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl font-medium"
+              className="flex items-center gap-2 px-6 py-3 bg-linear-to-r from-purple-500 to-pink-600 text-white rounded-xl hover:from-purple-600 hover:to-pink-700 transition-all shadow-lg hover:shadow-xl font-medium"
             >
               <Plus className="w-5 h-5" />
               Đăng ký miễn giảm
@@ -317,72 +93,83 @@ function ExemptionManagement() {
 
         {/* Thống kê tổng quan */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-3">
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <FileText className="w-6 h-6 text-purple-600" />
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-gray-900">
-                  {stats.totalExemptions}
+          {[
+            {
+              label: "Tổng số đơn",
+              val: stats.totalExemptions,
+              unit: "đơn",
+              Icon: FileText,
+              css: "bg-white border-gray-200 text-gray-900",
+              iconBg: "bg-purple-100 text-purple-600",
+            },
+            {
+              label: "Tổng miễn giảm",
+              val: formatCurrency(stats.totalAmount),
+              unit: "đã miễn giảm",
+              Icon: TrendingDown,
+              css: "bg-linear-to-br from-green-500 to-emerald-600 text-white shadow-lg",
+              iconBg: "bg-white/20",
+            },
+            {
+              label: "Chờ phê duyệt",
+              val: stats.pendingCount,
+              unit: "đơn",
+              Icon: Clock,
+              css: "bg-linear-to-br from-yellow-500 to-orange-600 text-white shadow-lg",
+              iconBg: "bg-white/20",
+            },
+          ].map((item, i) => {
+            return (
+              <div key={i} className={`${item.css} rounded-xl p-6 border`}>
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`p-3 rounded-lg ${item.iconBg}`}>
+                    <item.Icon className="w-6 h-6" />
+                  </div>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold">{item.val}</div>
+                    <div className="text-xs opacity-70">{item.unit}</div>
+                  </div>
                 </div>
-                <div className="text-xs text-gray-500">đơn</div>
-              </div>
-            </div>
-            <div className="text-sm font-medium text-gray-700">Tổng số đơn</div>
-          </div>
-
-          <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-xl shadow-lg p-6 text-white">
-            <div className="flex items-center justify-between mb-3">
-              <div className="p-3 bg-white/20 rounded-lg">
-                <TrendingDown className="w-6 h-6" />
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold">
-                  {formatCurrency(stats.totalAmount)}
+                <div className="text-md font-semibold tracking-wide">
+                  {item.label}
                 </div>
-                <div className="text-xs text-green-100">đã miễn giảm</div>
               </div>
-            </div>
-            <div className="text-sm font-medium">Tổng miễn giảm</div>
-          </div>
+            );
+          })}
 
-          <div className="bg-gradient-to-br from-yellow-500 to-orange-600 rounded-xl shadow-lg p-6 text-white">
-            <div className="flex items-center justify-between mb-3">
-              <div className="p-3 bg-white/20 rounded-lg">
-                <Clock className="w-6 h-6" />
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold">{stats.pendingCount}</div>
-                <div className="text-xs text-yellow-100">đơn</div>
-              </div>
-            </div>
-            <div className="text-sm font-medium">Chờ phê duyệt</div>
-          </div>
-
+          {/* Card Trạng thái xử lý - Giữ riêng vì cấu trúc khác biệt hoàn toàn */}
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <div className="text-sm font-medium text-gray-700 mb-3">
               Trạng thái xử lý
             </div>
             <div className="space-y-2">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Đã duyệt:</span>
-                <span className="font-semibold text-green-600">
-                  {stats.approvedCount} đơn
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Chờ duyệt:</span>
-                <span className="font-semibold text-yellow-600">
-                  {stats.pendingCount} đơn
-                </span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-gray-600">Từ chối:</span>
-                <span className="font-semibold text-red-600">
-                  {stats.rejectedCount} đơn
-                </span>
-              </div>
+              {[
+                {
+                  label: "Đã duyệt",
+                  val: stats.approvedCount,
+                  color: "text-green-600",
+                },
+                {
+                  label: "Chờ duyệt",
+                  val: stats.pendingCount,
+                  color: "text-yellow-600",
+                },
+                {
+                  label: "Từ chối",
+                  val: stats.rejectedCount,
+                  color: "text-red-600",
+                },
+              ].map((s, i) => (
+                <div
+                  key={i}
+                  className="flex items-center justify-between text-xs"
+                >
+                  <span className="text-gray-600">{s.label}:</span>
+                  <span className={`font-semibold ${s.color}`}>
+                    {s.val} đơn
+                  </span>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -393,22 +180,23 @@ function ExemptionManagement() {
             <Award className="w-5 h-5 text-purple-600" />
             Thống kê theo loại miễn giảm
           </h3>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {typeStats.map((stat, index) => (
+            {typeStats.map(({ type, count, amount }, index) => (
               <div
                 key={index}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                className="border border-gray-200 rounded-lg p-4 hover:shadow-sm transition-all bg-gray-50/30"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700">
-                    {stat.type}
+                <div className="flex justify-between text-sm mb-1">
+                  <span className="font-medium text-gray-600 truncate mr-2">
+                    {type}
                   </span>
-                  <span className="text-xs font-semibold text-gray-900">
-                    {stat.count} SV
+                  <span className="font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full whitespace-nowrap text-[11px]">
+                    {count} SV
                   </span>
                 </div>
                 <div className="text-lg font-bold text-purple-600">
-                  {formatCurrency(stat.amount)}
+                  {formatCurrency(amount)}
                 </div>
               </div>
             ))}
@@ -417,45 +205,49 @@ function ExemptionManagement() {
 
         {/* Bộ lọc và tìm kiếm */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            {/* Label & Filter Icon */}
+            <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
               <Filter className="w-5 h-5 text-gray-500" />
-              <span className="text-sm font-medium text-gray-700">Bộ lọc:</span>
+              <span>Bộ lọc:</span>
             </div>
 
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              {exemptionTypes.map((type) => (
-                <option key={type.value} value={type.value}>
-                  {type.label}
-                </option>
-              ))}
-            </select>
+            {/* Các Select filters */}
+            {[
+              { val: filterType, set: setFilterType, options: exemptionTypes },
+              {
+                val: filterStatus,
+                set: setFilterStatus,
+                options: [
+                  { value: "all", label: "Tất cả trạng thái" },
+                  { value: "pending", label: "Chờ duyệt" },
+                  { value: "approved", label: "Đã duyệt" },
+                  { value: "rejected", label: "Từ chối" },
+                ],
+              },
+            ].map((f, i) => (
+              <select
+                key={i}
+                value={f.val}
+                onChange={(e) => f.set(e.target.value)}
+                className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 outline-none cursor-pointer hover:border-gray-400 transition-colors"
+              >
+                {f.options.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            ))}
 
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              <option value="all">Tất cả trạng thái</option>
-              <option value="pending">Chờ duyệt</option>
-              <option value="approved">Đã duyệt</option>
-              <option value="rejected">Từ chối</option>
-            </select>
-
-            <div className="ml-auto flex items-center gap-2 bg-gray-50 border border-gray-300 rounded-lg px-4 py-2">
-              <Search className="w-4 h-4 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Tìm theo tên, mã SV, mã đơn..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="outline-none text-sm bg-transparent w-64"
-              />
-            </div>
+            {/* Ô Tìm kiếm */}
+            <Input
+              icon={Search}
+              placeholder="Tìm theo tên, mã SV..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              containerClassName="w-md ml-auto"
+            />
           </div>
         </div>
 
@@ -463,18 +255,18 @@ function ExemptionManagement() {
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+              <thead className="bg-linear-to-r from-purple-600 to-pink-600 text-white">
                 <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <th className="sticky left-0 bg-purple-600 w-20 px-6 py-4 text-left text-sm font-semibold">
                     Mã đơn
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <th className="sticky left-24.5 bg-purple-600 px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">
                     Học viên
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <th className="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">
                     Lớp/Hệ
                   </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold">
+                  <th className="px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">
                     Loại miễn giảm
                   </th>
                   <th className="px-6 py-4 text-right text-sm font-semibold">
@@ -486,7 +278,7 @@ function ExemptionManagement() {
                   <th className="px-6 py-4 text-right text-sm font-semibold">
                     Số tiền giảm
                   </th>
-                  <th className="px-6 py-4 text-center text-sm font-semibold">
+                  <th className="px-6 py-4 text-center text-sm font-semibold whitespace-nowrap">
                     Trạng thái
                   </th>
                   <th className="px-6 py-4 text-center text-sm font-semibold">
@@ -503,12 +295,12 @@ function ExemptionManagement() {
                     key={exemption.id}
                     className={`hover:bg-gray-50 transition-colors ${index % 2 === 0 ? "bg-white" : "bg-gray-50"}`}
                   >
-                    <td className="px-6 py-4 text-sm font-medium text-gray-900">
+                    <td className="sticky left-0 bg-inherit w-20 px-6 py-4 text-sm font-medium text-gray-900">
                       {exemption.id}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="sticky left-24.5 bg-inherit px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white text-xs font-semibold">
+                        <div className="w-8 h-8 bg-linear-to-br from-purple-500 to-pink-600 rounded-full flex items-center justify-center text-white text-xs font-semibold">
                           {exemption.studentName.charAt(0)}
                         </div>
                         <div>
@@ -521,7 +313,7 @@ function ExemptionManagement() {
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <div className="text-sm text-gray-900">
                         {exemption.class}
                       </div>
@@ -529,7 +321,7 @@ function ExemptionManagement() {
                         {exemption.system}
                       </div>
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`inline-block px-3 py-1 rounded-full text-xs font-medium border ${getTypeColor(exemption.type)}`}
                       >
@@ -547,8 +339,8 @@ function ExemptionManagement() {
                     <td className="px-6 py-4 text-sm text-right font-bold text-green-600">
                       {formatCurrency(exemption.amount)}
                     </td>
-                    <td className="px-6 py-4 text-center">
-                      {getStatusBadge(exemption.status)}
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                      <BadgeStatusExemtion status={exemption.status} />
                     </td>
                     <td className="px-6 py-4 text-sm text-center text-gray-700">
                       {new Date(exemption.requestDate).toLocaleDateString(
@@ -599,7 +391,7 @@ function ExemptionManagement() {
         {showDetailModal && selectedExemption && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-              <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white p-6 rounded-t-2xl sticky top-0">
+              <div className="bg-linear-to-r from-purple-500 to-pink-600 text-white p-6 rounded-t-2xl sticky top-0">
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-xl font-bold">Chi Tiết Miễn Giảm</h2>
                   <button
@@ -729,7 +521,7 @@ function ExemptionManagement() {
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                   <div className="flex items-center justify-between mb-3">
                     <h3 className="font-semibold text-gray-900">Trạng thái</h3>
-                    {getStatusBadge(selectedExemption.status)}
+                    <BadgeStatusExemtion status={selectedExemption.status} />
                   </div>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
@@ -800,7 +592,7 @@ function ExemptionManagement() {
         {showRegisterModal && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-auto">
-              <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white p-6 rounded-t-2xl sticky top-0">
+              <div className="bg-linear-to-r from-purple-500 to-pink-600 text-white p-6 rounded-t-2xl sticky top-0">
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-xl font-bold">
                     Đăng Ký Miễn Giảm Học Phí
@@ -922,7 +714,7 @@ function ExemptionManagement() {
                   >
                     Hủy
                   </button>
-                  <button className="flex-1 px-4 py-3 bg-gradient-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all font-medium">
+                  <button className="flex-1 px-4 py-3 bg-linear-to-r from-purple-500 to-pink-600 text-white rounded-lg hover:from-purple-600 hover:to-pink-700 transition-all font-medium">
                     Gửi đơn đăng ký
                   </button>
                 </div>
@@ -935,7 +727,7 @@ function ExemptionManagement() {
         {showReviewModal && selectedExemption && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full">
-              <div className="bg-gradient-to-r from-purple-500 to-pink-600 text-white p-6 rounded-t-2xl">
+              <div className="bg-linear-to-r from-purple-500 to-pink-600 text-white p-6 rounded-t-2xl">
                 <div className="flex items-center justify-between mb-2">
                   <h2 className="text-xl font-bold">Phê Duyệt Miễn Giảm</h2>
                   <button

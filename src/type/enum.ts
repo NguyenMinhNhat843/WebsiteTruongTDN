@@ -14,3 +14,11 @@ export const EnumHeDaoTao = {
   CAO_DANG: "caoDang",
 } as const;
 export type EnumHeDaoTao = (typeof EnumHeDaoTao)[keyof typeof EnumHeDaoTao];
+
+export const EnumExemptionStatus = {
+  PENDING: "pending",
+  APPROVED: "approved",
+  REJECTED: "rejected",
+} as const;
+export type EnumExemptionStatus =
+  (typeof EnumExemptionStatus)[keyof typeof EnumExemptionStatus];
