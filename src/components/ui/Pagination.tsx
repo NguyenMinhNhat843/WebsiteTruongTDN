@@ -1,6 +1,5 @@
 interface PaginationProps {
   currentPage: number;
-  totalPages: number;
   totalItems: number;
   pageSize: number;
   onPageChange: (page: number) => void;
@@ -8,18 +7,30 @@ interface PaginationProps {
 
 const Pagination = ({
   currentPage,
-  totalPages,
   totalItems,
   pageSize,
   onPageChange,
 }: PaginationProps) => {
   // Nếu chỉ có 1 trang hoặc không có item nào thì không hiện
   if (totalItems <= pageSize) return null;
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const from = (currentPage - 1) * pageSize + 1;
+  const to = Math.min(currentPage * pageSize, totalItems);
 
   return (
     <div className="flex items-center justify-between border-t border-slate-100 px-6 py-4">
-      <p className="text-xs text-slate-400">
-        Trang **{currentPage}** / **{totalPages}** ({totalItems} kết quả)
+      <p className="text-xs text-slate-400 flex items-center gap-1">
+        Trang
+        <span className="font-semibold text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded">
+          {currentPage}
+        </span>
+        , hiển thị từ
+        <span className="font-bold text-emerald-600 px-1">
+          {from} - {to}
+        </span>
+        trên tổng số
+        <span className="font-semibold text-slate-700">{totalItems}</span>
+        kết quả
       </p>
 
       <div className="flex items-center gap-1">

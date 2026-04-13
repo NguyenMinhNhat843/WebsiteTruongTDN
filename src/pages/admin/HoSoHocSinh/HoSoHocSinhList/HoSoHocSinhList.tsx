@@ -110,7 +110,6 @@ const Inner: React.FC = () => {
               label={s.label}
               value={s.value}
               icon={s.icon}
-              color={s.color}
               description={s.sub}
             />
           ))}

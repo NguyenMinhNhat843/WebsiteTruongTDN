@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import type { ReactNode, SelectHTMLAttributes } from "react";
 
 interface Option {
@@ -12,6 +13,7 @@ interface SelectOptionProps extends SelectHTMLAttributes<HTMLSelectElement> {
   options: Option[];
   containerClassName?: string;
   error?: string;
+  className?: string;
 }
 
 export const SelectOption = ({
@@ -25,7 +27,7 @@ export const SelectOption = ({
   ...props
 }: SelectOptionProps) => {
   return (
-    <div className={`flex flex-col gap-1.5 ${containerClassName}`}>
+    <div className={clsx(`flex flex-col gap-1.5`, containerClassName)}>
       {/* Label & Icon */}
       {label && (
         <label
@@ -40,14 +42,15 @@ export const SelectOption = ({
       <div className="relative group">
         <select
           id={id}
-          className={`
+          className={clsx(
+            `
             w-full appearance-none bg-white border border-gray-200 text-gray-900 text-sm rounded-xl 
             focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 
             block p-3 transition-all duration-200 outline-none
             cursor-pointer disabled:bg-gray-50 disabled:cursor-not-allowed
-            ${error ? "border-red-500 focus:ring-red-500/20" : "hover:border-gray-300"}
-            ${className}
-          `}
+            ${error ? "border-red-500 focus:ring-red-500/20" : "hover:border-gray-300"}`,
+            className,
+          )}
           {...props}
         >
           {options.map((opt) => (

@@ -1,16 +1,16 @@
-import { HE_DAO_TAO_STYLES } from "../../pages/admin/HoSoHocSinh/mockStyleMapEnum";
-import type { HeDaoTao } from "../../pages/admin/HoSoHocSinh/mockType";
+import type { EnumHeDaoTao } from "../../type/enum";
+import { StyleMapEnumHeDaoTao } from "../StyleMapEnum/StyleMapEnum";
 
 interface HeDaoTaoBadgeProps {
-  value: HeDaoTao;
+  value: EnumHeDaoTao;
 }
 export const HeDaoTaoBadge: React.FC<HeDaoTaoBadgeProps> = ({ value }) => {
-  const s = HE_DAO_TAO_STYLES[value];
+  const s = StyleMapEnumHeDaoTao[value];
   return (
     <span
-      className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold border ${s.bg} ${s.text} ${s.border}`}
+      className={`inline-flex px-2 py-0.5 rounded-md text-[10px] font-bold border ${s.bgColor} ${s.textColor} ${s.borderColor}`}
     >
-      {value}
+      {s.label}
     </span>
   );
 };

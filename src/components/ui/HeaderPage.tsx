@@ -7,6 +7,7 @@ export interface HeaderProps {
   icon?: ReactNode;
   className?: string;
   renderLeft?: ReactNode;
+  classNameIcon?: string; // Thêm className cho icon nếu cần tùy chỉnh thêm từ bên ngoài
 }
 
 const HeaderPage: React.FC<HeaderProps> = ({
@@ -15,6 +16,7 @@ const HeaderPage: React.FC<HeaderProps> = ({
   icon,
   className = "", // Tăng margin-bottom một chút cho thoáng
   renderLeft,
+  classNameIcon,
 }) => {
   return (
     <div className={clsx("flex items-center gap-4 mb-6", className)}>
@@ -22,7 +24,12 @@ const HeaderPage: React.FC<HeaderProps> = ({
 
       {/* Icon với hiệu ứng mềm mại: Nền nhẹ hoặc đổ bóng nhẹ */}
       {icon && (
-        <div className="shrink-0 p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-slate-600 shadow-sm">
+        <div
+          className={clsx(
+            "shrink-0 p-2.5 bg-slate-50 border border-slate-100 rounded-xl text-slate-600 shadow-sm",
+            classNameIcon,
+          )}
+        >
           {icon}
         </div>
       )}
