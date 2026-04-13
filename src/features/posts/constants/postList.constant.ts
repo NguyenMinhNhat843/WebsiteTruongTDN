@@ -9,6 +9,21 @@ export const MOCK_POSTS: Post[] = [
     status: "da-duyet",
     author: "Phòng Đào tạo",
     createdAt: "2024-11-15",
+    content: `
+    <p>Ban Giám hiệu thông báo lịch thi học kỳ I năm học 2024-2025 như sau:</p>
+    
+    <h3>1. Thời gian và đối tượng dự thi</h3>
+    <p>Tất cả sinh viên các khóa từ K20 đến K23 sẽ bắt đầu kỳ thi tập trung từ ngày 15/05/2025. Sinh viên cần có mặt tại phòng thi trước 15 phút để làm thủ tục.</p>
+    
+    <h3>2. Quy định trong phòng thi</h3>
+    <ul>
+      <li>Thẻ sinh viên là bắt buộc (hoặc giấy tờ tùy thân có ảnh).</li>
+      <li>Không mang thiết bị điện tử, điện thoại thông minh vào khu vực thi.</li>
+      <li>Trường hợp vi phạm sẽ bị đình chỉ thi ngay lập tức theo quy chế của Bộ Giáo dục.</li>
+    </ul>
+
+    <p>Dưới đây là sơ đồ khu vực phòng thi và danh sách các môn thi trọng điểm để sinh viên tiện theo dõi:</p>
+  `,
     views: 1240,
   },
   {

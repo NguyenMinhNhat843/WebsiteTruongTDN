@@ -14,8 +14,8 @@ import DangKyTuVan from "./pages/client/DangKyTuVan/DangKyTuVan";
 import ChuongTrinhDaoTaoDetail from "./pages/client/ChuongTrinhDaoTaoDetail";
 import Home from "./pages/client/Home/Home";
 import AdminMainLayout from "./pages/admin/AdminMainLayout/AdminMainLayout";
-import PostList from "./pages/admin/PostList";
-import PostDetail from "./pages/client/PostDetail/PostDetail";
+import PostList from "./pages/admin/QuanLyBaiViet/PostList";
+import UserPostDetail from "./pages/client/PostDetail/UserPostDetail";
 import LoginPage from "./pages/admin/Login";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { USER_ROLE } from "./features/users/types/User.types";
@@ -41,6 +41,7 @@ import QuanLyVanBang from "./pages/admin/QuanLyVanBang/QuanLyVanBang";
 import PhanCongGiangDay from "./pages/admin/PhanCongGiangDay/PhanCongGiangDay";
 import HoSoTuyenSinhOne from "./pages/admin/TuyenSinh/QuanLyHoSo/HoSoTuyenSinhOne/HoSoTuyenSinhOne";
 import QuanLyHoSoLayout from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSoLayout";
+import AdminPostPreview from "./pages/admin/QuanLyBaiViet/AdminPostPreview";
 
 function App() {
   return (
@@ -59,16 +60,17 @@ function App() {
         <Route path="/dang-ky-tuyen-sinh" element={<DangKyTuVan />} />
         <Route path="/chuong-trinh-dao-tao">
           <Route path=":heDaoTaoSlug" element={<ChuongTrinhDaoTaoDetail />} />
-          <Route path=":heDaoTaoSlug/:nganhSlug" element={<PostDetail />} />
+          <Route path=":heDaoTaoSlug/:nganhSlug" element={<UserPostDetail />} />
         </Route>
         <Route path="/tin-tuc" element={<NewsList />} />
         <Route element={<PostLayout />}>
-          <Route path="tin-tuc/:slug" element={<PostDetail />} />
-          <Route path="tuyen-dung/:slug" element={<PostDetail />} />
+          <Route path="tin-tuc/xem-truoc" element={<AdminPostPreview />} />
+          <Route path="tuyen-dung/:slug" element={<UserPostDetail />} />
+          <Route path="tin-tuc/:slug" element={<UserPostDetail />} />
         </Route>
       </Route>
 
-      {/* Admin */}
+      {/* ============================= Admin ==================================== */}
       <Route path="/admin/login" element={<LoginPage />} />
       <Route
         path="/admin"
@@ -87,6 +89,7 @@ function App() {
             element={<CreatePost />}
           />
           <Route path="truyen-thong-bao-chi/bai-viet" element={<PostList />} />
+
           <Route path="truyen-thong-bao-chi/media" element={<MediaLibrary />} />
         </Route>
 

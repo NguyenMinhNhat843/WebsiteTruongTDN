@@ -1,13 +1,14 @@
-import CategoryBadge from "../../features/posts/components/CategoryBadge";
-import StatusBadge from "../../features/posts/components/StatusBadge";
-import AudiencePill from "../../features/posts/components/AudiencePill";
+import CategoryBadge from "../../../features/posts/components/CategoryBadge";
+import StatusBadge from "../../../features/posts/components/StatusBadge";
+import AudiencePill from "../../../features/posts/components/AudiencePill";
 import {
   PostListProvider,
   usePostListContext,
-} from "../../features/posts/hooks/usePostList";
-import PostListHeader from "../../features/posts/components/PostListSections/PostListHeader";
-import PostListFilterPanel from "../../features/posts/components/PostListSections/PostListFilterPanel";
-import Pagination from "../../components/ui/Pagination";
+} from "../../../features/posts/hooks/usePostList";
+import PostListHeader from "../../../features/posts/components/PostListSections/PostListHeader";
+import PostListFilterPanel from "../../../features/posts/components/PostListSections/PostListFilterPanel";
+import Pagination from "../../../components/ui/Pagination";
+import type { Post } from "../../../features/posts/types/Post.types";
 
 export default function PostList() {
   return (
@@ -22,11 +23,20 @@ function Inner() {
     resetFilters,
     currentPage,
     setCurrentPage,
-    totalPages,
     pageSize,
     paginated,
     total,
   } = usePostListContext();
+
+  const handlePreview = (post: Post) => {
+    // 1. Lưu dữ liệu bài viết vào localStorage
+    // Chúng ta chuyển object thành string để lưu được vào storage
+    localStorage.setItem("preview_post_data", JSON.stringify(post));
+
+    // 2. Mở một tab mới tới route preview
+    // Giả sử bạn đã tạo một route tên là /preview-post
+    window.open("/tin-tuc/xem-truoc", "_blank");
+  };
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -146,6 +156,7 @@ function Inner() {
                           <button
                             title="Xem"
                             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
+                            onClick={() => handlePreview(post)}
                           >
                             👁
                           </button>
@@ -180,7 +191,6 @@ function Inner() {
 
           <Pagination
             currentPage={currentPage}
-            totalPages={totalPages}
             totalItems={total}
             pageSize={pageSize}
             onPageChange={setCurrentPage}
