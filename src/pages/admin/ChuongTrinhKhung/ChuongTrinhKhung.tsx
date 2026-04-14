@@ -320,25 +320,21 @@ function Inner() {
             {
               l: "Tổng chương trình",
               v: stats.total,
-              c: "#ef4444",
             },
             {
               l: "Đang áp dụng",
               v: stats.active,
-              c: "#059669",
             },
             {
               l: "Bản nháp",
               v: stats.draft,
-              c: "#d97706",
             },
             {
               l: "Số hệ đào tạo",
               v: stats.systems,
-              c: "#2563eb",
             },
           ].map((s) => (
-            <StatCard label={s.l} value={s.v} color={s.c} />
+            <StatCard label={s.l} value={s.v} />
           ))}
         </div>
 
