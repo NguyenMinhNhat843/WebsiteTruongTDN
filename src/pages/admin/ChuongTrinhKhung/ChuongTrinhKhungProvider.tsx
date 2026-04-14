@@ -2,12 +2,12 @@ import { useMemo, useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { calcBreakdown, totalHours } from "./chuongTrinhKhung.helpers";
 import type {
+  CreateFormState,
   CurriculumFramework,
   EduSystem,
   Status,
 } from "./chuongTrinhKhung.type";
 import { mockData } from "./chuongTrinhKhung.mockData";
-import type { FormState } from "./ChuongTrinhKhung";
 
 export const [ChuongTrinhKhungProvider, useChuongTrinhKhungContext] =
   createContextProvider(() => {
@@ -55,7 +55,7 @@ export const [ChuongTrinhKhungProvider, useChuongTrinhKhungContext] =
       [frameworks],
     );
 
-    function handleSave(form: FormState) {
+    function handleSave(form: CreateFormState) {
       const now = new Date().toISOString().slice(0, 10);
       if (editTarget) {
         setFrameworks((p) =>
@@ -85,6 +85,18 @@ export const [ChuongTrinhKhungProvider, useChuongTrinhKhungContext] =
       if (selectedId === id) setSelectedId(null);
     }
 
+    const handleOpenFormUpdateModal = () => {
+      setEditTarget(selected);
+      setShowForm(true);
+    };
+
+    const handleApplyFramework = () => {
+      if (!selected) return;
+      setFrameworks((p) =>
+        p.map((f) => (f.id === selected.id ? { ...f, status: "active" } : f)),
+      );
+    };
+
     const breakdown = selected ? calcBreakdown(selected) : null;
     const hrs = selected ? totalHours(selected) : 0;
 
@@ -99,6 +111,9 @@ export const [ChuongTrinhKhungProvider, useChuongTrinhKhungContext] =
       setFilterStatus,
       selectedId,
       setSelectedId,
+
+      handleOpenFormUpdateModal,
+      handleApplyFramework,
 
       filtered,
       selected,

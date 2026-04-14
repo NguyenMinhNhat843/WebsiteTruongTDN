@@ -57,3 +57,18 @@ export interface CurriculumFramework {
   createdAt: string;
   updatedAt: string;
 }
+
+export type CreateFormState = {
+  code: string;
+  name: string;
+  major: string;
+  department: string;
+  eduSystem: EduSystem;
+  totalUnits: number;
+  unitType: UnitType;
+  duration: string;
+  status: Status;
+  effectiveYear: number;
+  issuedBy: string;
+  decisionNo: string;
+};

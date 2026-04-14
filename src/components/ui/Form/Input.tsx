@@ -7,6 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   icon?: LucideIcon;
   error?: string;
   containerClassName?: string;
+  labelClassName?: string;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -17,6 +18,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       error,
       containerClassName = "",
       className = "",
+      labelClassName = "",
       ...props
     },
     ref,
@@ -25,7 +27,12 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       <div className={clsx(`w-full space-y-1.5`, containerClassName)}>
         {/* Label */}
         {label && (
-          <label className="text-sm font-semibold text-gray-700 ml-1">
+          <label
+            className={clsx(
+              "text-sm font-semibold text-gray-700 ml-1",
+              labelClassName,
+            )}
+          >
             {label}
           </label>
         )}

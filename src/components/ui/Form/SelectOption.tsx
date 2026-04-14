@@ -14,6 +14,7 @@ interface SelectOptionProps extends SelectHTMLAttributes<HTMLSelectElement> {
   containerClassName?: string;
   error?: string;
   className?: string;
+  labelClassName?: string;
 }
 
 export const SelectOption = ({
@@ -24,6 +25,7 @@ export const SelectOption = ({
   containerClassName = "",
   error,
   id,
+  labelClassName = "",
   ...props
 }: SelectOptionProps) => {
   return (
@@ -32,7 +34,10 @@ export const SelectOption = ({
       {label && (
         <label
           htmlFor={id}
-          className="flex items-center gap-2 text-sm font-semibold text-gray-700 ml-1"
+          className={clsx(
+            "flex items-center gap-2 text-sm font-semibold text-gray-700 ml-1",
+            labelClassName,
+          )}
         >
           {icon && <span className="text-gray-400">{icon}</span>}
           {label}
