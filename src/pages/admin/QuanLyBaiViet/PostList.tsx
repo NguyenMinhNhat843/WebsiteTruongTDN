@@ -125,7 +125,10 @@ function Inner() {
                         {(currentPage - 1) * pageSize + idx + 1}
                       </td>
                       <td className="px-6 py-4 max-w-xs">
-                        <p className="font-semibold text-slate-800 line-clamp-2 leading-snug group-hover:text-blue-700 transition-colors cursor-pointer">
+                        <p
+                          className="font-semibold text-slate-800 line-clamp-2 leading-snug group-hover:text-blue-700 transition-colors cursor-pointer"
+                          onClick={() => handlePreview(post)}
+                        >
                           {post.title}
                         </p>
                         <p className="mt-0.5 text-xs text-slate-400">

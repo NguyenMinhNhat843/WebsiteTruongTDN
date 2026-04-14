@@ -1,3 +1,5 @@
+import type { EnumHeDaoTao } from "../../../type/enum";
+
 export type HeDaoTao =
   | "Trung cấp nghề"
   | "Sơ cấp nghề"
@@ -63,7 +65,7 @@ export interface HocSinhRow {
   ngaySinh: string;
   gioiTinh: GioiTinh;
   soDienThoai: string;
-  heDaoTao: HeDaoTao;
+  heDaoTao: EnumHeDaoTao;
   nganh: string;
   lop: string;
   khoaHoc: string;
@@ -75,7 +77,7 @@ export interface HocSinhRow {
 }
 
 export interface FilterState {
-  heDaoTao: HeDaoTao | "";
+  heDaoTao: EnumHeDaoTao | "";
   trangThai: TrangThaiHocSinh | "";
   lop: string;
   hocBong: "" | "co" | "khong";

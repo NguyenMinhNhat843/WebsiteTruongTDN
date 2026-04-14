@@ -5,7 +5,7 @@ import { HeDaoTaoBadge } from "../../../../components/ui/HeDaoTaoBadge";
 import { TrangThaiBadge } from "../../../../components/ui/BadgeStatus";
 import HoSoProgress from "./components/HoSoProgress";
 import RowActions from "./components/RowAction";
-import { avatarColor, fmtDate, getAvatar } from "../helpers";
+import { fmtDate } from "../helpers";
 
 const TableHoSoHocSinh = () => {
   const {
@@ -29,8 +29,8 @@ const TableHoSoHocSinh = () => {
       {viewMode === "table" && (
         <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[900px]">
-              <thead className="bg-slate-50/80 text-gray-500 text-[11px] uppercase font-bold border-b border-slate-100">
+            <table className="w-full text-left border-collapse min-w-225">
+              <thead className="bg-linear-to-r from-blue-600 via-indigo-600 to-blue-700 text-white text-[11px] uppercase font-bold tracking-wider">
                 <tr>
                   <th className="px-4 py-3.5 w-8">
                     <input
@@ -54,18 +54,14 @@ const TableHoSoHocSinh = () => {
                       Họ và tên
                     </SortBtn>
                   </th>
-                  <th className="px-4 py-3.5 text-center">
+                  <th className="px-4 py-3.5 text-center whitespace-nowrap">
                     <SortBtn field="heDaoTao" sort={sort} onSort={handleSort}>
                       Hệ đào tạo
                     </SortBtn>
                   </th>
-                  <th className="px-4 py-3.5">
-                    <SortBtn field="lop" sort={sort} onSort={handleSort}>
-                      Lớp
-                    </SortBtn>
-                  </th>
+                  <th className="px-4 py-3.5 whitespace-nowrap">Lớp</th>
                   <th className="px-4 py-3.5">Ngành</th>
-                  <th className="px-4 py-3.5 text-center">
+                  <th className="px-4 py-3.5 text-center whitespace-nowrap">
                     <SortBtn field="trangThai" sort={sort} onSort={handleSort}>
                       Trạng thái
                     </SortBtn>
@@ -123,11 +119,6 @@ const TableHoSoHocSinh = () => {
 
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-2.5">
-                          <div
-                            className={`w-8 h-8 rounded-lg bg-gradient-to-br ${avatarColor(row.id)} flex items-center justify-center text-white font-black text-[12px] shrink-0`}
-                          >
-                            {getAvatar(row.hoTen)}
-                          </div>
                           <div>
                             <div className="font-bold text-slate-800 text-[13px]">
                               {row.hoTen}
@@ -139,12 +130,12 @@ const TableHoSoHocSinh = () => {
                         </div>
                       </td>
 
-                      <td className="px-4 py-3 text-center">
+                      <td className="px-4 py-3 text-center whitespace-nowrap">
                         <HeDaoTaoBadge value={row.heDaoTao} />
                       </td>
 
                       <td className="px-4 py-3">
-                        <div className="font-semibold text-[12px] text-slate-700">
+                        <div className="font-semibold text-[12px] text-slate-700 whitespace-nowrap">
                           {row.lop}
                         </div>
                         <div className="text-[11px] text-slate-400">
@@ -158,7 +149,7 @@ const TableHoSoHocSinh = () => {
                         </span>
                       </td>
 
-                      <td className="px-4 py-3 text-center">
+                      <td className="px-4 py-3 text-center whitespace-nowrap">
                         <TrangThaiBadge value={row.trangThai} />
                       </td>
 

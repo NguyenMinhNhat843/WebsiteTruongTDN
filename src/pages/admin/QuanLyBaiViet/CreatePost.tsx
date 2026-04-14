@@ -6,7 +6,7 @@ import PostPublishSetting from "../../../features/posts/components/PostPublishSe
 import SuccessSubmitScreen from "../../../features/posts/components/SuccessSubmitScreen";
 import { usePostForm } from "../../../features/posts/hooks/usePostForm";
 import PageShell from "../../../components/ui/PageShell";
-import { Newspaper, Save, Send, X } from "lucide-react";
+import { Eye, Newspaper, Save, Send, X } from "lucide-react";
 
 export default function CreatePost() {
   const { values, submitted, errors, handleTitleChange, handleSubmit } =
@@ -22,29 +22,43 @@ export default function CreatePost() {
       sub="Chia sẻ những thông tin hữu ích về trường học đến cộng đồng"
       icon={<Newspaper className="w-8 h-8" />}
       renderRight={
-        <div className="flex items-center gap-3">
-          {/* NÚT HỦY: Nhẹ nhàng, không gây chú ý */}
+        <div className="flex items-center gap-2">
+          {/* NÚT HỦY: Chỉ icon */}
           <button
             type="button"
-            className="flex items-center gap-2 px-5 py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl transition-all font-semibold text-sm"
+            title="Hủy bỏ"
+            className="p-2.5 text-slate-500 rounded-xl transition-all
+              cursor-pointer hover:text-white hover:bg-red-500
+            "
           >
-            <X className="w-4 h-4" />
-            Hủy bỏ
+            <X className="w-5 h-5" />
           </button>
 
-          {/* NÚT LƯU NHÁP: Màu trung tính, sang trọng */}
+          {/* NÚT LƯU NHÁP: Chỉ icon */}
           <button
             type="button"
-            className="flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-all shadow-sm font-semibold text-sm"
+            title="Lưu nháp"
+            className="p-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl 
+            transition-all shadow-sm cursor-pointer hover:bg-slate-500 hover:text-white"
           >
-            <Save className="w-4 h-4 text-slate-500" />
-            Lưu nháp
+            <Save className="w-5 h-5" />
           </button>
 
-          {/* NÚT ĐĂNG BÀI: Màu nổi bật nhất (Primary) */}
+          {/* NÚT XEM TRƯỚC: Chỉ icon */}
+          <button
+            type="button"
+            title="Xem trước"
+            className="p-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-blue-500 hover:text-white transition-all shadow-sm
+              cursor-pointer
+            "
+          >
+            <Eye className="w-5 h-5" />
+          </button>
+
+          {/* NÚT ĐĂNG BÀI: Giữ nguyên label để tạo điểm nhấn (Call to Action) */}
           <button
             type="submit"
-            className="flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-indigo-600 to-violet-700 text-white rounded-xl hover:from-indigo-700 hover:to-violet-800 transition-all shadow-md hover:shadow-indigo-200/50 font-bold text-sm"
+            className="ml-1 flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-indigo-600 to-violet-700 text-white rounded-xl hover:from-indigo-700 hover:to-violet-800 transition-all shadow-md hover:shadow-indigo-200/50 font-bold text-sm"
           >
             <Send className="w-4 h-4" />
             Đăng bài viết

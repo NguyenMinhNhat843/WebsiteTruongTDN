@@ -6,7 +6,7 @@ const PostAudiencePicker = () => {
   const { values, errors, handleAudienceToggle } = usePostForm();
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
-      <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
+      <label className="block text-xs font-bold text-purple-500 uppercase tracking-widest mb-4">
         👥 Đối tượng *
       </label>
 
@@ -19,10 +19,10 @@ const PostAudiencePicker = () => {
           return (
             <button
               key={a}
-              type="button" // Tránh submit form nhầm
+              type="button"
               onClick={() => handleAudienceToggle(a)}
               className={`
-                flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-200
+                flex items-center gap-2 px-3 py-2 rounded-xl border transition-all duration-200 cursor-pointer
                 ${
                   isSelected
                     ? `${config.bgColor} ${config.textColor}`
@@ -31,13 +31,6 @@ const PostAudiencePicker = () => {
               `}
             >
               <span className="text-sm font-semibold">{config.label}</span>
-
-              {/* Dấu tích nhỏ xinh khi chọn */}
-              {isSelected && (
-                <span className="ml-1 w-4 h-4 bg-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-sm">
-                  ✓
-                </span>
-              )}
             </button>
           );
         })}

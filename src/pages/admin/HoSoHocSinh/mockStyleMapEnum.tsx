@@ -1,10 +1,7 @@
 import { CheckCircle2, Clock, UserCheck, UserX } from "lucide-react";
 import type { HeDaoTao, TrangThaiHocSinh } from "./mockType";
 
-export const HE_DAO_TAO_STYLES: Record<
-  HeDaoTao,
-  { bg: string; text: string; border: string }
-> = {
+export const HE_DAO_TAO_STYLES = {
   "Trung cấp nghề": {
     bg: "bg-blue-50",
     text: "text-blue-700",

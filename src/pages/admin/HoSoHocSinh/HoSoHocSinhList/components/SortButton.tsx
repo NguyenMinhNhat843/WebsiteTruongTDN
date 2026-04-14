@@ -13,7 +13,7 @@ const SortBtn: React.FC<SortBtnProps> = ({ field, sort, onSort, children }) => {
   return (
     <button
       onClick={() => onSort(field)}
-      className="flex items-center gap-1 font-bold text-[11px] uppercase tracking-wider text-gray-500 hover:text-slate-800 transition-colors select-none"
+      className="flex items-center gap-1 font-bold text-[11px] uppercase tracking-wider transition-colors select-none"
     >
       {children}
       <span className="ml-0.5">
@@ -24,7 +24,7 @@ const SortBtn: React.FC<SortBtnProps> = ({ field, sort, onSort, children }) => {
             <ChevronDown size={12} />
           )
         ) : (
-          <ArrowUpDown size={11} className="opacity-30" />
+          <ArrowUpDown size={11} />
         )}
       </span>
     </button>

@@ -21,9 +21,13 @@ const PageShell: FunctionComponent<PageShellProps> = ({
   classNameIcon,
 }) => {
   return (
-    <div className={clsx("w-full px-4 md:px-8 pb-4 md:pb-8", className)}>
+    <div className={clsx("w-full", className)}>
       {/* PHẦN 1: HEADER - Đã thêm sticky và nền */}
-      <div className="sticky top-0 z-20 bg-white/80 py-6 backdrop-blur-md flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div
+        className="sticky top-0 z-20 bg-white/80 backdrop-blur-md flex flex-col md:flex-row md:items-center justify-between gap-6
+        px-4 md:px-8 py-4 border-b border-slate-200
+      "
+      >
         {/* Nhóm bên trái: Icon + Text */}
         <div className="flex items-center gap-4">
           {icon && (
@@ -56,7 +60,9 @@ const PageShell: FunctionComponent<PageShellProps> = ({
       </div>
 
       {/* --- PHẦN 2: CONTENT (Nằm riêng biệt hoàn toàn bên dưới) --- */}
-      <div className="w-full">{children}</div>
+      <div className="w-full min-h-screen bg-slate-50">
+        <div className="px-4 md:px-8 pb-4 md:pb-8">{children}</div>
+      </div>
     </div>
   );
 };
