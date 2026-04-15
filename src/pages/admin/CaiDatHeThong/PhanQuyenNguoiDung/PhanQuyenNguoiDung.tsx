@@ -130,10 +130,10 @@ export default function PhanQuyenNguoiDung() {
         </header>
 
         <div className="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-slate-900 text-white">
+                <tr className="bg-slate-900 text-white whitespace-nowrap">
                   <th className="p-5 text-left font-bold uppercase tracking-widest text-xs border-r border-slate-800 w-64">
                     Nhóm Chức Năng
                   </th>
@@ -172,7 +172,7 @@ export default function PhanQuyenNguoiDung() {
                             modId={mod.id}
                             action="update"
                             label="SỬA"
-                            color="amber"
+                            color="blue"
                             Icon={Edit}
                           />
                           <ActionButton

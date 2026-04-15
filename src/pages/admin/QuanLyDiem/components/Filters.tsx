@@ -2,6 +2,7 @@ import {
   Briefcase,
   Calendar,
   CheckCircle2,
+  ChevronDown,
   Filter,
   GraduationCap,
   Search,
@@ -93,15 +94,10 @@ const FilterBar = () => {
                 ))}
               </select>
               <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
-                  <path
-                    d="M1 1L5 5L9 1"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+                <ChevronDown
+                  size={16}
+                  className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400"
+                />
               </div>
             </div>
           </div>

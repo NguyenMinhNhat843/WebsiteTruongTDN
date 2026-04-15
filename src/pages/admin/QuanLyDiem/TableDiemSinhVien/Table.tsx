@@ -17,8 +17,6 @@ import StatusBadge from "./components/StatusBadge";
 import { useDanhSachDiemThiContext } from "../DanhSachDiemThiProvider";
 import ActionButton from "../../../../components/ui/ActionButton";
 
-// ─────────────────────────────────────────────────────────────────────────────
-
 interface ScoreInputProps {
   value: string;
   onChange: (value: string) => void;
@@ -80,7 +78,6 @@ const Inner: React.FC = () => {
     saved,
   } = useTableDiemSinhVienContext();
 
-  // ─────────────────────────────────────────────────────────────────────────
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
       {/* ── Header ── */}
@@ -143,8 +140,8 @@ const Inner: React.FC = () => {
       </div>
 
       {/* ── Table ── */}
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[900px]">
+      <div className="overflow-x-auto custom-scrollbar">
+        <table className="w-full text-left border-collapse min-w-225">
           <thead className="bg-gray-50/60 text-gray-500 text-[11px] uppercase font-bold">
             <tr>
               <th className="px-4 py-3.5 border-b border-gray-100">
