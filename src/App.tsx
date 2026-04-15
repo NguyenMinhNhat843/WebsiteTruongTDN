@@ -37,7 +37,7 @@ import TuitionFee from "./pages/admin/ThuHocPhi/ThuHocPhi";
 import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
 import AdmissionApplication from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSo";
 import MediaLibrary from "./pages/admin/QuanLyMedia/QuanLyMedia";
-import QuanLyVanBang from "./pages/admin/QuanLyVanBang/QuanLyVanBang";
+import QuanLyXetTotNghiep from "./pages/admin/QuanLyVanBang/QuanLyVanBang";
 import PhanCongGiangDay from "./pages/admin/PhanCongGiangDay/PhanCongGiangDay";
 import HoSoTuyenSinhOne from "./pages/admin/TuyenSinh/QuanLyHoSo/HoSoTuyenSinhOne/HoSoTuyenSinhOne";
 import QuanLyHoSoLayout from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSoLayout";
@@ -111,7 +111,7 @@ function App() {
           <Route path="hoc-sinh/tot-nghiep" element={<XetTotNghiep />} />
           <Route
             path="hoc-sinh/dot-xet-tot-nghiep"
-            element={<QuanLyVanBang />}
+            element={<QuanLyXetTotNghiep />}
           />
         </Route>
 

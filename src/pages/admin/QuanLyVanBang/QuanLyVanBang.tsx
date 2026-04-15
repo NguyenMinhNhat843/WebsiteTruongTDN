@@ -1,5 +1,5 @@
-const QuanLyVanBang = () => {
-  return <div>Quản lý văn bằng</div>;
+const QuanLyXetTotNghiep = () => {
+  return <div>Quản lý đợt xét tốt nghiệp</div>;
 };
 
-export default QuanLyVanBang;
+export default QuanLyXetTotNghiep;

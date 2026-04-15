@@ -23,7 +23,7 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
     ref,
   ) => {
     const baseClasses =
-      "inline-flex items-center justify-center font-medium transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed";
+      "inline-flex items-center justify-center font-medium transition-all cursor-pointer duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed";
 
     const sizeClasses = {
       sm: "px-3 py-1.5 text-sm rounded-md",
