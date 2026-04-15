@@ -8,7 +8,6 @@ const TableQuanLyHoSo = () => {
     getSystemColor,
     getStatusBadge,
     setSelectedApplication,
-    setShowDetailModal,
     setShowReviewModal,
   } = useQuanLyHoSoContext();
   const navigate = useNavigate();

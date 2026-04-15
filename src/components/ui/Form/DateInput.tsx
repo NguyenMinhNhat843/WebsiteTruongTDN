@@ -7,6 +7,7 @@ interface DateInputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   containerClassName?: string;
   labelClassName?: string;
+  require?: boolean;
 }
 
 const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
@@ -17,6 +18,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
       containerClassName = "",
       className = "",
       labelClassName = "",
+      require,
       ...props
     },
     ref,
@@ -32,6 +34,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
             )}
           >
             {label}
+            {require && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
 

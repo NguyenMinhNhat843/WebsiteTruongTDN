@@ -1,5 +1,29 @@
 import type { Application } from "./type";
 
+export const majors = {
+  "Trung cấp nghề": [
+    "Công nghệ kỹ thuật ô tô",
+    "Kỹ thuật hàn",
+    "Điện công nghiệp",
+    "Cơ khí chế tạo",
+    "Kỹ thuật xây dựng",
+  ],
+  "Sơ cấp nghề": [
+    "May công nghiệp",
+    "Nấu ăn",
+    "Điện dân dụng",
+    "Sửa chữa điện tử",
+    "Làm vườn",
+  ],
+  "Đại học liên kết": [
+    "Quản trị kinh doanh",
+    "Kế toán",
+    "Công nghệ thông tin",
+    "Marketing",
+  ],
+  "Hệ 9+": ["Điện tử công nghiệp", "Cơ khí ô tô", "Tin học ứng dụng"],
+};
+
 export const applicationsData: Application[] = [
   {
     id: "HS001",

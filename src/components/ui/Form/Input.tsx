@@ -8,6 +8,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   containerClassName?: string;
   labelClassName?: string;
+  require?: boolean;
 }
 
 const Input = forwardRef<HTMLInputElement, InputProps>(
@@ -16,6 +17,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       label,
       icon: Icon,
       error,
+      require,
       containerClassName = "",
       className = "",
       labelClassName = "",
@@ -34,6 +36,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           >
             {label}
+            {require && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
 
@@ -49,6 +52,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           <input
             ref={ref}
             {...props}
+            required={require}
             className={clsx(
               `
               w-full transition-all duration-200

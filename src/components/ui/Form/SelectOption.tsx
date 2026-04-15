@@ -15,6 +15,7 @@ interface SelectOptionProps extends SelectHTMLAttributes<HTMLSelectElement> {
   error?: string;
   className?: string;
   labelClassName?: string;
+  require?: boolean;
 }
 
 export const SelectOption = ({
@@ -26,6 +27,7 @@ export const SelectOption = ({
   error,
   id,
   labelClassName = "",
+  require,
   ...props
 }: SelectOptionProps) => {
   return (
@@ -41,6 +43,7 @@ export const SelectOption = ({
         >
           {icon && <span className="text-gray-400">{icon}</span>}
           {label}
+          {require && <span className="text-red-500">*</span>}
         </label>
       )}
 
