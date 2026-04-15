@@ -109,7 +109,10 @@ function App() {
           <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
           <Route path="hoc-sinh/ho-so/:id" element={<HoSoHocSinhOne />} />
           <Route path="hoc-sinh/tot-nghiep" element={<XetTotNghiep />} />
-          <Route path="hoc-sinh/van-bang" element={<QuanLyVanBang />} />
+          <Route
+            path="hoc-sinh/dot-xet-tot-nghiep"
+            element={<QuanLyVanBang />}
+          />
         </Route>
 
         {/* Tuyển sinh */}

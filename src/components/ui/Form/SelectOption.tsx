@@ -51,7 +51,7 @@ export const SelectOption = ({
             `
             w-full appearance-none bg-white border border-gray-200 text-gray-900 text-sm rounded-xl 
             focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 
-            block p-3 transition-all duration-200 outline-none
+            block p-2.5 transition-all duration-200 outline-none
             cursor-pointer disabled:bg-gray-50 disabled:cursor-not-allowed
             ${error ? "border-red-500 focus:ring-red-500/20" : "hover:border-gray-300"}`,
             className,

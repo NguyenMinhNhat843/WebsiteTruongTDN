@@ -59,9 +59,9 @@ const navItems: NavItem[] = [
         href: "/admin/hoc-sinh/tot-nghiep",
       },
       {
-        id: "quan-ly-van-bang",
-        label: "Quản lý văn bằng",
-        href: "/admin/hoc-sinh/van-bang",
+        id: "dot-xet-tot-nghiep",
+        label: "Đợt xét tốt nghiệp",
+        href: "/admin/hoc-sinh/dot-xet-tot-nghiep",
       },
     ],
   },
