@@ -24,7 +24,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     return (
-      <div className={clsx(`w-full space-y-1.5`, containerClassName)}>
+      <div className={clsx("space-y-1.5", containerClassName || "w-full")}>
         {/* Label */}
         {label && (
           <label

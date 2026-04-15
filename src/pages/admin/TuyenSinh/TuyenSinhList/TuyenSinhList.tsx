@@ -1,4 +1,3 @@
-import AdmissionForm from "../TuyenSinhCreate/TuyenSInhCreateForm";
 import { useTuyenSinhContext } from "../TuyenSinhProvider";
 import TuyenSinhTable from "./TuyenSinhTable";
 import DeleteModal from "../DeleteModal";
@@ -7,13 +6,12 @@ import PageShell from "../../../../components/ui/PageShell";
 import StatsOverview from "../components/StatsOverview";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import FilterSection from "../components/FilterSection";
+import CreateDotTuyenSinh from "../TuyenSinhCreate/TuyenSinhCreateForm";
 
 export default function DotTuyenSinhList() {
   const {
     deleteTarget,
-    handleCreate,
     handleDelete,
-    handleEdit,
     selectedRound,
     setDeleteTarget,
     setView,
@@ -47,15 +45,15 @@ export default function DotTuyenSinhList() {
           </div>
 
           {openFormCreate && (
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+            <div className="fixed inset-0 z-100 flex items-center justify-center">
               {/* Backdrop: Làm tối và mờ nền sau */}
               <div
-                className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-300"
+                className="absolute inset-0 bg-gray-900/60 animate-in fade-in duration-300"
                 onClick={() => setOpenFormCreate(false)} // Đóng khi click ra ngoài
               />
 
               {/* Modal Content Container */}
-              <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl shadow-black/20 animate-in zoom-in-95 duration-300">
+              <div className="relative w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl">
                 {/* Nút đóng nhanh (X) ở góc trên bên phải */}
                 <button
                   onClick={() => setOpenFormCreate(false)}
@@ -65,17 +63,13 @@ export default function DotTuyenSinhList() {
                 </button>
 
                 {/* Form chính */}
-                <AdmissionForm
-                  onSave={handleCreate}
-                  onCancel={() => setOpenFormCreate(false)}
-                />
+                <CreateDotTuyenSinh onCancel={() => setOpenFormCreate(false)} />
               </div>
             </div>
           )}
           {view === "edit" && selectedRound && (
-            <AdmissionForm
+            <CreateDotTuyenSinh
               initial={selectedRound}
-              onSave={handleEdit}
               onCancel={() => setView("detail")}
             />
           )}

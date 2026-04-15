@@ -6,6 +6,7 @@ export interface ButtonActionProps extends ButtonHTMLAttributes<HTMLButtonElemen
   variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
+  label?: string;
 }
 
 const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
@@ -18,6 +19,7 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
       loading = false,
       disabled,
       className,
+      label,
       ...props
     },
     ref,
@@ -43,6 +45,8 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
       danger:
         "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 focus:ring-offset-white",
     };
+
+    const content = children || label;
 
     const isLoading = loading && !disabled;
 
@@ -88,16 +92,16 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span>{children}</span>
+            <span>{content}</span>
           </span>
         ) : (
           <>
             {icon && (
-              <span className={clsx("mr-2", children && "flex-shrink-0")}>
+              <span className={clsx("mr-2", content && "shrink-0")}>
                 {icon}
               </span>
             )}
-            {children}
+            {content}
           </>
         )}
       </button>
