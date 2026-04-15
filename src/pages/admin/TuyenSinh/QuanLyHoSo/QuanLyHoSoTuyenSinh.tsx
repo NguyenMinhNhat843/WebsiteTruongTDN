@@ -1,20 +1,14 @@
 import {
   FileCheck,
-  User,
   Calendar,
   BookOpen,
   CheckCircle,
   XCircle,
   Plus,
-  Upload,
   Info,
   Users,
 } from "lucide-react";
-import {
-  admissionBatches,
-  QuanLyHoSoProvider,
-  useQuanLyHoSoContext,
-} from "./QuanLyHoSoProvider";
+import { QuanLyHoSoProvider, useQuanLyHoSoContext } from "./QuanLyHoSoProvider";
 import BatchStatCard from "./components/BatchStatCard";
 import OverviewStat from "./components/OverviewStat";
 import FilterSection from "./components/FilterSection";
@@ -23,7 +17,6 @@ import TableQuanLyHoSo from "./TableQuanLyHoSo/TableQuanLyHoSo";
 import Tabs from "../../../../components/ui/Tabs";
 import { useState } from "react";
 import PageShell from "../../../../components/ui/PageShell";
-import { majors } from "./mockData";
 import CreateHoSoTuyenSinh from "./CreateHoSoTuyenSinh";
 
 const AdmissionApplication = () => {
@@ -37,16 +30,13 @@ const AdmissionApplication = () => {
 function Inner() {
   const {
     batchStats,
-    handleSubmit,
     selectedApplication,
-    setFormData,
     setSelectedApplication,
     setShowRegisterModal,
     setShowReviewModal,
     showRegisterModal,
     showReviewModal,
     systemStats,
-    formData,
   } = useQuanLyHoSoContext();
   const [activeTab, setActiveTab] = useState<TabType>("tongquan");
   const TABS = [

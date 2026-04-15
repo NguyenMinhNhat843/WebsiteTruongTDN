@@ -35,7 +35,7 @@ import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
 import NguonTuyenSinh from "./pages/admin/NguonTuyenSinh/NguonTuyenSinh";
 import TuitionFee from "./pages/admin/ThuHocPhi/ThuHocPhi";
 import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
-import AdmissionApplication from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSo";
+import AdmissionApplication from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSoTuyenSinh";
 import MediaLibrary from "./pages/admin/QuanLyMedia/QuanLyMedia";
 import QuanLyXetTotNghiep from "./pages/admin/QuanLyVanBang/QuanLyVanBang";
 import PhanCongGiangDay from "./pages/admin/PhanCongGiangDay/PhanCongGiangDay";
