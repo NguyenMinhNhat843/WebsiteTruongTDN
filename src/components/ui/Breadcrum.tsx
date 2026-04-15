@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -9,11 +10,17 @@ interface BreadcrumbItem {
 
 interface BreadcrumbProps {
   items: BreadcrumbItem[];
+  className?: string;
 }
 
-const Breadcrumb = ({ items }: BreadcrumbProps) => {
+const Breadcrumb = ({ items, className }: BreadcrumbProps) => {
   return (
-    <nav className="flex items-center gap-2 text-[12px] text-slate-400">
+    <nav
+      className={clsx(
+        "flex items-center gap-2 text-[12px] text-slate-400",
+        className,
+      )}
+    >
       {items.map((item, index) => {
         const isLast = index === items.length - 1;
 

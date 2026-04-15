@@ -13,6 +13,9 @@ import {
 import { fillRate, formatCurrency } from "../helpers";
 import type { AdmissionRound } from "../type";
 import Breadcrumb from "../../../../components/ui/Breadcrum";
+import { Calendar, Pencil, Trash2 } from "lucide-react";
+import ButtonAction from "../../../../components/ui/ButtonAction";
+import SectionTitle from "../../../../components/ui/SectionTitle";
 
 const dataTest: AdmissionRound = {
   id: "1",
@@ -66,6 +69,7 @@ const DotTuyenSinhOne: FunctionComponent<DotTuyenSinhOneProps> = ({
             label: round.name,
           },
         ]}
+        className="pb-2"
       />
 
       <div className="mx-auto space-y-6 animate-in fade-in duration-500">
@@ -91,30 +95,22 @@ const DotTuyenSinhOne: FunctionComponent<DotTuyenSinhOneProps> = ({
               {round.name}
             </h1>
             <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                />
-              </svg>
+              <Calendar size={16} />
               <span>Tạo ngày {formatDate(round.createdAt)}</span>
             </div>
           </div>
 
           <div className="flex gap-3 shrink-0 w-full md:w-auto">
-            <button className="flex-1 md:flex-none px-6 py-2.5 text-sm font-semibold border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-all active:scale-95">
-              Chỉnh sửa
-            </button>
-            <button className="flex-1 md:flex-none px-6 py-2.5 text-sm font-semibold bg-red-50 text-red-600 border border-red-100 rounded-xl hover:bg-red-100 transition-all active:scale-95">
-              Xoá
-            </button>
+            <ButtonAction
+              label="Chỉnh sửa"
+              variant="primary"
+              icon={<Pencil size={16} />}
+            />
+            <ButtonAction
+              label="Xoá"
+              variant="danger"
+              icon={<Trash2 size={16} />}
+            />
           </div>
         </div>
 
@@ -125,18 +121,21 @@ const DotTuyenSinhOne: FunctionComponent<DotTuyenSinhOneProps> = ({
               {
                 label: "Tổng chỉ tiêu",
                 value: round.totalQuota.toLocaleString(),
-                color: "#0284c7",
+                className:
+                  "bg-linear-to-r from-blue-600 to-indigo-500 text-white",
               },
               {
                 label: "Đã đăng ký",
                 value: round.totalRegistered.toLocaleString(),
                 sub: `${rate}% lấp đầy`,
-                color: "#f59e0b",
+                className:
+                  "bg-linear-to-r from-purple-600 to-pink-500 text-white",
               },
               {
                 label: "Học phí / năm",
                 value: formatCurrency(round.tuitionFee),
-                color: "#8b5cf6",
+                className:
+                  "bg-linear-to-r from-emerald-600 to-teal-500 text-white",
               },
               {
                 label:
@@ -144,7 +143,8 @@ const DotTuyenSinhOne: FunctionComponent<DotTuyenSinhOneProps> = ({
                     ? "Điểm chuẩn tối thiểu"
                     : "Điểm chuẩn",
                 value: round.minScore ?? "Không yêu cầu",
-                color: round.minScore !== undefined ? "#10b981" : "#64748b",
+                className:
+                  "bg-linear-to-r from-orange-500 to-amber-400 text-white",
               },
             ].map((stat) => (
               <StatCard key={stat.label} {...stat} />
@@ -181,9 +181,7 @@ const DotTuyenSinhOne: FunctionComponent<DotTuyenSinhOneProps> = ({
         {/* SECTION 3: TIMELINE & NOTE */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm">
-            <h3 className="flex items-center gap-2 text-sm font-bold text-gray-900 uppercase tracking-widest mb-6 border-l-4 border-blue-500 pl-3">
-              Lộ trình tuyển sinh
-            </h3>
+            <SectionTitle label="Lộ trình tuyển sinh" color="border-blue-500" />
             <div className="space-y-4">
               {[
                 { label: "Ngày mở đơn", date: round.openDate, icon: "🚀" },
@@ -227,9 +225,7 @@ const DotTuyenSinhOne: FunctionComponent<DotTuyenSinhOneProps> = ({
           </div>
 
           <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm flex flex-col">
-            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest mb-4 border-l-4 border-amber-500 pl-3">
-              Ghi chú quản lý
-            </h3>
+            <SectionTitle color="border-amber-500" label="Ghi chú quản lý" />
             {round.note ? (
               <div className="flex-1 relative p-4 bg-amber-50/50 rounded-xl border border-amber-100/50 italic text-gray-700 text-sm leading-relaxed">
                 <span className="absolute top-2 right-4 text-4xl text-amber-200/50 font-serif">
@@ -239,19 +235,6 @@ const DotTuyenSinhOne: FunctionComponent<DotTuyenSinhOneProps> = ({
               </div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-gray-400 space-y-2 border-2 border-dashed border-gray-100 rounded-xl">
-                <svg
-                  className="w-8 h-8 opacity-20"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9.663 17h4.674a1 1 0 00.922-.617l2.108-4.742A1 1 0 0016.446 10H13V4.477a1 1 0 00-1.991-.126l-3.337 11.25a1 1 0 001.127 1.279z"
-                  />
-                </svg>
                 <span className="text-xs italic">Không có ghi chú thêm</span>
               </div>
             )}
@@ -262,9 +245,10 @@ const DotTuyenSinhOne: FunctionComponent<DotTuyenSinhOneProps> = ({
         {round.majors.length > 0 && (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <div className="p-6 border-b border-gray-50 flex items-center justify-between">
-              <h3 className="text-sm font-bold text-gray-900 uppercase tracking-widest border-l-4 border-purple-500 pl-3">
-                Danh sách Ngành / Nghề
-              </h3>
+              <SectionTitle
+                label="Danh sách Ngành / nghề"
+                color="border-purple-500"
+              />
               <span className="text-xs font-medium text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
                 {round.majors.length} Ngành
               </span>
