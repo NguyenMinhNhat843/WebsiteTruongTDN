@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { PAGE_SIZE } from "./constants";
 import { HE_DAO_TAO, SAMPLE_DATA } from "./mockData";
+import type { LopHoc } from "./mockType";
 
 export const [LopHocVaKhoaHocProvider, useLopHocVaKhoaHocContext] =
   createContextProvider(() => {
@@ -12,7 +13,7 @@ export const [LopHocVaKhoaHocProvider, useLopHocVaKhoaHocContext] =
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(1);
     const [showCreate, setShowCreate] = useState(false);
-    const [detail, setDetail] = useState(null);
+    const [detail, setDetail] = useState<LopHoc | null>(null);
 
     const filtered = useMemo(() => {
       return SAMPLE_DATA.filter((r) => {
@@ -33,7 +34,12 @@ export const [LopHocVaKhoaHocProvider, useLopHocVaKhoaHocContext] =
     }, [activeTab, fKhoa, fStatus, fNganh, search]);
 
     const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
-    const pageData = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+    const pageData = filtered
+      .slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE)
+      .map((r, i) => ({
+        ...r,
+        stt: ((page - 1) * PAGE_SIZE + i + 1).toString(),
+      }));
 
     const stats = useMemo(() => {
       const active = SAMPLE_DATA.filter((r) => r.status === "Đang học").length;
@@ -89,5 +95,6 @@ export const [LopHocVaKhoaHocProvider, useLopHocVaKhoaHocContext] =
       handleTabChange,
       handleFilter,
       tabCounts,
+      pageSize: PAGE_SIZE,
     };
   });

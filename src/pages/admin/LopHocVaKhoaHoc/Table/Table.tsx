@@ -1,105 +1,185 @@
+import type { FunctionComponent, ReactNode } from "react";
 import Badge from "../../../../components/ui/Badge";
 import Pagination from "../../../../components/ui/Pagination";
 import ProgressBar from "../../../../components/ui/ProgressBar";
 import { HE_BADGE, PAGE_SIZE, STATUS_BADGE } from "../constants";
 import { useLopHocVaKhoaHocContext } from "../LopHocVaKhoaHocProvider";
 import { HE_DAO_TAO } from "../mockData";
+import clsx from "clsx";
+import { type LopHoc } from "../mockType";
+import { Edit3, Eye, Trash2 } from "lucide-react";
 
-const Table = () => {
-  const { pageData, setDetail, setPage, totalPages, page, filtered } =
+interface TableProps {
+  className?: string;
+}
+
+// 1. Kiểu dữ liệu cho một dòng (Lớp học)
+export interface ClassRecord extends LopHoc {
+  stt: string;
+}
+
+interface TableColumn {
+  key: string;
+  label: string;
+  className?: string;
+  // Hàm render tùy chỉnh nhận vào toàn bộ record và trả về ReactNode
+  render?: (record: ClassRecord) => ReactNode;
+}
+
+const Table: FunctionComponent<TableProps> = ({ className }) => {
+  const { pageData, setDetail, setPage, totalPages, page } =
     useLopHocVaKhoaHocContext();
+
+  const COLUMNS: TableColumn[] = [
+    {
+      key: "stt",
+      label: "STT",
+      className: "w-12 text-center text-gray-500",
+      render: (r) => <span>{r.stt}</span>,
+    },
+    {
+      key: "ma",
+      label: "Mã lớp",
+      className: "w-28 font-mono text-blue-600 whitespace-nowrap",
+    },
+    {
+      key: "ten",
+      label: "Tên lớp",
+      className: "max-w-50 truncate font-medium text-gray-800",
+    },
+    {
+      key: "he",
+      label: "Hệ đào tạo",
+      render: (r) => (
+        <Badge className={HE_BADGE[r.he]}>{HE_DAO_TAO[r.he]}</Badge>
+      ),
+    },
+    { key: "khoa", label: "Niên khóa", className: "text-gray-500" },
+    {
+      key: "nganh",
+      label: "Ngành",
+      className: "text-gray-600 whitespace-nowrap",
+    },
+    {
+      key: "siso",
+      label: "Sĩ số",
+      render: (r) => (
+        <span className="tabular-nums text-gray-700">
+          {r.siso}/{r.max}
+        </span>
+      ),
+    },
+    {
+      key: "fill",
+      label: "Lấp đầy",
+      className: "w-28",
+      render: (r) => <ProgressBar value={r.siso} max={r.max} />,
+    },
+    {
+      key: "status",
+      label: "Trạng thái",
+      render: (r) => (
+        <Badge className={STATUS_BADGE[r.status]}>{r.status}</Badge>
+      ),
+    },
+    {
+      key: "gvcn",
+      label: "GVCN",
+      className: "text-xs text-gray-400 max-w-27.5 whitespace-nowrap",
+    },
+    {
+      key: "action",
+      label: "Thao tác",
+      className: "w-24",
+      render: (r) => {
+        const actions = [
+          {
+            label: "Xem",
+            icon: <Eye size={14} />,
+            onClick: () => setDetail(r),
+            className:
+              "text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white border-blue-100",
+          },
+          {
+            label: "Sửa",
+            icon: <Edit3 size={14} />,
+            onClick: () => {},
+            className:
+              "text-amber-600 bg-amber-50 hover:bg-amber-600 hover:text-white border-amber-100",
+          },
+          {
+            label: "Xóa",
+            icon: <Trash2 size={14} />,
+            onClick: () => {},
+            className:
+              "text-red-600 bg-red-50 hover:bg-red-600 hover:text-white border-red-100",
+          },
+        ];
+
+        return (
+          <div className="flex items-center gap-2">
+            {actions.map((btn) => (
+              <button
+                key={btn.label}
+                onClick={btn.onClick}
+                title={btn.label} // Hiện tooltip mặc định của trình duyệt
+                className={clsx(
+                  "p-2 rounded-lg border transition-all duration-200 flex items-center justify-center shadow-xs",
+                  btn.className,
+                )}
+              >
+                {btn.icon}
+              </button>
+            ))}
+          </div>
+        );
+      },
+    },
+  ];
+
   return (
-    <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-      <div className="overflow-x-auto">
+    <div
+      className={clsx(
+        `bg-white rounded-xl border border-gray-100 overflow-hidden`,
+        className,
+      )}
+    >
+      <div className="overflow-x-auto custom-scrollbar">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-100">
-              <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400 whitespace-nowrap w-28">
-                Mã lớp
-              </th>
-              <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400">
-                Tên lớp
-              </th>
-              <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400 whitespace-nowrap">
-                Hệ đào tạo
-              </th>
-              <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400 whitespace-nowrap">
-                Niên khóa
-              </th>
-              <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400">
-                Ngành
-              </th>
-              <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400 whitespace-nowrap">
-                Sĩ số
-              </th>
-              <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400 w-28">
-                Lấp đầy
-              </th>
-              <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400">
-                Trạng thái
-              </th>
-              <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400">
-                GVCN
-              </th>
-              <th className="px-4 py-2.5 text-left text-xs font-medium text-gray-400">
-                Thao tác
-              </th>
+            <tr className="bg-linear-to-r from-blue-700 via-indigo-600 to-blue-800 text-white">
+              {COLUMNS.map((col) => (
+                <th
+                  key={col.key}
+                  className="px-4 py-4 text-left text-xs font-bold uppercase tracking-wider whitespace-nowrap"
+                >
+                  {col.label}
+                </th>
+              ))}
             </tr>
           </thead>
-          <tbody>
-            {pageData.map((r) => (
-              <tr
-                key={r.ma}
-                className="border-b border-gray-50 hover:bg-gray-50 transition-colors"
-              >
-                <td className="px-4 py-3 font-mono text-xs font-medium text-blue-600">
-                  {r.ma}
-                </td>
-                <td className="px-4 py-3 max-w-50 truncate font-medium text-gray-800">
-                  {r.ten}
-                </td>
-                <td className="px-4 py-3">
-                  <Badge className={HE_BADGE[r.he]}>{HE_DAO_TAO[r.he]}</Badge>
-                </td>
-                <td className="px-4 py-3 text-gray-500">{r.khoa}</td>
-                <td className="px-4 py-3 text-gray-600 whitespace-nowrap">
-                  {r.nganh}
-                </td>
-                <td className="px-4 py-3 tabular-nums text-gray-700">
-                  {r.siso}/{r.max}
-                </td>
-                <td className="px-4 py-3">
-                  <ProgressBar value={r.siso} max={r.max} />
-                </td>
-                <td className="px-4 py-3">
-                  <Badge className={STATUS_BADGE[r.status]}>{r.status}</Badge>
-                </td>
-                <td
-                  className="px-4 py-3 text-xs text-gray-400 max-w-27.5 truncate"
-                  title={r.gvcn}
+          <tbody className="divide-y divide-gray-50">
+            {pageData.length > 0 ? (
+              pageData.map((r) => (
+                <tr
+                  key={r.ma}
+                  className="hover:bg-gray-50 transition-colors group"
                 >
-                  {r.gvcn}
-                </td>
-                <td className="px-4 py-3">
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => setDetail(r)}
-                      className="px-2.5 py-1 text-xs border border-gray-200 rounded hover:bg-gray-50 transition-colors"
+                  {COLUMNS.map((col) => (
+                    <td
+                      key={col.key}
+                      className={`px-4 py-3 ${col.className || ""}`}
                     >
-                      Xem
-                    </button>
-                    <button className="px-2.5 py-1 text-xs border border-gray-200 rounded hover:bg-gray-50 transition-colors">
-                      Sửa
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-            {pageData.length === 0 && (
+                      {col?.render ? col.render(r) : r[col.key]}
+                    </td>
+                  ))}
+                </tr>
+              ))
+            ) : (
               <tr>
                 <td
-                  colSpan={10}
-                  className="px-4 py-12 text-center text-gray-400 text-sm"
+                  colSpan={COLUMNS.length}
+                  className="px-4 py-16 text-center text-gray-400 italic"
                 >
                   Không tìm thấy lớp học nào phù hợp
                 </td>
@@ -112,7 +192,6 @@ const Table = () => {
       <Pagination
         currentPage={page}
         pageSize={PAGE_SIZE}
-        totalPages={totalPages}
         onPageChange={setPage}
         totalItems={totalPages * PAGE_SIZE}
       />

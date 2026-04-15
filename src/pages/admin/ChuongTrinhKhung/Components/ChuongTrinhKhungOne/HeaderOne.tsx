@@ -1,7 +1,7 @@
 import clsx from "clsx";
-import { EduBadge } from "./EduBadge";
-import { StatusBadge } from "./StatusBadge";
-import { useChuongTrinhKhungContext } from "../ChuongTrinhKhungProvider";
+import { EduBadge } from "../EduBadge";
+import { StatusBadge } from "../StatusBadge";
+import { useChuongTrinhKhungContext } from "../../ChuongTrinhKhungProvider";
 
 const HeaderOne = () => {
   const {

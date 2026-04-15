@@ -40,7 +40,7 @@ const Modules = () => {
             </span>
           </div>
           <div className="overflow-x-auto rounded-lg border border-slate-200">
-            <table className="w-full text-sm min-w-[600px]">
+            <table className="w-full text-sm min-w-150">
               <thead>
                 <tr className="bg-slate-50 text-[10px] font-black uppercase tracking-wider text-slate-400 border-b border-slate-200">
                   <th className="text-left px-3 py-2">Mã</th>
