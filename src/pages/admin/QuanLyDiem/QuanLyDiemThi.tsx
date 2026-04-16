@@ -9,6 +9,7 @@ import LichSuThaoTac from "./LichSuThaoTac";
 import StatsOverview from "./components/StatsOverview";
 import PageShell from "../../../components/ui/PageShell";
 import { ClipboardCheck, FileSpreadsheet } from "lucide-react";
+import ImportExcelModal from "./ModalNhapFileExcel";
 
 export default function QuanLyDiemThi() {
   return (
@@ -19,8 +20,12 @@ export default function QuanLyDiemThi() {
 }
 
 const Inner = () => {
-  const { openLichSuThaoTac, setOpenLichSuThaoTac } =
-    useDanhSachDiemThiContext();
+  const {
+    openLichSuThaoTac,
+    setOpenLichSuThaoTac,
+    openModalImportExcel,
+    setOpenModalImportExcel,
+  } = useDanhSachDiemThiContext();
   return (
     <PageShell
       title="Quản lý điểm thi"
@@ -28,7 +33,11 @@ const Inner = () => {
       sub="Năm học 2025 - 2026 | Học kỳ 2"
       renderRight={
         <div className="flex gap-2">
-          <button className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 shadow-sm shadow-emerald-200 transition-all active:scale-95">
+          <button
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg 
+          text-sm font-medium flex items-center gap-2 shadow-sm shadow-emerald-200 transition-all active:scale-95"
+            onClick={() => setOpenModalImportExcel(true)}
+          >
             <FileSpreadsheet size={18} />
             <span>Nhập điểm Excel</span>
           </button>
@@ -54,6 +63,10 @@ const Inner = () => {
           <LichSuThaoTac onClose={() => setOpenLichSuThaoTac(false)} />
         )}
       </div>
+
+      {openModalImportExcel && (
+        <ImportExcelModal onClose={() => setOpenModalImportExcel(false)} />
+      )}
     </PageShell>
   );
 };
