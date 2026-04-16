@@ -150,11 +150,11 @@ const navItems: NavItem[] = [
       },
     ],
   },
-  {
-    id: "quan-ly-co-so-vat-chat",
-    label: "Quản lý cơ sở vật chất",
-    icon: "🏢",
-  },
+  // {
+  //   id: "quan-ly-co-so-vat-chat",
+  //   label: "Quản lý cơ sở vật chất",
+  //   icon: "🏢",
+  // },
   // --- HỆ THỐNG ---
   {
     id: "he-thong",
