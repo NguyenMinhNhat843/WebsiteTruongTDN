@@ -9,6 +9,7 @@ interface FilterSectionWrapperProps {
   title?: string;
   className?: string;
   classNameBody?: string;
+  renderHeader?: () => React.ReactNode; // Cho phép tùy chỉnh header nếu cần, mặc định sẽ dùng title và activeCount
 }
 
 const FilterSectionWrapper = ({
@@ -18,6 +19,7 @@ const FilterSectionWrapper = ({
   title = "Bộ lọc",
   className,
   classNameBody,
+  renderHeader,
 }: FilterSectionWrapperProps) => {
   return (
     <div
@@ -28,28 +30,31 @@ const FilterSectionWrapper = ({
     >
       {/* Header */}
       <div className="px-5 py-3 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
-            <Filter size={18} strokeWidth={2.5} />
-          </div>
-          <h3 className="font-bold text-slate-700 text-sm">{title}</h3>
+        <div>
+          <div className="flex items-center gap-2">
+            <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
+              <Filter size={18} strokeWidth={2.5} />
+            </div>
+            <h3 className="font-bold text-slate-700 text-sm">{title}</h3>
 
-          {activeCount && activeCount > 0 ? (
-            <span className="flex items-center justify-center bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-in zoom-in duration-300">
-              {activeCount}
-            </span>
+            {activeCount && activeCount > 0 ? (
+              <span className="flex items-center justify-center bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-in zoom-in duration-300">
+                {activeCount}
+              </span>
+            ) : null}
+          </div>
+
+          {activeCount && activeCount > 0 && onClear ? (
+            <button
+              onClick={onClear}
+              className="text-xs font-semibold text-rose-500 hover:bg-rose-50 px-2 py-1 rounded-md transition-colors flex items-center gap-1"
+            >
+              <X size={14} />
+              Xóa lọc
+            </button>
           ) : null}
         </div>
-
-        {activeCount && activeCount > 0 && onClear ? (
-          <button
-            onClick={onClear}
-            className="text-xs font-semibold text-rose-500 hover:bg-rose-50 px-2 py-1 rounded-md transition-colors flex items-center gap-1"
-          >
-            <X size={14} />
-            Xóa lọc
-          </button>
-        ) : null}
+        {renderHeader && renderHeader()}
       </div>
 
       {/* Body */}
