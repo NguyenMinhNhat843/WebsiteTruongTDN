@@ -101,13 +101,6 @@ const Table: FunctionComponent<TableProps> = ({ className }) => {
               "text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white border-blue-100",
           },
           {
-            label: "Sửa",
-            icon: <Edit3 size={14} />,
-            onClick: () => {},
-            className:
-              "text-amber-600 bg-amber-50 hover:bg-amber-600 hover:text-white border-amber-100",
-          },
-          {
             label: "Xóa",
             icon: <Trash2 size={14} />,
             onClick: () => {},

@@ -100,6 +100,7 @@ function App() {
             element={<ChuongTrinhKhung />}
           />
           <Route path="dao-tao/lop-hoc" element={<ClassManagement />} />
+          <Route path="dao-tao/lop-hoc/:slug" element={<ClassManagement />} />
           <Route path="dao-tao/thoi-khoa-bieu" element={<TimetablePage />} />
           <Route path="dao-tao/diem-thi" element={<GradeManagement />} />
         </Route>

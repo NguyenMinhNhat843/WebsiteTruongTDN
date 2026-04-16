@@ -21,6 +21,7 @@ const FilterSection = () => {
       activeCount={0}
       title="Bộ lọc"
       onClear={() => console.log("clear")}
+      classNameBody="grid grid-cols-4 gap-2"
     >
       <SelectOption
         options={[

@@ -34,14 +34,14 @@ const FilterSectionWrapper = ({
           </div>
           <h3 className="font-bold text-slate-700 text-sm">{title}</h3>
 
-          {activeCount && activeCount > 0 && (
+          {activeCount && activeCount > 0 ? (
             <span className="flex items-center justify-center bg-blue-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full animate-in zoom-in duration-300">
               {activeCount}
             </span>
-          )}
+          ) : null}
         </div>
 
-        {activeCount && activeCount > 0 && onClear && (
+        {activeCount && activeCount > 0 && onClear ? (
           <button
             onClick={onClear}
             className="text-xs font-semibold text-rose-500 hover:bg-rose-50 px-2 py-1 rounded-md transition-colors flex items-center gap-1"
@@ -49,7 +49,7 @@ const FilterSectionWrapper = ({
             <X size={14} />
             Xóa lọc
           </button>
-        )}
+        ) : null}
       </div>
 
       {/* Body */}
