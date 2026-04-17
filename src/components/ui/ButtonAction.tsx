@@ -3,10 +3,11 @@ import clsx from "clsx";
 
 export interface ButtonActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "danger";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
   label?: string;
+  className?: string;
+  withText?: boolean; // Nếu true, luôn hiển thị text (dù có icon hay không)
 }
 
 const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
@@ -14,36 +15,28 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
     {
       children,
       icon,
-      variant = "primary",
       size = "md",
       loading = false,
       disabled,
       className,
       label,
+      withText = true,
       ...props
     },
     ref,
   ) => {
     const baseClasses =
-      "inline-flex items-center justify-center font-medium transition-all cursor-pointer duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-70 disabled:cursor-not-allowed";
-
+      "border border-slate-400 inline-flex items-center justify-center font-semibold \
+        transition-all duration-150 ease-in-out \
+        cursor-pointer \
+        focus:outline-none \
+        active:scale-95 active:opacity-90 \
+        hover:shadow-sm hover:-translate-y-[1px] \
+        disabled:opacity-70 disabled:cursor-not-allowed";
     const sizeClasses = {
-      sm: "px-3 py-1.5 text-sm rounded-md",
-      md: "px-4 py-2 text-base rounded-lg",
-      lg: "px-6 py-3 text-lg rounded-xl",
-    };
-
-    const variantClasses = {
-      primary:
-        "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 focus:ring-offset-white",
-      secondary:
-        "bg-gray-800 text-white hover:bg-gray-900 focus:ring-gray-600 focus:ring-offset-white",
-      outline:
-        "border border-gray-300 bg-transparent text-gray-700 hover:bg-gray-50 focus:ring-gray-500 focus:ring-offset-white",
-      ghost:
-        "bg-transparent text-gray-600 hover:bg-gray-100 focus:ring-gray-400 focus:ring-offset-white",
-      danger:
-        "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 focus:ring-offset-white",
+      sm: "px-3 py-1.5 text-xs rounded-xl",
+      md: "px-4 py-2 text-sm rounded-xl",
+      lg: "px-6 py-3 text-md rounded-xl",
     };
 
     const content = children || label;
@@ -60,7 +53,6 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
         className={clsx(
           baseClasses,
           sizeClasses[size],
-          variantClasses[variant],
           {
             "opacity-75 cursor-wait": isLoading,
           },
@@ -97,7 +89,7 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
         ) : (
           <>
             {icon && (
-              <span className={clsx("mr-2", content && "shrink-0")}>
+              <span className={clsx(withText && "mr-2", content && "shrink-0")}>
                 {icon}
               </span>
             )}

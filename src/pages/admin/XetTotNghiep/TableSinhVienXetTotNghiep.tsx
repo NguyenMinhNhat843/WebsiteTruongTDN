@@ -3,9 +3,9 @@ import { useXetTotNghiepContext } from "./XetTotNghiepProvider";
 import type { Column } from "../../../components/ui/Table";
 import type { Student } from "./type";
 import clsx from "clsx";
-import ActionButton from "../../../components/ui/ActionButton";
 import ReusableTable from "../../../components/ui/Table";
 import Pagination from "../../../components/ui/Pagination";
+import ButtonAction from "../../../components/ui/ButtonAction";
 
 const StatusBadge = ({ status }: { status: string }) => {
   // Cấu hình các style dựa trên giá trị status
@@ -40,7 +40,7 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 const TableSinhVienXetTotNghiep = () => {
-  const { filteredStudents } = useXetTotNghiepContext();
+  const { filteredStudents, setOpenModelOne } = useXetTotNghiepContext();
 
   const columns: Column<Student>[] = [
     {
@@ -94,11 +94,15 @@ const TableSinhVienXetTotNghiep = () => {
       key: "actions",
       label: "Chi tiết",
       className: "text-right",
-      render: (s) => (
-        <ActionButton
+      render: () => (
+        <ButtonAction
           icon={<FileText size={18} />}
           color="#3b82f6"
-          onClick={() => console.log(s.id)}
+          onClick={() => {
+            setOpenModelOne(true);
+          }}
+          title="Chi tiết"
+          withText={false}
         />
       ),
     },

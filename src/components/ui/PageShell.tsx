@@ -34,6 +34,7 @@ const PageShell: FunctionComponent<PageShellProps> = ({
             <div
               className={clsx(
                 "shrink-0 p-3 bg-linear-to-br from-indigo-500 via-purple-500 to-pink-600 rounded-2xl shadow-lg text-white",
+                // "shrink-0 p-3 bg-blue-600 rounded-2xl shadow-lg text-white",
                 classNameIcon,
               )}
             >
@@ -42,11 +43,11 @@ const PageShell: FunctionComponent<PageShellProps> = ({
           )}
 
           <div className="space-y-1">
-            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900">
+            <h1 className="text-2xl md:text-2xl font-extrabold tracking-tight text-slate-900">
               {title}
             </h1>
             {sub && (
-              <p className="text-slate-500 font-medium leading-relaxed">
+              <p className="text-sm text-slate-500 font-medium leading-relaxed">
                 {sub}
               </p>
             )}

@@ -5,6 +5,7 @@ import { INITIAL_MAJORS, MOCK_STUDENTS } from "./mockData";
 
 export const [XetTotNghiepProvider, useXetTotNghiepContext] =
   createContextProvider(() => {
+    const [openModelOne, setOpenModelOne] = useState(false);
     const [students, setStudents] = useState<Student[]>(MOCK_STUDENTS);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [filterSystem, setFilterSystem] = useState<EducationSystem | "All">(
@@ -73,5 +74,7 @@ export const [XetTotNghiepProvider, useXetTotNghiepContext] =
       setNewStudent,
       filteredStudents,
       handleAddStudent,
+      openModelOne,
+      setOpenModelOne,
     };
   });

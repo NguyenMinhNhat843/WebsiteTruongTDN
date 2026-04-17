@@ -8,6 +8,9 @@ import CardViewList from "../CardViewList";
 import PageShell from "../../../../components/ui/PageShell";
 import StatOverview from "../components/StatOverview";
 import ToolBar from "../components/ToolBar";
+import ButtonImportExcel from "../../../../components/ui/ButtonImportExcel";
+import ButtonExportExcel from "../../../../components/ui/ButtonExportExcel";
+import ButtonAction from "../../../../components/ui/ButtonAction";
 
 export default function DanhSachHoSoHocSinh() {
   return (
@@ -29,12 +32,13 @@ const Inner: React.FC = () => {
       icon={<GraduationCap size={26} />}
       renderRight={
         <div className="flex gap-2">
-          <button className="inline-flex items-center gap-1.5 px-3 py-2 text-[12px] font-semibold text-slate-600 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-all">
-            <Download size={13} /> Xuất Excel
-          </button>
-          <button className="inline-flex items-center gap-1.5 px-4 py-2 text-[12px] font-semibold text-white bg-blue-600 border border-blue-700 rounded-xl hover:bg-blue-700 transition-all shadow-sm shadow-blue-200">
-            <Plus size={14} /> Thêm học sinh
-          </button>
+          <ButtonAction
+            label="Thêm học sinh"
+            className="bg-blue-600 text-white font-semibold"
+            icon={<Plus size={14} />}
+          />
+          <ButtonImportExcel label="Nhập excel" />
+          <ButtonExportExcel label="Xuất Excel" />
         </div>
       }
     >
