@@ -6,7 +6,6 @@ import PageShell from "../../../../components/ui/PageShell";
 import StatsOverview from "../components/StatsOverview";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import FilterSection from "../components/FilterSection";
-import CreateDotTuyenSinh from "../TuyenSinhCreate/TuyenSinhCreateForm";
 
 export default function DotTuyenSinhList() {
   const {
@@ -63,16 +62,16 @@ export default function DotTuyenSinhList() {
                 </button>
 
                 {/* Form chính */}
-                <CreateDotTuyenSinh onCancel={() => setOpenFormCreate(false)} />
+                {/* <CreateDotTuyenSinh onCancel={() => setOpenFormCreate(false)} /> */}
               </div>
             </div>
           )}
-          {view === "edit" && selectedRound && (
+          {/* {view === "edit" && selectedRound && (
             <CreateDotTuyenSinh
               initial={selectedRound}
               onCancel={() => setView("detail")}
             />
-          )}
+          )} */}
         </main>
 
         {/* Delete Modal */}

@@ -1,4 +1,3 @@
-import React from "react";
 import { useTuyenSinhContext } from "../TuyenSinhProvider";
 import { fillRate } from "../helpers";
 import { StatCard } from "../../../../components/ui/StatCard";
