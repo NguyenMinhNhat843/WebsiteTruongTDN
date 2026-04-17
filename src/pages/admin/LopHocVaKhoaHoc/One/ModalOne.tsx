@@ -10,10 +10,10 @@ import {
 import Badge from "../../../../components/ui/Badge";
 import { HE_BADGE } from "../constants";
 import { HE_DAO_TAO } from "../mockData";
-import ThongTinLopHocTab from "./ThongTInLopHocTab";
 import DanhSachSinhVienTab from "./DanhSachSinhVienTab";
 import TabButton from "../components/TabButton";
 import { LopHocOneProvider, useLopHocOneContext } from "./LopHocOneProvider";
+import ThongTinLopHocTab from "./ThongTinLopHocTab";
 
 interface DetailModalProps {
   row: any;
