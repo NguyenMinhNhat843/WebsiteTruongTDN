@@ -16,6 +16,8 @@ import {
 import StatusBadge from "./components/StatusBadge";
 import { useDanhSachDiemThiContext } from "../DanhSachDiemThiProvider";
 import ActionButton from "../../../../components/ui/ActionButton";
+import ButtonImportExcel from "../../../../components/ui/ButtonImportExcel";
+import ButtonAction from "../../../../components/ui/ButtonAction";
 
 interface ScoreInputProps {
   value: string;
@@ -53,7 +55,7 @@ const DIEM_FIELD_CONFIGS: DiemFieldConfig[] = [
   { field: "ck", label: "CK", pct: "50%" },
 ];
 
-export default function GradeTable() {
+export default function TableNhapDiemSinhVien() {
   return (
     <TableDiemSinhVienProvider>
       <Inner />
@@ -79,61 +81,100 @@ const Inner: React.FC = () => {
   } = useTableDiemSinhVienContext();
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-2xl overflow-hidden">
       {/* ── Header ── */}
-      <div className="px-6 py-4 border-b border-gray-100 flex flex-wrap justify-between items-center gap-3 bg-white">
-        <div className="flex items-center gap-2">
-          <h2 className="font-bold text-slate-800">Danh sách điểm thi</h2>
-          {isEditingAll && (
-            <span className="text-[10px] bg-amber-100 text-amber-600 px-2 py-0.5 rounded-full animate-pulse uppercase tracking-wider font-bold">
-              Chế độ chỉnh sửa
-            </span>
-          )}
-          {saved && (
-            <span className="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full uppercase tracking-wider font-bold flex items-center gap-1">
-              <CheckCircle2 size={10} /> Đã lưu
-            </span>
-          )}
+      <div className="flex md:flex-row md:items-end justify-between gap-4 p-4 bg-slate-50/50 rounded-2xl border border-slate-100">
+        <div className="space-y-2">
+          {/* Hàng 1: Tiêu đề chính & Trạng thái */}
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl font-extrabold text-slate-800 tracking-tight">
+              Danh sách điểm thi
+            </h2>
+
+            <div className="flex gap-2">
+              {isEditingAll && (
+                <span className="flex items-center gap-1.5 text-[11px] bg-amber-50 text-amber-600 border border-amber-200 px-2.5 py-0.5 rounded-lg animate-pulse font-bold">
+                  <div className="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
+                  CHẾ ĐỘ CHỈNH SỬA
+                </span>
+              )}
+
+              {saved && (
+                <span className="flex items-center gap-1 text-[11px] bg-emerald-50 text-emerald-600 border border-emerald-200 px-2.5 py-0.5 rounded-lg font-bold">
+                  <CheckCircle2 size={12} /> ĐÃ LƯU
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Hàng 2: Thông tin chi tiết (Lớp, Môn) */}
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+            <div className="flex items-center gap-1.5 text-slate-500">
+              <span className="font-medium text-slate-400">Lớp:</span>
+              <span className="font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">
+                DHCNTT17C
+              </span>
+            </div>
+
+            <div className="hidden md:block w-px h-4 bg-slate-300"></div>
+
+            <div className="flex items-center gap-1.5 text-slate-500">
+              <span className="font-medium text-slate-400">Môn:</span>
+              <span className="font-semibold text-slate-700">
+                Lập trình hướng đối tượng
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="flex gap-2 flex-wrap">
-          {!isEditingAll && (
-            <button
-              disabled={allLocked}
-              onClick={handleChotDiemAll}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold border transition-all
-                ${
-                  allLocked
-                    ? "bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed"
-                    : "bg-violet-50 text-violet-700 border-violet-200 hover:bg-violet-100"
-                }`}
-            >
-              <Lock size={14} />
-              {allLocked ? "Đã chốt tất cả" : "Chốt điểm tất cả"}
-            </button>
-          )}
+        {/* Nút hành động */}
+        <div className="flex items-center gap-2.5">
+          {/* Import Excel luôn hiển thị */}
+          <ButtonImportExcel label="Nhập file Excel" size="sm" />
 
           {!isEditingAll ? (
-            <button
-              onClick={handleStartEdit}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold bg-blue-50 text-blue-600 border border-blue-200 hover:bg-blue-100 transition-all"
-            >
-              <Edit3 size={14} /> Chỉnh sửa
-            </button>
+            <>
+              {/* Chốt điểm - Chỉ hiện khi chưa chỉnh sửa */}
+              <ButtonAction
+                disabled={allLocked}
+                icon={
+                  allLocked ? <CheckCircle2 size={14} /> : <Lock size={14} />
+                }
+                label={allLocked ? "Đã chốt tất cả" : "Chốt điểm tất cả"}
+                onClick={handleChotDiemAll}
+                // Giả sử component có prop variant hoặc màu sắc
+                className={
+                  allLocked
+                    ? "opacity-50"
+                    : "bg-amber-50 text-amber-600 border-amber-200 hover:bg-amber-100"
+                }
+              />
+
+              {/* Chỉnh sửa */}
+              <ButtonAction
+                icon={<Edit3 size={14} />}
+                label="Chỉnh sửa"
+                onClick={handleStartEdit}
+                className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-100"
+              />
+            </>
           ) : (
             <>
-              <button
+              {/* Hủy bỏ */}
+              <ButtonAction
+                icon={<X size={14} />}
+                label="Hủy bỏ"
                 onClick={handleCancel}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold bg-slate-50 text-slate-600 border border-slate-200 hover:bg-slate-100 transition-all"
-              >
-                <X size={14} /> Hủy bỏ
-              </button>
-              <button
+                className="bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+              />
+
+              {/* Lưu tất cả */}
+              <ButtonAction
+                icon={<Save size={14} />}
+                label="Lưu tất cả"
                 onClick={handleSave}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold bg-emerald-500 text-white border border-emerald-600 hover:bg-emerald-600 transition-all shadow-sm"
-              >
-                <Save size={14} /> Lưu tất cả
-              </button>
+                className="bg-emerald-600 text-white border-emerald-700 hover:bg-emerald-700 shadow-sm"
+              />
             </>
           )}
         </div>

@@ -1,15 +1,13 @@
-import Pagination from "../../../components/ui/Pagination";
-import FilterBar from "./components/Filters";
-import GradeTable from "./TableDiemSinhVien/Table";
 import {
   DanhSachDiemThiProvider,
   useDanhSachDiemThiContext,
 } from "./DanhSachDiemThiProvider";
-import LichSuThaoTac from "./LichSuThaoTac";
-import StatsOverview from "./components/StatsOverview";
 import PageShell from "../../../components/ui/PageShell";
 import { ClipboardCheck, FileSpreadsheet } from "lucide-react";
 import ImportExcelModal from "./ModalNhapFileExcel";
+import FilterSection from "./components/FIlterSection";
+import StatsOverview from "./components/StatsOverview";
+import DanhSachLopHoc from "./TableDanhSachLopHoc/TableDanhSachLopHoc";
 
 export default function QuanLyDiemThi() {
   return (
@@ -20,12 +18,8 @@ export default function QuanLyDiemThi() {
 }
 
 const Inner = () => {
-  const {
-    openLichSuThaoTac,
-    setOpenLichSuThaoTac,
-    openModalImportExcel,
-    setOpenModalImportExcel,
-  } = useDanhSachDiemThiContext();
+  const { openModalImportExcel, setOpenModalImportExcel } =
+    useDanhSachDiemThiContext();
   return (
     <PageShell
       title="Quản lý điểm thi"
@@ -44,29 +38,17 @@ const Inner = () => {
         </div>
       }
     >
-      <div className="p-6 bg-gray-50 min-h-screen font-sans">
+      <div className="pt-6">
         <StatsOverview />
 
-        <FilterBar />
-        <GradeTable />
+        <FilterSection />
 
-        {/* Pagination */}
-        <Pagination
-          currentPage={1}
-          onPageChange={(page) => console.log("Chuyển đến trang:", page)}
-          pageSize={8}
-          totalItems={100}
-        />
+        <DanhSachLopHoc />
 
-        {/* Lịch sử thao tác sẽ được hiển thị dưới dạng Modal hoặc Drawer khi openLichSuThaoTac = true */}
-        {openLichSuThaoTac && (
-          <LichSuThaoTac onClose={() => setOpenLichSuThaoTac(false)} />
+        {openModalImportExcel && (
+          <ImportExcelModal onClose={() => setOpenModalImportExcel(false)} />
         )}
       </div>
-
-      {openModalImportExcel && (
-        <ImportExcelModal onClose={() => setOpenModalImportExcel(false)} />
-      )}
     </PageShell>
   );
 };

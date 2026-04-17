@@ -5,11 +5,15 @@ export const [DanhSachDiemThiProvider, useDanhSachDiemThiContext] =
   createContextProvider(() => {
     const [openModalImportExcel, setOpenModalImportExcel] = useState(false);
     const [openLichSuThaoTac, setOpenLichSuThaoTac] = useState(false);
+    const [openModalNhapDiemThiOne, setOpenModalNhapDiemThiOne] =
+      useState(false);
 
     return {
       openLichSuThaoTac,
       setOpenLichSuThaoTac,
       openModalImportExcel,
       setOpenModalImportExcel,
+      openModalNhapDiemThiOne,
+      setOpenModalNhapDiemThiOne,
     };
   });

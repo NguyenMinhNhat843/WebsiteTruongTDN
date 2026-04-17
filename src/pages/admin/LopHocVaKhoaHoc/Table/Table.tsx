@@ -7,7 +7,7 @@ import { useLopHocVaKhoaHocContext } from "../LopHocVaKhoaHocProvider";
 import { HE_DAO_TAO } from "../mockData";
 import clsx from "clsx";
 import { type LopHoc } from "../mockType";
-import { Edit3, Eye, Trash2 } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
 
 interface TableProps {
   className?: string;
