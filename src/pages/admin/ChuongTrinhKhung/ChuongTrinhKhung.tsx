@@ -34,7 +34,7 @@ function Inner() {
     <PageShell
       title="Chương trình khung"
       sub="Quản lý các chương trình khung đào tạo, bao gồm thông tin chung và danh mục môn học / mô-đun."
-      icon={<School2 size={26} />}
+      icon={School2}
       renderRight={
         <div className="flex items-center justify-between">
           <button

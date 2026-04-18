@@ -20,7 +20,7 @@ export default function CreatePost() {
     <PageShell
       title="Tạo bài viết mới"
       sub="Chia sẻ những thông tin hữu ích về trường học đến cộng đồng"
-      icon={<Newspaper className="w-8 h-8" />}
+      icon={Newspaper}
       renderRight={
         <div className="flex items-center gap-2">
           {/* NÚT HỦY: Chỉ icon */}

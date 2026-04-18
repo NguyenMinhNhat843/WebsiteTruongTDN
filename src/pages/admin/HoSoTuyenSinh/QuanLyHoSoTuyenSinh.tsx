@@ -28,7 +28,7 @@ function Inner() {
     <PageShell
       title="Quản lý hồ sơ tuyển sinh"
       sub="Xem, xét duyệt và thống kê hồ sơ đăng ký tuyển sinh"
-      icon={<FileCheck size={26} />}
+      icon={FileCheck}
       renderRight={
         <button
           onClick={() => setShowRegisterModal(true)}

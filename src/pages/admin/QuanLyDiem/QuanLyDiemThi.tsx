@@ -23,7 +23,7 @@ const Inner = () => {
   return (
     <PageShell
       title="Quản lý điểm thi"
-      icon={<ClipboardCheck size={26} />}
+      icon={ClipboardCheck}
       sub="Năm học 2025 - 2026 | Học kỳ 2"
       renderRight={
         <div className="flex gap-2">

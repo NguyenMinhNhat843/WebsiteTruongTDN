@@ -25,7 +25,7 @@ export default function DotTuyenSinhList() {
     <PageShell
       title="Đợt tuyển sinh"
       sub="Quản lý toàn bộ các đợt tuyển sinh theo hệ đào tạo"
-      icon={<GraduationCap size={26} />}
+      icon={GraduationCap}
       renderRight={
         <ButtonAction
           onClick={() => setOpenFormCreate(true)}

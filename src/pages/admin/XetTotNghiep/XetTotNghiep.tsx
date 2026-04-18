@@ -1,5 +1,4 @@
-import { GraduationCap, UserPlus, X } from "lucide-react";
-import { INITIAL_MAJORS } from "./mockData";
+import { GraduationCap, UserPlus } from "lucide-react";
 import {
   useXetTotNghiepContext,
   XetTotNghiepProvider,
@@ -20,21 +19,15 @@ const GraduationManagement = () => {
 };
 
 const Inner = () => {
-  const {
-    isModalOpen,
-    setIsModalOpen,
-    newStudent,
-    setNewStudent,
-    handleAddStudent,
-    openModelOne,
-  } = useXetTotNghiepContext();
+  const { isModalOpen, setIsModalOpen, openModelOne } =
+    useXetTotNghiepContext();
   console.log(openModelOne);
 
   return (
     <PageShell
       title="Hệ thống xét tốt nghiệp"
       sub="Quản lý danh sách dự kiến và quyết định tốt nghiệp"
-      icon={<GraduationCap size={26} />}
+      icon={GraduationCap}
       renderRight={
         <div className="flex flex-wrap gap-3">
           <ButtonAction

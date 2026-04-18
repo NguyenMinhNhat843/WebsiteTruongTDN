@@ -34,7 +34,7 @@ function Inner() {
     <PageShell
       title="Quản lý lớp học"
       sub="Quản lý danh sách các lớp học"
-      icon={<Grid size={26} />}
+      icon={Grid}
       renderRight={
         <header className="bg-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">

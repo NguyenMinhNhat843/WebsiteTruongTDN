@@ -28,7 +28,7 @@ const Inner: React.FC = () => {
     <PageShell
       title="Hồ sơ học sinh"
       sub="Quản lý danh sách và hồ sơ toàn bộ học sinh các hệ đào tạo"
-      icon={<GraduationCap size={26} />}
+      icon={GraduationCap}
       renderRight={
         <div className="flex gap-2">
           <ButtonImportExcel label="Nhập excel" />
