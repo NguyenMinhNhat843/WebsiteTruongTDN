@@ -110,7 +110,7 @@ const BienLaiModal = ({
 
   return (
     <div className="fixed inset-0 bg-slate-900/60 z-30 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl w-full max-w-5xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-white rounded-3xl w-full max-w-7xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         {/* --- Header --- */}
         <div className="flex items-center justify-between px-8 py-5 bg-white border-b border-slate-100">
           <div className="flex items-center gap-3">
@@ -136,8 +136,44 @@ const BienLaiModal = ({
 
         {/* --- Body --- */}
         <div className="grid grid-cols-12 flex-1 overflow-hidden">
+          {/* Thông tin sinh viên */}
+          <div className="col-span-2 mb-8 p-6 bg-white group">
+            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 flex gap-2">
+              <User size={16} className="text-cyan-600" />
+              Đối tượng
+            </h3>
+
+            <div className="space-y-3">
+              <div>
+                <p className="text-[10px] text-slate-400 uppercase font-bold">
+                  Họ và tên
+                </p>
+                <p className="font-extrabold text-slate-800 text-base">
+                  {"Nguyễn Minh NHật"}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-[10px] text-slate-400 uppercase font-bold">
+                  Mã sinh viên
+                </p>
+                <p className="font-mono font-bold text-cyan-700">
+                  {"123456789"}
+                </p>
+              </div>
+              <div>
+                <p className="text-[10px] text-slate-400 uppercase font-bold">
+                  Lớp
+                </p>
+                <p className="font-bold text-slate-700 text-sm truncate">
+                  {"KTPM17A"}
+                </p>
+              </div>
+            </div>
+          </div>
+
           {/* Cột trái: Tuyển chọn */}
-          <div className="col-span-5 p-6 overflow-y-auto bg-slate-50/50 custom-scrollbar">
+          <div className="col-span-4 p-6 overflow-y-auto bg-slate-50/50 custom-scrollbar">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
               Danh mục thu
             </h3>
@@ -175,7 +211,7 @@ const BienLaiModal = ({
           </div>
 
           {/* Cột phải: Preview (Phong cách hóa đơn giấy) */}
-          <div className="col-span-7 p-8 bg-slate-200/50 overflow-y-auto flex justify-center custom-scrollbar">
+          <div className="col-span-6 p-8 bg-slate-200/50 overflow-y-auto flex justify-center custom-scrollbar">
             <div
               id="bien-lai-print-area"
               className="bg-white w-full max-w-125 h-fit  shadow-lg rounded-sm p-8 text-slate-800 relative border-t-4 border-cyan-600"
@@ -216,11 +252,26 @@ const BienLaiModal = ({
               <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
                 <div className="flex items-center gap-2">
                   <User size={14} className="text-slate-400" />
-                  <span className="font-bold">{applicant.applicantName}</span>
+                  <span className="font-bold">{"Nguyễn Minh Nhật"}</span>
                 </div>
+                {/* Dòng 2: Mã SV */}
                 <div className="flex items-center gap-2">
-                  <CalendarDays size={14} className="text-slate-400" />
-                  <span>Khóa: {applicant.batchLabel.split("-")[0]}</span>
+                  <div className="w-3.5 h-3.5 flex items-center justify-center shrink-0">
+                    <span className="text-[10px] font-bold text-slate-400">
+                      ID
+                    </span>
+                  </div>
+                  <span className="text-slate-500 font-medium">Mã SV:</span>
+                  <span className="font-mono font-bold text-slate-700">
+                    {applicant.studentId}
+                  </span>
+                </div>
+
+                {/* Dòng 3: Lớp */}
+                <div className="flex items-center gap-2">
+                  <CalendarDays size={14} className="text-slate-400 shrink-0" />
+                  <span className="text-slate-500 font-medium">Lớp:</span>
+                  <span className="font-bold text-slate-700">{"KTPM17A"}</span>
                 </div>
               </div>
 

@@ -7,7 +7,7 @@ import ModalThuHocPhi from "./ModalThuHocPhi";
 import PageShell from "../../../components/ui/PageShell";
 import StatOVerview from "./components/StatOVerview";
 import ButtonAction from "../../../components/ui/ButtonAction";
-import BienLaiModal from "./components/ThuHocPhiModal";
+import BienLaiModal from "./CreateThuHocPhi/ThuHocPhiModal";
 
 const TuitionFee = () => {
   return (
