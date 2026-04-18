@@ -1,5 +1,5 @@
 import { CheckCircle, Clock, FileCheck, XCircle } from "lucide-react";
-import { createContextProvider } from "../../../../util/createContextProvider";
+import { createContextProvider } from "../../../util/createContextProvider";
 import { useState } from "react";
 import type { Application, BatchStat, SystemStat } from "./type";
 import { applicationsData } from "./mockData";

@@ -1,22 +1,9 @@
-import {
-  FileCheck,
-  Calendar,
-  BookOpen,
-  CheckCircle,
-  XCircle,
-  Plus,
-  Info,
-  Users,
-} from "lucide-react";
+import { FileCheck, CheckCircle, XCircle, Plus } from "lucide-react";
 import { QuanLyHoSoProvider, useQuanLyHoSoContext } from "./QuanLyHoSoProvider";
-import BatchStatCard from "./components/BatchStatCard";
 import OverviewStat from "./components/OverviewStat";
 import FilterSection from "./components/FilterSection";
-import SystemStatCard from "./components/SystemStatCard";
 import TableQuanLyHoSo from "./TableQuanLyHoSo/TableQuanLyHoSo";
-import Tabs from "../../../../components/ui/Tabs";
-import { useState } from "react";
-import PageShell from "../../../../components/ui/PageShell";
+import PageShell from "../../../components/ui/PageShell";
 import CreateHoSoTuyenSinh from "./CreateHoSoTuyenSinh";
 
 const AdmissionApplication = () => {
@@ -29,25 +16,13 @@ const AdmissionApplication = () => {
 
 function Inner() {
   const {
-    batchStats,
     selectedApplication,
     setSelectedApplication,
     setShowRegisterModal,
     setShowReviewModal,
     showRegisterModal,
     showReviewModal,
-    systemStats,
   } = useQuanLyHoSoContext();
-  const [activeTab, setActiveTab] = useState<TabType>("tongquan");
-  const TABS = [
-    { id: "tongquan", label: "Tổng quan", icon: <Info size={16} /> },
-    {
-      id: "danhsach",
-      label: "Danh sách",
-      icon: <Users size={16} />,
-    },
-  ];
-  type TabType = (typeof TABS)[number]["id"];
 
   return (
     <PageShell
@@ -64,41 +39,10 @@ function Inner() {
         </button>
       }
     >
-      <Tabs tabs={TABS} activeTab={activeTab} onChange={setActiveTab} />
-
       <div className="min-h-screen bg-linear-to-br from-cyan-50 via-white to-blue-50">
         <div className="max-w-400 mx-auto py-8">
           {/* Thống kê tổng quan */}
           <OverviewStat />
-
-          {/* Thống kê theo đợt và hệ */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Thống kê theo đợt */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Calendar className="w-5 h-5 text-cyan-600" />
-                Thống kê theo đợt tuyển sinh
-              </h3>
-              <div className="space-y-3">
-                {batchStats.slice(0, 3).map((stat, index) => (
-                  <BatchStatCard key={index} stat={stat} />
-                ))}
-              </div>
-            </div>
-
-            {/* Thống kê theo hệ */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-cyan-600" />
-                Thống kê theo hệ đào tạo
-              </h3>
-              <div className="space-y-3">
-                {systemStats.map((stat, index) => (
-                  <SystemStatCard key={index} stat={stat} />
-                ))}
-              </div>
-            </div>
-          </div>
 
           {/* Bộ lọc và tìm kiếm */}
           <FilterSection />

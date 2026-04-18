@@ -1,6 +1,6 @@
 import { GraduationCap, Search, Activity, Calendar } from "lucide-react";
 import { admissionBatches, useQuanLyHoSoContext } from "../QuanLyHoSoProvider";
-import { SelectOption } from "../../../../../components/ui/Form/SelectOption";
+import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 
 const FilterSection = () => {
   const {

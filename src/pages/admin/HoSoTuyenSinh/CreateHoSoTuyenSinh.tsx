@@ -1,9 +1,9 @@
 import { BookOpen, Upload, User, XCircle } from "lucide-react";
 import { admissionBatches, useQuanLyHoSoContext } from "./QuanLyHoSoProvider";
+import Input from "../../../components/ui/Form/Input";
+import DateInput from "../../../components/ui/Form/DateInput";
+import { SelectOption } from "../../../components/ui/Form/SelectOption";
 import { majors } from "./mockData";
-import Input from "../../../../components/ui/Form/Input";
-import DateInput from "../../../../components/ui/Form/DateInput";
-import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 
 const CreateHoSoTuyenSinh = () => {
   const { handleSubmit, setFormData, setShowRegisterModal, formData } =

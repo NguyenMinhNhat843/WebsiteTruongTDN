@@ -35,12 +35,12 @@ import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
 import NguonTuyenSinh from "./pages/admin/NguonTuyenSinh/NguonTuyenSinh";
 import TuitionFee from "./pages/admin/ThuHocPhi/ThuHocPhi";
 import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
-import AdmissionApplication from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSoTuyenSinh";
+import AdmissionApplication from "./pages/admin/HoSoTuyenSinh/QuanLyHoSoTuyenSinh";
 import MediaLibrary from "./pages/admin/QuanLyMedia/QuanLyMedia";
 import QuanLyXetTotNghiep from "./pages/admin/QuanLyVanBang/QuanLyVanBang";
 import PhanCongGiangDay from "./pages/admin/PhanCongGiangDay/PhanCongGiangDay";
-import HoSoTuyenSinhOne from "./pages/admin/TuyenSinh/QuanLyHoSo/HoSoTuyenSinhOne/HoSoTuyenSinhOne";
-import QuanLyHoSoLayout from "./pages/admin/TuyenSinh/QuanLyHoSo/QuanLyHoSoLayout";
+import HoSoTuyenSinhOne from "./pages/admin/HoSoTuyenSinh/HoSoTuyenSinhOne/HoSoTuyenSinhOne";
+import QuanLyHoSoLayout from "./pages/admin/HoSoTuyenSinh/QuanLyHoSoLayout";
 import AdminPostPreview from "./pages/admin/QuanLyBaiViet/AdminPostPreview";
 
 function App() {

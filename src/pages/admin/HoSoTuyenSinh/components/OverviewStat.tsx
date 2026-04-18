@@ -1,5 +1,5 @@
 import { CheckCircle, Clock, FileCheck, XCircle } from "lucide-react";
-import { StatCard } from "../../../../../components/ui/StatCard";
+import { StatCard } from "../../../../components/ui/StatCard";
 import { useQuanLyHoSoContext } from "../QuanLyHoSoProvider";
 
 const OverviewStat = () => {

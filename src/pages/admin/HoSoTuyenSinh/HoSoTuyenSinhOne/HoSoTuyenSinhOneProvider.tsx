@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { createContextProvider } from "../../../../../util/createContextProvider";
+import { createContextProvider } from "../../../../util/createContextProvider";
 import { applicationsData } from "../mockData";
 
 export const [HoSoTuyenSinhOneProvider, useHoSoTuyenSinhOneContext] =

@@ -1,4 +1,4 @@
-import { Plus, Download, GraduationCap, X } from "lucide-react";
+import { Download, GraduationCap, X } from "lucide-react";
 import {
   HoSoHocSinhProvider,
   useHoSoHocSinhContext,
@@ -10,7 +10,6 @@ import StatOverview from "../components/StatOverview";
 import ToolBar from "../components/ToolBar";
 import ButtonImportExcel from "../../../../components/ui/ButtonImportExcel";
 import ButtonExportExcel from "../../../../components/ui/ButtonExportExcel";
-import ButtonAction from "../../../../components/ui/ButtonAction";
 
 export default function DanhSachHoSoHocSinh() {
   return (
@@ -32,11 +31,6 @@ const Inner: React.FC = () => {
       icon={<GraduationCap size={26} />}
       renderRight={
         <div className="flex gap-2">
-          <ButtonAction
-            label="Thêm học sinh"
-            className="bg-blue-600 text-white font-semibold"
-            icon={<Plus size={14} />}
-          />
           <ButtonImportExcel label="Nhập excel" />
           <ButtonExportExcel label="Xuất Excel" />
         </div>
