@@ -19,10 +19,10 @@ const TableThuHocPhi = () => {
         <table className="w-full min-w-max border-separate border-spacing-0">
           <thead className="bg-linear-to-r from-green-600 to-emerald-600 text-white">
             <tr>
-              <th className="sticky left-0 z-20 bg-green-600 w-20 px-6 py-4 text-left text-sm font-semibold">
+              <th className="sticky left-0 z-10 bg-green-600 w-20 px-6 py-4 text-left text-sm font-semibold">
                 Mã SV
               </th>
-              <th className="sticky left-21.25 z-20 bg-green-600 px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">
+              <th className="sticky left-22 z-10 bg-green-600 px-6 py-4 text-left text-sm font-semibold whitespace-nowrap">
                 Họ và tên
               </th>
               <th className="px-6 py-4 text-left text-sm font-semibold">Lớp</th>
@@ -58,7 +58,7 @@ const TableThuHocPhi = () => {
                 <td className="sticky left-0 z-10 bg-inherit w-20 px-6 py-4 text-sm font-medium text-gray-900">
                   {student.id}
                 </td>
-                <td className="sticky left-21.25 z-10 bg-inherit px-6 py-4 whitespace-nowrap">
+                <td className="sticky left-22 z-10 bg-inherit px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center gap-2">
                     <div className="text-sm font-medium text-gray-900">
                       {student.name}

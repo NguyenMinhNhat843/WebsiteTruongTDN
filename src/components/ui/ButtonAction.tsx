@@ -1,5 +1,6 @@
 import React, { forwardRef, type ButtonHTMLAttributes } from "react";
 import clsx from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export interface ButtonActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
@@ -50,13 +51,13 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
     return (
       <button
         ref={ref}
-        className={clsx(
-          baseClasses,
-          sizeClasses[size],
-          {
-            "opacity-75 cursor-wait": isLoading,
-          },
-          className,
+        className={twMerge(
+          clsx(
+            baseClasses,
+            sizeClasses[size],
+            { "opacity-75 cursor-wait": isLoading },
+            className, // className truyền vào sau sẽ ghi đè các class trước đó
+          ),
         )}
         disabled={disabled || isLoading}
         aria-label={ariaLabel}

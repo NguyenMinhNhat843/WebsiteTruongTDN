@@ -6,13 +6,13 @@ import {
 } from "./HoSoTuyenSinhOneProvider";
 import InfoItemv2 from "../../../../components/ui/InfoItemv2";
 import { Timeline } from "../../../../components/ui/TimeLine";
-import ButtonBack from "../../../../components/ui/ButtonBack";
 import { useNavigate } from "react-router-dom";
 import SectionThongTinCaNhan from "./components/SectionThongTinCaNhan";
 import SectionHoSoDinhKem from "./components/SectionHoSoDinhKem";
 import SectionThongTinChaMe from "./components/SectionThongTinChaMe";
 import SectionThongTinSucKhoe from "./components/SectionThongTinSucKhoe";
 import PageShell from "../../../../components/ui/PageShell";
+import ButtonAction from "../../../../components/ui/ButtonAction";
 
 const HoSoTuyenSinhOne = () => {
   return (
@@ -37,10 +37,26 @@ const Inner = () => {
       sub={`Ứng viên: ${applicant.applicantName} - Đợt: ${applicant.batchLabel}`}
       icon={BookOpen}
       renderRight={
-        <ButtonBack
-          onClick={() => navigate("/admin/tuyen-sinh/ho-so-moi")}
-          className="py-3 px-6 cursor-pointer"
-        />
+        <div className="flex justify-between items-center gap-3">
+          {/* Nút Duyệt: Tông xanh Emerald đại diện cho sự tin tưởng và thành công */}
+          <ButtonAction
+            label="Duyệt hồ sơ"
+            className="bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-600 hover:text-white transition-all duration-200 shadow-sm"
+          />
+
+          {/* Nút Từ chối: Tông đỏ Rose/Red nhưng nhẹ nhàng, không gây cảm giác quá gắt */}
+          <ButtonAction
+            label="Từ chối"
+            className="bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-600 hover:text-white transition-all duration-200 shadow-sm"
+          />
+
+          {/* Nút Quay lại: Tông Slate/Gray trung tính, thể hiện hành động bổ trợ */}
+          <ButtonAction
+            label="Quay lại"
+            onClick={() => navigate("/admin/tuyen-sinh/ho-so-moi")}
+            className="bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all duration-200 shadow-sm"
+          />
+        </div>
       }
     >
       <div className="w-full">

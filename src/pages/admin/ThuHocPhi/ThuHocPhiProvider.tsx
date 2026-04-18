@@ -18,6 +18,7 @@ export const [ThuHocPhiProvider, useThuHocPhiContext] = createContextProvider(
     const [paymentAmount, setPaymentAmount] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("cash");
     const [paymentNote, setPaymentNote] = useState("");
+    const [openModalThuHocPhi, setOpenModalThuHocPhi] = useState(false);
 
     // Tính toán thống kê
     const stats = {
@@ -76,6 +77,8 @@ export const [ThuHocPhiProvider, useThuHocPhiContext] = createContextProvider(
       setPaymentMethod,
       paymentNote,
       setPaymentNote,
+      openModalThuHocPhi,
+      setOpenModalThuHocPhi,
 
       stats,
       filteredStudents,
