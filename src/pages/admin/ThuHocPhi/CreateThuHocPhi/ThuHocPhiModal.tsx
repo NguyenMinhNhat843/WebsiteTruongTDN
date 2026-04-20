@@ -249,29 +249,47 @@ const BienLaiModal = ({
               </div>
 
               {/* Info SV */}
-              <div className="grid grid-cols-2 gap-4 mb-6 text-sm">
-                <div className="flex items-center gap-2">
-                  <User size={14} className="text-slate-400" />
-                  <span className="font-bold">{"Nguyễn Minh Nhật"}</span>
-                </div>
-                {/* Dòng 2: Mã SV */}
-                <div className="flex items-center gap-2">
-                  <div className="w-3.5 h-3.5 flex items-center justify-center shrink-0">
-                    <span className="text-[10px] font-bold text-slate-400">
-                      ID
+              {/* Info SV - Đầy đủ thông tin hành chính */}
+              <div className="mb-6 py-1 bg-slate-50/50 pr-4 rounded-r-lg">
+                <div className="grid grid-cols-2 gap-x-6 gap-y-2.5 text-sm">
+                  {/* Dòng 1: Thông tin chính - Full width */}
+                  <div className="col-span-2 flex items-center gap-2 border-b border-slate-200 pb-2">
+                    <User size={16} className="text-cyan-700 shrink-0" />
+                    <span className="text-slate-500 font-medium">
+                      Học sinh:
+                    </span>
+                    <span className="font-black text-slate-900 uppercase text-base">
+                      Nguyễn Minh Nhật
                     </span>
                   </div>
-                  <span className="text-slate-500 font-medium">Mã SV:</span>
-                  <span className="font-mono font-bold text-slate-700">
-                    {applicant.studentId}
-                  </span>
-                </div>
 
-                {/* Dòng 3: Lớp */}
-                <div className="flex items-center gap-2">
-                  <CalendarDays size={14} className="text-slate-400 shrink-0" />
-                  <span className="text-slate-500 font-medium">Lớp:</span>
-                  <span className="font-bold text-slate-700">{"KTPM17A"}</span>
+                  {/* Dòng 2: Mã SV & Lớp */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-slate-400 w-12">
+                      MÃ SV:
+                    </span>
+                    <span className="font-mono font-bold text-slate-800 tracking-wider">
+                      {applicant.studentId}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-slate-400 w-12">
+                      LỚP:
+                    </span>
+                    <span className="font-bold text-slate-800">
+                      {"CNTT17A"}
+                    </span>
+                  </div>
+
+                  {/* Dòng 3: SĐT & Email */}
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold text-slate-400 w-12">
+                      SĐT:
+                    </span>
+                    <span className="text-slate-700 font-medium">
+                      {"090.xxx.xxxx"}
+                    </span>
+                  </div>
                 </div>
               </div>
 

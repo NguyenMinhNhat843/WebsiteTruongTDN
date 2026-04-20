@@ -42,6 +42,7 @@ import PhanCongGiangDay from "./pages/admin/PhanCongGiangDay/PhanCongGiangDay";
 import HoSoTuyenSinhOne from "./pages/admin/HoSoTuyenSinh/HoSoTuyenSinhOne/HoSoTuyenSinhOne";
 import QuanLyHoSoLayout from "./pages/admin/HoSoTuyenSinh/QuanLyHoSoLayout";
 import AdminPostPreview from "./pages/admin/QuanLyBaiViet/AdminPostPreview";
+import TaoChuongTrinhKhung from "./pages/admin/TaoChuongTrinhKhung/TaoChuongTrinhKhung";
 
 function App() {
   return (
@@ -98,6 +99,10 @@ function App() {
           <Route
             path="dao-tao/chuong-trinh-khung"
             element={<ChuongTrinhKhung />}
+          />
+          <Route
+            path="dao-tao/tao-chuong-trinh-khung"
+            element={<TaoChuongTrinhKhung />}
           />
           <Route path="dao-tao/lop-hoc" element={<ClassManagement />} />
           <Route path="dao-tao/lop-hoc/:slug" element={<ClassManagement />} />

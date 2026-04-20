@@ -26,6 +26,11 @@ const navItems: NavItem[] = [
         href: "/admin/dao-tao/chuong-trinh-khung",
       },
       {
+        id: "tao-chuong-trinh-khung",
+        label: "Tạo chương trình khung",
+        href: "/admin/dao-tao/tao-chuong-trinh-khung",
+      },
+      {
         id: "quan-ly-lop-hoc",
         label: "Lớp học & Khóa học",
         href: "/admin/dao-tao/lop-hoc",
