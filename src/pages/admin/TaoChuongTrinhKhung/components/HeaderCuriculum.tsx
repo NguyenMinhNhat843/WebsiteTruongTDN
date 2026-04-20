@@ -1,8 +1,3 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import Input from "../../../../components/ui/Form/Input";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import { MAJORS, type Curriculum, type Major } from "../type";
@@ -22,29 +17,12 @@ export function CurriculumHeader({
   totalCredits,
   totalSemesters,
 }: CurriculumHeaderProps) {
-  const handleInputChange = (key: keyof Curriculum, value: any) => {
+  const handleInputChange = (key: keyof Curriculum, value: unknown) => {
     setCurriculum({ ...curriculum, [key]: value });
   };
 
   return (
     <div>
-      <header className="border-b-2 border-editorial-ink pb-6 mb-8 flex justify-between items-end">
-        <div>
-          <div className="inline-block px-3 py-1 border border-editorial-ink rounded-full text-[11px] font-bold uppercase tracking-widest mb-3">
-            Academic Registry
-          </div>
-          <h1 className="text-4xl font-bold leading-none tracking-tight">
-            Thiết lập Chương trình Khung
-          </h1>
-        </div>
-        <div className="text-right">
-          <span className="text-[10px] text-editorial-muted uppercase font-bold tracking-wider">
-            Last updated: 20 Apr 2026
-          </span>
-        </div>
-      </header>
-
-      {/* Main Editorial Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
         {/* Form Inputs (Left side) */}
         <div className="lg:col-span-2 space-y-6">
@@ -127,57 +105,71 @@ export function CurriculumHeader({
         <aside className="space-y-4">
           {" "}
           {/* Giảm space-y từ 8 xuống 4 */}
-          <div className="bg-white border border-editorial-border p-5 rounded-sm shadow-sm relative overflow-hidden">
-            <h2 className="font-bold uppercase border-b border-editorial-border pb-3 mb-4 flex items-center gap-2">
-              <span className="w-1.5 h-1.5 bg-blue-600 rounded-full"></span>
+          <div className="bg-white border border-gray-100 p-6 rounded-xl shadow-sm relative overflow-hidden">
+            {/* Header với phong cách hiện đại hơn */}
+            <h2 className="text-[13px] font-bold text-gray-700 uppercase tracking-wider border-b border-gray-50 pb-4 mb-5 flex items-center gap-2">
+              <span className="flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-2 w-2 rounded-full bg-blue-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-600"></span>
+              </span>
               Thông số hệ thống
             </h2>
 
-            <div className="space-y-4">
-              <div>
-                <label className="block font-bold text-editorial-muted uppercase mb-1">
-                  Khoa quản lý
+            <div className="space-y-5">
+              {/* Khoa Quản Lý - Thiết kế dạng thông tin định danh */}
+              <div className="group">
+                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-tight mb-1.5">
+                  Đơn vị quản lý chuyên môn
                 </label>
-                <div className="text-sm font-medium text-editorial-ink truncate border-b border-dashed border-gray-200 pb-1">
-                  {selectedMajor?.department || "N/A"}
+                <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg border border-transparent group-hover:border-blue-100 group-hover:bg-blue-50/30 transition-all">
+                  <span className="text-blue-600 text-[14px]">🏢</span>
+                  <span className="text-[13px] font-semibold text-gray-700 truncate">
+                    {selectedMajor?.department || "Chưa xác định"}
+                  </span>
                 </div>
               </div>
 
-              {/* Grid 2 cột cho Tín chỉ và Học kỳ để tiết kiệm chiều cao */}
-              <div className="grid grid-cols-2 gap-4 pt-2">
-                <div className="space-y-1">
-                  <span className="text-editorial-muted font-bold uppercase block">
+              {/* Stats Grid - Tín chỉ & Học kỳ */}
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                {/* Tín chỉ */}
+                <div className="bg-blue-50/50 p-4 rounded-xl border border-blue-100/50">
+                  <span className="text-[10px] text-blue-600 font-bold uppercase block mb-1">
                     Tổng tín chỉ
                   </span>
                   <div className="flex items-baseline gap-1">
-                    <span className="font-bold text-xl text-blue-600 leading-none">
+                    <span className="text-2xl font-black text-blue-700 leading-none">
                       {totalCredits}
                     </span>
-                    <span className="text-[10px] font-bold text-blue-600/60 uppercase">
-                      Tín chỉ
+                    <span className="text-[10px] font-bold text-blue-400 uppercase">
+                      TC
                     </span>
                   </div>
                 </div>
 
-                <div className="space-y-1 border-l border-editorial-border pl-4">
-                  <span className="text-editorial-muted font-bold uppercase block">
+                {/* Học kỳ */}
+                <div className="bg-gray-50/80 p-4 rounded-xl border border-gray-100">
+                  <span className="text-[10px] text-gray-500 font-bold uppercase block mb-1">
                     Thời gian
                   </span>
                   <div className="flex items-baseline gap-1">
-                    <span className="font-bold text-xl text-editorial-ink leading-none">
+                    <span className="text-2xl font-black text-gray-800 leading-none">
                       {totalSemesters}
                     </span>
-                    <span className="text-[10px] font-bold text-editorial-muted uppercase">
+                    <span className="text-[10px] font-bold text-gray-400 uppercase">
                       HK
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Chú thích siêu nhỏ */}
-              <p className="text-[10px] text-editorial-muted italic border-t border-gray-50 pt-3 opacity-70">
-                * Dữ liệu tính toán tự động.
-              </p>
+              {/* Ghi chú dưới cùng */}
+              <div className="flex items-start gap-2 pt-2 border-t border-gray-50">
+                <span className="text-gray-300 text-[12px]">💡</span>
+                <p className="text-[10px] text-gray-400 leading-relaxed italic">
+                  Các thông số được đồng bộ hóa trực tiếp dựa trên cấu trúc môn
+                  học hiện tại.
+                </p>
+              </div>
             </div>
           </div>
         </aside>

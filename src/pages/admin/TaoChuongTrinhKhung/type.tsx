@@ -13,6 +13,22 @@ export interface Major {
   department: string;
 }
 
+export interface Subject {
+  id: number;
+  code?: string;
+  name?: string;
+  credits?: number;
+  theoryHours?: number;
+  practiceHours?: number;
+  type?: string; // Môn chung, Thực hành, Tự chọn, Bắt buộc
+  isMain?: boolean; // để đánh dấu môn trọng tâm
+}
+
+export interface Semester {
+  id?: number;
+  subjects: Subject[];
+}
+
 export interface Curriculum {
   code: string;
   name: string;
@@ -20,6 +36,7 @@ export interface Curriculum {
   trainingType: TrainingType;
   majorId: string;
   status: CurriculumStatus;
+  semesters: Semester[];
 }
 
 export const MAJORS: Major[] = [

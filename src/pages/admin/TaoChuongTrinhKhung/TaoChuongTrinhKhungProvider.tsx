@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
+import type { Curriculum, Semester, Subject } from "./type";
 
 // ================= MOCK DATA =================
 export const SUBJECTS = [
@@ -19,7 +20,7 @@ export const TRAINING_TYPES = ["9+", "Trung cấp nghề", "Sơ cấp nghề"];
 
 export const [TaoChuongTrinhKhungProvider, useTaoChuongTrinhKhungContext] =
   createContextProvider(() => {
-    const [curriculum, setCurriculum] = useState({
+    const [curriculum, setCurriculum] = useState<Curriculum>({
       code: "",
       name: "",
       version: 1,
@@ -36,16 +37,20 @@ export const [TaoChuongTrinhKhungProvider, useTaoChuongTrinhKhungContext] =
       (m) => m.id === Number(curriculum.majorId),
     );
 
-    // ===== AUTO CALC =====
+    // ===== tính tổng tín chỉ =====
     const totalCredits = useMemo(() => {
       return curriculum.semesters.reduce(
-        (sum, s) =>
+        (sum: number, s: Semester) =>
           sum +
-          s.subjects.reduce((s2: number, sub: any) => s2 + sub.credits, 0),
+          s.subjects.reduce(
+            (s2: number, sub: Subject) => s2 + (sub.credits || 0),
+            0,
+          ),
         0,
       );
     }, [curriculum]);
 
+    // Tổng số học kỳ
     const totalSemesters = curriculum.semesters.length;
 
     // ===== ACTIONS =====
@@ -57,10 +62,10 @@ export const [TaoChuongTrinhKhungProvider, useTaoChuongTrinhKhungContext] =
       });
     };
 
-    const addSubject = (semesterId: number, subject: any) => {
+    const addSubject = (semesterId: number, subject: Subject) => {
       // tránh trùng môn toàn CTK
       const exists = curriculum.semesters.some((s) =>
-        s.subjects.some((sub: any) => sub.id === subject.id),
+        s.subjects.some((sub: Subject) => sub.id === subject.id),
       );
       if (exists) return alert("Môn đã tồn tại!");
 
@@ -75,13 +80,13 @@ export const [TaoChuongTrinhKhungProvider, useTaoChuongTrinhKhungContext] =
     };
 
     const moveSubject = (from: number, to: number, subjectId: number) => {
-      let moved: any;
+      let moved: Subject;
 
       const updated = curriculum.semesters.map((s) => {
         if (s.id === from) {
           return {
             ...s,
-            subjects: s.subjects.filter((sub: any) => {
+            subjects: s.subjects.filter((sub: Subject) => {
               if (sub.id === subjectId) moved = sub;
               return sub.id !== subjectId;
             }),

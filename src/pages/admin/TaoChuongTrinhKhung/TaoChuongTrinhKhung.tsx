@@ -33,7 +33,7 @@ const Inner = () => {
       sub="Xây dựng chương trình khung cho các ngành đào tạo"
       icon={GrabIcon}
     >
-      <div className="p-6 space-y-6">
+      <div className="space-y-6">
         <CurriculumHeader
           totalCredits={totalCredits}
           totalSemesters={totalSemesters}

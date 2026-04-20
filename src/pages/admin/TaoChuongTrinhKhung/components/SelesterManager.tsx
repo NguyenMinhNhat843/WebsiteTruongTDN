@@ -1,12 +1,18 @@
 import { useState } from "react";
 import { SUBJECTS } from "../TaoChuongTrinhKhungProvider";
+import type { Curriculum, Semester, Subject } from "../type";
+
+interface SemesterManagerProps {
+  curriculum: Curriculum;
+  addSubject: (semesterId: number, subject: Subject) => void;
+  moveSubject: (from: number, to: number, subjectId: number) => void;
+}
 
 export const SemesterManager = ({
   curriculum,
   addSubject,
   moveSubject,
-  addSemester,
-}) => {
+}: SemesterManagerProps) => {
   return (
     <div className="space-y-4">
       {" "}
@@ -31,13 +37,18 @@ export const SemesterManager = ({
 };
 
 // ================= SEMESTER ROW (Chuyển từ Column sang Row) =================
-const SemesterRow = ({ semester, addSubject, moveSubject }) => {
+interface SemesterRowProps {
+  semester: Semester;
+  addSubject: (semesterId: number, subject: Subject) => void;
+  moveSubject: (from: number, to: number, subjectId: number) => void;
+}
+const SemesterRow = ({ semester, addSubject, moveSubject }: SemesterRowProps) => {
   const [selected, setSelected] = useState("");
 
-  const handleDrop = (e) => {
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const data = JSON.parse(e.dataTransfer.getData("text"));
-    moveSubject(data.from, semester.id, data.subjectId);
+    moveSubject(data.from, semester.id || 0, data.subjectId);
   };
 
   return (
@@ -60,9 +71,9 @@ const SemesterRow = ({ semester, addSubject, moveSubject }) => {
           <span className="text-[12px] font-medium text-gray-500">
             {semester.subjects.length} môn học
           </span>
-          <div className="h-4 w-[1px] bg-gray-200"></div>
+          <div className="h-4 w-px bg-gray-200"></div>
           <span className="text-[12px] font-bold text-blue-600">
-            {semester.subjects.reduce((sum, s) => sum + s.credits, 0)} Tín chỉ
+            {semester.subjects.reduce((sum, s) => sum + (s.credits || 0), 0)} Tín chỉ
           </span>
         </div>
       </div>
@@ -143,7 +154,7 @@ const SemesterRow = ({ semester, addSubject, moveSubject }) => {
           onClick={() => {
             const subject = SUBJECTS.find((s) => s.id === Number(selected));
             if (subject) {
-              addSubject(semester.id, subject);
+              addSubject(semester.id!, subject);
               setSelected("");
             }
           }}
