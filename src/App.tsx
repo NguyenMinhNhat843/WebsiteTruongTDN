@@ -46,6 +46,7 @@ import TaoChuongTrinhKhung from "./pages/admin/TaoChuongTrinhKhung/TaoChuongTrin
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import KhoaList from "./pages/admin/Khoa/KhoaList";
 import KhoaIndex from "./pages/admin/Khoa/KhoaIndex";
+import TaoDotTuyenSinh from "./pages/admin/TaoDotTuyenSinh/TaoDotTuyenSinh";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -152,6 +153,7 @@ function App() {
           {/* Tuyển sinh */}
           <Route path="tuyen-sinh" element={<TuyenSinh />}>
             <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
+            <Route path="tao-dot-tuyen-sinh" element={<TaoDotTuyenSinh />} />
             <Route path="dot-tuyen-sinh/:id" element={<DotTuyenSinhOne />} />
             <Route path="thong-ke" element={<NguonTuyenSinh />} />
             <Route element={<QuanLyHoSoLayout />}>

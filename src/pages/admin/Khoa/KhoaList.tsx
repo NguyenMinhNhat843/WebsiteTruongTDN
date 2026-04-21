@@ -79,7 +79,7 @@ const KhoaList = () => {
       renderRight={
         <button
           className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl 
-        font-bold text-[13px] hover:bg-indigo-600 transition-all shadow-lg shadow-slate-200"
+        font-bold text-[13px] hover:opacity-90 shadow-lg"
           onClick={() => setOpenModalThietLapKhoa(true)}
         >
           <Settings size={16} />
