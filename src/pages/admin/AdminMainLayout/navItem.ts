@@ -36,6 +36,11 @@ const navItems: NavItem[] = [
         href: "/admin/dao-tao/lop-hoc",
       },
       {
+        id: "khoa",
+        label: "Khoa",
+        href: "/admin/dao-tao/khoa",
+      },
+      {
         id: "thoi-khoa-bieu",
         label: "Thời khóa biểu",
         href: "/admin/dao-tao/thoi-khoa-bieu",

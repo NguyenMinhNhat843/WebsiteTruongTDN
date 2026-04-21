@@ -44,6 +44,8 @@ import QuanLyHoSoLayout from "./pages/admin/HoSoTuyenSinh/QuanLyHoSoLayout";
 import AdminPostPreview from "./pages/admin/QuanLyBaiViet/AdminPostPreview";
 import TaoChuongTrinhKhung from "./pages/admin/TaoChuongTrinhKhung/TaoChuongTrinhKhung";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import KhoaList from "./pages/admin/Khoa/KhoaList";
+import KhoaIndex from "./pages/admin/Khoa/KhoaIndex";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -124,10 +126,16 @@ function App() {
               path="dao-tao/tao-chuong-trinh-khung"
               element={<TaoChuongTrinhKhung />}
             />
+
             <Route path="dao-tao/lop-hoc" element={<ClassManagement />} />
             <Route path="dao-tao/lop-hoc/:slug" element={<ClassManagement />} />
             <Route path="dao-tao/thoi-khoa-bieu" element={<TimetablePage />} />
             <Route path="dao-tao/diem-thi" element={<GradeManagement />} />
+          </Route>
+
+          {/* Khoa */}
+          <Route element={<KhoaIndex />}>
+            <Route path="dao-tao/khoa" element={<KhoaList />} />
           </Route>
 
           {/* Công tác học sinh */}
