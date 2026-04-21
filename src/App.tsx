@@ -20,7 +20,7 @@ import LoginPage from "./pages/admin/Login";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { USER_ROLE } from "./features/users/types/User.types";
 import Dashboard from "./pages/admin/Home";
-import QuanLyNhanVien from "./pages/admin/QuanLyNhanVien/QuanLyNhanVien";
+import QuanLyNhanVien from "./pages/admin/QuanLyNhanVien/NhanVienList/QuanLyNhanVienList";
 import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung/ChuongTrinhKhung";
 import ClassManagement from "./pages/admin/LopHocVaKhoaHoc/LopHocVaKhoaHoc";
 import TimetablePage from "./pages/admin/ThoiKhoaBieu/ThoiKhoaBieu";

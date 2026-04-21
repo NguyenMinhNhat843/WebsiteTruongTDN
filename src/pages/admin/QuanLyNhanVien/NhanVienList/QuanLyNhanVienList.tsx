@@ -1,17 +1,17 @@
 import {
   ROLE_COLOR,
   ROLE_LABEL,
-} from "../../../features/users/constants/user.constants";
-import { USER_ROLE } from "../../../features/users/types/User.types";
-import UserDetailModal from "../../../features/users/components/UserDetailModal";
+} from "../../../../features/users/constants/user.constants";
+import { USER_ROLE } from "../../../../features/users/types/User.types";
+import UserDetailModal from "../NhanVienOne/UserDetailModal";
 import {
   QuanLyNguoiDungProvider,
   useQuanLyNguoiDungContext,
-} from "./QuanLyNguoiDungContext";
-import UserRow from "../../../features/users/components/UserRow";
-import PageShell from "../../../components/ui/PageShell";
+} from "../QuanLyNguoiDungContext";
+import PageShell from "../../../../components/ui/PageShell";
 import { User } from "lucide-react";
-import CreateNhanVien from "./CreateNhanVien/CreateNhanVienForm";
+import CreateNhanVien from "../CreateNhanVien/CreateNhanVienForm";
+import NhanVienTable from "./TableNhanVien";
 
 export default function QuanLyNhanVien() {
   return (
@@ -132,42 +132,10 @@ function Inner() {
           quả
         </div>
 
-        {/* ========== Table ============== */}
-        <div className="bg-white border border-solid border-slate-200 rounded-[14px] overflow-hidden shadow-sm">
-          <div
-            className="
-                grid grid-cols-[2fr_1fr_1.2fr_1fr_1fr] items-center px-5 py-3
-                bg-slate-50/80 border-b border-solid border-slate-200
-                text-[11px] font-bold text-slate-500 uppercase tracking-[0.07em]
-            "
-          >
-            <span>Người dùng</span>
-            <span>Vai trò</span>
-            <span>Chức vụ / Lớp</span>
-            <span>Trạng thái</span>
-            <span className="text-right">Ngày tạo</span>
-          </div>
-
-          <div className="min-h-50">
-            {filtered.length === 0 ? (
-              <div className="py-24 px-5 text-center flex flex-col items-center justify-center">
-                <div className="text-3xl mb-2">🔍</div>
-                <div className="text-slate-400 text-[14px] font-medium">
-                  Không tìm thấy kết quả nào phù hợp
-                </div>
-              </div>
-            ) : (
-              filtered.map((user, idx) => (
-                <UserRow
-                  key={user.id}
-                  user={user}
-                  isLast={idx === filtered.length - 1}
-                  onClick={() => setSelectedUser(user)}
-                />
-              ))
-            )}
-          </div>
-        </div>
+        <NhanVienTable
+          filtered={filtered}
+          setSelectedUser={(user) => setSelectedUser(user)}
+        />
       </div>
 
       {/* Modal */}

@@ -1,19 +1,22 @@
-import { useState } from "react";
 import { User, Lock, Mail, Phone, MapPin, ShieldCheck } from "lucide-react";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import Input from "../../../../components/ui/Form/Input";
 import ActionButton from "../../../../components/ui/ActionButton";
+import {
+  CreateNhanVienProvider,
+  useCreateNhanVienContext,
+} from "./CreateNhanVienProvider";
 
 const CreateNhanVien = () => {
-  const [formData, setFormData] = useState({
-    username: "",
-    password: "",
-    confirmPassword: "",
-    email: "",
-    phone: "",
-    address: "",
-    role: "STAFF",
-  });
+  return (
+    <CreateNhanVienProvider>
+      <Inner />
+    </CreateNhanVienProvider>
+  );
+};
+
+const Inner = () => {
+  const { formData, setFormData, handleSubmit } = useCreateNhanVienContext();
 
   const roleOptions = [
     {
@@ -28,11 +31,6 @@ const CreateNhanVien = () => {
       icon: <User size={16} />,
     },
   ];
-
-  const handleSubmit = () => {
-    console.log("Dữ liệu nhân viên mới:", formData);
-    // Xử lý logic submit tại đây
-  };
 
   return (
     <div className="">
