@@ -1,15 +1,19 @@
 import { useMemo, useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
-import { SAMPLE_USERS } from "../constants/user.dataTmp";
-import { USER_ROLE, type UserResponse } from "../types/User.types";
+import { SAMPLE_USERS } from "../../../features/users/constants/user.dataTmp";
+import {
+  USER_ROLE,
+  type UserResponse,
+} from "../../../features/users/types/User.types";
 
-export const [QuanLyNguoiDungProvider, useQuanLyNguoiDung] =
+export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
   createContextProvider(() => {
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState("ALL");
     const [statusFilter, setStatusFilter] = useState("ALL");
     const [selectedUser, setSelectedUser] = useState<UserResponse | null>(null);
     const [sortBy, setSortBy] = useState("name");
+    const [openModalCreate, setOpenModalCreate] = useState(false);
 
     const stats = useMemo(
       () => ({
@@ -53,13 +57,6 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDung] =
       return list;
     }, [search, roleFilter, statusFilter, sortBy]);
 
-    const roleStats = [
-      { label: "Giáo viên", role: "TEACHER", icon: "🎓", color: "#4ade80" },
-      { label: "Nhân viên", role: "STAFF", icon: "💼", color: "#facc15" },
-      { label: "Học sinh", role: "STUDENT", icon: "📚", color: "#38bdf8" },
-      { label: "Phụ huynh", role: "PARENT", icon: "👨‍👩‍👧", color: "#fb7185" },
-    ];
-
     return {
       search,
       setSearch,
@@ -73,6 +70,7 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDung] =
       setSortBy,
       stats,
       filtered,
-      roleStats,
+      openModalCreate,
+      setOpenModalCreate,
     };
   });

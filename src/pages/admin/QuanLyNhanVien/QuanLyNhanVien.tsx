@@ -1,17 +1,19 @@
 import {
   ROLE_COLOR,
   ROLE_LABEL,
-} from "../../features/users/constants/user.constants";
-import { USER_ROLE } from "../../features/users/types/User.types";
-import StatCard from "../../features/users/components/StatCard";
-import UserDetailModal from "../../features/users/components/UserDetailModal";
+} from "../../../features/users/constants/user.constants";
+import { USER_ROLE } from "../../../features/users/types/User.types";
+import UserDetailModal from "../../../features/users/components/UserDetailModal";
 import {
   QuanLyNguoiDungProvider,
-  useQuanLyNguoiDung,
-} from "../../features/users/hooks/QuanLyNguoiDungContext";
-import UserRow from "../../features/users/components/UserRow";
+  useQuanLyNguoiDungContext,
+} from "./QuanLyNguoiDungContext";
+import UserRow from "../../../features/users/components/UserRow";
+import PageShell from "../../../components/ui/PageShell";
+import { User } from "lucide-react";
+import CreateNhanVien from "./CreateNhanVien/CreateNhanVienForm";
 
-export default function QuanLyNguoiDung() {
+export default function QuanLyNhanVien() {
   return (
     <QuanLyNguoiDungProvider>
       <Inner />
@@ -23,7 +25,6 @@ function Inner() {
   const {
     filtered,
     stats,
-    roleStats,
     search,
     setSearch,
     roleFilter,
@@ -34,50 +35,27 @@ function Inner() {
     setSortBy,
     selectedUser,
     setSelectedUser,
-  } = useQuanLyNguoiDung();
+    openModalCreate,
+    setOpenModalCreate,
+  } = useQuanLyNguoiDungContext();
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-      }}
-    >
-      <div style={{ maxWidth: 1200, margin: "0 auto", padding: "24px 20px" }}>
-        {/* Page title */}
-        <div style={{ marginBottom: 24 }}>
-          <h1
-            style={{
-              fontSize: 28,
-              fontWeight: 900,
-              letterSpacing: "-0.03em",
-            }}
-          >
-            Quản lý người dùng
-          </h1>
-          <p style={{ color: "#475569", fontSize: 13, marginTop: 4 }}>
-            {stats.total} tài khoản · {stats.active} đang hoạt động
-          </p>
-        </div>
-
-        {/* Stats */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: 12,
-            marginBottom: 24,
-          }}
+    <PageShell
+      title="Quản lý người dùng"
+      sub={`${stats.total} tài khoản · ${stats.active} đang hoạt động`}
+      icon={User}
+      renderRight={
+        <button
+          className="ml-auto px-4.5 py-2.25 rounded-[10px] 
+        bg-linear-to-br from-indigo-600 to-violet-600 text-white text-[13px] 
+        font-bold tracking-wide shadow-lg shadow-indigo-200 border-none cursor-pointer 
+        hover:opacity-90 active:scale-95 transition-all"
+          onClick={() => setOpenModalCreate(true)}
         >
-          {roleStats.map((s) => (
-            <StatCard
-              key={s.role}
-              label={s.label}
-              value={stats.byRole[s.role] || 0}
-              color={s.color}
-              icon={s.icon}
-            />
-          ))}
-        </div>
-
+          + Thêm người dùng
+        </button>
+      }
+    >
+      <div className="">
         {/* Toolbar */}
         <div className="flex flex-wrap items-center gap-3 p-4 mb-4 bg-white border border-solid border-slate-200 rounded-[14px] shadow-sm">
           {/* Search */}
@@ -145,9 +123,6 @@ function Inner() {
           </select>
 
           {/* Add button */}
-          <button className="ml-auto px-4.5 py-2.25 rounded-[10px] bg-linear-to-br from-indigo-600 to-violet-600 text-white text-[13px] font-bold tracking-wide shadow-lg shadow-indigo-200 border-none cursor-pointer hover:opacity-90 active:scale-95 transition-all">
-            + Thêm người dùng
-          </button>
         </div>
 
         {/* Result count */}
@@ -202,6 +177,49 @@ function Inner() {
           onClose={() => setSelectedUser(null)}
         />
       )}
-    </div>
+
+      {openModalCreate && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Lớp nền mờ (Backdrop) */}
+          <div
+            className="absolute inset-0 bg-slate-900/40 transition-opacity"
+            onClick={() => setOpenModalCreate(false)}
+          />
+
+          {/* Nội dung Modal */}
+          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            {/* Header của Modal */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+              <h3 className="text-lg font-bold text-slate-800">
+                Thêm nhân viên mới
+              </h3>
+              <button
+                onClick={() => setOpenModalCreate(false)}
+                className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            {/* Body chứa Form - Giới hạn chiều cao nếu form dài */}
+            <div className="max-h-[80vh] overflow-y-auto p-6">
+              <CreateNhanVien />
+            </div>
+          </div>
+        </div>
+      )}
+    </PageShell>
   );
 }
