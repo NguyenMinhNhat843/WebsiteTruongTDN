@@ -1,5 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { USER_ROLE, type User } from "../../../features/users/types/User.types";
+import ButtonAction from "../../../components/ui/ButtonAction";
+import { Globe, LogOut } from "lucide-react";
 
 const UserProfileHeader = () => {
   const navigate = useNavigate();
@@ -49,27 +51,22 @@ const UserProfileHeader = () => {
         </span>
       </div>
 
-      <button
-        onClick={handleLogout}
-        className="ml-2 p-2 hover:bg-red-50 hover:text-red-500 rounded-full transition-colors text-slate-400"
-        title="Đăng xuất"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="18"
-          height="18"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        >
-          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
-          <polyline points="16 17 21 12 16 7"></polyline>
-          <line x1="21" y1="12" x2="9" y2="12"></line>
-        </svg>
-      </button>
+      <div className="flex items-center gap-2">
+        {/* Nút Đăng xuất */}
+        <ButtonAction
+          icon={<LogOut size={18} />}
+          label="Đăng xuất"
+          onClick={handleLogout}
+          title="Đăng xuất khỏi hệ thống"
+        />
+
+        {/* Ví dụ nút thứ 2 (có thể là Thoát hoặc Tắt máy tùy ngữ cảnh) */}
+        <ButtonAction
+          icon={<Globe size={18} />}
+          label="Ghé thăm website"
+          onClick={() => console.log("Thoát ứng dụng")}
+        />
+      </div>
     </div>
   );
 };

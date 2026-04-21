@@ -20,15 +20,6 @@ function Home() {
       path: "/admin/tuyen-sinh/thong-ke",
       stats: "1,200 học viên",
     },
-    // {
-    //   title: "Thời khóa biểu",
-    //   description:
-    //     "Quản lý và xem thời khóa biểu toàn trường theo tuần và hệ đào tạo",
-    //   icon: Calendar,
-    //   color: "from-indigo-500 to-indigo-600",
-    //   path: "/timetable",
-    //   stats: "119 lớp học",
-    // },
     {
       title: "Thu học phí",
       description:
@@ -127,7 +118,7 @@ function Home() {
                 className="group bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden hover:shadow-xl transition-all hover:-translate-y-1"
               >
                 <div
-                  className={`h-32 bg-gradient-to-br ${feature.color} flex items-center justify-center`}
+                  className={`h-32 bg-linear-to-br ${feature.color} flex items-center justify-center`}
                 >
                   <Icon className="w-16 h-16 text-white opacity-90" />
                 </div>

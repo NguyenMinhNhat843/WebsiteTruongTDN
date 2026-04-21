@@ -7,6 +7,7 @@ import PageShell from "../../../components/ui/PageShell";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import { useState } from "react";
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const TaoDotTuyenSinh = () => {
   const [formData, setFormData] = useState<{
     nienKhoa: string;

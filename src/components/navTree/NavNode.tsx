@@ -1,4 +1,4 @@
-import type { NavItem } from "./navItem";
+import type { NavItem } from "./navTree.type";
 
 interface NavNodeProps {
   item: NavItem;

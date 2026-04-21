@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { USER_ROLE } from "../../features/users/types/User.types";
+import {
+  USER_ROLE,
+  type UserRole,
+} from "../../features/users/types/User.types";
+// import { SelectOption } from "../../components/ui/Form/SelectOption";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("abc@gmail.com");
   const [password, setPassword] = useState("123456789");
+  const [testRole, setTestRole] = useState<UserRole>(USER_ROLE.ADMIN);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = (e: React.FormEvent) => {
@@ -21,7 +26,7 @@ const LoginPage = () => {
       navigate("/admin/home");
       localStorage.setItem(
         "user",
-        JSON.stringify({ email, role: USER_ROLE.ADMIN, name: "Admin User" }),
+        JSON.stringify({ email, role: testRole, name: `${testRole} User` }),
       );
     }, 1500);
   };
@@ -91,6 +96,18 @@ const LoginPage = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
+          {/* Select giả lập để test Role nhanh */}
+          {/* <SelectOption
+            label="Đăng nhập với tư cách (Dành cho Test)"
+            options={[
+              { value: USER_ROLE.ADMIN, label: "Admin" },
+              { value: USER_ROLE.TEACHER, label: "Giảng viên" },
+              { value: USER_ROLE.STUDENT, label: "Sinh viên" },
+            ]}
+            value={testRole}
+            onChange={(e) => setTestRole(e.target.value as UserRole)}
+          /> */}
 
           <button
             type="submit"

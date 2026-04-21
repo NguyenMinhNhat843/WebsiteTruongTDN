@@ -1,11 +1,4 @@
-export interface NavItem {
-  id: string;
-  label: string;
-  icon?: string; // emoji hoặc ký tự icon
-  href?: string;
-  badge?: string | number;
-  children?: NavItem[];
-}
+import type { NavItem } from "../../../components/navTree/navTree.type";
 
 const navItems: NavItem[] = [
   {
@@ -13,42 +6,55 @@ const navItems: NavItem[] = [
     label: "Home",
     icon: "⬡",
     href: "/admin/home",
+    roles: ["ADMIN", "TEACHER", "STUDENT"], // Ai cũng thấy
   },
   // --- NHÓM ĐÀO TẠO & HỌC TẬP ---
   {
     id: "quan-ly-dao-tao",
     label: "Quản lý Đào tạo",
     icon: "📚",
+    roles: ["ADMIN", "TEACHER"],
     children: [
       {
         id: "chuong-trinh-khung",
         label: "Chương trình khung",
         href: "/admin/dao-tao/chuong-trinh-khung",
+        roles: ["ADMIN"], // Chỉ admin mới được xem chương trình khung
       },
       {
         id: "tao-chuong-trinh-khung",
         label: "Tạo chương trình khung",
         href: "/admin/dao-tao/tao-chuong-trinh-khung",
+        roles: ["ADMIN", "TEACHER"],
       },
       {
         id: "quan-ly-lop-hoc",
         label: "Lớp học & Khóa học",
         href: "/admin/dao-tao/lop-hoc",
+        roles: ["ADMIN", "TEACHER"],
+      },
+      {
+        id: "lop-hoc-phan",
+        label: "Lớp học phần",
+        href: "/admin/dao-tao/lop-hoc-phan",
       },
       {
         id: "khoa",
         label: "Khoa",
         href: "/admin/dao-tao/khoa",
+        roles: ["ADMIN", "TEACHER"],
       },
       {
         id: "thoi-khoa-bieu",
         label: "Thời khóa biểu",
         href: "/admin/dao-tao/thoi-khoa-bieu",
+        roles: ["ADMIN", "TEACHER"],
       },
       {
         id: "quan-ly-diem",
         label: "Quản lý Điểm & Thi",
         href: "/admin/dao-tao/diem-thi",
+        roles: ["ADMIN", "TEACHER"],
       },
     ],
   },

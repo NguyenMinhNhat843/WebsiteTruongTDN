@@ -1,7 +1,7 @@
 import { useState, useCallback, useMemo } from "react";
 import NavNode from "./NavNode";
-import type { NavItem } from "./navItem";
 import { useLocation, useNavigate } from "react-router-dom";
+import type { NavItem } from "./navTree.type";
 
 export interface SidebarProps {
   items: NavItem[];
@@ -41,6 +41,10 @@ export default function Sidebar({
 }: SidebarProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const user = localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user") as string)
+    : null;
+  const userRole = user?.role || null;
 
   // 2. Tính toán active và parents ngay khi render
   const { activeId, autoParentIds } = useMemo(() => {
@@ -136,18 +140,31 @@ export default function Sidebar({
       {/* Nav - Tối ưu thanh cuộn */}
       <nav className="relative flex-1 overflow-y-auto px-3 py-6 custom-scrollbar">
         <ul className="space-y-1.5">
-          {items.map((item) => (
-            <NavNode
-              key={item.id}
-              item={item}
-              depth={0}
-              activeId={activeId}
-              openIds={openIds}
-              collapsed={isCollapsed}
-              onToggle={handleToggle}
-              onActivate={handleActivate}
-            />
-          ))}
+          {items.map((item) => {
+            const rolesAccessed = item.roles;
+
+            // Nếu item có quy định roles VÀ role của user không nằm trong danh sách đó thì ẩn đi
+            if (
+              rolesAccessed &&
+              rolesAccessed.length > 0 &&
+              (!userRole || !rolesAccessed.includes(userRole))
+            ) {
+              return null;
+            }
+
+            return (
+              <NavNode
+                key={item.id}
+                item={item}
+                depth={0}
+                activeId={activeId}
+                openIds={openIds}
+                collapsed={isCollapsed}
+                onToggle={handleToggle}
+                onActivate={handleActivate}
+              />
+            );
+          })}
         </ul>
       </nav>
 

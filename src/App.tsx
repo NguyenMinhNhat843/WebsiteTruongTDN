@@ -18,7 +18,6 @@ import PostList from "./pages/admin/QuanLyBaiViet/PostList";
 import UserPostDetail from "./pages/client/PostDetail/UserPostDetail";
 import LoginPage from "./pages/admin/Login";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
-import { USER_ROLE } from "./features/users/types/User.types";
 import Dashboard from "./pages/admin/Home";
 import QuanLyNhanVien from "./pages/admin/QuanLyNhanVien/NhanVienList/QuanLyNhanVienList";
 import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung/ChuongTrinhKhung";
@@ -47,6 +46,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import KhoaList from "./pages/admin/Khoa/KhoaList";
 import KhoaIndex from "./pages/admin/Khoa/KhoaIndex";
 import TaoDotTuyenSinh from "./pages/admin/TaoDotTuyenSinh/TaoDotTuyenSinh";
+import LopHocPhan from "./pages/admin/LopHocPhan/LopHocPhan";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -93,7 +93,7 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute allowedRoles={[USER_ROLE.ADMIN]}>
+            <ProtectedRoute>
               <AdminMainLayout />
             </ProtectedRoute>
           }
@@ -128,6 +128,7 @@ function App() {
               element={<TaoChuongTrinhKhung />}
             />
 
+            <Route path="dao-tao/lop-hoc-phan" element={<LopHocPhan />} />
             <Route path="dao-tao/lop-hoc" element={<ClassManagement />} />
             <Route path="dao-tao/lop-hoc/:slug" element={<ClassManagement />} />
             <Route path="dao-tao/thoi-khoa-bieu" element={<TimetablePage />} />

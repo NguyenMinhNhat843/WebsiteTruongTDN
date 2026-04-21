@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "./SideBar";
+import Sidebar from "../../../components/navTree/SideBar.tsx";
 import navItems from "./navItem.ts";
 import UserProfileHeader from "./UserProfileHeader.tsx";
 
