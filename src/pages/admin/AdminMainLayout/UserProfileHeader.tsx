@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { USER_ROLE, type User } from "../../../features/users/types/User.types";
 import ButtonAction from "../../../components/ui/ButtonAction";
-import { Globe, LogOut } from "lucide-react";
+import { Bell, Globe, LogOut } from "lucide-react";
 
 const UserProfileHeader = () => {
   const navigate = useNavigate();
@@ -27,45 +27,58 @@ const UserProfileHeader = () => {
   if (!user) return null;
 
   return (
-    <div className="flex items-center gap-4 p-2 bg-white shadow-md border border-slate-100">
-      {/* Avatar giả lập với chữ cái đầu của tên */}
-      <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold shadow-inner">
-        {user?.name?.charAt(0).toUpperCase()}
-      </div>
+    <div className="flex items-center justify-end gap-6 ml-auto p-2 border border-b-slate-200">
+      {/* Notification Hub (Optional but adds 'Pro' feel) */}
+      <button className="relative text-slate-400 hover:text-indigo-600 transition-colors">
+        <div className="absolute cursor-pointer -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></div>
+        <Bell size={20} />
+      </button>
 
-      <div className="flex flex-col">
-        <span className="text-sm font-bold text-slate-800 leading-none">
-          {user.name}
-        </span>
-        <span className="text-[11px] font-medium text-slate-500 uppercase tracking-tighter mt-1">
-          {/* Badge hiển thị Role */}
+      {/* Profile Section */}
+      <div className="flex items-center gap-3 pl-2 border-l border-slate-200">
+        {/* Action Buttons: Tinh gọn thành dạng Circle Ghost Buttons */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => window.open("http://localhost:5173/", "_blank")}
+            title="Ghé thăm website"
+            className="p-2 cursor-pointer text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-all"
+          >
+            <Globe size={18} />
+          </button>
+
+          <button
+            onClick={handleLogout}
+            title="Đăng xuất"
+            className="p-2 text-slate-400 cursor-pointer hover:text-rose-600 hover:bg-rose-50 rounded-full transition-all"
+          >
+            <LogOut size={18} />
+          </button>
+        </div>
+
+        <div className="flex flex-col items-end mr-1">
+          <span className="text-sm font-bold text-slate-800 leading-tight">
+            {user.name}
+          </span>
           <span
-            className={`px-1.5 py-0.5 rounded ${
+            className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider mt-0.5 ${
               user.role === USER_ROLE.ADMIN
-                ? "bg-red-50 text-red-600"
-                : "bg-blue-50 text-blue-600"
+                ? "bg-rose-50 text-rose-500"
+                : "bg-indigo-50 text-indigo-600"
             }`}
           >
             {user.role}
           </span>
-        </span>
-      </div>
+        </div>
 
-      <div className="flex items-center gap-2">
-        {/* Nút Đăng xuất */}
-        <ButtonAction
-          icon={<LogOut size={18} />}
-          label="Đăng xuất"
-          onClick={handleLogout}
-          title="Đăng xuất khỏi hệ thống"
-        />
-
-        {/* Ví dụ nút thứ 2 (có thể là Thoát hoặc Tắt máy tùy ngữ cảnh) */}
-        <ButtonAction
-          icon={<Globe size={18} />}
-          label="Ghé thăm website"
-          onClick={() => console.log("Thoát ứng dụng")}
-        />
+        {/* Avatar với hiệu ứng Hover Gradient */}
+        <div className="relative group cursor-pointer">
+          <div className="absolute -inset-0.5 bg-linear-to-r from-indigo-500 to-purple-600 rounded-full opacity-20 group-hover:opacity-100 transition duration-300"></div>
+          <div className="relative w-10 h-10 rounded-full bg-white flex items-center justify-center border border-slate-200">
+            <div className="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center text-white text-xs font-black">
+              {user?.name?.charAt(0).toUpperCase()}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
