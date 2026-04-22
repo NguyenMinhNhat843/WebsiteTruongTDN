@@ -20,43 +20,9 @@ export const navItemTeacher: NavItem[] = [
     href: "/teacher/thoi-khoa-bieu",
   },
   {
-    id: "attendance",
-    label: "Điểm danh",
-    icon: "📅",
-    children: [
-      {
-        id: "attendance-take",
-        label: "Điểm danh buổi học",
-        href: "/teacher/attendance/take",
-      },
-      {
-        id: "attendance-history",
-        label: "Lịch sử điểm danh",
-        href: "/teacher/attendance/history",
-      },
-    ],
-  },
-  {
-    id: "announcements",
-    label: "Thông báo",
-    icon: "📢",
-    children: [
-      {
-        id: "announcement-list",
-        label: "Danh sách",
-        href: "/teacher/announcements",
-      },
-      {
-        id: "announcement-create",
-        label: "Tạo thông báo",
-        href: "/teacher/announcements/create",
-      },
-    ],
-  },
-  {
-    id: "statistics",
-    label: "Thống kê",
-    icon: "📈",
-    href: "/teacher/statistics",
+    id: "decuonggiangday",
+    label: "Đề cương giảng dạy",
+    icon: "📚",
+    href: "/teacher/de-cuong-giang-day",
   },
 ];
