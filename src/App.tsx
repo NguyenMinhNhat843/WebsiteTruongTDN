@@ -47,6 +47,9 @@ import KhoaList from "./pages/admin/Khoa/KhoaList";
 import KhoaIndex from "./pages/admin/Khoa/KhoaIndex";
 import TaoDotTuyenSinh from "./pages/admin/TaoDotTuyenSinh/TaoDotTuyenSinh";
 import LopHocPhan from "./pages/admin/LopHocPhan/LopHocPhan";
+import MemberLayout from "./pages/MembersDashboard/MemberSideBar/MemberLayout";
+import MemberDashboard from "./pages/MembersDashboard/Home";
+import LopHocGiangDay from "./pages/MembersDashboard/LopGiangDay/LopGiangDay";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -186,6 +189,12 @@ function App() {
 
           {/* Cài đặt hệ thống */}
           <Route path="cai-dat/phan-quyen" element={<PhanQuyenNguoiDung />} />
+        </Route>
+
+        {/* ========================= Giáo viên ============================= */}
+        <Route path="/teacher/*" element={<MemberLayout />}>
+          <Route path="home" element={<MemberDashboard />} />
+          <Route path="lop-hoc" element={<LopHocGiangDay />} />
         </Route>
 
         {/* Route 404 - Luôn để ở cuối cùng */}

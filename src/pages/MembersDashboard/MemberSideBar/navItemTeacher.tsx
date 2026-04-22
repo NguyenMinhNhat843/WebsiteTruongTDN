@@ -5,13 +5,7 @@ export const navItemTeacher: NavItem[] = [
     id: "dashboard",
     label: "Tổng quan",
     icon: "📊",
-    href: "/teacher/dashboard",
-  },
-  {
-    id: "profile",
-    label: "Hồ sơ cá nhân",
-    icon: "👤",
-    href: "/teacher/profile",
+    href: "/teacher/home",
   },
   {
     id: "classes",
@@ -21,12 +15,7 @@ export const navItemTeacher: NavItem[] = [
       {
         id: "my-classes",
         label: "Danh sách lớp",
-        href: "/teacher/classes",
-      },
-      {
-        id: "class-detail",
-        label: "Chi tiết lớp",
-        href: "/teacher/classes/:id",
+        href: "/teacher/lop-hoc",
       },
     ],
   },

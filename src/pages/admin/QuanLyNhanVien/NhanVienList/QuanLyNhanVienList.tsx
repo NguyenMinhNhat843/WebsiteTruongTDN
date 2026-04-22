@@ -2,7 +2,6 @@ import {
   ROLE_COLOR,
   ROLE_LABEL,
 } from "../../../../features/users/constants/user.constants";
-import { USER_ROLE } from "../../../../features/users/types/User.types";
 import UserDetailModal from "../NhanVienOne/UserDetailModal";
 import {
   QuanLyNguoiDungProvider,
@@ -37,7 +36,9 @@ function Inner() {
     setSelectedUser,
     openModalCreate,
     setOpenModalCreate,
+    users,
   } = useQuanLyNguoiDungContext();
+  console.log("🚀 ~ file: QuanLyNhanVienList.tsx:28 ~ Inner ~ users:", users);
   return (
     <PageShell
       title="Quản lý người dùng"
@@ -73,7 +74,7 @@ function Inner() {
 
           {/* Role filter */}
           <div className="flex flex-wrap gap-1.5">
-            {["ALL", ...Object.keys(USER_ROLE)].map((r) => {
+            {["ALL", "ADMIN", "TEACHER", "STAFF"].map((r) => {
               const rc =
                 r !== "ALL" ? ROLE_COLOR[r as keyof typeof ROLE_COLOR] : null;
               const active = roleFilter === r;

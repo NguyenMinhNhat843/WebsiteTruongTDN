@@ -201,6 +201,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/register": {
         parameters: {
             query?: never;
@@ -229,6 +245,34 @@ export interface components {
             password: string;
             email?: string;
             role?: components["schemas"]["RoleType"];
+        };
+        /** @description From T, pick a set of properties whose keys are in the union K */
+        "Pick_User.address-or-birthday-or-email-or-fullName-or-gender-or-isActive-or-phone-or-username-or-createdAt-or-updatedAt-or-id-or-role_": {
+            id: string;
+            username: string;
+            email: string;
+            role: components["schemas"]["_36_Enums.RoleType"];
+            fullName: string;
+            gender: string;
+            phone: string;
+            /** Format: date-time */
+            birthday: string;
+            address: string;
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UserResponse: components["schemas"]["Pick_User.address-or-birthday-or-email-or-fullName-or-gender-or-isActive-or-phone-or-username-or-createdAt-or-updatedAt-or-id-or-role_"];
+        PaginationResponse_UserResponse_: {
+            data: components["schemas"]["UserResponse"][];
+            /** Format: double */
+            total: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            limit: number;
         };
         UpdateUserDTO: {
             username?: string;
@@ -333,63 +377,36 @@ export interface components {
             name?: string;
             code?: string;
         };
-        /** @description From T, pick a set of properties whose keys are in the union K */
-        "Pick_User.address-or-birthday-or-email-or-fullName-or-gender-or-isActive-or-phone-or-username-or-createdAt-or-updatedAt-or-id_": {
-            id: string;
-            username: string;
-            email: string;
-            fullName: string;
-            gender: string;
-            phone: string;
-            /** Format: date-time */
-            birthday: string;
-            address: string;
-            isActive: boolean;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
+        LoginResponse: {
+            message: string;
+            user: {
+                fullName: string;
+                email: string;
+                username: string;
+                id: string;
+            };
+            accessToken: string;
         };
-        UserResponse: components["schemas"]["Pick_User.address-or-birthday-or-email-or-fullName-or-gender-or-isActive-or-phone-or-username-or-createdAt-or-updatedAt-or-id_"];
+        LoginRequest: {
+            username: string;
+            password: string;
+        };
         RegisterResponse: {
             message: string;
             user: components["schemas"]["UserResponse"];
         };
-        /** @description From T, pick a set of properties whose keys are in the union K */
-        "Pick_User.address-or-birthday-or-email-or-fullName-or-gender-or-isActive-or-phone-or-username-or-createdAt-or-updatedAt-or-role-or-password_": {
-            username: string;
-            password: string;
-            email: string;
-            role: components["schemas"]["_36_Enums.RoleType"];
-            fullName: string;
-            gender: string;
-            phone: string;
-            /** Format: date-time */
-            birthday: string;
-            address: string;
-            isActive: boolean;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
         RegisterRequest: {
             username: string;
             password: string;
-            email: string;
-            role: components["schemas"]["_36_Enums.RoleType"];
-            fullName: string;
-            gender: string;
-            phone: string;
+            confirmPassword: string;
+            email?: string | null;
+            role: components["schemas"]["RoleType"];
+            fullName?: string | null;
+            gender?: string | null;
+            address?: string | null;
+            phone?: string | null;
             /** Format: date-time */
-            birthday: string;
-            address: string;
-            isActive: boolean;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            confirmPassword?: string;
+            birthday?: string | null;
         };
     };
     responses: never;
@@ -500,24 +517,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        /** Format: date-time */
-                        updatedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        isActive: boolean;
-                        address: string;
-                        /** Format: date-time */
-                        birthday: string;
-                        phone: string;
-                        gender: string;
-                        fullName: string;
-                        role: components["schemas"]["_36_Enums.RoleType"];
-                        email: string;
-                        password: string;
-                        username: string;
-                        id: string;
-                    }[];
+                    "application/json": components["schemas"]["PaginationResponse_UserResponse_"];
                 };
             };
         };
@@ -527,7 +527,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -566,7 +566,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -609,7 +609,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -1159,6 +1159,30 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Department"];
+                };
+            };
+        };
+    };
+    Login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LoginResponse"];
                 };
             };
         };

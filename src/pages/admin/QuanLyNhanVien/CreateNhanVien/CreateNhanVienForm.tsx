@@ -1,11 +1,12 @@
 import { User, Lock, Mail, Phone, MapPin, ShieldCheck } from "lucide-react";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import Input from "../../../../components/ui/Form/Input";
-import ActionButton from "../../../../components/ui/ActionButton";
 import {
   CreateNhanVienProvider,
   useCreateNhanVienContext,
 } from "./CreateNhanVienProvider";
+import ButtonAction from "../../../../components/ui/ButtonAction";
+import type { RoleType } from "../../../../api/type";
 
 const CreateNhanVien = () => {
   return (
@@ -16,7 +17,8 @@ const CreateNhanVien = () => {
 };
 
 const Inner = () => {
-  const { formData, setFormData, handleSubmit } = useCreateNhanVienContext();
+  const { formData, setFormData, handleSubmit, isPending } =
+    useCreateNhanVienContext();
 
   const roleOptions = [
     {
@@ -79,7 +81,9 @@ const Inner = () => {
           options={roleOptions}
           icon={<ShieldCheck size={18} />}
           value={formData.role}
-          onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+          onChange={(e) =>
+            setFormData({ ...formData, role: e.target.value as RoleType })
+          }
         />{" "}
         <hr className="my-6 border-slate-100" />
         <p className="text-sm font-medium text-slate-500 mb-2">
@@ -91,7 +95,7 @@ const Inner = () => {
           type="email"
           placeholder="example@school.edu.vn"
           icon={Mail}
-          value={formData.email}
+          value={formData.email || undefined}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         />{" "}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -100,7 +104,7 @@ const Inner = () => {
             label="Số điện thoại"
             placeholder="09xx xxx xxx"
             icon={Phone}
-            value={formData.phone}
+            value={formData.phone || undefined}
             onChange={(e) =>
               setFormData({ ...formData, phone: e.target.value })
             }
@@ -111,7 +115,7 @@ const Inner = () => {
             label="Địa chỉ"
             placeholder="Số nhà, tên đường..."
             icon={MapPin}
-            value={formData.address}
+            value={formData.address || undefined}
             onChange={(e) =>
               setFormData({ ...formData, address: e.target.value })
             }
@@ -119,11 +123,10 @@ const Inner = () => {
         </div>
         {/* Submit Button */}
         <div className="flex justify-end mt-8">
-          <ActionButton
+          <ButtonAction
             label="Tạo nhân viên"
-            color="#3b82f6"
-            primary={true}
             onClick={handleSubmit}
+            loading={isPending}
           />{" "}
         </div>
       </div>

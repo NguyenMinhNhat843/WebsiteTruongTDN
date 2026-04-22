@@ -136,55 +136,60 @@ const LopHocPhan = () => {
 
       {/* Section Danh sách lớp */}
       {isFilterReady ? (
-        <div className="mt-6 bg-white overflow-hidden">
-          <div className="pb-2 flex justify-between items-center">
-            <h3 className="font-bold text-slate-700 flex items-center gap-2">
-              <Search size={18} /> Danh sách lớp tìm thấy ({MOCK_CLASSES.length}
-              )
-            </h3>
+        <div>
+          <div className="mt-6 bg-white overflow-hidden">
+            <div className="pb-2 flex justify-between items-center">
+              <h3 className="font-bold text-slate-700 flex items-center gap-2">
+                <Search size={18} /> Danh sách lớp tìm thấy (
+                {MOCK_CLASSES.length})
+              </h3>
+            </div>
+
+            <ReusableTable
+              data={MOCK_CLASSES}
+              columns={columns}
+              rowKey="id"
+              emptyMessage="Không tìm thấy lớp học nào cho bộ lọc này."
+            />
           </div>
 
-          <ReusableTable
-            data={MOCK_CLASSES}
-            columns={columns}
-            rowKey="id"
-            emptyMessage="Không tìm thấy lớp học nào cho bộ lọc này."
-          />
+          {/* Section Danh sách môn học trong kỳ này */}
+          <div className="pt-6">
+            <h3 className="font-bold pb-2 text-slate-700 flex items-center gap-2">
+              <Search size={18} /> Các môn học trong kỳ{" "}
+              {formData.semester.split("-")[0]} -{" "}
+              {formData.semester.split("-")[1]} (dựa trên chương trình khung )
+            </h3>
+            <ChuongTrinhTheoHocKy />
+          </div>
+
+          {/* Khoảng đệm và đường kẻ */}
+          <div className="relative py-10">
+            <div
+              className="absolute inset-0 flex items-center"
+              aria-hidden="true"
+            >
+              <div className="w-full border-t border-slate-200"></div>
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-slate-50 px-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">
+                Bắt đầu khởi tạo & Phân bổ
+              </span>
+            </div>
+          </div>
+
+          {/* Section Tạo lớp học phần */}
+          <div className="pt-6">
+            <CreateCourseModule />
+          </div>
         </div>
       ) : (
-        <div className="text-center p-12 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+        <div className="text-center p-12 mt-6 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
           <p className="text-slate-500">
             Vui lòng chọn đầy đủ Học kỳ, Ngành và Khóa để xem danh sách lớp.
           </p>
         </div>
       )}
-
-      {/* Section Danh sách môn học trong kỳ này */}
-      <div className="pt-6">
-        <h3 className="font-bold pb-2 text-slate-700 flex items-center gap-2">
-          <Search size={18} /> Các môn học trong kỳ{" "}
-          {formData.semester.split("-")[0]} - {formData.semester.split("-")[1]}{" "}
-          (dựa trên chương trình khung )
-        </h3>
-        <ChuongTrinhTheoHocKy />
-      </div>
-
-      {/* Khoảng đệm và đường kẻ */}
-      <div className="relative py-10">
-        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-          <div className="w-full border-t border-slate-200"></div>
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-slate-50 px-4 text-sm font-semibold text-slate-500 uppercase tracking-wider">
-            Bắt đầu khởi tạo & Phân bổ
-          </span>
-        </div>
-      </div>
-
-      {/* Section Tạo lớp học phần */}
-      <div className="pt-6">
-        <CreateCourseModule />
-      </div>
     </PageShell>
   );
 };

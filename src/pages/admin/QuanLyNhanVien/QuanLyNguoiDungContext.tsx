@@ -5,6 +5,8 @@ import {
   USER_ROLE,
   type UserResponse,
 } from "../../../features/users/types/User.types";
+import { useQuery } from "@tanstack/react-query";
+import { client } from "../../../api/client";
 
 export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
   createContextProvider(() => {
@@ -57,6 +59,45 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
       return list;
     }, [search, roleFilter, statusFilter, sortBy]);
 
+    const [filters, setFilters] = useState({
+      page: 1,
+      limit: 10,
+      username: "",
+      role: "STAFF", // Ví dụ lọc theo nhân viên
+    });
+
+    const {
+      data: users,
+      isLoading,
+      isError,
+      refetch,
+    } = useQuery({
+      // 1. queryKey phải chứa filters để tự động fetch lại khi filter thay đổi
+      queryKey: ["nhan-vien", filters],
+
+      queryFn: async () => {
+        // 2. Gọi API với params
+        const { data, error } = await client.GET("/users/search", {
+          params: {
+            query: {
+              page: filters.page,
+              limit: filters.limit,
+              username: filters.username,
+              role: filters.role,
+              // các field khác như email, isActive...
+            },
+          },
+        });
+
+        // 3. Xử lý lỗi nếu fetch fail
+        if (error) throw new Error(error || "Lỗi khi lấy dữ liệu");
+
+        // Trả về dữ liệu cho TanStack Query
+        return data;
+      },
+      refetchOnWindowFocus: false,
+    });
+
     return {
       search,
       setSearch,
@@ -72,5 +113,12 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
       filtered,
       openModalCreate,
       setOpenModalCreate,
+      users,
+      isLoading,
+
+      isError,
+      refetch,
+      filters,
+      setFilters,
     };
   });

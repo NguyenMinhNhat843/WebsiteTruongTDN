@@ -9,7 +9,7 @@
     "build:tsc": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "gen-api": "npx openapi-typescript http://localhost:5000/swagger.json --output ./src/api/v1.ts"
+    "api:gen": "npx openapi-typescript http://localhost:5000/swagger.json --output ./src/api/v1.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.2.1",
@@ -28,6 +28,7 @@
     "clsx": "^2.1.1",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.577.0",
+    "openapi-fetch": "^0.17.0",
     "react": "^19.2.0",
     "react-countup": "^6.5.3",
     "react-dom": "^19.2.0",
