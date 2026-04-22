@@ -21,7 +21,6 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
       disabled,
       className,
       label,
-      withText = true,
       ...props
     },
     ref,
@@ -34,10 +33,14 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
         active:scale-95 active:opacity-90 \
         hover:shadow-sm hover:-translate-y-[1px] \
         disabled:opacity-70 disabled:cursor-not-allowed";
+
+    // Kiểm tra xem có text hiển thị hay không
+    const hasText = Boolean(children || label);
+
     const sizeClasses = {
-      sm: "px-3 py-1.5 text-xs rounded-xl",
-      md: "px-4 py-2 text-sm rounded-xl",
-      lg: "px-6 py-3 text-md rounded-xl",
+      sm: clsx("h-8 rounded-lg text-xs", hasText ? "px-3" : "w-8"),
+      md: clsx("h-10 rounded-xl text-sm", hasText ? "px-4" : "w-10"),
+      lg: clsx("h-12 rounded-xl text-md", hasText ? "px-6" : "w-12"),
     };
 
     const content = children || label;
@@ -55,6 +58,7 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
           clsx(
             baseClasses,
             sizeClasses[size],
+            !hasText && "aspect-square p-0", // Nếu không có text, đảm bảo button là hình vuông
             { "opacity-75 cursor-wait": isLoading },
             className, // className truyền vào sau sẽ ghi đè các class trước đó
           ),
@@ -85,17 +89,13 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
               ></path>
             </svg>
-            <span>{content}</span>
+            {hasText && <span>{content}</span>}
           </span>
         ) : (
-          <>
-            {icon && (
-              <span className={clsx(withText && "mr-2", content && "shrink-0")}>
-                {icon}
-              </span>
-            )}
-            {content}
-          </>
+          <div className="flex items-center justify-center">
+            {icon && <span className={clsx(hasText && "mr-2")}>{icon}</span>}
+            {hasText && <span>{content}</span>}
+          </div>
         )}
       </button>
     );

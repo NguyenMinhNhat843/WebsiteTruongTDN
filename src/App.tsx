@@ -50,6 +50,7 @@ import LopHocPhan from "./pages/admin/LopHocPhan/LopHocPhan";
 import MemberLayout from "./pages/MembersDashboard/MemberSideBar/MemberLayout";
 import MemberDashboard from "./pages/MembersDashboard/Home";
 import LopHocGiangDay from "./pages/MembersDashboard/LopGiangDay/LopGiangDay";
+import ThoiKhoaBieu from "./pages/MembersDashboard/ThoiKhoaBieu/ThoiKhoaBieu";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -195,6 +196,7 @@ function App() {
         <Route path="/teacher/*" element={<MemberLayout />}>
           <Route path="home" element={<MemberDashboard />} />
           <Route path="lop-hoc" element={<LopHocGiangDay />} />
+          <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
         </Route>
 
         {/* Route 404 - Luôn để ở cuối cùng */}

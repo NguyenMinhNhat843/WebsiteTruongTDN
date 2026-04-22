@@ -11,36 +11,13 @@ export const navItemTeacher: NavItem[] = [
     id: "classes",
     label: "Lớp giảng dạy",
     icon: "🏫",
-    children: [
-      {
-        id: "my-classes",
-        label: "Danh sách lớp",
-        href: "/teacher/lop-hoc",
-      },
-    ],
+    href: "/teacher/lop-hoc",
   },
   {
-    id: "grades",
-    label: "Quản lý điểm",
-    icon: "📝",
-    children: [
-      {
-        id: "grade-entry",
-        label: "Nhập điểm",
-        href: "/teacher/grades/input",
-      },
-      {
-        id: "grade-review",
-        label: "Xem & chỉnh sửa",
-        href: "/teacher/grades/review",
-      },
-      {
-        id: "grade-submit",
-        label: "Gửi duyệt",
-        href: "/teacher/grades/submit",
-        badge: "!",
-      },
-    ],
+    id: "thoikhoabieu",
+    label: "Thời khóa biểu",
+    icon: "📅",
+    href: "/teacher/thoi-khoa-bieu",
   },
   {
     id: "attendance",

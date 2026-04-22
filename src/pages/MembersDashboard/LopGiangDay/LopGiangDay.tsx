@@ -10,12 +10,13 @@ import {
 import ButtonAction from "../../../components/ui/ButtonAction";
 import PageShell from "../../../components/ui/PageShell";
 import { SelectOption } from "../../../components/ui/Form/SelectOption";
-import ReusableTable from "../../../components/ui/Table";
+import ReusableTable, { type Column } from "../../../components/ui/Table";
 import ChiTietLopHoc from "./ChiTietLopHoc";
 import {
   LopGiangDayProvider,
   useLopGiangDayContext,
 } from "./LopGiangDayProvider";
+import ModalLichSu from "./LichSuThaoTac";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -27,7 +28,12 @@ const LopHocGiangDay = () => {
   );
 };
 const Inner = () => {
-  const { classSelected, setClassSelected } = useLopGiangDayContext();
+  const {
+    classSelected,
+    setClassSelected,
+    openModalLichSu,
+    setOpenModalLichSu,
+  } = useLopGiangDayContext();
   const [selectedSemester, setSelectedSemester] = useState("HK1-2026");
 
   //Danh sách học kỳ cho bộ lọc
@@ -59,7 +65,7 @@ const Inner = () => {
   ];
 
   //Định nghĩa các cột cho Table
-  const columns = [
+  const columns: Column<any>[] = [
     {
       key: "className",
       label: "Lớp học phần",
@@ -101,12 +107,23 @@ const Inner = () => {
       key: "actions",
       label: "Thao tác",
       className: "text-right",
+      width: "150px",
       render: (item: any) => (
-        <div className="flex justify-end">
+        <div className="flex gap-2 justify-end">
+          {/* Nút Chi Tiết: Tông màu xanh dương, nhẹ nhàng */}
           <ButtonAction
-            label="Chi tiết"
+            title="Chi tiết"
             icon={<Eye size={16} />}
-            onClick={() => console.log("Xem chi tiết lớp:", item.id)}
+            className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-600 hover:text-white hover:border-blue-600"
+            onClick={(item) => setClassSelected(item)}
+          />
+
+          {/* Nút Lịch sử: Tông màu xám trung tính hoặc Slate */}
+          <ButtonAction
+            title="Lịch sử"
+            icon={<Clock size={16} />}
+            className="bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-600 hover:text-white hover:border-slate-600"
+            onClick={() => setOpenModalLichSu(item)}
           />
         </div>
       ),
@@ -137,13 +154,17 @@ const Inner = () => {
           rowKey="id"
           emptyMessage="Không có lớp học nào trong học kỳ này."
           className="w-full"
-          onRowClick={(item) => setClassSelected(item)}
         />
       </div>
       <ChiTietLopHoc
         isOpen={!!classSelected}
         onClose={() => setClassSelected(null)}
         selectedClass={classSelected}
+      />
+      <ModalLichSu
+        isOpen={!!openModalLichSu}
+        onClose={() => setOpenModalLichSu(null)}
+        selectedClass={openModalLichSu}
       />
     </PageShell>
   );

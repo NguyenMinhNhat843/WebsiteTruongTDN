@@ -7,6 +7,7 @@ export interface Column<T> {
   label: string;
   className?: string;
   headerClassName?: string;
+  width?: React.CSSProperties["width"];
   // Hàm render tùy chỉnh nhận vào toàn bộ object của dòng
   render?: (item: T, index: number) => ReactNode;
 }
@@ -48,6 +49,7 @@ export default function ReusableTable<T>({
               {columns.map((col) => (
                 <th
                   key={col.key}
+                  style={{ width: col.width }}
                   className={clsx(
                     "px-4 py-3.5 font-semibold text-xs tracking-wider",
                     col.headerClassName,
@@ -75,6 +77,7 @@ export default function ReusableTable<T>({
                   {columns.map((col) => (
                     <td
                       key={col.key}
+                      style={{ width: col.width }}
                       className={clsx(
                         "px-4 py-3 text-sm text-slate-600",
                         col.className,
