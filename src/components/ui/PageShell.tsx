@@ -39,7 +39,6 @@ const PageShell: FunctionComponent<PageShellProps> = ({
                 classNameIcon,
               )}
             >
-              {/* Tự động áp size 26 cho mọi icon truyền vào */}
               <Icon size={26} strokeWidth={2.5} aria-hidden="true" />
             </div>
           )}
@@ -56,7 +55,6 @@ const PageShell: FunctionComponent<PageShellProps> = ({
           </div>
         </div>
 
-        {/* Nhóm bên phải: Nút bấm action */}
         {renderRight && (
           <div className="flex items-center gap-3 shrink-0">{renderRight}</div>
         )}

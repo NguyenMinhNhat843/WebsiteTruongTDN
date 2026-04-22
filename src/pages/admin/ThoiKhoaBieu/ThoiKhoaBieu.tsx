@@ -1,148 +1,165 @@
 import { useState } from "react";
-import {
-  Search,
-  Filter,
-  MoreHorizontal,
-  Users,
-  MapPin,
-  Plus,
-} from "lucide-react";
-import { CLASS_LIST, TIET_HOCS } from "./thoiKhoaBieu.mockData";
+import { Calendar, MapPin, Filter, ChevronRight } from "lucide-react";
+import PageShell from "../../../components/ui/PageShell";
 
-export default function AdminGlobalSchedule() {
-  const [selectedDay, setSelectedDay] = useState("Thứ Hai");
+const AdminScheduleGlobal = () => {
+  // 1. Quản lý bộ lọc Học kỳ
+  const [semester, setSemester] = useState("HK1-2026");
+
+  // 2. Định nghĩa danh sách phòng và thứ
+  const rooms = [
+    "Phòng 101",
+    "Phòng 102",
+    "Phòng 201",
+    "Phòng 202",
+    "Xưởng Cơ khí",
+  ];
+  const days = [
+    "Thứ 2",
+    "Thứ 3",
+    "Thứ 4",
+    "Thứ 5",
+    "Thứ 6",
+    "Thứ 7",
+    "Chủ nhật",
+  ];
+
+  // 3. Dữ liệu giả lập (Backend sẽ trả về mảng này)
+  const scheduleData = [
+    {
+      className: "Kế toán doanh nghiệp KTDN20A",
+      room: "Phòng 101",
+      day: "Thứ 2",
+      slots: "Tiết 1-3",
+      color: "bg-blue-100 text-blue-700 border-blue-200",
+    },
+    {
+      className: "Lập trình hướng đối tượng KTDN20A",
+      room: "Phòng 101",
+      day: "Thứ 2",
+      slots: "Tiết 4-5",
+      color: "bg-blue-100 text-blue-700 border-blue-200",
+    },
+    {
+      className: "Kế toán doanh nghiệp KTDN20A",
+      room: "Phòng 101",
+      day: "Thứ 7",
+      slots: "Tiết 1-3",
+      color: "bg-blue-100 text-blue-700 border-blue-200",
+    },
+    {
+      className: "Quản trị mạng QTM21B",
+      room: "Phòng 201",
+      day: "Thứ 4",
+      slots: "Tiết 4-6",
+      color: "bg-purple-100 text-purple-700 border-purple-200",
+    },
+  ];
 
   return (
-    <div className="p-6 bg-slate-50">
-      <div className=" mx-auto">
-        {/* Header điều khiển */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6 gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
-          <div className="flex items-center gap-4">
-            <h2 className="text-xl font-black text-slate-800">
-              Lịch học Toàn trường
-            </h2>
-            <div className="flex items-center bg-slate-100 rounded-lg p-1">
-              {[
-                "Thứ Hai",
-                "Thứ Ba",
-                "Thứ Tư",
-                "Thứ Năm",
-                "Thứ Sáu",
-                "Thứ Bảy",
-              ].map((day) => (
-                <button
-                  key={day}
-                  onClick={() => setSelectedDay(day)}
-                  className={`px-4 py-1.5 rounded-md text-xs font-bold transition-all ${
-                    selectedDay === day
-                      ? "bg-white text-blue-600 shadow-sm"
-                      : "text-slate-500 hover:text-slate-800"
-                  }`}
-                >
-                  {day}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                size={16}
-              />
-              <input
-                type="text"
-                placeholder="Tìm tên lớp, phòng..."
-                className="pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
-              />
-            </div>
-            <button className="p-2 bg-slate-100 rounded-xl text-slate-600 hover:bg-slate-200">
-              <Filter size={20} />
-            </button>
-          </div>
+    <PageShell
+      title="Quản lý Thời khóa biểu"
+      sub="Phân bổ phòng học theo học kỳ"
+      icon={Calendar}
+      renderRight={
+        <div className="flex items-center gap-3 bg-slate-50 p-2 rounded-xl border border-slate-200">
+          <Filter size={18} className="text-slate-400 ml-2" />
+          <select
+            value={semester}
+            onChange={(e) => setSemester(e.target.value)}
+            className="bg-transparent text-sm font-bold text-slate-700 focus:outline-none pr-4"
+          >
+            <option value="HK1-2026">Học kỳ 1 - 2026</option>
+            <option value="HK2-2025">Học kỳ 2 - 2025</option>
+          </select>
         </div>
-
-        {/* Bảng ma trận */}
-        <div className="bg-white w-full rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
-          {/* Chú ý: overflow-x-auto ở container bọc ngoài table */}
-          <div className="overflow-x-auto max-w-full custom-scrollbar">
-            <table className="w-max min-w-full border-collapse">
-              <thead className="shadow-lg">
-                <tr className="bg-slate-900 text-white">
-                  <th className="shadown-2xl sticky left-0 z-30 bg-slate-900 p-5 text-left font-black uppercase tracking-widest text-sm border-r border-slate-800 w-48">
-                    Lớp Học / Tiết
-                  </th>
-                  {TIET_HOCS.map((slot) => (
-                    <th
-                      key={slot.value}
-                      className="p-5 text-center font-bold text-xs min-w-45 border-r border-slate-800 last:border-r-0"
-                    >
-                      {slot.label}
-                      <span className="block text-sm text-slate-300 font-normal">
-                        {slot.time}
-                      </span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {CLASS_LIST.map((cls) => (
-                  <tr
-                    key={cls.id}
-                    className="hover:bg-slate-50/80 transition-colors group"
+      }
+    >
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        {/* Grid Bảng thời khóa biểu */}
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                {/* Ô góc trống */}
+                <th className="p-4 bg-slate-50 border-b border-r border-slate-200 text-left text-xs uppercase tracking-widest text-slate-400 font-black w-40">
+                  Phòng / Thứ
+                </th>
+                {days.map((day) => (
+                  <th
+                    key={day}
+                    className="p-4 bg-slate-50 border-b border-slate-200 text-sm font-bold text-slate-700 min-w-[150px]"
                   >
-                    <td className="shadow-2xl sticky left-0 z-10 bg-white group-hover:bg-slate-50 p-5 font-black text-slate-700 border-r border-slate-300">
-                      <div className="flex flex-col">
-                        <span className="text-sm truncate w-36">
-                          {cls.name}
-                        </span>
-                        <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1 mt-1 uppercase">
-                          <MapPin size={10} className="text-blue-500" />{" "}
-                          {cls.room}
-                        </span>
-                      </div>
-                    </td>
+                    {day}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rooms.map((room) => (
+                <tr
+                  key={room}
+                  className="hover:bg-slate-50/50 transition-colors"
+                >
+                  {/* Cột dọc: Phòng học */}
+                  <td className="p-4 border-r border-b border-slate-200 bg-slate-50/30">
+                    <div className="flex items-center gap-2 font-bold text-slate-700">
+                      <MapPin size={14} className="text-slate-400" />
+                      {room}
+                    </div>
+                  </td>
 
-                    {/* Các ô tiết học có thể cuộn ngang phía sau */}
-                    {TIET_HOCS.map((slot) => {
-                      const hasLesson = Math.random() > 0.3;
-                      return (
-                        <td
-                          key={slot.value}
-                          className="p-3 border-r border-slate-100 last:border-r-0 min-w-45"
-                        >
-                          {hasLesson ? (
-                            <div className="bg-blue-50 border border-blue-100 p-3 rounded-2xl hover:shadow-lg hover:shadow-blue-100 transition-all cursor-pointer group/card relative overflow-hidden">
-                              <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-                              <div className="absolute top-1.5 right-1.5 opacity-0 group-hover/card:opacity-100 transition-opacity">
-                                <MoreHorizontal
-                                  size={14}
-                                  className="text-blue-400"
-                                />
+                  {/* Các ô chứa môn học */}
+                  {days.map((day) => {
+                    // 1. Dùng filter để lấy TẤT CẢ các lớp học trong phòng và thứ này
+                    const lessonsInCell = scheduleData.filter(
+                      (d) => d.room === room && d.day === day,
+                    );
+
+                    return (
+                      <td
+                        key={day}
+                        className="p-2 border-b border-slate-100 align-top min-w-45"
+                      >
+                        {/* Container chứa danh sách các lớp */}
+                        <div className="flex flex-col gap-2 max-h-[300px]">
+                          {lessonsInCell.length > 0 ? (
+                            lessonsInCell.map((lesson, index) => (
+                              <div
+                                key={index}
+                                className={`p-3 rounded-lg border shadow-sm ${lesson.color} transition-transform hover:scale-[1.02] cursor-pointer shrink-0`}
+                              >
+                                <p className="text-[11px] font-black uppercase mb-1 leading-tight wrap-break-words">
+                                  {lesson.className}
+                                </p>
+                                <div className="flex items-center justify-between mt-2">
+                                  <span className="text-[10px] font-bold opacity-80 bg-white/50 px-1.5 py-0.5 rounded">
+                                    {lesson.slots}
+                                  </span>
+                                  <ChevronRight size={12} />
+                                </div>
                               </div>
-                              <p className="text-[11px] font-black text-blue-900 line-clamp-1 mb-1">
-                                Thiết kế UI/UX
-                              </p>
-                              <div className="flex items-center gap-1 text-[9px] text-blue-600 font-bold">
-                                <Users size={10} /> GV. Minh Tú
-                              </div>
-                            </div>
+                            ))
                           ) : (
-                            <div className="h-16 w-full rounded-2xl border-2 border-dashed border-slate-100 flex items-center justify-center text-slate-300 hover:border-blue-200 hover:bg-blue-50/30 transition-all cursor-pointer">
-                              <Plus size={16} />
+                            /* Trạng thái trống */
+                            <div className="h-full w-full py-6 flex items-center justify-center">
+                              <span className="text-slate-200 text-[10px] italic">
+                                Trống
+                              </span>
                             </div>
                           )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                        </div>
+                      </td>
+                    );
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
-}
+};
+
+export default AdminScheduleGlobal;
