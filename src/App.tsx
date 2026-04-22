@@ -18,7 +18,7 @@ import PostList from "./pages/admin/QuanLyBaiViet/PostList";
 import UserPostDetail from "./pages/client/PostDetail/UserPostDetail";
 import LoginPage from "./pages/admin/Login";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
-import Dashboard from "./pages/admin/Home";
+import Dashboard from "./pages/admin/Dashboard/Home";
 import QuanLyNhanVien from "./pages/admin/QuanLyNhanVien/NhanVienList/QuanLyNhanVienList";
 import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung/ChuongTrinhKhung";
 import ClassManagement from "./pages/admin/LopHocVaKhoaHoc/LopHocVaKhoaHoc";
@@ -52,6 +52,9 @@ import MemberDashboard from "./pages/MembersDashboard/Home";
 import LopHocGiangDay from "./pages/MembersDashboard/LopGiangDay/LopGiangDay";
 import ThoiKhoaBieu from "./pages/MembersDashboard/ThoiKhoaBieu/ThoiKhoaBieu";
 import MonHocGiangDay from "./pages/MembersDashboard/DeCuongGiangDay/MonHocGiangDay";
+import StudentDashboard from "./pages/StudentDashboard/Dashboard/Dashboard";
+import StudentLayout from "./pages/StudentDashboard/StudentLayout";
+import StudentLopHocPhan from "./pages/StudentDashboard/LopHocPhan/LopHocPhan";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -199,6 +202,14 @@ function App() {
           <Route path="lop-hoc" element={<LopHocGiangDay />} />
           <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
           <Route path="de-cuong-giang-day" element={<MonHocGiangDay />} />
+        </Route>
+
+        {/* ========================= Sinh viên ============================= */}
+        <Route path="/student/*" element={<StudentLayout />}>
+          <Route path="dashboard" element={<StudentDashboard />} />
+          <Route path="lop-hoc-phan" element={<StudentLopHocPhan />} />
+          <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
+          <Route path="chuong-trinh-khung" element={<ChuongTrinhKhung />} />
         </Route>
 
         {/* Route 404 - Luôn để ở cuối cùng */}

@@ -27,6 +27,8 @@ const LoginPage = () => {
         navigate("/admin/home");
       } else if (testRole === USER_ROLE.TEACHER) {
         navigate("/teacher/home");
+      } else if (testRole === USER_ROLE.STUDENT) {
+        navigate("/student/dashboard");
       }
       localStorage.setItem(
         "user",
