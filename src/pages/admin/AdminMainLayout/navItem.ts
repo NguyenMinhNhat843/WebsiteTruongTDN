@@ -35,7 +35,7 @@ const navItems: NavItem[] = [
       },
       {
         id: "lop-hoc-phan",
-        label: "Lớp học phần",
+        label: "Tạo Lớp học phần",
         href: "/admin/dao-tao/lop-hoc-phan",
       },
       {

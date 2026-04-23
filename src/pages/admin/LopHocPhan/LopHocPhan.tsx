@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { GraduationCap, Layers, ChevronRight, Search } from "lucide-react";
+import {
+  GraduationCap,
+  Layers,
+  ChevronRight,
+  Search,
+  CalendarDays,
+  Info,
+} from "lucide-react";
 import { SelectOption } from "../../../components/ui/Form/SelectOption";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import PageShell from "../../../components/ui/PageShell";
@@ -54,7 +61,7 @@ const LopHocPhan = () => {
 
   // Định nghĩa cột cho ReusableTable
   const columns = [
-    { key: "code", label: "Tên lớp", className: "font-bold text-blue-600" },
+    { key: "code", label: "Tên lớp", className: "font-bold" },
     { key: "gvcn", label: "Giáo viên chủ nhiệm" },
     {
       key: "totalStudents",
@@ -71,13 +78,25 @@ const LopHocPhan = () => {
 
   return (
     <PageShell title="Tạo Lớp Học Phần" icon={Layers}>
-      <div className="p-6 bg-white rounded-2xl shadow-sm border border-slate-100">
-        <h2 className="text-lg font-bold mb-4">Chọn thông tin lớp</h2>
+      <div className="p-8 bg-white rounded-2xl shadow-sm border border-slate-100">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-bold text-slate-800">
+            Chọn thông tin lớp
+          </h2>
+          <div className="flex items-center gap-2 text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full">
+            <Info size={16} />
+            <span className="text-xs font-medium">
+              Chọn đủ thông tin để hiển thị lớp học phần
+            </span>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Học kỳ - Dùng SelectOption */}
+          {/* Học kỳ */}
           <SelectOption
-            label="Học kỳ" //
-            require //
+            label="Học kỳ"
+            require
+            icon={<CalendarDays size={18} className="text-blue-500" />} // Màu xanh dương cho thời gian
             value={formData.semester}
             options={[
               { value: "HK1-2025", label: "Học kỳ 1 - 2025" },
@@ -86,47 +105,54 @@ const LopHocPhan = () => {
               { value: "HK1-2026", label: "Học kỳ 1 - 2026" },
               { value: "HK2-2026", label: "Học kỳ 2 - 2026" },
               { value: "HK3-2026", label: "Học kỳ 3 - 2026" },
-            ]} //
+            ]}
+            className="bg-slate-50 border-blue-700"
             onChange={(e) =>
               setFormData({ ...formData, semester: e.target.value })
             }
           />
 
-          {/* Ngành học - Dùng SelectOption */}
+          {/* Ngành học */}
           <SelectOption
-            label="Ngành học" //
-            require //
-            icon={<GraduationCap size={18} />} //
+            label="Ngành học"
+            require
+            icon={<GraduationCap size={18} className="text-emerald-500" />} // Màu xanh lá cho giáo dục
             value={formData.major}
             options={[
+              { value: " - ", label: " - " },
               { value: "CNTT", label: "Công nghệ thông tin" },
               { value: "Kế toán doanh nghiệp", label: "Kế toán doanh nghiệp" },
               { value: "Hàn điện dân dụng", label: "Hàn điện dân dụng" },
               { value: "Điện công nghiệp", label: "Điện công nghiệp" },
             ]}
+            className="bg-slate-50 border-emerald-700"
             onChange={(e) =>
               setFormData({ ...formData, major: e.target.value })
             }
           />
 
+          {/* Khóa đào tạo */}
           <SelectOption
             label="Khóa đào tạo"
+            icon={<Layers size={18} className="text-amber-500" />} // Màu cam cho phân lớp/khóa
             options={["K20", "K21", "K22", "K23"].map((khoa) => ({
               value: khoa,
               label: khoa,
             }))}
             value={formData.batch}
+            className="bg-slate-50 border-amber-700"
             onChange={(e) =>
               setFormData({ ...formData, batch: e.target.value })
             }
           />
         </div>
 
-        {/* Nút điều hướng - Dùng ActionButton */}
+        {/* Nút điều hướng */}
         <div className="flex justify-end mt-10 pt-6 border-t border-slate-100">
           <ButtonAction
-            label="Tìm kiếm"
+            label="Tìm kiếm lớp học"
             icon={<ChevronRight size={18} />}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-xl transition-all shadow-md"
             onClick={() =>
               !isNextDisabled && console.log("Data Step 1:", formData)
             }

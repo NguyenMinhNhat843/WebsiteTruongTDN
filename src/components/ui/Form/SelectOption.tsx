@@ -1,5 +1,6 @@
-import clsx from "clsx";
+import clsx, { type ClassValue } from "clsx";
 import type { ReactNode, SelectHTMLAttributes } from "react";
+import { twMerge } from "tailwind-merge";
 
 interface Option {
   value: string | number;
@@ -18,6 +19,10 @@ interface SelectOptionProps extends SelectHTMLAttributes<HTMLSelectElement> {
   require?: boolean;
 }
 
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 export const SelectOption = ({
   label,
   icon,
@@ -31,12 +36,12 @@ export const SelectOption = ({
   ...props
 }: SelectOptionProps) => {
   return (
-    <div className={clsx(`flex flex-col gap-1.5`, containerClassName)}>
+    <div className={cn(`flex flex-col gap-1.5`, containerClassName)}>
       {/* Label & Icon */}
       {label && (
         <label
           htmlFor={id}
-          className={clsx(
+          className={cn(
             "flex items-center gap-2 text-sm font-semibold text-gray-700 ml-1",
             labelClassName,
           )}
@@ -50,13 +55,12 @@ export const SelectOption = ({
       <div className="relative group">
         <select
           id={id}
-          className={clsx(
+          className={cn(
             `
-            w-full appearance-none bg-white border border-gray-200 text-gray-900 text-sm rounded-xl 
-            focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500 
+            w-full appearance-none bg-white border border-gray-200 text-gray-900 text-sm rounded-xl  
             block p-2.5 transition-all duration-200 outline-none
             cursor-pointer disabled:bg-gray-50 disabled:cursor-not-allowed
-            ${error ? "border-red-500 focus:ring-red-500/20" : "hover:border-gray-300"}`,
+            ${error ? "border-red-500 focus:ring-red-500/20" : ""}`,
             className,
           )}
           {...props}

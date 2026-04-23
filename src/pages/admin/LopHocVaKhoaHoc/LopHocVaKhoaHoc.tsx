@@ -10,6 +10,7 @@ import Table from "./Table/Table";
 import PageShell from "../../../components/ui/PageShell";
 import StatsOverview from "./components/StatsOverview";
 import FilterSection from "./components/FilterSection";
+import { SelectOption } from "../../../components/ui/Form/SelectOption";
 
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
 export default function LopHocVaKhoaHoc() {
@@ -38,9 +39,17 @@ function Inner() {
       renderRight={
         <header className="bg-white flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-600 bg-gray-100 px-4 py-2 rounded">
-              HK2 • 2024–2025
-            </span>
+            <SelectOption
+              containerClassName="w-fit" // Giữ kích thước gọn gàng
+              className="text-xs text-gray-600 border-gray-500"
+              defaultValue="HK2-2024-2025"
+              options={[
+                { value: "HK1-2026", label: "HK1 • 2026" },
+                { value: "HK2-2026", label: "HK2 • 2026" },
+                { value: "HK1-2025", label: "HK1 • 2025" },
+                { value: "HK2-2024-2025", label: "HK2 • 2024–2025" },
+              ]} // Danh sách options
+            />
             <button
               onClick={() => setShowCreate(true)}
               className="bg-blue-600 hover:bg-blue-700 cursor-pointer text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"

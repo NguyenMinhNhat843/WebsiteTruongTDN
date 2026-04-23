@@ -61,6 +61,17 @@ const StatsOverview = () => {
           icon={stat.icon}
         />
       ))}
+      {/* <StatCard1
+        color="bg-gradient-to-br from-green-500 to-emerald-600"
+        icon={PieChart}
+        title="Tỉ lệ lấp đầy"
+        value="150"
+        sub={
+          <span className="text-green-500 font-semibold">
+            Bình quân 35 SV/lớp
+          </span>
+        }
+      /> */}
     </div>
   );
 };
