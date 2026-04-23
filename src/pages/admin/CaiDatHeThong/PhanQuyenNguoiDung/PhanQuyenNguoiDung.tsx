@@ -28,8 +28,6 @@ const MODULE_LIST: ModulePermission[] = [
   { id: "news", label: "Tin tức & Thông báo" },
 ];
 
-const ROLES = Object.values(USER_ROLE);
-
 type PermissionState = Record<UserRole, Record<string, Action[]>>;
 
 const INITIAL_STATE: PermissionState = {
@@ -137,7 +135,7 @@ export default function PhanQuyenNguoiDung() {
                   <th className="p-5 text-left font-bold uppercase tracking-widest text-xs border-r border-slate-800 w-64">
                     Nhóm Chức Năng
                   </th>
-                  {ROLES.map((role) => (
+                  {["ADMIN", "TEACHER", "STAFF", "STUDENT"].map((role) => (
                     <th
                       key={role}
                       className="p-5 text-center font-bold text-sm min-w-45"
@@ -156,7 +154,7 @@ export default function PhanQuyenNguoiDung() {
                     <td className="p-5 font-bold text-slate-700 bg-slate-50/30 border-r border-slate-100">
                       {mod.label}
                     </td>
-                    {ROLES.map((role) => (
+                    {["ADMIN", "TEACHER", "STAFF", "STUDENT"].map((role) => (
                       <td key={role} className="p-4">
                         <div className="flex justify-center gap-1.5">
                           <ActionButton

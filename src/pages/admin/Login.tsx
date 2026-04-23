@@ -4,7 +4,7 @@ import {
   USER_ROLE,
   type UserRole,
 } from "../../features/users/types/User.types";
-import { SelectOption } from "../../components/ui/Form/SelectOption";
+// import { SelectOption } from "../../components/ui/Form/SelectOption";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -104,7 +104,7 @@ const LoginPage = () => {
           </div>
 
           {/* Select giả lập để test Role nhanh */}
-          <SelectOption
+          {/* <SelectOption
             label="Đăng nhập với tư cách (Dành cho Test)"
             options={[
               { value: USER_ROLE.ADMIN, label: "Admin" },
@@ -113,7 +113,7 @@ const LoginPage = () => {
             ]}
             value={testRole}
             onChange={(e) => setTestRole(e.target.value as UserRole)}
-          />
+          /> */}
 
           <button
             type="submit"

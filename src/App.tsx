@@ -55,6 +55,7 @@ import MonHocGiangDay from "./pages/MembersDashboard/DeCuongGiangDay/MonHocGiang
 import StudentDashboard from "./pages/StudentDashboard/Dashboard/Dashboard";
 import StudentLayout from "./pages/StudentDashboard/StudentLayout";
 import StudentLopHocPhan from "./pages/StudentDashboard/LopHocPhan/LopHocPhan";
+import SystemLogPage from "./pages/admin/NhatKyHeThong/NhatKyHeThong";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -194,6 +195,7 @@ function App() {
 
           {/* Cài đặt hệ thống */}
           <Route path="cai-dat/phan-quyen" element={<PhanQuyenNguoiDung />} />
+          <Route path="nhat-ky-he-thong" element={<SystemLogPage />} />
         </Route>
 
         {/* ========================= Giáo viên ============================= */}

@@ -74,11 +74,11 @@ const navItems: NavItem[] = [
         label: "Xét tốt nghiệp",
         href: "/admin/hoc-sinh/tot-nghiep",
       },
-      {
-        id: "dot-xet-tot-nghiep",
-        label: "Đợt xét tốt nghiệp",
-        href: "/admin/hoc-sinh/dot-xet-tot-nghiep",
-      },
+      // {
+      //   id: "dot-xet-tot-nghiep",
+      //   label: "Đợt xét tốt nghiệp",
+      //   href: "/admin/hoc-sinh/dot-xet-tot-nghiep",
+      // },
     ],
   },
   // --- NHÓM TUYỂN SINH ---
@@ -182,11 +182,11 @@ const navItems: NavItem[] = [
     label: "Cài đặt hệ thống",
     icon: "⚙",
     children: [
-      {
-        id: "cau-hinh-chung",
-        label: "Cấu hình chung",
-        href: "/admin/settings/general",
-      },
+      // {
+      //   id: "cau-hinh-chung",
+      //   label: "Cấu hình chung",
+      //   href: "/admin/settings/general",
+      // },
       {
         id: "phan-quyen",
         label: "Phân quyền (Roles)",
@@ -195,7 +195,7 @@ const navItems: NavItem[] = [
       {
         id: "nhat-ky-hoat-dong",
         label: "Nhật ký hệ thống",
-        href: "/admin/settings/logs",
+        href: "/admin/nhat-ky-he-thong",
       },
     ],
   },
