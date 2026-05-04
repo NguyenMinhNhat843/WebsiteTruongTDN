@@ -1,9 +1,12 @@
 import type { paths } from "./v1";
-import createClient from "openapi-fetch";
+import createFetchClient from "openapi-fetch";
+import createClient from "openapi-react-query";
 
-export const client = createClient<paths>({
-  baseUrl: "http://localhost:5000/api", // Link BE
+export const client = createFetchClient<paths>({
+  baseUrl: `${import.meta.env.VITE_BASE_URL || "http://localhost:3000"}`, // Link BE
 });
+
+export const $api = createClient(client);
 
 // Middleware để tự động đính kèm JWT Token vào Header
 client.use({

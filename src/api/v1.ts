@@ -4,54 +4,6 @@
  */
 
 export interface paths {
-    "/users": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["FindAll"];
-        put?: never;
-        post: operations["Create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["QueryUser"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["FindById"];
-        put: operations["Update"];
-        post?: never;
-        delete: operations["Delete"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/students": {
         parameters: {
             query?: never;
@@ -59,25 +11,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["FindAll"];
+        /** Tìm kiếm và phân trang danh sách sinh viên */
+        get: operations["searchStudents"];
         put?: never;
-        post: operations["Create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/students/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["SearchStudent"];
-        put?: never;
-        post?: never;
+        /** Tạo mới hồ sơ sinh viên */
+        post: operations["createStudent"];
         delete?: never;
         options?: never;
         head?: never;
@@ -91,58 +29,114 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["FindById"];
-        put: operations["Update"];
+        get?: never;
+        put?: never;
         post?: never;
-        delete: operations["Delete"];
+        delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /** Cập nhật thông tin hồ sơ sinh viên */
+        patch: operations["updateStudent"];
         trace?: never;
     };
-    "/majors": {
+    "/students/{id}/approve": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["FindAll"];
+        get?: never;
         put?: never;
-        post: operations["Create"];
+        /** Duyệt hồ sơ và cấp tài khoản đăng nhập */
+        post: operations["approveStudent"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/majors/search": {
+    "/users": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["SearchMajor"];
+        get?: never;
         put?: never;
-        post?: never;
+        /** Tạo người dùng mới */
+        post: operations["UserController_createUser"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/majors/{id}": {
+    "/users/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["FindById"];
-        put: operations["Update"];
+        get?: never;
+        put?: never;
         post?: never;
-        delete: operations["Delete"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin người dùng */
+        patch: operations["UserController_updateUser"];
+        trace?: never;
+    };
+    "/staffs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tìm kiếm và phân trang danh sách nhân viên */
+        get: operations["StaffController_findAll"];
+        put?: never;
+        /** Tạo nhân viên kèm tài khoản đăng nhập */
+        post: operations["StaffController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/staffs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin nhân viên và tài khoản */
+        patch: operations["StaffController_update"];
+        trace?: never;
+    };
+    "/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Đăng nhập vào hệ thống */
+        post: operations["AuthController_login"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -155,10 +149,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Lấy danh sách toàn bộ khoa */
-        get: operations["GetAll"];
+        /** Lấy danh sách tất cả phòng ban */
+        get: operations["DepartmentController_findAll"];
         put?: never;
-        post?: never;
+        /** Tạo mới một phòng ban */
+        post: operations["DepartmentController_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -172,52 +167,92 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Lấy chi tiết một khoa theo ID */
-        get: operations["GetById"];
-        /** @description Cập nhật thông tin khoa */
-        put: operations["Update"];
+        /** Lấy chi tiết một phòng ban theo ID */
+        get: operations["DepartmentController_findOne"];
+        put?: never;
         post?: never;
-        /** @description Xóa một khoa khỏi hệ thống */
-        delete: operations["Delete"];
+        /** Xóa một phòng ban */
+        delete: operations["DepartmentController_remove"];
         options?: never;
         head?: never;
-        patch?: never;
+        /** Cập nhật thông tin phòng ban */
+        patch: operations["DepartmentController_update"];
         trace?: never;
     };
-    "/departments/create": {
+    "/majors": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Lấy danh sách tất cả ngành đào tạo */
+        get: operations["MajorController_findAll"];
         put?: never;
-        /** @description Tạo mới một khoa */
-        post: operations["Create"];
+        /** Tạo mới ngành đào tạo */
+        post: operations["MajorController_create"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/auth/login": {
+    "/majors/{id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Lấy chi tiết ngành đào tạo theo ID */
+        get: operations["MajorController_findOne"];
         put?: never;
-        post: operations["Login"];
+        post?: never;
+        /** Xóa ngành đào tạo */
+        delete: operations["MajorController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật ngành đào tạo */
+        patch: operations["MajorController_update"];
+        trace?: never;
+    };
+    "/batches": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả các khóa đào tạo */
+        get: operations["BatchController_findAll"];
+        put?: never;
+        /** Tạo mới một khóa đào tạo */
+        post: operations["BatchController_create"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/auth/register": {
+    "/batches/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin chi tiết một khóa đào tạo */
+        get: operations["BatchController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin khóa đào tạo */
+        patch: operations["BatchController_update"];
+        trace?: never;
+    };
+    "/classes/auto-assign": {
         parameters: {
             query?: never;
             header?: never;
@@ -226,7 +261,487 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["Register"];
+        /** Tự động phân lớp cho sinh viên mới */
+        post: operations["ClassController_autoAssign"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả lớp học */
+        get: operations["ClassController_findAll"];
+        put?: never;
+        /** Tạo mới lớp học */
+        post: operations["ClassController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết lớp học theo ID */
+        get: operations["ClassController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa lớp học */
+        delete: operations["ClassController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin lớp học */
+        patch: operations["ClassController_update"];
+        trace?: never;
+    };
+    "/subjects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả môn học */
+        get: operations["SubjectController_findAll"];
+        put?: never;
+        /** Tạo mới môn học */
+        post: operations["SubjectController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subjects/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết môn học theo ID */
+        get: operations["SubjectController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa môn học */
+        delete: operations["SubjectController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin môn học */
+        patch: operations["SubjectController_update"];
+        trace?: never;
+    };
+    "/semesters": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả học kỳ */
+        get: operations["SemesterController_findAll"];
+        put?: never;
+        /** Tạo mới học kỳ */
+        post: operations["SemesterController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/semesters/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy học kỳ hiện tại đang hoạt động */
+        get: operations["SemesterController_getCurrent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/semesters/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết học kỳ theo ID */
+        get: operations["SemesterController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa học kỳ */
+        delete: operations["SemesterController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin học kỳ */
+        patch: operations["SemesterController_update"];
+        trace?: never;
+    };
+    "/rooms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả phòng học */
+        get: operations["RoomController_findAll"];
+        put?: never;
+        /** Tạo mới phòng học */
+        post: operations["RoomController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/rooms/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết phòng học theo ID */
+        get: operations["RoomController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa phòng học */
+        delete: operations["RoomController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin phòng học */
+        patch: operations["RoomController_update"];
+        trace?: never;
+    };
+    "/curriculums": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả chương trình khung */
+        get: operations["CurriculumController_findAll"];
+        put?: never;
+        /** Tạo mới chương trình khung */
+        post: operations["CurriculumController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/curriculums/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết chương trình khung theo ID */
+        get: operations["CurriculumController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa chương trình khung */
+        delete: operations["CurriculumController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật chương trình khung */
+        patch: operations["CurriculumController_update"];
+        trace?: never;
+    };
+    "/admissions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả các đợt tuyển sinh */
+        get: operations["AdmissionController_findAll"];
+        put?: never;
+        /** Tạo đợt tuyển sinh mới kèm danh mục ngành/khóa */
+        post: operations["AdmissionController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-fee/create-semester-fees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tạo các khoản phí học kỳ cho sinh viên */
+        post: operations["TuitionFeeController_createSemesterFees"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-fee/fees/{studentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy danh sách các khoản phí học kỳ của sinh viên
+         * @description Dựa trên ID sinh viên, lấy danh sách các khoản phí học kỳ đã tạo.
+         */
+        get: operations["TuitionFeeController_getTuitionFees"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-fee/pay": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Thanh toán học phí
+         * @description Sinh viên thực hiện thanh toán học phí dựa trên danh sách các khoản phí đã tạo.
+         */
+        post: operations["TuitionFeeController_payTuitionFee"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/fees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả các loại phí */
+        get: operations["FeeController_findAll"];
+        put?: never;
+        /** Tạo mới một danh mục phí */
+        post: operations["FeeController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/fees/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết một loại phí theo ID */
+        get: operations["FeeController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa một loại phí */
+        delete: operations["FeeController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin loại phí */
+        patch: operations["FeeController_update"];
+        trace?: never;
+    };
+    "/fee-catalogs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy toàn bộ danh sách cấu hình phí */
+        get: operations["FeeCatalogController_findAll"];
+        put?: never;
+        /** Tạo mới cấu hình phí cho đối tượng cụ thể */
+        post: operations["FeeCatalogController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/fee-catalogs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết một cấu hình phí */
+        get: operations["FeeCatalogController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa một cấu hình phí */
+        delete: operations["FeeCatalogController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật cấu hình phí */
+        patch: operations["FeeCatalogController_update"];
+        trace?: never;
+    };
+    "/credit-prices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả các thiết lập giá tín chỉ */
+        get: operations["CreditPriceController_findAll"];
+        put?: never;
+        /** Tạo mới thiết lập giá tín chỉ */
+        post: operations["CreditPriceController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/credit-prices/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết một thiết lập giá theo ID */
+        get: operations["CreditPriceController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cập nhật thiết lập giá tín chỉ */
+        patch: operations["CreditPriceController_update"];
+        trace?: never;
+    };
+    "/posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách bài viết */
+        get: operations["PostController_findAll"];
+        put?: never;
+        /** Tạo bài viết mới */
+        post: operations["PostController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/posts/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cập nhật bài viết theo ID */
+        patch: operations["PostController_update"];
+        trace?: never;
+    };
+    "/course-offers/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Xem trước danh sách lớp học phần sẽ tạo
+         * @description Dựa trên Học kỳ, Ngành và Khóa để tính toán số lớp từ Chương trình khung
+         */
+        get: operations["CourseOfferController_preview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/course-offers/generate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Thực thi tạo lớp học phần hàng loạt */
+        post: operations["CourseOfferController_generate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/course-offers/optional": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Mở một lớp học phần tùy chọn (Học lại/Cải thiện)
+         * @description Cho phép admin chọn môn học và kỳ học bất kỳ để mở lớp mà không theo CTK
+         */
+        post: operations["CourseOfferController_createOptional"];
         delete?: never;
         options?: never;
         head?: never;
@@ -237,176 +752,1374 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        /** @enum {string} */
-        "_36_Enums.RoleType": "ADMIN" | "STAFF" | "STUDENT" | "USER";
-        RoleType: components["schemas"]["_36_Enums.RoleType"];
-        CreateUserDTO: {
-            username: string;
-            password: string;
-            email?: string;
-            role?: components["schemas"]["RoleType"];
-        };
-        /** @description From T, pick a set of properties whose keys are in the union K */
-        "Pick_User.address-or-birthday-or-email-or-fullName-or-gender-or-isActive-or-phone-or-username-or-createdAt-or-updatedAt-or-id-or-role_": {
-            id: string;
-            username: string;
-            email: string;
-            role: components["schemas"]["_36_Enums.RoleType"];
+        CreateStudentDto: {
+            /** @example Nguyễn Văn A */
             fullName: string;
-            gender: string;
-            phone: string;
+            /** @example student@example.com */
+            email?: string;
+            /**
+             * @description true: Nam, false: Nữ
+             * @example true
+             */
+            gender?: boolean;
+            /**
+             * Format: date-time
+             * @example 2005-05-20
+             */
+            dob?: string;
+            /** @example 0987654321 */
+            phone?: string;
+            /** @example 123 Đường ABC, Nha Trang */
+            address?: string;
+            /** @example 056205001234 */
+            identityNumber?: string;
+            /**
+             * @description Tên phụ huynh
+             * @example Nguyễn Văn B
+             */
+            parentName?: string;
+            /** @example 0912345678 */
+            parentPhone?: string;
+            /**
+             * @description ID của Khóa đào tạo (K1, K2...)
+             * @example 1
+             */
+            batchId?: number;
+            /**
+             * @default enrolled
+             * @enum {string}
+             */
+            status: "pending" | "reviewing" | "approved" | "rejected" | "enrolled" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+        };
+        StudentResponseDto: {
+            id: number;
+            studentCode: string;
+            userId: number;
+            /** @example nguyenvana */
+            username: string;
+            /** @example Nguyễn Văn A */
+            fullName: Record<string, never>;
+            /** @example student@school.edu.vn */
+            email: Record<string, never>;
+            /**
+             * @description true: Nam, false: Nữ
+             * @example true
+             */
+            gender: boolean;
+            /**
+             * Format: date-time
+             * @example 2000-01-01
+             */
+            dob?: string | null;
+            phone: Record<string, never>;
+            avatarUrl: Record<string, never>;
+            /** @example 123 Đường ABC, Nha Trang */
+            address: Record<string, never>;
+            /** @enum {string} */
+            role: "admin" | "teacher" | "student" | "staff";
+            isActive: boolean;
+            classId: Record<string, never>;
+            enrollmentDate: Record<string, never>;
+            graduationDate: Record<string, never>;
+            /** @enum {string} */
+            status: "pending" | "reviewing" | "approved" | "rejected" | "enrolled" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            parentName: Record<string, never>;
+            parentPhone: Record<string, never>;
+            identityNumber: Record<string, never>;
             /** Format: date-time */
-            birthday: string;
-            address: string;
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            batchId: Record<string, never>;
+            majorId: Record<string, never>;
+        };
+        Meta: {
+            total: number;
+        };
+        ResponsePagination: {
+            meta: components["schemas"]["Meta"];
+        };
+        /** @enum {string} */
+        StudentStatus: "pending" | "reviewing" | "approved" | "rejected" | "enrolled" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+        UpdateStudentDto: {
+            /** @example Nguyễn Văn A */
+            fullName?: string;
+            /** @example student@example.com */
+            email?: string;
+            /**
+             * @description true: Nam, false: Nữ
+             * @example true
+             */
+            gender?: boolean;
+            /**
+             * Format: date-time
+             * @example 2005-05-20
+             */
+            dob?: string;
+            /** @example 0987654321 */
+            phone?: string;
+            /** @example 123 Đường ABC, Nha Trang */
+            address?: string;
+            /** @example 056205001234 */
+            identityNumber?: string;
+            /**
+             * @description Tên phụ huynh
+             * @example Nguyễn Văn B
+             */
+            parentName?: string;
+            /** @example 0912345678 */
+            parentPhone?: string;
+            /**
+             * @description ID của Khóa đào tạo (K1, K2...)
+             * @example 1
+             */
+            batchId?: number;
+            /**
+             * @default enrolled
+             * @enum {string}
+             */
+            status: "pending" | "reviewing" | "approved" | "rejected" | "enrolled" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            classId?: number;
+            /** Format: date-time */
+            enrollmentDate?: string;
+            /** Format: date-time */
+            graduationDate?: string;
+        };
+        CreateUserDto: {
+            /**
+             * @description Tên đăng nhập duy nhất
+             * @example johndoe
+             */
+            username: string;
+            /**
+             * @description Mật khẩu đã mã hóa
+             * @example hashed_password_123
+             */
+            passwordHash: string;
+            /**
+             * @description Vai trò của người dùng
+             * @enum {string}
+             */
+            role: "admin" | "teacher" | "student" | "staff";
+            /** @default true */
+            isActive: boolean;
+        };
+        UserResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example u_9b1deb4d */
+            userId: string;
+            /** @example johndoe */
+            username: string;
+            /** @enum {string} */
+            role: "admin" | "teacher" | "student" | "staff";
             isActive: boolean;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            /** @example 2024-01-01T12:00:00Z */
+            lastLoginAt?: Record<string, never>;
         };
-        UserResponse: components["schemas"]["Pick_User.address-or-birthday-or-email-or-fullName-or-gender-or-isActive-or-phone-or-username-or-createdAt-or-updatedAt-or-id-or-role_"];
-        PaginationResponse_UserResponse_: {
-            data: components["schemas"]["UserResponse"][];
-            /** Format: double */
-            total: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            limit: number;
+        CreateStaffDto: {
+            /** @example staff01 */
+            username: string;
+            /** @example 123456 */
+            password: string;
+            /** @enum {string} */
+            role?: "admin" | "teacher" | "student" | "staff";
+            /** @example Nguyễn Văn C */
+            fullName: string;
+            /**
+             * Format: date-time
+             * @example 1990-01-01
+             */
+            dob: string;
+            /** @example staff@school.edu.vn */
+            email?: string;
+            /** @example 0901234567 */
+            phone?: string;
+            /** @example 0251369874 */
+            identityNumber?: string;
+            /**
+             * @description true: Nam, false: Nữ
+             * @example true
+             */
+            gender?: boolean;
         };
-        UpdateUserDTO: {
+        UpdateStaffDto: {
+            /** @example staff01 */
             username?: string;
+            /** @example 123456 */
             password?: string;
-            email?: string;
-            role?: components["schemas"]["RoleType"];
-            isActive?: boolean;
-        };
-        /** @enum {string} */
-        "_36_Enums.StudentStatus": "STUDYING" | "DROPPED" | "SUSPENDED" | "GRADUATED";
-        StudentStatus: components["schemas"]["_36_Enums.StudentStatus"];
-        CreateStudentDTO: {
-            studentCode: string;
-            fullName: string;
-            /** Format: date-time */
-            birthday: string;
-            gender: string;
-            phone?: string;
-            email?: string;
-            address?: string;
-            citizenId?: string;
-            /** Format: double */
-            majorId: number;
-            /** Format: double */
-            classId?: number;
-            /** Format: double */
-            userId?: number;
-            status?: components["schemas"]["StudentStatus"];
-        };
-        StudentResponse: {
-            /** Format: double */
-            id: number;
-            studentCode: string;
-            fullName: string;
-            email?: string | null;
-            status: components["schemas"]["StudentStatus"];
-            major: {
-                name: string;
-                /** Format: double */
-                id: number;
-            };
-            class?: {
-                name: string;
-                /** Format: double */
-                id: number;
-            } | null;
-        };
-        PaginationResponse_StudentResponse_: {
-            data: components["schemas"]["StudentResponse"][];
-            /** Format: double */
-            total: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            limit: number;
-        };
-        UpdateStudentDTO: {
+            /** @enum {string} */
+            role?: "admin" | "teacher" | "student" | "staff";
+            /** @example Nguyễn Văn C */
             fullName?: string;
-            /** Format: date-time */
-            birthday?: string;
-            gender?: string;
-            phone?: string;
+            /**
+             * Format: date-time
+             * @example 1990-01-01
+             */
+            dob?: string;
+            /** @example staff@school.edu.vn */
             email?: string;
-            address?: string;
-            citizenId?: string;
-            /** Format: double */
-            majorId?: number;
-            /** Format: double */
-            classId?: number;
-            /** Format: double */
-            userId?: number;
-            status?: components["schemas"]["StudentStatus"];
-        };
-        CreateMajorDTO: {
-            name: string;
-            code: string;
-            /** Format: double */
-            departmentId: number;
-        };
-        UpdateMajorDTO: {
-            name?: string;
-            code?: string;
-            /** Format: double */
+            /** @example 0901234567 */
+            phone?: string;
+            /** @example 0251369874 */
+            identityNumber?: string;
+            /**
+             * @description true: Nam, false: Nữ
+             * @example true
+             */
+            gender?: boolean;
+            isActive?: boolean;
             departmentId?: number;
+            position?: string;
         };
-        "DefaultSelection_Prisma._36_DepartmentPayload_": {
-            code: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: date-time */
+        LoginDto: {
+            /** @example admin */
+            username: string;
+            /** @example 123456 */
+            password: string;
+        };
+        CreateDepartmentDto: {
+            /**
+             * @description Mã định danh duy nhất của phòng ban/khoa
+             * @example IT01
+             */
+            deptCode: string;
+            /**
+             * @description Tên đầy đủ của phòng ban/khoa
+             * @example Khoa Công nghệ thông tin
+             */
+            deptName: string;
+            /**
+             * @description Mô tả chi tiết về phòng ban
+             * @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống
+             */
+            description?: string;
+            /**
+             * @description ID của nhân viên (Staff) làm trưởng khoa
+             * @example 1
+             */
+            headOfDepartmentId?: number;
+        };
+        UpdateDepartmentDto: {
+            /**
+             * @description Mã định danh duy nhất của phòng ban/khoa
+             * @example IT01
+             */
+            deptCode?: string;
+            /**
+             * @description Tên đầy đủ của phòng ban/khoa
+             * @example Khoa Công nghệ thông tin
+             */
+            deptName?: string;
+            /**
+             * @description Mô tả chi tiết về phòng ban
+             * @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống
+             */
+            description?: string;
+            /**
+             * @description ID của nhân viên (Staff) làm trưởng khoa
+             * @example 1
+             */
+            headOfDepartmentId?: number;
+        };
+        CreateMajorDto: {
+            /**
+             * @description Mã ngành đào tạo
+             * @example CNTT
+             */
+            majorCode: string;
+            /** @example Công nghệ thông tin */
+            majorName: string;
+            /**
+             * @description ID của phòng ban/khoa trực thuộc
+             * @example 1
+             */
+            deptId: number;
+            /** @example 2.5 năm */
+            durationYears?: string;
+            /** @example 90 */
+            totalCredits?: number;
+            /** @example Ngành học tập trung vào phát triển phần mềm */
+            description?: string;
+        };
+        DepartmentResponseDto: {
+            /** @example 1 */
+            id: number;
+            /**
+             * @description Mã định danh duy nhất của khoa/phòng
+             * @example IT01
+             */
+            deptCode: string;
+            /** @example Khoa Công nghệ thông tin */
+            deptName: string;
+            /** @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống */
+            description?: string | null;
+            /**
+             * @description ID của nhân viên làm trưởng khoa
+             * @example 1
+             */
+            headOfDepartmentId?: number | null;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
             createdAt: string;
-            id: string;
-            name: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /**
+             * @description Số lượng ngành học trực thuộc
+             * @example 5
+             */
+            majorCount?: number;
+            /**
+             * @description Số lượng môn học trực thuộc
+             * @example 20
+             */
+            subjectCount?: number;
         };
-        /** @description Model Department */
-        Department: components["schemas"]["DefaultSelection_Prisma._36_DepartmentPayload_"];
-        DepartmentCreateRequest: {
-            name: string;
-            code: string;
+        MajorResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example CNTT */
+            majorCode: string;
+            /** @example Công nghệ thông tin */
+            majorName: string;
+            /** @example 1 */
+            deptId: number;
+            /** @example 2.5 năm */
+            durationYears?: string;
+            /** @example 90 */
+            totalCredits: number;
+            /** @example Mô tả ngành học */
+            description?: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            department?: components["schemas"]["DepartmentResponseDto"];
+            /**
+             * @description Số lượng lớp học thuộc ngành này
+             * @example 10
+             */
+            classCount?: number;
         };
-        DepartmentUpdateRequest: {
+        UpdateMajorDto: {
+            /**
+             * @description Mã ngành đào tạo
+             * @example CNTT
+             */
+            majorCode?: string;
+            /** @example Công nghệ thông tin */
+            majorName?: string;
+            /**
+             * @description ID của phòng ban/khoa trực thuộc
+             * @example 1
+             */
+            deptId?: number;
+            /** @example 2.5 năm */
+            durationYears?: string;
+            /** @example 90 */
+            totalCredits?: number;
+            /** @example Ngành học tập trung vào phát triển phần mềm */
+            description?: string;
+        };
+        CreateBatchDto: {
+            /**
+             * @description Mã khóa học viết tắt
+             * @example K1
+             */
+            batchCode: string;
+            /**
+             * @description Tên đầy đủ của khóa
+             * @example Khóa 1
+             */
+            batchName: string;
+            /**
+             * @description Năm bắt đầu khóa học
+             * @example 2026
+             */
+            startYear: number;
+            /**
+             * @description Năm kết thúc dự kiến
+             * @example 2030
+             */
+            endYear: number;
+            /** @example Khóa đào tạo kỹ sư CNTT */
+            description?: string;
+            /**
+             * @description ID ngành học mà khóa này thuộc về
+             * @example 1
+             */
+            majorId: number;
+            /**
+             * @description ID chương trình đào tạo nếu có
+             * @example 1
+             */
+            curriculumId?: number;
+            /**
+             * @description Trạng thái: ADMISSION, ACTIVE, GRADUATED
+             * @default ACTIVE
+             * @example ADMISSION
+             */
+            status: string;
+        };
+        UpdateBatchDto: {
+            /**
+             * @description Mã khóa học viết tắt
+             * @example K1
+             */
+            batchCode?: string;
+            /**
+             * @description Tên đầy đủ của khóa
+             * @example Khóa 1
+             */
+            batchName?: string;
+            /**
+             * @description Năm bắt đầu khóa học
+             * @example 2026
+             */
+            startYear?: number;
+            /**
+             * @description Năm kết thúc dự kiến
+             * @example 2030
+             */
+            endYear?: number;
+            /** @example Khóa đào tạo kỹ sư CNTT */
+            description?: string;
+            /**
+             * @description ID ngành học mà khóa này thuộc về
+             * @example 1
+             */
+            majorId?: number;
+            /**
+             * @description ID chương trình đào tạo nếu có
+             * @example 1
+             */
+            curriculumId?: number;
+            /**
+             * @description Trạng thái: ADMISSION, ACTIVE, GRADUATED
+             * @default ACTIVE
+             * @example ADMISSION
+             */
+            status: string;
+        };
+        AssignClassDto: {
+            /**
+             * @description ID của Ngành cần phân lớp
+             * @example 1
+             */
+            majorId: number;
+            /**
+             * @description ID của Khóa đào tạo cần phân lớp
+             * @example 1
+             */
+            batchId: number;
+            /**
+             * @description Số lượng sinh viên tối đa trong một lớp
+             * @default 40
+             * @example 30
+             */
+            maxStudents: number;
+        };
+        CreateClassDto: {
+            /**
+             * @description Mã lớp học duy nhất
+             * @example CNTT17A
+             */
+            classCode: string;
+            /** @example Lớp Công nghệ thông tin 17A */
+            className: string;
+            /**
+             * @description ID của ngành đào tạo
+             * @example 1
+             */
+            majorId: number;
+            /**
+             * @description Năm nhập học/Khóa
+             * @example 2024
+             */
+            courseYear: number;
+            /**
+             * @description ID của giáo viên chủ nhiệm
+             * @example 1
+             */
+            formTeacherId?: number;
+            /**
+             * @default 40
+             * @example 40
+             */
+            maxStudents: number;
+            /**
+             * @default active
+             * @example active
+             */
+            status: string;
+        };
+        ClassResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example CNTT17A */
+            classCode: string;
+            /** @example Lớp Công nghệ thông tin 17A */
+            className: string;
+            /** @example 1 */
+            majorId: number;
+            /** @example 2024 */
+            courseYear: number;
+            /** @example 1 */
+            formTeacherId?: number | null;
+            /** @example 40 */
+            maxStudents: number;
+            /** @example active */
+            status: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /** @description Thông tin ngành đào tạo */
+            major?: Record<string, never>;
+            /** @description Thông tin giáo viên chủ nhiệm */
+            formTeacher?: Record<string, never>;
+            /**
+             * @description Số lượng sinh viên hiện tại
+             * @example 35
+             */
+            studentCount?: number;
+        };
+        UpdateClassDto: {
+            /**
+             * @description Mã lớp học duy nhất
+             * @example CNTT17A
+             */
+            classCode?: string;
+            /** @example Lớp Công nghệ thông tin 17A */
+            className?: string;
+            /**
+             * @description ID của ngành đào tạo
+             * @example 1
+             */
+            majorId?: number;
+            /**
+             * @description Năm nhập học/Khóa
+             * @example 2024
+             */
+            courseYear?: number;
+            /**
+             * @description ID của giáo viên chủ nhiệm
+             * @example 1
+             */
+            formTeacherId?: number;
+            /**
+             * @default 40
+             * @example 40
+             */
+            maxStudents: number;
+            /**
+             * @default active
+             * @example active
+             */
+            status: string;
+        };
+        CreateSubjectDto: {
+            /**
+             * @description Mã môn học duy nhất
+             * @example BAS1201
+             */
+            subjectCode: string;
+            /** @example Lập trình hướng đối tượng */
+            subjectName: string;
+            /**
+             * @default 0
+             * @example 3
+             */
+            credits: number;
+            /**
+             * @default 0
+             * @example 30
+             */
+            theoryHours: number;
+            /**
+             * @default 0
+             * @example 15
+             */
+            practiceHours: number;
+            /**
+             * @default true
+             * @example true
+             */
+            isMandatory: boolean;
+            /** @example Học về Java hoặc C++ */
+            description?: string;
+        };
+        SubjectResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example BAS1201 */
+            subjectCode: string;
+            /** @example Lập trình hướng đối tượng */
+            subjectName: string;
+            /** @example 3 */
+            credits: number;
+            /** @example 30 */
+            theoryHours: number;
+            /** @example 15 */
+            practiceHours: number;
+            /** @example 1 */
+            deptId: number;
+            /** @example true */
+            isMandatory: boolean;
+            /** @example Mô tả môn học */
+            description?: string | null;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /** @description Thông tin khoa quản lý */
+            department?: Record<string, never>;
+            /**
+             * @description Số lượng chương trình đào tạo có môn này
+             * @example 5
+             */
+            curriculumCount?: number;
+        };
+        UpdateSubjectDto: {
+            /**
+             * @description Mã môn học duy nhất
+             * @example BAS1201
+             */
+            subjectCode?: string;
+            /** @example Lập trình hướng đối tượng */
+            subjectName?: string;
+            /**
+             * @default 0
+             * @example 3
+             */
+            credits: number;
+            /**
+             * @default 0
+             * @example 30
+             */
+            theoryHours: number;
+            /**
+             * @default 0
+             * @example 15
+             */
+            practiceHours: number;
+            /**
+             * @default true
+             * @example true
+             */
+            isMandatory: boolean;
+            /** @example Học về Java hoặc C++ */
+            description?: string;
+        };
+        CreateSemesterDto: {
+            /**
+             * @description Tên học kỳ
+             * @example HK1-2026
+             */
+            name: string;
+            /**
+             * @description Năm học của học kỳ
+             * @example 2026
+             */
+            year: number;
+            /**
+             * @description Học kỳ thứ mấy trong năm (1 hoặc 2)
+             * @example 1
+             */
+            term: number;
+            /**
+             * @description Ngày bắt đầu học kỳ
+             * @example 2026-09-01
+             */
+            startDate: string;
+            /**
+             * @description Ngày kết thúc học kỳ
+             * @example 2027-01-15
+             */
+            endDate: string;
+            /**
+             * @description Đánh dấu là học kỳ hiện tại
+             * @default false
+             * @example false
+             */
+            isCurrent: boolean;
+        };
+        SemesterResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example HK1-2026 */
+            name: string;
+            /** @example 2025 */
+            year: number;
+            /** @example 1 */
+            term: number;
+            /** @example 2025-2026 */
+            schoolYear: string;
+            /**
+             * Format: date-time
+             * @example 2026-09-01
+             */
+            startDate: string;
+            /**
+             * Format: date-time
+             * @example 2027-01-15
+             */
+            endDate: string;
+            /** @example false */
+            isCurrent: boolean;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * @description Số lượng đợt mở lớp trong học kỳ này
+             * @example 5
+             */
+            courseOfferCount?: number;
+            /**
+             * @description Số lượng hóa đơn học phí
+             * @example 100
+             */
+            feeInvoiceCount?: number;
+        };
+        UpdateSemesterDto: {
+            /**
+             * @description Tên học kỳ
+             * @example HK1-2026
+             */
             name?: string;
-            code?: string;
+            /**
+             * @description Năm học của học kỳ
+             * @example 2026
+             */
+            year?: number;
+            /**
+             * @description Học kỳ thứ mấy trong năm (1 hoặc 2)
+             * @example 1
+             */
+            term?: number;
+            /**
+             * @description Ngày bắt đầu học kỳ
+             * @example 2026-09-01
+             */
+            startDate?: string;
+            /**
+             * @description Ngày kết thúc học kỳ
+             * @example 2027-01-15
+             */
+            endDate?: string;
+            /**
+             * @description Đánh dấu là học kỳ hiện tại
+             * @default false
+             * @example false
+             */
+            isCurrent: boolean;
         };
-        LoginResponse: {
-            message: string;
-            user: {
-                fullName: string;
-                email: string;
-                username: string;
-                id: string;
-            };
-            accessToken: string;
+        CreateRoomDto: {
+            /**
+             * @description Mã phòng học duy nhất
+             * @example A1.102
+             */
+            roomCode: string;
+            /**
+             * @description Loại phòng: theory (lý thuyết), practice (thực hành), hall (hội trường)
+             * @example theory
+             */
+            type: string;
+            /**
+             * @description Sức chứa của phòng
+             * @example 45
+             */
+            capacity?: number;
+            /**
+             * @description Tòa nhà
+             * @example Tòa A
+             */
+            building?: string;
         };
-        LoginRequest: {
-            username: string;
-            password: string;
+        RoomResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example A1.102 */
+            roomCode: string;
+            /** @example theory */
+            type: string;
+            /** @example 45 */
+            capacity?: number | null;
+            /** @example Tòa A */
+            building?: string | null;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * @description Số lượng lịch học tại phòng này
+             * @example 10
+             */
+            scheduleCount?: number;
         };
-        RegisterResponse: {
-            message: string;
-            user: components["schemas"]["UserResponse"];
+        UpdateRoomDto: {
+            /**
+             * @description Mã phòng học duy nhất
+             * @example A1.102
+             */
+            roomCode?: string;
+            /**
+             * @description Loại phòng: theory (lý thuyết), practice (thực hành), hall (hội trường)
+             * @example theory
+             */
+            type?: string;
+            /**
+             * @description Sức chứa của phòng
+             * @example 45
+             */
+            capacity?: number;
+            /**
+             * @description Tòa nhà
+             * @example Tòa A
+             */
+            building?: string;
         };
-        RegisterRequest: {
-            username: string;
-            password: string;
-            confirmPassword: string;
-            email?: string | null;
-            role: components["schemas"]["RoleType"];
-            fullName?: string | null;
-            gender?: string | null;
-            address?: string | null;
-            phone?: string | null;
-            /** Format: date-time */
-            birthday?: string | null;
+        CreateCurriculumSubjectDto: {
+            /**
+             * @description ID của chương trình khung
+             * @example 1
+             */
+            curriculumId: number;
+            /**
+             * @description ID của môn học
+             * @example 1
+             */
+            subjectId: number;
+            /**
+             * @description Học kỳ gợi ý (Ví dụ: kỳ 1, kỳ 2...)
+             * @example 1
+             */
+            semesterNumber: number;
+            /**
+             * @default true
+             * @example true
+             */
+            isMandatory: boolean;
+            /**
+             * @description Điểm tối thiểu qua môn
+             * @default 5
+             * @example 5
+             */
+            minGrade: number;
+        };
+        CreateCurriculumDto: {
+            /**
+             * @description Mã chương trình khung duy nhất
+             * @example CTK-CNTT-2023
+             */
+            curriculumCode: string;
+            /** @example Chương trình khung Công nghệ thông tin 2023 */
+            curriculumName: string;
+            /**
+             * @description ID của ngành đào tạo
+             * @example 1
+             */
+            majorId: number;
+            /**
+             * @default 1
+             * @example 1
+             */
+            version: number;
+            /**
+             * @default 0
+             * @example 120
+             */
+            totalCredits: number;
+            /**
+             * @description Ngày bắt đầu áp dụng
+             * @example 2023-09-01
+             */
+            effectiveFrom?: string;
+            /**
+             * @description Ngày kết thúc áp dụng
+             * @example 2027-09-01
+             */
+            effectiveTo?: string;
+            /**
+             * @default true
+             * @example true
+             */
+            isActive: boolean;
+            /** @description Danh sách các môn học thuộc chương trình khung */
+            curriculumSubjects: components["schemas"]["CreateCurriculumSubjectDto"][];
+        };
+        CurriculumSubjectResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example 1 */
+            curriculumId: number;
+            /** @example 1 */
+            subjectId: number;
+            /** @example 1 */
+            semesterNumber: number;
+            /** @example true */
+            isMandatory: boolean;
+            /** @example 5 */
+            minGrade: number;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /** @description Thông tin chi tiết môn học */
+            subject?: Record<string, never>;
+            /** @description Thông tin chương trình khung */
+            curriculum?: Record<string, never>;
+        };
+        CurriculumResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example CTK-CNTT-2023 */
+            curriculumCode: string;
+            /** @example Chương trình khung Công nghệ thông tin 2023 */
+            curriculumName: string;
+            /** @example 1 */
+            majorId: number;
+            /** @example 1 */
+            version: number;
+            /** @example 120 */
+            totalCredits: number;
+            /**
+             * Format: date-time
+             * @example 2023-09-01
+             */
+            effectiveFrom?: string | null;
+            /**
+             * Format: date-time
+             * @example 2027-09-01
+             */
+            effectiveTo?: string | null;
+            /** @example true */
+            isActive: boolean;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /** @description Thông tin ngành đào tạo */
+            major?: Record<string, never>;
+            /**
+             * @description Số lượng môn học trong chương trình
+             * @example 40
+             */
+            subjectCount?: number;
+            /** @description Danh sách chi tiết các môn học trong chương trình */
+            subjectList: components["schemas"]["CurriculumSubjectResponseDto"][];
+        };
+        UpdateCurriculumDto: {
+            /**
+             * @description Mã chương trình khung duy nhất
+             * @example CTK-CNTT-2023
+             */
+            curriculumCode?: string;
+            /** @example Chương trình khung Công nghệ thông tin 2023 */
+            curriculumName?: string;
+            /**
+             * @description ID của ngành đào tạo
+             * @example 1
+             */
+            majorId?: number;
+            /**
+             * @default 1
+             * @example 1
+             */
+            version: number;
+            /**
+             * @default 0
+             * @example 120
+             */
+            totalCredits: number;
+            /**
+             * @description Ngày bắt đầu áp dụng
+             * @example 2023-09-01
+             */
+            effectiveFrom?: string;
+            /**
+             * @description Ngày kết thúc áp dụng
+             * @example 2027-09-01
+             */
+            effectiveTo?: string;
+            /**
+             * @default true
+             * @example true
+             */
+            isActive: boolean;
+            /** @description Danh sách các môn học thuộc chương trình khung */
+            curriculumSubjects?: components["schemas"]["CreateCurriculumSubjectDto"][];
+        };
+        AdmissionCriterionDto: {
+            /**
+             * @description Tên tiêu chí xét tuyển
+             * @example Điểm Toán
+             */
+            criterionName: string;
+            /**
+             * @description Điểm tối thiểu cần đạt
+             * @example 7
+             */
+            minValue?: number;
+            /**
+             * @description Tiêu chí này có bắt buộc không
+             * @example true
+             */
+            isRequired: boolean;
+            /**
+             * @description Mô tả thêm về tiêu chí
+             * @example Xét điểm thi tốt nghiệp THPT
+             */
+            description?: string;
+        };
+        AdmissionItemDto: {
+            /**
+             * @description ID của ngành học (Major)
+             * @example 1
+             */
+            majorId: number;
+            /** @example K18 */
+            batchName: string;
+            /**
+             * @description Chỉ tiêu tuyển sinh cho ngành này
+             * @example 100
+             */
+            quota: number;
+            /** @description Danh sách các điều kiện xét tuyển riêng cho ngành */
+            criteria?: components["schemas"]["AdmissionCriterionDto"][];
+        };
+        CreateAdmissionDto: {
+            /**
+             * @description Tên đợt tuyển sinh
+             * @example Tuyển sinh Đợt 1 - 2026
+             */
+            name: string;
+            /**
+             * @description Ngày bắt đầu nhận hồ sơ
+             * @example 2026-05-01T00:00:00Z
+             */
+            startDate: string;
+            /**
+             * @description Ngày kết thúc nhận hồ sơ
+             * @example 2026-08-30T00:00:00Z
+             */
+            endDate: string;
+            /** @description Danh sách chi tiết các ngành và chỉ tiêu */
+            items: components["schemas"]["AdmissionItemDto"][];
+        };
+        PayTuitionFeeDto: {
+            /**
+             * @description ID của sinh viên thực hiện thanh toán
+             * @example 123
+             */
+            studentId: number;
+            /**
+             * @description Danh sách ID của các mục thanh toán (ví dụ: ID đăng ký học phần)
+             * @example [
+             *       1,
+             *       2,
+             *       5
+             *     ]
+             */
+            itemsPaymented: number[];
+            /**
+             * @description ID của học kỳ thực hiện thanh toán
+             * @example 1
+             */
+            semesterId: number;
+        };
+        CreateFeeDto: {
+            /**
+             * @description Tên của loại phí hoặc danh mục thu
+             * @example Bảo hiểm y tế
+             */
+            name: string;
+        };
+        UpdateFeeDto: {
+            /**
+             * @description Tên của loại phí hoặc danh mục thu
+             * @example Bảo hiểm y tế
+             */
+            name?: string;
+        };
+        CreateFeeCatalogDto: {
+            /**
+             * @description ID của danh mục phí (từ bảng Fee)
+             * @example 1
+             */
+            feeId: number;
+            /**
+             * @description Số tiền
+             * @example 500000
+             */
+            amount: number;
+            /**
+             * @description Có áp dụng cho toàn bộ sinh viên không?
+             * @example false
+             */
+            isGlobal: boolean;
+            /**
+             * @description Áp dụng riêng cho ngành này (nếu có)
+             * @example 1
+             */
+            majorId?: number;
+            /**
+             * @description Áp dụng riêng cho khóa này (nếu có)
+             * @example 2
+             */
+            batchId?: number;
+            /**
+             * @description Áp dụng cho học kỳ cụ thể
+             * @example 1
+             */
+            semester?: number;
+        };
+        UpdateFeeCatalogDto: {
+            /**
+             * @description ID của danh mục phí (từ bảng Fee)
+             * @example 1
+             */
+            feeId?: number;
+            /**
+             * @description Số tiền
+             * @example 500000
+             */
+            amount?: number;
+            /**
+             * @description Có áp dụng cho toàn bộ sinh viên không?
+             * @example false
+             */
+            isGlobal?: boolean;
+            /**
+             * @description Áp dụng riêng cho ngành này (nếu có)
+             * @example 1
+             */
+            majorId?: number;
+            /**
+             * @description Áp dụng riêng cho khóa này (nếu có)
+             * @example 2
+             */
+            batchId?: number;
+            /**
+             * @description Áp dụng cho học kỳ cụ thể
+             * @example 1
+             */
+            semester?: number;
+        };
+        CreateCreditPriceDto: {
+            /** @description ID của ngành học (nếu áp dụng riêng cho ngành) */
+            majorId?: number;
+            /** @description ID của khóa học/batch (nếu áp dụng riêng cho khóa) */
+            batchId?: number;
+            /** @description Học kỳ áp dụng */
+            semester?: number;
+            /**
+             * @description Áp dụng chung cho toàn bộ trường
+             * @default false
+             */
+            isGlobal: boolean;
+            /**
+             * @description Giá tiền trên mỗi tín chỉ
+             * @example 500000
+             */
+            price: number;
+        };
+        UpdateCreditPriceDto: {
+            /** @description ID của ngành học (nếu áp dụng riêng cho ngành) */
+            majorId?: number;
+            /** @description ID của khóa học/batch (nếu áp dụng riêng cho khóa) */
+            batchId?: number;
+            /** @description Học kỳ áp dụng */
+            semester?: number;
+            /**
+             * @description Áp dụng chung cho toàn bộ trường
+             * @default false
+             */
+            isGlobal: boolean;
+            /**
+             * @description Giá tiền trên mỗi tín chỉ
+             * @example 500000
+             */
+            price?: number;
+        };
+        CreatePostDto: {
+            /**
+             * @description Tiêu đề của bài viết
+             * @example Thông báo tuyển sinh năm học 2026
+             */
+            title: string;
+            /**
+             * @description Đường dẫn định danh (Slug), nếu để trống sẽ tự tạo theo title
+             * @example thong-bao-tuyen-sinh-2026
+             */
+            slug?: string;
+            /**
+             * @description URL ảnh bìa bài viết
+             * @example https://example.com/images/cover.jpg
+             */
+            coverImage?: string;
+            /**
+             * @description Nội dung bài viết (có thể chứa mã HTML)
+             * @example <h1>Nội dung bài viết...</h1>
+             */
+            content: string;
+            /**
+             * @description Phân loại bài viết
+             * @default NEWS
+             * @enum {string}
+             */
+            type: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
+            /**
+             * @description Trạng thái bài viết
+             * @default DRAFT
+             * @enum {string}
+             */
+            status: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
+            /**
+             * @description Thời điểm hẹn giờ đăng bài (ISO 8601)
+             * @example 2026-05-01T08:00:00Z
+             */
+            publishedAt?: string;
+            /**
+             * @description ID của người tạo bài viết
+             * @example 1
+             */
+            authorId: number;
+        };
+        UpdatePostDto: {
+            /**
+             * @description Tiêu đề của bài viết
+             * @example Thông báo tuyển sinh năm học 2026
+             */
+            title?: string;
+            /**
+             * @description Đường dẫn định danh (Slug), nếu để trống sẽ tự tạo theo title
+             * @example thong-bao-tuyen-sinh-2026
+             */
+            slug?: string;
+            /**
+             * @description URL ảnh bìa bài viết
+             * @example https://example.com/images/cover.jpg
+             */
+            coverImage?: string;
+            /**
+             * @description Nội dung bài viết (có thể chứa mã HTML)
+             * @example <h1>Nội dung bài viết...</h1>
+             */
+            content?: string;
+            /**
+             * @description Phân loại bài viết
+             * @default NEWS
+             * @enum {string}
+             */
+            type: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
+            /**
+             * @description Trạng thái bài viết
+             * @default DRAFT
+             * @enum {string}
+             */
+            status: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
+            /**
+             * @description Thời điểm hẹn giờ đăng bài (ISO 8601)
+             * @example 2026-05-01T08:00:00Z
+             */
+            publishedAt?: string;
+            /**
+             * @description ID của người tạo bài viết
+             * @example 1
+             */
+            authorId?: number;
+        };
+        CreateBulkCourseOfferDto: {
+            /** @example 1 */
+            semesterId: number;
+            /** @example 2 */
+            majorId: number;
+            /** @example 3 */
+            batchId: number;
+            /**
+             * @description Ngày bắt đầu cho phép sinh viên đăng ký
+             * @example 2026-05-01T00:00:00Z
+             */
+            registrationStart?: string;
+            /**
+             * @description Ngày kết thúc đăng ký
+             * @example 2026-05-15T23:59:59Z
+             */
+            registrationEnd?: string;
+            /**
+             * @description Số lượng sinh viên tối đa mặc định nếu lớp danh nghĩa không có dữ liệu
+             * @example 50
+             */
+            defaultMaxStudents?: number;
+        };
+        CreateOptionalCourseOfferDto: {
+            /**
+             * @description ID học kỳ muốn mở lớp
+             * @example 1
+             */
+            semesterId: number;
+            /**
+             * @description ID môn học
+             * @example 10
+             */
+            subjectId: number;
+            /**
+             * @description ID lớp danh nghĩa nòng cốt (nếu có)
+             * @example 5
+             */
+            classId?: number;
+            /**
+             * @description Tên hiển thị của lớp
+             * @example Lớp học lại Chính trị kinh tế - K18
+             */
+            courseName: string;
+            /**
+             * @description Sĩ số tối đa
+             * @example 50
+             */
+            maxStudents: number;
+            /** @example 2026-05-01T00:00:00Z */
+            registrationStart?: string;
+            /** @example 2026-05-15T23:59:59Z */
+            registrationEnd?: string;
         };
     };
     responses: never;
@@ -417,352 +2130,22 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    FindAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: date-time */
-                        updatedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        isActive: boolean;
-                        address: string;
-                        /** Format: date-time */
-                        birthday: string;
-                        phone: string;
-                        gender: string;
-                        fullName: string;
-                        role: components["schemas"]["_36_Enums.RoleType"];
-                        email: string;
-                        password: string;
-                        username: string;
-                        id: string;
-                    }[];
-                };
-            };
-        };
-    };
-    Create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateUserDTO"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: date-time */
-                        updatedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        isActive: boolean;
-                        address: string;
-                        /** Format: date-time */
-                        birthday: string;
-                        phone: string;
-                        gender: string;
-                        fullName: string;
-                        role: components["schemas"]["_36_Enums.RoleType"];
-                        email: string;
-                        password: string;
-                        username: string;
-                        id: string;
-                    };
-                };
-            };
-        };
-    };
-    QueryUser: {
+    searchStudents: {
         parameters: {
             query?: {
-                email?: string;
-                username?: string;
-                roleName?: components["schemas"]["RoleType"];
-                isActive?: boolean;
                 page?: number;
                 limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaginationResponse_UserResponse_"];
-                };
-            };
-        };
-    };
-    FindById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: date-time */
-                        updatedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        isActive: boolean;
-                        address: string;
-                        /** Format: date-time */
-                        birthday: string;
-                        phone: string;
-                        gender: string;
-                        fullName: string;
-                        role: components["schemas"]["_36_Enums.RoleType"];
-                        email: string;
-                        password: string;
-                        username: string;
-                        id: string;
-                    };
-                };
-            };
-        };
-    };
-    Update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateUserDTO"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: date-time */
-                        updatedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        isActive: boolean;
-                        address: string;
-                        /** Format: date-time */
-                        birthday: string;
-                        phone: string;
-                        gender: string;
-                        fullName: string;
-                        role: components["schemas"]["_36_Enums.RoleType"];
-                        email: string;
-                        password: string;
-                        username: string;
-                        id: string;
-                    };
-                };
-            };
-        };
-    };
-    Delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: date-time */
-                        updatedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        isActive: boolean;
-                        address: string;
-                        /** Format: date-time */
-                        birthday: string;
-                        phone: string;
-                        gender: string;
-                        fullName: string;
-                        role: components["schemas"]["_36_Enums.RoleType"];
-                        email: string;
-                        password: string;
-                        username: string;
-                        id: string;
-                    };
-                };
-            };
-        };
-    };
-    FindAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": ({
-                        class: {
-                            majorId: string;
-                            /** Format: date-time */
-                            updatedAt: string;
-                            /** Format: date-time */
-                            createdAt: string;
-                            id: string;
-                            name: string;
-                        };
-                        major: {
-                            code: string;
-                            departmentId: string;
-                            /** Format: date-time */
-                            updatedAt: string;
-                            /** Format: date-time */
-                            createdAt: string;
-                            id: string;
-                            name: string;
-                        };
-                        user: {
-                            /** Format: date-time */
-                            updatedAt: string;
-                            /** Format: date-time */
-                            createdAt: string;
-                            isActive: boolean;
-                            address: string;
-                            /** Format: date-time */
-                            birthday: string;
-                            phone: string;
-                            gender: string;
-                            fullName: string;
-                            role: components["schemas"]["_36_Enums.RoleType"];
-                            email: string;
-                            password: string;
-                            username: string;
-                            id: string;
-                        };
-                    } & {
-                        classId: string;
-                        majorId: string;
-                        status: components["schemas"]["_36_Enums.StudentStatus"];
-                        /** Format: date-time */
-                        enrollmentDate: string;
-                        citizenId: string;
-                        studentCode: string;
-                        userId: string;
-                        /** Format: date-time */
-                        updatedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        id: string;
-                    })[];
-                };
-            };
-        };
-    };
-    Create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateStudentDTO"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        classId: string;
-                        majorId: string;
-                        status: components["schemas"]["_36_Enums.StudentStatus"];
-                        /** Format: date-time */
-                        enrollmentDate: string;
-                        citizenId: string;
-                        studentCode: string;
-                        userId: string;
-                        /** Format: date-time */
-                        updatedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        id: string;
-                    };
-                };
-            };
-        };
-    };
-    SearchStudent: {
-        parameters: {
-            query?: {
+                /** @description Tìm kiếm theo mã SV, tên SV hoặc CCCD */
                 keyword?: string;
                 status?: components["schemas"]["StudentStatus"];
-                majorId?: number;
+                /** @description Lọc theo ID lớp học */
                 classId?: number;
-                isHasAccount?: boolean;
-                page?: number;
-                limit?: number;
+                /** @description Lọc theo ngày nhập học từ (YYYY-MM-DD) */
+                fromDate?: string;
+                /** @description Lọc theo ngày nhập học đến (YYYY-MM-DD) */
+                toDate?: string;
+                sortBy?: string;
+                sortOrder?: "asc" | "desc";
             };
             header?: never;
             path?: never;
@@ -770,40 +2153,42 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Ok */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PaginationResponse_StudentResponse_"];
+                    "application/json": components["schemas"]["ResponsePagination"] & {
+                        data?: components["schemas"]["StudentResponseDto"][];
+                    };
                 };
             };
         };
     };
-    FindById: {
+    createStudent: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                id: number;
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateStudentDto"];
+            };
+        };
         responses: {
-            /** @description Ok */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StudentResponse"];
+                    "application/json": components["schemas"]["StudentResponseDto"];
                 };
             };
         };
     };
-    Update: {
+    updateStudent: {
         parameters: {
             query?: never;
             header?: never;
@@ -814,36 +2199,21 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateStudentDTO"];
+                "application/json": components["schemas"]["UpdateStudentDto"];
             };
         };
         responses: {
-            /** @description Ok */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        classId: string;
-                        majorId: string;
-                        status: components["schemas"]["_36_Enums.StudentStatus"];
-                        /** Format: date-time */
-                        enrollmentDate: string;
-                        citizenId: string;
-                        studentCode: string;
-                        userId: string;
-                        /** Format: date-time */
-                        updatedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        id: string;
-                    };
+                    "application/json": components["schemas"]["StudentResponseDto"];
                 };
             };
         };
     };
-    Delete: {
+    approveStudent: {
         parameters: {
             query?: never;
             header?: never;
@@ -854,52 +2224,17 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Ok */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        classId: string;
-                        majorId: string;
-                        status: components["schemas"]["_36_Enums.StudentStatus"];
-                        /** Format: date-time */
-                        enrollmentDate: string;
-                        citizenId: string;
-                        studentCode: string;
-                        userId: string;
-                        /** Format: date-time */
-                        updatedAt: string;
-                        /** Format: date-time */
-                        createdAt: string;
-                        id: string;
-                    };
+                    "application/json": components["schemas"]["StudentResponseDto"];
                 };
             };
         };
     };
-    FindAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
-    };
-    Create: {
+    UserController_createUser: {
         parameters: {
             query?: never;
             header?: never;
@@ -908,28 +2243,64 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateMajorDTO"];
+                "application/json": components["schemas"]["CreateUserDto"];
             };
         };
         responses: {
-            /** @description Ok */
+            /** @description Tạo thành công */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserResponseDto"];
+                };
+            };
+        };
+    };
+    UserController_updateUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của người dùng */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateUserDto"];
+            };
+        };
+        responses: {
+            /** @description Cập nhật thành công */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["UserResponseDto"];
                 };
             };
         };
     };
-    SearchMajor: {
+    StaffController_findAll: {
         parameters: {
             query?: {
-                keyword?: string;
-                departmentId?: number;
                 page?: number;
                 limit?: number;
+                /** @description Tìm theo tên, mã NV, username, email, CCCD */
+                keyword?: string;
+                role?: "admin" | "teacher" | "student" | "staff";
+                /** @description Lọc theo trạng thái tài khoản */
+                isActive?: boolean;
+                /** @description Lọc theo phòng ban */
+                departmentId?: number;
+                /** @description Lọc theo chức vụ */
+                position?: string;
+                sortBy?: string;
+                sortOrder?: "asc" | "desc";
             };
             header?: never;
             path?: never;
@@ -937,201 +2308,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Ok */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        limit: number;
-                        /** Format: double */
-                        page: number;
-                        /** Format: double */
-                        total: number;
-                        data: ({
-                            _count: {
-                                /** Format: double */
-                                classes: number;
-                                /** Format: double */
-                                students: number;
-                            };
-                            department: {
-                                code: string;
-                                /** Format: date-time */
-                                updatedAt: string;
-                                /** Format: date-time */
-                                createdAt: string;
-                                id: string;
-                                name: string;
-                            };
-                        } & {
-                            code: string;
-                            departmentId: string;
-                            /** Format: date-time */
-                            updatedAt: string;
-                            /** Format: date-time */
-                            createdAt: string;
-                            id: string;
-                            name: string;
-                        })[];
-                    };
-                };
-            };
-        };
-    };
-    FindById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
-    };
-    Update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateMajorDTO"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
-    };
-    Delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
-    };
-    GetAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Department"][];
-                };
-            };
-        };
-    };
-    GetById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Department"] | null;
-                };
-            };
-        };
-    };
-    Update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DepartmentUpdateRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Department"];
-                };
-            };
-        };
-    };
-    Delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description No Content */
-            204: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1139,7 +2316,7 @@ export interface operations {
             };
         };
     };
-    Create: {
+    StaffController_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -1148,22 +2325,42 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DepartmentCreateRequest"];
+                "application/json": components["schemas"]["CreateStaffDto"];
             };
         };
         responses: {
-            /** @description Created */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["Department"];
-                };
+                content?: never;
             };
         };
     };
-    Login: {
+    StaffController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateStaffDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AuthController_login: {
         parameters: {
             query?: never;
             header?: never;
@@ -1172,22 +2369,145 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["LoginRequest"];
+                "application/json": components["schemas"]["LoginDto"];
             };
         };
         responses: {
-            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DepartmentController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DepartmentController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDepartmentDto"];
+            };
+        };
+        responses: {
+            /** @description Tạo thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Mã phòng ban đã tồn tại. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DepartmentController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DepartmentController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DepartmentController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDepartmentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MajorController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["LoginResponse"];
+                    "application/json": components["schemas"]["MajorResponseDto"][];
                 };
             };
         };
     };
-    Register: {
+    MajorController_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -1196,18 +2516,1327 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["RegisterRequest"];
+                "application/json": components["schemas"]["CreateMajorDto"];
             };
         };
         responses: {
-            /** @description Created */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RegisterResponse"];
+                    "application/json": components["schemas"]["MajorResponseDto"];
                 };
+            };
+        };
+    };
+    MajorController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MajorResponseDto"];
+                };
+            };
+        };
+    };
+    MajorController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    MajorController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateMajorDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MajorResponseDto"];
+                };
+            };
+        };
+    };
+    BatchController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BatchController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBatchDto"];
+            };
+        };
+        responses: {
+            /** @description Tạo thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Mã khóa học đã tồn tại. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BatchController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BatchController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateBatchDto"];
+            };
+        };
+        responses: {
+            /** @description Cập nhật thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Không tìm thấy khóa. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ClassController_autoAssign: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignClassDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ClassController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassResponseDto"][];
+                };
+            };
+        };
+    };
+    ClassController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateClassDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassResponseDto"];
+                };
+            };
+        };
+    };
+    ClassController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassResponseDto"];
+                };
+            };
+        };
+    };
+    ClassController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ClassController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateClassDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassResponseDto"];
+                };
+            };
+        };
+    };
+    SubjectController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectResponseDto"][];
+                };
+            };
+        };
+    };
+    SubjectController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSubjectDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectResponseDto"];
+                };
+            };
+        };
+    };
+    SubjectController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectResponseDto"];
+                };
+            };
+        };
+    };
+    SubjectController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SubjectController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSubjectDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectResponseDto"];
+                };
+            };
+        };
+    };
+    SemesterController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SemesterResponseDto"][];
+                };
+            };
+        };
+    };
+    SemesterController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSemesterDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SemesterResponseDto"];
+                };
+            };
+        };
+    };
+    SemesterController_getCurrent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SemesterResponseDto"];
+                };
+            };
+        };
+    };
+    SemesterController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SemesterResponseDto"];
+                };
+            };
+        };
+    };
+    SemesterController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SemesterController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSemesterDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SemesterResponseDto"];
+                };
+            };
+        };
+    };
+    RoomController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoomResponseDto"][];
+                };
+            };
+        };
+    };
+    RoomController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRoomDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoomResponseDto"];
+                };
+            };
+        };
+    };
+    RoomController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoomResponseDto"];
+                };
+            };
+        };
+    };
+    RoomController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    RoomController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateRoomDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoomResponseDto"];
+                };
+            };
+        };
+    };
+    CurriculumController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurriculumResponseDto"][];
+                };
+            };
+        };
+    };
+    CurriculumController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCurriculumDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurriculumResponseDto"];
+                };
+            };
+        };
+    };
+    CurriculumController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurriculumResponseDto"];
+                };
+            };
+        };
+    };
+    CurriculumController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CurriculumController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCurriculumDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurriculumResponseDto"];
+                };
+            };
+        };
+    };
+    AdmissionController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAdmissionDto"];
+            };
+        };
+        responses: {
+            /** @description Tạo thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Dữ liệu đầu vào không hợp lệ hoặc BatchID không tồn tại. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionFeeController_createSemesterFees: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tạo các khoản phí thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionFeeController_getTuitionFees: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                studentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Danh sách các khoản phí học kỳ của sinh viên. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionFeeController_payTuitionFee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PayTuitionFeeDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFeeDto"];
+            };
+        };
+        responses: {
+            /** @description Tạo thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Dữ liệu đầu vào không hợp lệ. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateFeeDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeCatalogController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeCatalogController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFeeCatalogDto"];
+            };
+        };
+        responses: {
+            /** @description Tạo cấu hình thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Không tìm thấy Fee ID tương ứng. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeCatalogController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeCatalogController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeCatalogController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateFeeCatalogDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditPriceController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Trả về danh sách thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditPriceController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCreditPriceDto"];
+            };
+        };
+        responses: {
+            /** @description Tạo thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Dữ liệu đầu vào không hợp lệ. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditPriceController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Không tìm thấy ID. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CreditPriceController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCreditPriceDto"];
+            };
+        };
+        responses: {
+            /** @description Cập nhật thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Không tìm thấy ID. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostController_findAll: {
+        parameters: {
+            query?: {
+                page?: string;
+                limit?: string;
+                status?: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePostDto"];
+            };
+        };
+        responses: {
+            /** @description Bài viết đã được tạo thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Slug hoặc tiêu đề đã tồn tại. */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePostDto"];
+            };
+        };
+        responses: {
+            /** @description Cập nhật thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Không tìm thấy bài viết. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CourseOfferController_preview: {
+        parameters: {
+            query: {
+                semesterId: number;
+                majorId: number;
+                batchId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Danh sách dự kiến */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CourseOfferController_generate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBulkCourseOfferDto"];
+            };
+        };
+        responses: {
+            /** @description Khởi tạo thành công */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CourseOfferController_createOptional: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOptionalCourseOfferDto"];
+            };
+        };
+        responses: {
+            /** @description Tạo lớp thành công */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

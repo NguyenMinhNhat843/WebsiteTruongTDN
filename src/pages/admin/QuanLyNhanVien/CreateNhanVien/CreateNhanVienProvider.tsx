@@ -6,7 +6,9 @@ import { client } from "../../../../api/client";
 import type { RoleType } from "../../../../api/type";
 
 // Lấy type từ schema đã gen
-type RegisterRequestBody = components["schemas"]["RegisterRequest"];
+type RegisterRequestBody = components["schemas"]["CreateStaffDto"] & {
+  confirmPassword: string; // Thêm trường confirmPassword để validate ở frontend
+};
 
 export const [CreateNhanVienProvider, useCreateNhanVienContext] =
   createContextProvider(() => {
@@ -18,7 +20,8 @@ export const [CreateNhanVienProvider, useCreateNhanVienContext] =
       password: "minhnhat3256",
       confirmPassword: "minhnhat3256",
       role: "ADMIN" as RoleType,
-      gender: "OTHER",
+      dob: "2000-01-01",
+      fullName: "",
     };
 
     const [formData, setFormData] =
@@ -27,7 +30,7 @@ export const [CreateNhanVienProvider, useCreateNhanVienContext] =
     // Định nghĩa mutation
     const { mutate, isPending, error } = useMutation({
       mutationFn: async (data: RegisterRequestBody) => {
-        const { data: resData, error } = await client.POST("/auth/register", {
+        const { data: resData, error } = await client.POST("/staffs", {
           body: data,
         });
 
