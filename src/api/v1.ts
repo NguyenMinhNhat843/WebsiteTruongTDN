@@ -1076,11 +1076,7 @@ export interface components {
              * @description ID của phòng ban/khoa trực thuộc
              * @example 1
              */
-            deptId: number;
-            /** @example 2.5 năm */
-            durationYears?: string;
-            /** @example 90 */
-            totalCredits?: number;
+            deptId?: number;
             /** @example Ngành học tập trung vào phát triển phần mềm */
             description?: string;
         };
@@ -1093,12 +1089,8 @@ export interface components {
             majorName: string;
             /** @example 1 */
             deptId: number;
-            /** @example 2.5 năm */
-            durationYears?: string;
             /** @example 90 */
             totalCredits: number;
-            /** @example Mô tả ngành học */
-            description?: string;
             /**
              * Format: date-time
              * @example 2024-04-25T10:00:00Z
@@ -1115,6 +1107,11 @@ export interface components {
              * @example 10
              */
             classCount?: number;
+            /**
+             * @description Mô tả chi tiết về ngành học
+             * @example Ngành học tập trung vào phát triển phần mềm
+             */
+            description?: Record<string, never>;
         };
         UpdateMajorDto: {
             /**
@@ -1129,10 +1126,6 @@ export interface components {
              * @example 1
              */
             deptId?: number;
-            /** @example 2.5 năm */
-            durationYears?: string;
-            /** @example 90 */
-            totalCredits?: number;
             /** @example Ngành học tập trung vào phát triển phần mềm */
             description?: string;
         };

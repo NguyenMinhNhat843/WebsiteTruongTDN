@@ -5,9 +5,7 @@ import {
   BookOpen,
   Hash,
   Building2,
-  Calendar,
   FileText,
-  GraduationCap,
 } from "lucide-react";
 import type { createNganhDto } from "./NganhProvider";
 
@@ -116,31 +114,6 @@ const CreateNganhModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
                   required: "Bắt buộc",
                   valueAsNumber: true,
                 })}
-                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none"
-              />
-            </div>
-
-            {/* Thời gian đào tạo */}
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                <Calendar size={14} /> Thời gian (năm)
-              </label>
-              <input
-                {...register("durationYears")}
-                placeholder="VD: 4 năm"
-                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none"
-              />
-            </div>
-
-            {/* Tổng số tín chỉ */}
-            <div className="space-y-1">
-              <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                <GraduationCap size={14} /> Tổng tín chỉ
-              </label>
-              <input
-                type="number"
-                {...register("totalCredits", { valueAsNumber: true })}
-                placeholder="120"
                 className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none"
               />
             </div>

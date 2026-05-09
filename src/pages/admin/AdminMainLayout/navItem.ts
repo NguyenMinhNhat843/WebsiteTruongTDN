@@ -45,6 +45,12 @@ const navItems: NavItem[] = [
         roles: ["ADMIN", "TEACHER"],
       },
       {
+        id: "mon-hoc",
+        label: "Môn học",
+        href: "/admin/mon-hoc",
+        roles: ["ADMIN", "TEACHER"],
+      },
+      {
         id: "khoa-dao-tao",
         label: "Khóa đào tạo",
         href: "/admin/khoa-dao-tao",

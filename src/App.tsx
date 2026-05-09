@@ -58,6 +58,7 @@ import StudentLopHocPhan from "./pages/StudentDashboard/LopHocPhan/LopHocPhan";
 import SystemLogPage from "./pages/admin/NhatKyHeThong/NhatKyHeThong";
 import KhoaDaoTao from "./features/khoaHoc/KhoaDaoTaoIndex";
 import NganhIndex from "./features/Nganh/NganhIndex";
+import MonHocIndex from "./features/MonHoc/MonHocIndex";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -156,6 +157,9 @@ function App() {
 
           {/* Ngành học */}
           <Route path="nganh-hoc" element={<NganhIndex />} />
+
+          {/* Môn học */}
+          <Route path="mon-hoc" element={<MonHocIndex />} />
 
           {/* Công tác học sinh */}
           <Route>
