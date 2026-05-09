@@ -56,6 +56,8 @@ import StudentDashboard from "./pages/StudentDashboard/Dashboard/Dashboard";
 import StudentLayout from "./pages/StudentDashboard/StudentLayout";
 import StudentLopHocPhan from "./pages/StudentDashboard/LopHocPhan/LopHocPhan";
 import SystemLogPage from "./pages/admin/NhatKyHeThong/NhatKyHeThong";
+import KhoaDaoTao from "./features/khoaHoc/KhoaDaoTaoIndex";
+import NganhIndex from "./features/Nganh/NganhIndex";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -148,6 +150,12 @@ function App() {
           <Route element={<KhoaIndex />}>
             <Route path="dao-tao/khoa" element={<KhoaList />} />
           </Route>
+
+          {/* Khóa học */}
+          <Route path="khoa-dao-tao" element={<KhoaDaoTao />} />
+
+          {/* Ngành học */}
+          <Route path="nganh-hoc" element={<NganhIndex />} />
 
           {/* Công tác học sinh */}
           <Route>

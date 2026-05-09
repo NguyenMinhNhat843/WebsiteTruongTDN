@@ -1004,6 +1004,44 @@ export interface components {
              */
             headOfDepartmentId?: number;
         };
+        DepartmentResponseDto: {
+            /** @example 1 */
+            id: number;
+            /**
+             * @description Mã định danh duy nhất của khoa/phòng
+             * @example IT01
+             */
+            deptCode: string;
+            /** @example Khoa Công nghệ thông tin */
+            deptName: string;
+            /** @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống */
+            description?: string | null;
+            /**
+             * @description ID của nhân viên làm trưởng khoa
+             * @example 1
+             */
+            headOfDepartmentId?: number | null;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /**
+             * @description Số lượng ngành học trực thuộc
+             * @example 5
+             */
+            majorCount?: number;
+            /**
+             * @description Số lượng môn học trực thuộc
+             * @example 20
+             */
+            subjectCount?: number;
+        };
         UpdateDepartmentDto: {
             /**
              * @description Mã định danh duy nhất của phòng ban/khoa
@@ -1045,44 +1083,6 @@ export interface components {
             totalCredits?: number;
             /** @example Ngành học tập trung vào phát triển phần mềm */
             description?: string;
-        };
-        DepartmentResponseDto: {
-            /** @example 1 */
-            id: number;
-            /**
-             * @description Mã định danh duy nhất của khoa/phòng
-             * @example IT01
-             */
-            deptCode: string;
-            /** @example Khoa Công nghệ thông tin */
-            deptName: string;
-            /** @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống */
-            description?: string | null;
-            /**
-             * @description ID của nhân viên làm trưởng khoa
-             * @example 1
-             */
-            headOfDepartmentId?: number | null;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            updatedAt: string;
-            /**
-             * @description Số lượng ngành học trực thuộc
-             * @example 5
-             */
-            majorCount?: number;
-            /**
-             * @description Số lượng môn học trực thuộc
-             * @example 20
-             */
-            subjectCount?: number;
         };
         MajorResponseDto: {
             /** @example 1 */
@@ -1175,6 +1175,20 @@ export interface components {
              * @example ADMISSION
              */
             status: string;
+        };
+        BatchResponseDto: {
+            id: number;
+            batchCode: string;
+            batchName: string;
+            startYear: number;
+            endYear: number;
+            description: Record<string, never> | null;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            major: components["schemas"]["MajorResponseDto"];
         };
         UpdateBatchDto: {
             /**
@@ -2394,7 +2408,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["DepartmentResponseDto"][];
+                };
             };
         };
     };
@@ -2442,7 +2458,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["DepartmentResponseDto"];
+                };
             };
         };
     };
@@ -2457,6 +2475,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            /** @description Xóa thành công. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -2484,7 +2503,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["DepartmentResponseDto"];
+                };
             };
         };
     };
@@ -2608,7 +2629,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["BatchResponseDto"][];
+                };
             };
         };
     };

@@ -1,4 +1,4 @@
-import { LayoutGrid, GraduationCap, ArrowRight } from "lucide-react";
+import { LayoutGrid, GraduationCap, ArrowRight, Trash } from "lucide-react";
 
 interface KhoaCardProps {
   name: string;
@@ -8,6 +8,7 @@ interface KhoaCardProps {
   students: number;
   color: string;
   onClick?: () => void;
+  onDelete?: () => void;
 }
 
 const KhoaCard = ({
@@ -18,6 +19,7 @@ const KhoaCard = ({
   students,
   color,
   onClick,
+  onDelete,
 }: KhoaCardProps) => {
   return (
     <div
@@ -75,8 +77,16 @@ const KhoaCard = ({
           </div>
         </div>
 
-        <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 group-hover:bg-indigo-600 group-hover:text-white transition-all">
-          <ArrowRight size={18} />
+        <div className="flex justify-between gap-2">
+          <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-indigo-600 hover:text-white transition-all">
+            <ArrowRight size={18} />
+          </div>
+          <div
+            className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-300 hover:bg-red-600 hover:text-white transition-all"
+            onClick={onDelete}
+          >
+            <Trash size={18} />
+          </div>
         </div>
       </div>
     </div>
