@@ -63,6 +63,12 @@ const navItems: NavItem[] = [
         roles: ["ADMIN", "TEACHER"],
       },
       {
+        id: "tieu-chuan-tuyen-sinh",
+        label: "Tiêu chuẩn tuyển sinh",
+        href: "/admin/tieu-chuan-tuyen-sinh",
+        roles: ["ADMIN", "TEACHER"],
+      },
+      {
         id: "thoi-khoa-bieu",
         label: "Thời khóa biểu",
         href: "/admin/dao-tao/thoi-khoa-bieu",

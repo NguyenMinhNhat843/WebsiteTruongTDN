@@ -489,6 +489,34 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/criteria": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy danh sách tiêu chí
+         * @description Hỗ trợ tìm kiếm theo tên và phân trang.
+         */
+        get: operations["CriterionController_findAll"];
+        put?: never;
+        /**
+         * Tạo mới tiêu chí tuyển sinh
+         * @description Tạo một tiêu chí mẫu (Ví dụ: IELTS, Điểm Toán) để dùng chung cho các ngành học.
+         */
+        post: operations["CriterionController_create"];
+        /**
+         * Xóa tiêu chí
+         * @description Xóa một tiêu chí theo ID.
+         */
+        delete: operations["CriterionController_deleteCriteria"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/tuition-fee/create-semester-fees": {
         parameters: {
             query?: never;
@@ -1794,43 +1822,46 @@ export interface components {
             /** @description Danh sách các môn học thuộc chương trình khung */
             curriculumSubjects?: components["schemas"]["CreateCurriculumSubjectDto"][];
         };
-        AdmissionCriterionDto: {
+        CreateAdmissionItemCriterionDto: {
             /**
-             * @description Tên tiêu chí xét tuyển
-             * @example Điểm Toán
+             * @description ID của tiêu chí mẫu (Criterion ID)
+             * @example 1
              */
-            criterionName: string;
+            criterionId: number;
             /**
-             * @description Điểm tối thiểu cần đạt
-             * @example 7
+             * @description Giá trị tối thiểu yêu cầu
+             * @example 6.5
              */
             minValue?: number;
             /**
-             * @description Tiêu chí này có bắt buộc không
+             * @description Tiêu chí này có bắt buộc không?
              * @example true
              */
             isRequired: boolean;
             /**
-             * @description Mô tả thêm về tiêu chí
-             * @example Xét điểm thi tốt nghiệp THPT
+             * @description Hệ số/Trọng số của tiêu chí
+             * @example 1.5
              */
-            description?: string;
+            weight?: number;
         };
-        AdmissionItemDto: {
+        CreateAdmissionItemDto: {
             /**
-             * @description ID của ngành học (Major)
+             * @description ID của ngành học
              * @example 1
              */
             majorId: number;
-            /** @example K18 */
+            /**
+             * @description Tên khóa/bậc tuyển sinh
+             * @example K18
+             */
             batchName: string;
             /**
-             * @description Chỉ tiêu tuyển sinh cho ngành này
+             * @description Chỉ tiêu số lượng sinh viên
              * @example 100
              */
             quota: number;
-            /** @description Danh sách các điều kiện xét tuyển riêng cho ngành */
-            criteria?: components["schemas"]["AdmissionCriterionDto"][];
+            /** @description Danh sách các tiêu chí áp dụng cho ngành này */
+            criteria: components["schemas"]["CreateAdmissionItemCriterionDto"][];
         };
         CreateAdmissionDto: {
             /**
@@ -1845,11 +1876,62 @@ export interface components {
             startDate: string;
             /**
              * @description Ngày kết thúc nhận hồ sơ
-             * @example 2026-08-30T00:00:00Z
+             * @example 2026-08-31T23:59:59Z
              */
             endDate: string;
-            /** @description Danh sách chi tiết các ngành và chỉ tiêu */
-            items: components["schemas"]["AdmissionItemDto"][];
+            /**
+             * @description Trạng thái đợt tuyển sinh
+             * @default OPEN
+             * @enum {string}
+             */
+            status: "OPEN" | "CLOSE" | "ARCHIVED";
+            /** @description Danh sách các ngành và chỉ tiêu trong đợt này */
+            items: components["schemas"]["CreateAdmissionItemDto"][];
+        };
+        CreateCriterionDto: {
+            /**
+             * @description Tên của tiêu chí tuyển sinh
+             * @example Điểm IELTS
+             */
+            criterionName: string;
+            /**
+             * @description Loại dữ liệu của tiêu chí
+             * @example NUMBER
+             * @enum {string}
+             */
+            type: "NUMBER" | "STRING" | "BOOLEAN";
+            /**
+             * @description Mô tả chi tiết về tiêu chí
+             * @example Yêu cầu chứng chỉ IELTS quốc tế còn thời hạn
+             */
+            description?: string;
+        };
+        CriterionResponseDto: {
+            /**
+             * @description ID duy nhất của tiêu chí
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description Tên của tiêu chí tuyển sinh
+             * @example IELTS
+             */
+            criterionName: string;
+            /**
+             * @description Kiểu dữ liệu của tiêu chí
+             * @example NUMBER
+             * @enum {string}
+             */
+            type: "NUMBER" | "STRING" | "BOOLEAN";
+            /** @example Chứng chỉ tiếng Anh quốc tế */
+            description?: Record<string, never> | null;
+        };
+        DeleteCriterionDto: {
+            /**
+             * @description ID của tiêu chí cần xóa
+             * @example 1
+             */
+            id: number;
         };
         PayTuitionFeeDto: {
             /**
@@ -3324,6 +3406,79 @@ export interface operations {
             };
             /** @description Dữ liệu đầu vào không hợp lệ hoặc BatchID không tồn tại. */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CriterionController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Danh sách tiêu chí kèm metadata phân trang */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CriterionResponseDto"][];
+                };
+            };
+        };
+    };
+    CriterionController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCriterionDto"];
+            };
+        };
+        responses: {
+            /** @description Tiêu chí đã được tạo thành công */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CriterionResponseDto"];
+                };
+            };
+            /** @description Tên tiêu chí đã tồn tại */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CriterionController_deleteCriteria: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteCriterionDto"];
+            };
+        };
+        responses: {
+            /** @description Tiêu chí đã được xóa thành công */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

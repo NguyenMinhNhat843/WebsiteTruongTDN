@@ -59,6 +59,7 @@ import SystemLogPage from "./pages/admin/NhatKyHeThong/NhatKyHeThong";
 import KhoaDaoTao from "./features/khoaHoc/KhoaDaoTaoIndex";
 import NganhIndex from "./features/Nganh/NganhIndex";
 import MonHocIndex from "./features/MonHoc/MonHocIndex";
+import TieuChuanTuyenSinh from "./features/TieuChuanTuyenSinh/TieuChuanTuyenSinh";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -160,6 +161,12 @@ function App() {
 
           {/* Môn học */}
           <Route path="mon-hoc" element={<MonHocIndex />} />
+
+          {/* Tiêu chuẩn tuyển sinh */}
+          <Route
+            path="tieu-chuan-tuyen-sinh"
+            element={<TieuChuanTuyenSinh />}
+          />
 
           {/* Công tác học sinh */}
           <Route>
