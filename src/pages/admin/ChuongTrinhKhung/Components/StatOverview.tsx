@@ -1,42 +1,28 @@
-import {
-  CheckCircle2,
-  FileEdit,
-  GraduationCap,
-  LayoutGrid,
-} from "lucide-react";
+import { CheckCircle2, FileEdit, LayoutGrid } from "lucide-react";
 import { StatCard } from "../../../../components/ui/StatCard";
-import { useChuongTrinhKhungContext } from "../ChuongTrinhKhungProvider";
 
 const StatOverview = () => {
-  const { stats } = useChuongTrinhKhungContext();
   return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-3 gap-3">
       {[
         {
           l: "Tổng chương trình",
-          v: stats.total,
+          v: 1,
           className: "bg-gradient-to-br from-blue-500 to-indigo-600 text-white",
           icon: LayoutGrid,
         },
         {
           l: "Đang áp dụng",
-          v: stats.active,
+          v: 1,
           className:
             "bg-gradient-to-br from-emerald-400 to-teal-600 text-white",
           icon: CheckCircle2,
         },
         {
           l: "Bản nháp",
-          v: stats.draft,
+          v: 0,
           className: "bg-gradient-to-br from-orange-400 to-rose-500 text-white",
           icon: FileEdit,
-        },
-        {
-          l: "Số hệ đào tạo",
-          v: stats.systems,
-          className:
-            "bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white",
-          icon: GraduationCap,
         },
       ].map((s) => {
         const Icon = s.icon;

@@ -1704,7 +1704,7 @@ export interface components {
              */
             createdAt: string;
             /** @description Thông tin chi tiết môn học */
-            subject?: Record<string, never>;
+            subject?: components["schemas"]["SubjectResponseDto"];
             /** @description Thông tin chương trình khung */
             curriculum?: Record<string, never>;
         };
