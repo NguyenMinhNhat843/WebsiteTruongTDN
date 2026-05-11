@@ -1,11 +1,9 @@
-import {
-  TaoChuongTrinhKhungProvider,
-  useTaoChuongTrinhKhungContext,
-} from "./TaoChuongTrinhKhungProvider";
 import PageShell from "../../../components/ui/PageShell";
-import { GrabIcon } from "lucide-react";
-import { CurriculumHeader } from "./components/HeaderCuriculum";
-import { SemesterManager } from "./components/SelesterManager";
+import { GrabIcon, PlusIcon } from "lucide-react";
+import CreateProgramForm from "../../../features/ChuongTrinhKhung/CreateProgramForm";
+import SemesterManager from "../../../features/ChuongTrinhKhung/SemesterManager";
+import { useState } from "react";
+import { TaoChuongTrinhKhungProvider } from "../../../features/ChuongTrinhKhung/CreateProgramProvider";
 
 const TaoChuongTrinhKhung = () => {
   return (
@@ -16,16 +14,10 @@ const TaoChuongTrinhKhung = () => {
 };
 
 const Inner = () => {
-  const {
-    curriculum,
-    setCurriculum,
-    selectedMajor,
-    totalCredits,
-    totalSemesters,
-    addSemester,
-    addSubject,
-    moveSubject,
-  } = useTaoChuongTrinhKhungContext();
+  const [semesterNumber, setSemesterNumber] = useState<number>(1);
+  const handleAddSemester = () => {
+    setSemesterNumber((prev) => prev + 1);
+  };
 
   return (
     <PageShell
@@ -33,28 +25,29 @@ const Inner = () => {
       sub="Xây dựng chương trình khung cho các ngành đào tạo"
       icon={GrabIcon}
     >
-      <div className="space-y-6">
-        <CurriculumHeader
-          totalCredits={totalCredits}
-          totalSemesters={totalSemesters}
-          curriculum={curriculum}
-          selectedMajor={selectedMajor}
-          setCurriculum={setCurriculum}
-        />
+      <div>
+        <CreateProgramForm />
 
-        <SemesterManager
-          addSubject={addSubject}
-          moveSubject={moveSubject}
-          addSemester={addSemester}
-          curriculum={curriculum}
-        />
-        <button
-          onClick={addSemester}
-          className="px-4 py-2 w-full text-center text-[12px] font-bold text-blue-600 border 
-          border-blue-200 rounded-lg hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
-        >
-          <span className="text-lg">+</span> Thêm học kỳ
-        </button>
+        {/* Danh sách các học kỳ */}
+        <div className="space-y-6">
+          {Array.from({ length: semesterNumber }, (_, i) => i + 1).map(
+            (num) => (
+              <div key={num} className="relative">
+                <SemesterManager title={`Học kỳ ${num}`} semesterNumber={num} />
+              </div>
+            ),
+          )}
+        </div>
+
+        <div className="flex justify-center pt-4">
+          <button
+            onClick={handleAddSemester}
+            className="flex items-center gap-2 bg-white border-2 border-dashed border-indigo-300 text-indigo-600 px-8 py-3 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all font-semibold"
+          >
+            <PlusIcon className="text-lg" />
+            Thêm Học Kỳ {semesterNumber + 1}
+          </button>
+        </div>
       </div>
     </PageShell>
   );

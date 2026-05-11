@@ -1621,7 +1621,7 @@ export interface components {
              * @description ID của chương trình khung
              * @example 1
              */
-            curriculumId: number;
+            curriculumId?: number;
             /**
              * @description ID của môn học
              * @example 1
