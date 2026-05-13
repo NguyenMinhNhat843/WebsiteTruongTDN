@@ -44,7 +44,6 @@ import TaoChuongTrinhKhung from "./pages/admin/TaoChuongTrinhKhung/TaoChuongTrin
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import KhoaList from "./pages/admin/Khoa/KhoaList";
 import KhoaIndex from "./pages/admin/Khoa/KhoaIndex";
-import TaoDotTuyenSinh from "./pages/admin/TaoDotTuyenSinh/TaoDotTuyenSinh";
 import LopHocPhan from "./pages/admin/LopHocPhan/LopHocPhan";
 import MemberLayout from "./pages/MembersDashboard/MemberSideBar/MemberLayout";
 import MemberDashboard from "./pages/MembersDashboard/Home";
@@ -59,7 +58,7 @@ import KhoaDaoTao from "./features/khoaHoc/KhoaDaoTaoIndex";
 import NganhIndex from "./features/Nganh/NganhIndex";
 import MonHocIndex from "./features/MonHoc/MonHocIndex";
 import TieuChuanTuyenSinh from "./features/TieuChuanTuyenSinh/TieuChuanTuyenSinh";
-import AdmissionDetail from "./features/DotTuyenSinh/DotTuyenSInhOne";
+import AdmissionDetail from "./features/DotTuyenSinh/DotTuyenSinhOne";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -182,7 +181,6 @@ function App() {
           {/* Tuyển sinh */}
           <Route path="tuyen-sinh" element={<TuyenSinh />}>
             <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
-            <Route path="tao-dot-tuyen-sinh" element={<TaoDotTuyenSinh />} />
             <Route path="dot-tuyen-sinh/:id" element={<AdmissionDetail />} />
             <Route path="thong-ke" element={<NguonTuyenSinh />} />
             <Route element={<QuanLyHoSoLayout />}>

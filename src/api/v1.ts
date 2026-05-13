@@ -534,6 +534,69 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/applications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách các đơn ứng tuyển */
+        get: operations["ApplicationController_findAll"];
+        put?: never;
+        /**
+         * Nộp đơn ứng tuyển mới
+         * @description Thí sinh gửi thông tin cá nhân và dữ liệu điểm số để ứng tuyển vào một ngành học.
+         */
+        post: operations["ApplicationController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/applications/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Thống kê số lượng đơn theo trạng thái
+         * @description Trả về số lượng đơn cho mỗi trạng thái (PENDING, ADMITTED, ...)
+         */
+        get: operations["ApplicationController_getStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/applications/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết một đơn ứng tuyển */
+        get: operations["ApplicationController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa đơn ứng tuyển */
+        delete: operations["ApplicationController_remove"];
+        options?: never;
+        head?: never;
+        /**
+         * Cập nhật đơn ứng tuyển
+         * @description Dùng để sửa thông tin cá nhân hoặc thay đổi trạng thái hồ sơ (Duyệt/Loại).
+         */
+        patch: operations["ApplicationController_update"];
+        trace?: never;
+    };
     "/tuition-fee/create-semester-fees": {
         parameters: {
             query?: never;
@@ -2040,6 +2103,97 @@ export interface components {
              * @example 1
              */
             id: number;
+        };
+        CreateApplyApplicationDto: {
+            /** @example Nguyễn Văn A */
+            fullName: string;
+            /** @example nguyenvana@gmail.com */
+            email: string;
+            /** @example 0905123456 */
+            phone: string;
+            /**
+             * @description ID của AdmissionItem (Ngành muốn thi vào)
+             * @example 10
+             */
+            admissionItemId: number;
+            /**
+             * @description Dữ liệu điểm số/chứng chỉ dạng JSON
+             * @example {
+             *       "math_score": 8.5,
+             *       "english_score": 7,
+             *       "ielts": 6.5
+             *     }
+             */
+            rawdata: Record<string, never>;
+        };
+        ApplicationResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example Nguyễn Văn A */
+            fullName: string;
+            /** @example nguyenvana@gmail.com */
+            email: string;
+            /** @example 0905123456 */
+            phone: string;
+            /**
+             * @description Dữ liệu JSON lưu điểm số
+             * @example {
+             *       "math_score": 8.5,
+             *       "ielts": 6.5
+             *     }
+             */
+            rawdata: Record<string, never> | null;
+            /**
+             * @example PENDING
+             * @enum {string}
+             */
+            status: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED" | "ENROLLED";
+            /**
+             * Format: date-time
+             * @example 2024-03-20T08:00:00.000Z
+             */
+            createdAt: string;
+            admissionItem: components["schemas"]["AdmissionItemResponseDto"];
+        };
+        ApplicationStatsResponseDto: {
+            /**
+             * @example PENDING
+             * @enum {string}
+             */
+            status: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED" | "ENROLLED";
+            /**
+             * @description Số lượng đơn ở trạng thái này
+             * @example 15
+             */
+            _count: Record<string, never>;
+        };
+        UpdateApplicationDto: {
+            /** @example Nguyễn Văn A */
+            fullName?: string;
+            /** @example nguyenvana@gmail.com */
+            email?: string;
+            /** @example 0905123456 */
+            phone?: string;
+            /**
+             * @description ID của AdmissionItem (Ngành muốn thi vào)
+             * @example 10
+             */
+            admissionItemId?: number;
+            /**
+             * @description Dữ liệu điểm số/chứng chỉ dạng JSON
+             * @example {
+             *       "math_score": 8.5,
+             *       "english_score": 7,
+             *       "ielts": 6.5
+             *     }
+             */
+            rawdata?: Record<string, never>;
+            /**
+             * @description Trạng thái hồ sơ: PENDING, QUALIFIED, ADMITTED, REJECTED, ENROLLED
+             * @example ADMITTED
+             * @enum {string}
+             */
+            status?: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED" | "ENROLLED";
         };
         PayTuitionFeeDto: {
             /**
@@ -3622,6 +3776,176 @@ export interface operations {
         responses: {
             /** @description Tiêu chí đã được xóa thành công */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ApplicationController_findAll: {
+        parameters: {
+            query?: {
+                skip?: number;
+                take?: number;
+                /** @description Lọc theo trạng thái hồ sơ */
+                status?: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED" | "ENROLLED";
+                /** @description Lọc theo ID mục tuyển sinh */
+                admissionItemId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Trả về danh sách đơn ứng tuyển. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationResponseDto"][];
+                };
+            };
+        };
+    };
+    ApplicationController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateApplyApplicationDto"];
+            };
+        };
+        responses: {
+            /** @description Nộp đơn thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationResponseDto"];
+                };
+            };
+            /** @description Dữ liệu đầu vào không hợp lệ. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ApplicationController_getStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Dữ liệu thống kê cho Dashboard. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationStatsResponseDto"][];
+                };
+            };
+        };
+    };
+    ApplicationController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của đơn ứng tuyển */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Thông tin chi tiết đơn ứng tuyển. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationResponseDto"];
+                };
+            };
+            /** @description Không tìm thấy đơn ứng tuyển. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ApplicationController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của đơn cần xóa */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Đã xóa đơn thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Không tìm thấy đơn để xóa. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ApplicationController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của đơn cần cập nhật */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateApplicationDto"];
+            };
+        };
+        responses: {
+            /** @description Cập nhật thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationResponseDto"];
+                };
+            };
+            /** @description Không tìm thấy đơn để cập nhật. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

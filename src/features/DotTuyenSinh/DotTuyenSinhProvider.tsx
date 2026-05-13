@@ -17,7 +17,7 @@ export type TieuChiTuyenSinhDto =
 export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
   createContextProvider(() => {
     const queryClient = useQueryClient();
-    const { id } = useParams();
+    const { id } = useParams(); // id ddowtj uyeenr sinh
     const admissionId = parseInt(id ?? "", 10);
 
     // state
@@ -48,7 +48,7 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
     const { data: tieuChiTuyenSinh, isPending: isLoadingTieuChiTuyenSinh } =
       $api.useQuery("get", "/criteria");
 
-    // get đợt tuyển sinh chi tiết
+    // get đợt tuyển sinh one
     const {
       data: chiTietDotTuyenSinh,
       isLoading: isLoadingChiTietDotTuyenSinh,
@@ -66,7 +66,7 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
         enabled: admissionId !== undefined,
       },
     );
-    console.log("Chi tiết đợt tuyển sinh:", admissionId, chiTietDotTuyenSinh);
+    const dotTuyenSinhItems = chiTietDotTuyenSinh?.items ?? [];
 
     // form create
     const {
@@ -122,6 +122,8 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
       isLoadingTieuChiTuyenSinh,
       chiTietDotTuyenSinh,
       isLoadingChiTietDotTuyenSinh,
+      id,
+      dotTuyenSinhItems,
 
       // state
       openFormCreate,

@@ -15,6 +15,7 @@ import {
   Info,
   School,
   ArrowLeft,
+  PlusIcon,
 } from "lucide-react";
 import {
   useDotTuyenSinhContext,
@@ -23,10 +24,19 @@ import {
   type TieuChiTuyenSinhDto,
 } from "./DotTuyenSinhProvider";
 import { useNavigate } from "react-router-dom";
+import { HoSoTuyenSinhTable } from "./TableHoSotuyenSinh";
+import { useHoSoTuyenSinhContext } from "./HoSoTuyenSInhProvider";
+import CreateHoSoModal from "./ModalCreateHoSoTuyenSinh";
 
 const AdmissionDetail = () => {
   const { chiTietDotTuyenSinh, isLoadingChiTietDotTuyenSinh } =
     useDotTuyenSinhContext();
+  const {
+    hoSoTuyenSinhs,
+    isLoadingHoSoTuyenSinhs,
+    setIsCreateHoSoModalOpen,
+    isCreateHoSoModalOpen,
+  } = useHoSoTuyenSinhContext();
   const navigate = useNavigate();
 
   // 1. Tính toán tổng chỉ tiêu
@@ -42,6 +52,16 @@ const AdmissionDetail = () => {
   // 2. Định nghĩa các cột (Columns Definition)
   const columns = useMemo<ColumnDef<ChiTietDotTuyenSinhDto>[]>(
     () => [
+      {
+        header: "Mã đợt tuyển sinh",
+        accessorKey: "id",
+        cell: (info) => (
+          <span className="font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-1 rounded border border-indigo-100">
+            {/* Ép kiểu string nếu TS báo unknown */}
+            {String(info.getValue())}
+          </span>
+        ),
+      },
       {
         header: "Mã ngành",
         accessorKey: "major.majorCode",
@@ -129,16 +149,30 @@ const AdmissionDetail = () => {
       {/* Header Card với màu sắc Gradient nhấn mạnh */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
         <div className="h-2 bg-linear-to-r from-indigo-500 via-purple-500 to-pink-500"></div>
-        <button
-          onClick={() => navigate(-1)}
-          className="mt-2 ms-8 group flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 transition-all duration-200 ease-in-out bg-white border border-slate-200 rounded-lg shadow-sm hover:border-indigo-200 hover:bg-indigo-50"
-        >
-          <ArrowLeft
-            size={18}
-            className="group-hover:-translate-x-1 transition-transform duration-200"
-          />
-          <span>Quay lại</span>
-        </button>
+
+        {/* button action */}
+        <div className="flex gap-2 items-center">
+          <button
+            onClick={() => navigate(-1)}
+            className="mt-2 ms-8 group flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 transition-all duration-200 ease-in-out bg-white border border-slate-200 rounded-lg shadow-sm hover:border-indigo-200 hover:bg-indigo-50"
+          >
+            <ArrowLeft
+              size={18}
+              className="group-hover:-translate-x-1 transition-transform duration-200"
+            />
+            <span>Quay lại</span>
+          </button>
+          <button
+            onClick={() => setIsCreateHoSoModalOpen(true)}
+            className="mt-2 ms-8 group flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 hover:text-indigo-600 transition-all duration-200 ease-in-out bg-white border border-slate-200 rounded-lg shadow-sm hover:border-indigo-200 hover:bg-indigo-50"
+          >
+            <PlusIcon
+              size={18}
+              className="group-hover:-translate-x-1 transition-transform duration-200"
+            />
+            <span>Thêm hồ sơ</span>
+          </button>
+        </div>
         <div className="px-8 pb-8 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
           <div className="space-y-3">
             <div className="flex items-center gap-3">
@@ -225,6 +259,22 @@ const AdmissionDetail = () => {
           </table>
         </div>
       </div>
+
+      {/* Hồ sơ tuyển sinh table */}
+      <div className="my-8">
+        <h1 className="text-xl font-bold text-slate-800 leading-none pb-4">
+          Hồ sơ tuyển sinh
+        </h1>
+        <HoSoTuyenSinhTable
+          hoSoTuyenSinhs={hoSoTuyenSinhs}
+          isLoadingHoSoTuyenSinh={isLoadingHoSoTuyenSinhs}
+        />
+      </div>
+
+      <CreateHoSoModal
+        isOpen={isCreateHoSoModalOpen}
+        onClose={() => setIsCreateHoSoModalOpen(false)}
+      />
     </div>
   );
 };
