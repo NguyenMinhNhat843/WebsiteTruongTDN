@@ -101,16 +101,8 @@ const DotTuyenSinhOne: FunctionComponent<DotTuyenSinhOneProps> = ({
           </div>
 
           <div className="flex gap-3 shrink-0 w-full md:w-auto">
-            <ButtonAction
-              label="Chỉnh sửa"
-              variant="primary"
-              icon={<Pencil size={16} />}
-            />
-            <ButtonAction
-              label="Xoá"
-              variant="danger"
-              icon={<Trash2 size={16} />}
-            />
+            <ButtonAction label="Chỉnh sửa" icon={<Pencil size={16} />} />
+            <ButtonAction label="Xoá" icon={<Trash2 size={16} />} />
           </div>
         </div>
 

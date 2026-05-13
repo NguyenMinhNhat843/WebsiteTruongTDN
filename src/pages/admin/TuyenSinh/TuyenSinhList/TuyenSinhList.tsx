@@ -1,25 +1,26 @@
-import { useTuyenSinhContext } from "../TuyenSinhProvider";
-import TuyenSinhTable from "./TuyenSinhTable";
-import DeleteModal from "../DeleteModal";
-import { GraduationCap, Plus, X } from "lucide-react";
+import { GraduationCap, Plus } from "lucide-react";
 import PageShell from "../../../../components/ui/PageShell";
 import StatsOverview from "../components/StatsOverview";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import FilterSection from "../components/FilterSection";
-import CreateDotTuyenSinh from "../TuyenSinhCreate/TuyenSinhCreateForm1";
+import AdmissionTable from "../../../../features/DotTuyenSinh/TuyenSinhTable";
+import {
+  DotTuyenSinhProvider,
+  useDotTuyenSinhContext,
+} from "../../../../features/DotTuyenSinh/DotTuyenSinhProvider";
+import CreateDotTuyenSinhModal from "../../../../features/DotTuyenSinh/CreateDotTuyenSinhForm";
 
-export default function DotTuyenSinhList() {
-  const {
-    deleteTarget,
-    handleDelete,
-    selectedRound,
-    setDeleteTarget,
-    setView,
-    view,
-    rounds,
-    openFormCreate,
-    setOpenFormCreate,
-  } = useTuyenSinhContext();
+const DotTuyenSinhList = () => {
+  return (
+    <DotTuyenSinhProvider>
+      <Inner />
+    </DotTuyenSinhProvider>
+  );
+};
+
+const Inner = () => {
+  const { admissions, openFormCreate, setOpenFormCreate } =
+    useDotTuyenSinhContext();
 
   return (
     <PageShell
@@ -41,49 +42,17 @@ export default function DotTuyenSinhList() {
             <StatsOverview />
             <FilterSection />
 
-            <TuyenSinhTable rounds={rounds} />
+            <AdmissionTable data={admissions || []} />
           </div>
 
-          {openFormCreate && (
-            <div className="fixed inset-0 z-100 flex items-center justify-center">
-              {/* Backdrop: Làm tối và mờ nền sau */}
-              <div
-                className="absolute inset-0 bg-gray-900/60 animate-in fade-in duration-300"
-                onClick={() => setOpenFormCreate(false)} // Đóng khi click ra ngoài
-              />
-
-              {/* Modal Content Container */}
-              <div className="relative w-full max-w-4xl max-h-[90vh] rounded-3xl shadow-2xl">
-                {/* Nút đóng nhanh (X) ở góc trên bên phải */}
-                <button
-                  onClick={() => setOpenFormCreate(false)}
-                  className="absolute top-4 right-4 p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors z-10"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-
-                {/* Form chính */}
-                <CreateDotTuyenSinh onCancel={() => setOpenFormCreate(false)} />
-              </div>
-            </div>
-          )}
-          {view === "edit" && selectedRound && (
-            <CreateDotTuyenSinh
-              initial={selectedRound}
-              onCancel={() => setView("detail")}
-            />
-          )}
-        </main>
-
-        {/* Delete Modal */}
-        {deleteTarget && (
-          <DeleteModal
-            name={deleteTarget.name}
-            onConfirm={handleDelete}
-            onCancel={() => setDeleteTarget(null)}
+          <CreateDotTuyenSinhModal
+            isOpen={openFormCreate}
+            onClose={() => setOpenFormCreate(false)}
           />
-        )}
+        </main>
       </div>
     </PageShell>
   );
-}
+};
+
+export default DotTuyenSinhList;

@@ -489,6 +489,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admissions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết một đợt tuyển sinh theo ID */
+        get: operations["AdmissionController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/criteria": {
         parameters: {
             query?: never;
@@ -1888,24 +1905,6 @@ export interface components {
             /** @description Danh sách các ngành và chỉ tiêu trong đợt này */
             items: components["schemas"]["CreateAdmissionItemDto"][];
         };
-        CreateCriterionDto: {
-            /**
-             * @description Tên của tiêu chí tuyển sinh
-             * @example Điểm IELTS
-             */
-            criterionName: string;
-            /**
-             * @description Loại dữ liệu của tiêu chí
-             * @example NUMBER
-             * @enum {string}
-             */
-            type: "NUMBER" | "STRING" | "BOOLEAN";
-            /**
-             * @description Mô tả chi tiết về tiêu chí
-             * @example Yêu cầu chứng chỉ IELTS quốc tế còn thời hạn
-             */
-            description?: string;
-        };
         CriterionResponseDto: {
             /**
              * @description ID duy nhất của tiêu chí
@@ -1925,6 +1924,115 @@ export interface components {
             type: "NUMBER" | "STRING" | "BOOLEAN";
             /** @example Chứng chỉ tiếng Anh quốc tế */
             description?: Record<string, never> | null;
+        };
+        AdmissionItemCriterionResponseDto: {
+            /**
+             * @description ID của mục tuyển sinh
+             * @example 10
+             */
+            admissionItemId: number;
+            /**
+             * @description ID của tiêu chí
+             * @example 1
+             */
+            criterionId: number;
+            /**
+             * @description Giá trị tối thiểu yêu cầu (ví dụ: điểm sàn)
+             * @example 8
+             */
+            minValue?: Record<string, never> | null;
+            /**
+             * @description Tiêu chí này có bắt buộc hay không
+             * @default true
+             * @example true
+             */
+            isRequired: boolean;
+            /**
+             * @description Trọng số/Hệ số của tiêu chí (ví dụ: Toán hệ số 2)
+             * @example 2
+             */
+            weight?: Record<string, never> | null;
+            criterion: components["schemas"]["CriterionResponseDto"];
+        };
+        AdmissionItemResponseDto: {
+            /**
+             * @description ID chi tiết tuyển sinh
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description ID đợt tuyển sinh tổng quát
+             * @example 1
+             */
+            admissionId: number;
+            /**
+             * @description ID ngành học
+             * @example 1
+             */
+            majorId: number;
+            /**
+             * @description Khóa tuyển sinh (Tự động tính từ Major)
+             * @example K18
+             */
+            batchName: string;
+            /**
+             * @description Chỉ tiêu số lượng sinh viên cho ngành này
+             * @example 50
+             */
+            quota: number;
+            major: components["schemas"]["MajorResponseDto"];
+            /** @description Danh sách các điều kiện/tiêu chí để trúng tuyển ngành này */
+            criteria: components["schemas"]["AdmissionItemCriterionResponseDto"][];
+        };
+        AdmissionResponseDto: {
+            /**
+             * @description ID đợt tuyển sinh
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description Tên hiển thị của đợt tuyển sinh
+             * @example Tuyển sinh Đợt 1 - 2026
+             */
+            name: string;
+            /**
+             * Format: date-time
+             * @description Ngày bắt đầu nhận hồ sơ
+             * @example 2026-01-01T00:00:00Z
+             */
+            startDate: string;
+            /**
+             * Format: date-time
+             * @description Ngày kết thúc đợt tuyển sinh
+             * @example 2026-03-31T23:59:59Z
+             */
+            endDate: string;
+            /**
+             * @description Trạng thái hiện tại của đợt tuyển sinh
+             * @example OPEN
+             * @enum {string}
+             */
+            status: "OPEN" | "CLOSE" | "ARCHIVED";
+            /** @description Danh sách các ngành và chỉ tiêu tương ứng */
+            items?: components["schemas"]["AdmissionItemResponseDto"][];
+        };
+        CreateCriterionDto: {
+            /**
+             * @description Tên của tiêu chí tuyển sinh
+             * @example Điểm IELTS
+             */
+            criterionName: string;
+            /**
+             * @description Loại dữ liệu của tiêu chí
+             * @example NUMBER
+             * @enum {string}
+             */
+            type: "NUMBER" | "STRING" | "BOOLEAN";
+            /**
+             * @description Mô tả chi tiết về tiêu chí
+             * @example Yêu cầu chứng chỉ IELTS quốc tế còn thời hạn
+             */
+            description?: string;
         };
         DeleteCriterionDto: {
             /**
@@ -3376,11 +3484,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
+            /** @description Lấy danh sách thành công. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["AdmissionResponseDto"][];
+                };
             };
         };
     };
@@ -3402,10 +3513,42 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["AdmissionResponseDto"];
+                };
             };
             /** @description Dữ liệu đầu vào không hợp lệ hoặc BatchID không tồn tại. */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của đợt tuyển sinh */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lấy chi tiết thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionResponseDto"];
+                };
+            };
+            /** @description Không tìm thấy đợt tuyển sinh với ID đã cho. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

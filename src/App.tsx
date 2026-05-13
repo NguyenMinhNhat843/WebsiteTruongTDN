@@ -29,7 +29,6 @@ import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinh
 import DanhSachHoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoHocSinhList";
 import DotTuyenSinhList from "./pages/admin/TuyenSinh/TuyenSinhList/TuyenSinhList";
 import TuyenSinh from "./pages/admin/TuyenSinh/TuyenSinh";
-import DotTuyenSinhOne from "./pages/admin/TuyenSinh/TuyenSinhOne/TuyenSinhOne";
 import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
 import NguonTuyenSinh from "./pages/admin/NguonTuyenSinh/NguonTuyenSinh";
 import TuitionFee from "./pages/admin/ThuHocPhi/ThuHocPhi";
@@ -60,6 +59,7 @@ import KhoaDaoTao from "./features/khoaHoc/KhoaDaoTaoIndex";
 import NganhIndex from "./features/Nganh/NganhIndex";
 import MonHocIndex from "./features/MonHoc/MonHocIndex";
 import TieuChuanTuyenSinh from "./features/TieuChuanTuyenSinh/TieuChuanTuyenSinh";
+import AdmissionDetail from "./features/DotTuyenSinh/DotTuyenSInhOne";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -183,7 +183,7 @@ function App() {
           <Route path="tuyen-sinh" element={<TuyenSinh />}>
             <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
             <Route path="tao-dot-tuyen-sinh" element={<TaoDotTuyenSinh />} />
-            <Route path="dot-tuyen-sinh/:id" element={<DotTuyenSinhOne />} />
+            <Route path="dot-tuyen-sinh/:id" element={<AdmissionDetail />} />
             <Route path="thong-ke" element={<NguonTuyenSinh />} />
             <Route element={<QuanLyHoSoLayout />}>
               <Route path="ho-so-moi" element={<AdmissionApplication />} />
