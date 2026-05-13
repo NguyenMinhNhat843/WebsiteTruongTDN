@@ -82,6 +82,17 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
     );
     const dotTuyenSinhItems = chiTietDotTuyenSinh?.items ?? [];
 
+    // Chốt đượt tuyển sinh
+    const { mutate: approveDotTuyenSinh, isPending: isApprovingDotTuyenSinh } =
+      $api.useMutation("post", "/admissions/approve", {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["get", "/admissions"] });
+          queryClient.invalidateQueries({
+            queryKey: ["get", "/applications"],
+          });
+        },
+      });
+
     // form create
     const {
       register,
@@ -125,6 +136,13 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
       );
     };
 
+    // get khóa đào tạo để hiển thị tên khóa đào tạo thay vì id trong chi tiết đợt tuyển sinh
+    const {
+      data: batches,
+      isPending: isBatchesPending,
+      isError: isBatchesError,
+    } = $api.useQuery("get", "/batches");
+
     return {
       admissions,
       isLoadingAdmissions,
@@ -141,6 +159,11 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
       deleteDotTuyenSinh,
       isDeletingDotTuyenSinh,
       idDotTuyenSinh,
+      approveDotTuyenSinh,
+      isApprovingDotTuyenSinh,
+      batches,
+      isBatchesPending,
+      isBatchesError,
 
       // state
       openFormCreate,

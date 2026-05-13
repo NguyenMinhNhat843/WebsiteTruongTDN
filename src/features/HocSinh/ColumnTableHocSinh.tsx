@@ -1,9 +1,9 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import type { Student } from "../../../../api/models/studentResponseDto";
-import { getStudentStatusEnum } from "../../../../api/enum/studentStatusEnum";
-import { formatDate } from "../../../../util/formatDate";
+import { getStudentStatusEnum } from "../../api/enum/studentStatusEnum";
+import { formatDate } from "../../util/formatDate";
+import type { HocSinhDto } from "./HocSinhProvider";
 
-export const studentColumns: ColumnDef<Student>[] = [
+export const studentColumns: ColumnDef<HocSinhDto>[] = [
   {
     accessorKey: "studentCode",
     header: "Mã SV",

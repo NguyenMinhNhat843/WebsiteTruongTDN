@@ -9,7 +9,10 @@ import {
   FileText,
   Activity,
 } from "lucide-react";
-import type { createKhoaDaoTaoDTO } from "./KhoaHocProvider";
+import {
+  useKhoaDaoTaoContext,
+  type createKhoaDaoTaoDTO,
+} from "./KhoaHocProvider";
 
 interface Props {
   isOpen: boolean;
@@ -19,6 +22,7 @@ interface Props {
 }
 
 const CreateBatchModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
+  const { majors } = useKhoaDaoTaoContext();
   const {
     register,
     handleSubmit,
@@ -119,19 +123,25 @@ const CreateBatchModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
               />
             </div>
 
-            {/* Major ID */}
+            {/* Major ID Selection */}
             <div className="space-y-1">
               <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Layers size={14} /> Ngành học (ID)
+                <Layers size={14} className="text-blue-500" /> Ngành học
               </label>
-              <input
-                type="number"
+              <select
                 {...register("majorId", {
-                  required: "Bắt buộc",
+                  required: "Vui lòng chọn ngành học",
                   valueAsNumber: true,
                 })}
-                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none"
-              />
+                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none bg-white appearance-none cursor-pointer"
+              >
+                <option value="">-- Chọn ngành học --</option>
+                {majors?.map((major) => (
+                  <option key={major.id} value={major.id}>
+                    {major.majorName}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* Curriculum ID */}

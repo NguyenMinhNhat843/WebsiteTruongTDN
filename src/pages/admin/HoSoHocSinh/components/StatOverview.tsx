@@ -1,15 +1,13 @@
 import { FileWarning, GraduationCap, Users } from "lucide-react";
 import { StatCard } from "../../../../components/ui/StatCard";
-import { useHoSoHocSinhContext } from "../HoSoHocSinhProvider";
 
 const StatOverview = () => {
-  const { stats } = useHoSoHocSinhContext();
   return (
     <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
       {[
         {
           label: "Tổng học sinh",
-          value: stats.total,
+          value: 100,
           icon: <Users size={24} className="text-white" />,
           className:
             "bg-linear-to-br from-blue-600 to-indigo-700 text-white shadow-lg shadow-blue-200",
@@ -17,7 +15,7 @@ const StatOverview = () => {
         },
         {
           label: "Học sinh thiếu Hồ sơ",
-          value: stats.hoSoThieu,
+          value: 20,
           icon: <FileWarning size={24} className="text-white" />,
           className:
             "bg-linear-to-br from-orange-500 to-amber-600 text-white shadow-lg shadow-orange-200",
@@ -25,7 +23,7 @@ const StatOverview = () => {
         },
         {
           label: "Có học bổng",
-          value: stats.hocBong,
+          value: 30,
           icon: <GraduationCap size={24} className="text-white" />,
           className:
             "bg-linear-to-br from-violet-600 to-purple-700 text-white shadow-lg shadow-purple-200",
@@ -33,7 +31,7 @@ const StatOverview = () => {
             <span className="text-white">
               Đạt{" "}
               <span className="text-yellow-300 font-black text-lg">
-                {Math.round((stats.hocBong / stats.total) * 100)}%
+                {Math.round((30 / 100) * 100)}%
               </span>{" "}
               trên tổng số
             </span>

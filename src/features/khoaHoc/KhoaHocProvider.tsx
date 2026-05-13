@@ -20,6 +20,13 @@ export const [KhoaDaoTaoProvider, useKhoaDaoTaoContext] = createContextProvider(
       isError: isBatchesError,
     } = $api.useQuery("get", "/batches");
 
+    // get nhành học
+    const {
+      data: majors,
+      isPending: isMajorsPending,
+      isError: isMajorsError,
+    } = $api.useQuery("get", "/majors");
+
     // thêm
     const {
       mutate: addBatch,
@@ -32,6 +39,17 @@ export const [KhoaDaoTaoProvider, useKhoaDaoTaoContext] = createContextProvider(
       },
     });
 
+    // delete
+    const { mutate: deleteBatch, isPending: isDeleting } = $api.useMutation(
+      "delete",
+      "/batches/{id}",
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["get", "/batches"] });
+        },
+      },
+    );
+
     return {
       batches,
       isBatchesPending,
@@ -39,6 +57,11 @@ export const [KhoaDaoTaoProvider, useKhoaDaoTaoContext] = createContextProvider(
       addBatch,
       isAddBatchPending,
       isAddBatchError,
+      majors,
+      isMajorsPending,
+      isMajorsError,
+      deleteBatch,
+      isDeleting,
 
       // state
       isOpenModalCreateBatch,

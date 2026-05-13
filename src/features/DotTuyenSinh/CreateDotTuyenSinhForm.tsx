@@ -19,6 +19,8 @@ const CreateDotTuyenSinhModal = ({
     appendItem,
     removeItem,
     onSubmit,
+    batches,
+    isBatchesPending,
   } = useDotTuyenSinhContext();
 
   if (!isOpen) return null;
@@ -111,16 +113,7 @@ const CreateDotTuyenSinhModal = ({
                 </button>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pr-8">
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase">
-                      Tên đợt (Batch Name)
-                    </label>
-                    <input
-                      {...register(`items.${index}.batchName`)}
-                      className="w-full mt-1 px-3 py-2 border rounded-md focus:border-indigo-500 outline-none"
-                      placeholder="VD: Đợt xét học bạ"
-                    />
-                  </div>
+                  {/* Tên ngành tuyển sinh */}
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase">
                       Ngành đào tạo
@@ -145,6 +138,33 @@ const CreateDotTuyenSinhModal = ({
                       </p>
                     )}
                   </div>
+
+                  {/* Tên đợt */}
+                  <div>
+                    <label className="block text-xs font-bold text-gray-500 uppercase">
+                      Tên đợt (Batch Code)
+                    </label>
+                    <select
+                      {...register(`items.${index}.batchName`)}
+                      disabled={isBatchesPending}
+                      className="w-full mt-1 px-3 py-2 border rounded-md focus:border-indigo-500 outline-none bg-white disabled:bg-gray-100"
+                    >
+                      {isBatchesPending ? (
+                        <option>Đang tải dữ liệu...</option>
+                      ) : (
+                        <>
+                          <option value="">-- Chọn đợt --</option>
+                          {batches?.map((batch) => (
+                            <option key={batch.id} value={batch.batchCode}>
+                              {batch.batchCode} ({batch.status})
+                            </option>
+                          ))}
+                        </>
+                      )}
+                    </select>
+                  </div>
+
+                  {/* Chỉ tiêu */}
                   <div>
                     <label className="block text-xs font-bold text-gray-500 uppercase">
                       Chỉ tiêu (Quota)

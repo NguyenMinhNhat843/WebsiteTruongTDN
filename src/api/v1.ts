@@ -32,7 +32,8 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete?: never;
+        /** Xóa hồ sơ sinh viên */
+        delete: operations["deleteStudent"];
         options?: never;
         head?: never;
         /** Cập nhật thông tin hồ sơ sinh viên */
@@ -245,7 +246,8 @@ export interface paths {
         get: operations["BatchController_findOne"];
         put?: never;
         post?: never;
-        delete?: never;
+        /** Xóa một khóa đào tạo theo ID */
+        delete: operations["BatchController_deleteBatchById"];
         options?: never;
         head?: never;
         /** Cập nhật thông tin khóa đào tạo */
@@ -912,13 +914,13 @@ export interface components {
         StudentResponseDto: {
             id: number;
             studentCode: string;
-            userId: Record<string, never> | null;
+            userId: number | null;
             /** @example nguyenvana */
             username: string;
             /** @example Nguyễn Văn A */
-            fullName: Record<string, never>;
+            fullName: string;
             /** @example student@school.edu.vn */
-            email: Record<string, never>;
+            email: string;
             /**
              * @description true: Nam, false: Nữ
              * @example true
@@ -929,34 +931,30 @@ export interface components {
              * @example 2000-01-01
              */
             dob?: string | null;
-            phone: Record<string, never>;
-            avatarUrl: Record<string, never>;
+            phone: string | null;
+            avatarUrl: string | null;
             /** @example 123 Đường ABC, Nha Trang */
-            address: Record<string, never>;
+            address: string;
             /** @enum {string} */
             role: "admin" | "teacher" | "student" | "staff";
             isActive: boolean;
-            applicationId: Record<string, never>;
-            classId: Record<string, never>;
-            enrollmentDate: Record<string, never>;
-            graduationDate: Record<string, never>;
+            applicationId: number | null;
+            classId: number | null;
+            /** Format: date-time */
+            enrollmentDate: string | null;
+            /** Format: date-time */
+            graduationDate: string | null;
             /** @enum {string} */
             status: "pending" | "reviewing" | "approved" | "rejected" | "enrolled" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
-            parentName: Record<string, never>;
-            parentPhone: Record<string, never>;
-            identityNumber: Record<string, never>;
+            parentName: string | null;
+            parentPhone: string | null;
+            identityNumber: string | null;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            batchId: Record<string, never>;
-            majorId: Record<string, never>;
-        };
-        Meta: {
-            total: number;
-        };
-        ResponsePagination: {
-            meta: components["schemas"]["Meta"];
+            batchId: number | null;
+            majorId: number | null;
         };
         /** @enum {string} */
         StudentStatus: "pending" | "reviewing" | "approved" | "rejected" | "enrolled" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
@@ -2529,9 +2527,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ResponsePagination"] & {
-                        data?: components["schemas"]["StudentResponseDto"][];
-                    };
+                    "application/json": components["schemas"]["StudentResponseDto"][];
                 };
             };
         };
@@ -2556,6 +2552,26 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StudentResponseDto"];
                 };
+            };
+        };
+    };
+    deleteStudent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Hồ sơ sinh viên đã được xóa */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -3033,6 +3049,33 @@ export interface operations {
         requestBody?: never;
         responses: {
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BatchController_deleteBatchById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Không tìm thấy khóa. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

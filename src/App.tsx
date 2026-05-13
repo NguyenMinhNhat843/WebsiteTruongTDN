@@ -25,7 +25,6 @@ import ClassManagement from "./pages/admin/LopHocVaKhoaHoc/LopHocVaKhoaHoc";
 import TimetablePage from "./pages/admin/ThoiKhoaBieu/ThoiKhoaBieu";
 import GradeManagement from "./pages/admin/QuanLyDiem/QuanLyDiemThi";
 import PhanQuyenNguoiDung from "./pages/admin/CaiDatHeThong/PhanQuyenNguoiDung/PhanQuyenNguoiDung";
-import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne";
 import DanhSachHoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoHocSinhList";
 import DotTuyenSinhList from "./pages/admin/TuyenSinh/TuyenSinhList/TuyenSinhList";
 import TuyenSinh from "./pages/admin/TuyenSinh/TuyenSinh";
@@ -33,12 +32,9 @@ import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
 import NguonTuyenSinh from "./pages/admin/NguonTuyenSinh/NguonTuyenSinh";
 import TuitionFee from "./pages/admin/ThuHocPhi/ThuHocPhi";
 import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
-import AdmissionApplication from "./pages/admin/HoSoTuyenSinh/QuanLyHoSoTuyenSinh";
 import MediaLibrary from "./pages/admin/QuanLyMedia/QuanLyMedia";
 import QuanLyXetTotNghiep from "./pages/admin/QuanLyVanBang/QuanLyVanBang";
 import PhanCongGiangDay from "./pages/admin/PhanCongGiangDay/PhanCongGiangDay";
-import HoSoTuyenSinhOne from "./pages/admin/HoSoTuyenSinh/HoSoTuyenSinhOne/HoSoTuyenSinhOne";
-import QuanLyHoSoLayout from "./pages/admin/HoSoTuyenSinh/QuanLyHoSoLayout";
 import AdminPostPreview from "./pages/admin/QuanLyBaiViet/AdminPostPreview";
 import TaoChuongTrinhKhung from "./pages/admin/TaoChuongTrinhKhung/TaoChuongTrinhKhung";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -59,6 +55,7 @@ import NganhIndex from "./features/Nganh/NganhIndex";
 import MonHocIndex from "./features/MonHoc/MonHocIndex";
 import TieuChuanTuyenSinh from "./features/TieuChuanTuyenSinh/TieuChuanTuyenSinh";
 import AdmissionDetail from "./features/DotTuyenSinh/DotTuyenSinhOne";
+import HocSinhLayout from "./pages/admin/HoSoHocSinh/HocSinhLayout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -168,9 +165,8 @@ function App() {
           />
 
           {/* Công tác học sinh */}
-          <Route>
+          <Route element={<HocSinhLayout />}>
             <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
-            <Route path="hoc-sinh/ho-so/:id" element={<HoSoHocSinhOne />} />
             <Route path="hoc-sinh/tot-nghiep" element={<XetTotNghiep />} />
             <Route
               path="hoc-sinh/dot-xet-tot-nghiep"
@@ -183,13 +179,13 @@ function App() {
             <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
             <Route path="dot-tuyen-sinh/:id" element={<AdmissionDetail />} />
             <Route path="thong-ke" element={<NguonTuyenSinh />} />
-            <Route element={<QuanLyHoSoLayout />}>
+            {/* <Route element={<QuanLyHoSoLayout />}>
               <Route path="ho-so-moi" element={<AdmissionApplication />} />
               <Route
                 path="ho-so-tuyen-sinh/:id"
                 element={<HoSoTuyenSinhOne />}
               />
-            </Route>
+            </Route> */}
           </Route>
 
           {/* Tài chính */}
