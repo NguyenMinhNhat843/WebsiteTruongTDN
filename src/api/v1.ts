@@ -906,10 +906,95 @@ export interface components {
              */
             batchId?: number;
             /**
-             * @default enrolled
+             * @default approved
              * @enum {string}
              */
-            status: "pending" | "reviewing" | "approved" | "rejected" | "enrolled" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+        };
+        DepartmentResponseDto: {
+            /** @example 1 */
+            id: number;
+            /**
+             * @description Mã định danh duy nhất của khoa/phòng
+             * @example IT01
+             */
+            deptCode: string;
+            /** @example Khoa Công nghệ thông tin */
+            deptName: string;
+            /** @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống */
+            description?: string | null;
+            /**
+             * @description ID của nhân viên làm trưởng khoa
+             * @example 1
+             */
+            headOfDepartmentId?: number | null;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /**
+             * @description Số lượng ngành học trực thuộc
+             * @example 5
+             */
+            majorCount?: number;
+            /**
+             * @description Số lượng môn học trực thuộc
+             * @example 20
+             */
+            subjectCount?: number;
+        };
+        MajorResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example CNTT */
+            majorCode: string;
+            /** @example Công nghệ thông tin */
+            majorName: string;
+            /** @example 1 */
+            deptId: number;
+            /** @example 90 */
+            totalCredits: number;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            department?: components["schemas"]["DepartmentResponseDto"];
+            /**
+             * @description Số lượng lớp học thuộc ngành này
+             * @example 10
+             */
+            classCount?: number;
+            /**
+             * @description Mô tả chi tiết về ngành học
+             * @example Ngành học tập trung vào phát triển phần mềm
+             */
+            description?: Record<string, never>;
+        };
+        BatchResponseDto: {
+            id: number;
+            batchCode: string;
+            batchName: string;
+            startYear: number;
+            endYear: number;
+            description: Record<string, never> | null;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            major: components["schemas"]["MajorResponseDto"] | null;
         };
         StudentResponseDto: {
             id: number;
@@ -945,7 +1030,7 @@ export interface components {
             /** Format: date-time */
             graduationDate: string | null;
             /** @enum {string} */
-            status: "pending" | "reviewing" | "approved" | "rejected" | "enrolled" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
             parentName: string | null;
             parentPhone: string | null;
             identityNumber: string | null;
@@ -954,10 +1039,11 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
             batchId: number | null;
+            batch: components["schemas"]["BatchResponseDto"] | null;
             majorId: number | null;
         };
         /** @enum {string} */
-        StudentStatus: "pending" | "reviewing" | "approved" | "rejected" | "enrolled" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+        StudentStatus: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         UpdateStudentDto: {
             /** @example Nguyễn Văn A */
             fullName?: string;
@@ -992,10 +1078,10 @@ export interface components {
              */
             batchId?: number;
             /**
-             * @default enrolled
+             * @default approved
              * @enum {string}
              */
-            status: "pending" | "reviewing" | "approved" | "rejected" | "enrolled" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
             classId?: number;
             /** Format: date-time */
             enrollmentDate?: string;
@@ -1121,44 +1207,6 @@ export interface components {
              */
             headOfDepartmentId?: number;
         };
-        DepartmentResponseDto: {
-            /** @example 1 */
-            id: number;
-            /**
-             * @description Mã định danh duy nhất của khoa/phòng
-             * @example IT01
-             */
-            deptCode: string;
-            /** @example Khoa Công nghệ thông tin */
-            deptName: string;
-            /** @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống */
-            description?: string | null;
-            /**
-             * @description ID của nhân viên làm trưởng khoa
-             * @example 1
-             */
-            headOfDepartmentId?: number | null;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            updatedAt: string;
-            /**
-             * @description Số lượng ngành học trực thuộc
-             * @example 5
-             */
-            majorCount?: number;
-            /**
-             * @description Số lượng môn học trực thuộc
-             * @example 20
-             */
-            subjectCount?: number;
-        };
         UpdateDepartmentDto: {
             /**
              * @description Mã định danh duy nhất của phòng ban/khoa
@@ -1196,39 +1244,6 @@ export interface components {
             deptId?: number;
             /** @example Ngành học tập trung vào phát triển phần mềm */
             description?: string;
-        };
-        MajorResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example CNTT */
-            majorCode: string;
-            /** @example Công nghệ thông tin */
-            majorName: string;
-            /** @example 1 */
-            deptId: number;
-            /** @example 90 */
-            totalCredits: number;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            updatedAt: string;
-            department?: components["schemas"]["DepartmentResponseDto"];
-            /**
-             * @description Số lượng lớp học thuộc ngành này
-             * @example 10
-             */
-            classCount?: number;
-            /**
-             * @description Mô tả chi tiết về ngành học
-             * @example Ngành học tập trung vào phát triển phần mềm
-             */
-            description?: Record<string, never>;
         };
         UpdateMajorDto: {
             /**
@@ -1285,20 +1300,6 @@ export interface components {
              * @example ADMISSION
              */
             status: string;
-        };
-        BatchResponseDto: {
-            id: number;
-            batchCode: string;
-            batchName: string;
-            startYear: number;
-            endYear: number;
-            description: Record<string, never> | null;
-            status: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            major: components["schemas"]["MajorResponseDto"];
         };
         UpdateBatchDto: {
             /**

@@ -5,6 +5,7 @@ import { $api } from "../../api/client";
 import type { components } from "../../api/v1";
 
 export type HocSinhDto = components["schemas"]["StudentResponseDto"];
+export type StatusHocSinhEnum = HocSinhDto["status"];
 
 export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
   () => {

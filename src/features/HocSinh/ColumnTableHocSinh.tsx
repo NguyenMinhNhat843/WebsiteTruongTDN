@@ -1,5 +1,4 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import { getStudentStatusEnum } from "../../api/enum/studentStatusEnum";
 import { formatDate } from "../../util/formatDate";
 import type { HocSinhDto } from "./HocSinhProvider";
 
@@ -22,7 +21,7 @@ export const studentColumns: ColumnDef<HocSinhDto>[] = [
       const renderGender = (gender: boolean | null) => {
         // Vì data của bạn đang bị Record<string, never>, hãy ép kiểu hoặc kiểm tra kỹ
         if (typeof gender === "boolean") return gender ? "Nam" : "Nữ";
-        return gender || "Nưa xác định";
+        return gender || "Chưa xác định";
       };
 
       return (
@@ -55,11 +54,12 @@ export const studentColumns: ColumnDef<HocSinhDto>[] = [
     },
   },
   {
-    accessorKey: "nganh",
-    header: "Ngành",
-    cell: () => {
-      return "Không xác định";
-    },
+    accessorKey: "batch.batchCode",
+    header: "Khóa đào tạo",
+  },
+  {
+    accessorKey: "batch.batchName",
+    header: "Ngành nghề",
   },
   {
     accessorKey: "phone",
@@ -70,17 +70,7 @@ export const studentColumns: ColumnDef<HocSinhDto>[] = [
     header: "Trạng thái",
     cell: ({ getValue }) => {
       const status = getValue<string>();
-      // Ví dụ logic hiển thị màu sắc dựa trên status
-      const statusMap: Record<string, string> = {
-        active: "text-green-600",
-        pending: "text-yellow-600",
-        dropped: "text-red-600",
-      };
-      return (
-        <span className={statusMap[status] || ""}>
-          {getStudentStatusEnum(status)}
-        </span>
-      );
+      return <span>{status}</span>;
     },
   },
 ];
