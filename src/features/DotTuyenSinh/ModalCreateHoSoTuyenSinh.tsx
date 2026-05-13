@@ -16,7 +16,7 @@ const CreateHoSoModal: React.FC<CreateHoSoModalProps> = ({
   onClose,
 }) => {
   const { createHoSo, isActionLoading } = useHoSoTuyenSinhContext();
-  const { dotTuyenSinhItems } = useDotTuyenSinhContext();
+  const { dotTuyenSinhItems, idDotTuyenSinh } = useDotTuyenSinhContext();
 
   const {
     register,
@@ -29,6 +29,7 @@ const CreateHoSoModal: React.FC<CreateHoSoModalProps> = ({
       email: "",
       phone: "",
       admissionItemId: 0,
+      admissionId: idDotTuyenSinh,
       rawdata: {},
     },
   });

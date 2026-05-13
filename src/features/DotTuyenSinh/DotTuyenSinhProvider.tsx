@@ -18,6 +18,7 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
   createContextProvider(() => {
     const queryClient = useQueryClient();
     const { id } = useParams(); // id ddowtj uyeenr sinh
+    const idDotTuyenSinh = parseInt(id ?? "", 10);
     const admissionId = parseInt(id ?? "", 10);
 
     // state
@@ -29,6 +30,19 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
       "get",
       "/admissions",
     );
+
+    // delete đợt tuyển sinh theo id
+    const { mutate: deleteDotTuyenSinh, isPending: isDeletingDotTuyenSinh } =
+      $api.useMutation("delete", "/admissions/{id}", {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["get", "/admissions"] });
+        },
+        onError: () => {
+          alert(
+            "Xóa đợt tuyển sinh thất bại! Có thể do có lỗi mạng hoặc đợt tuyển sinh đã bị xóa bởi người khác.",
+          );
+        },
+      });
 
     // post dot tuyen sinh
     const { mutate: createDotTuyenSinh, isPending: isCreatingDotTuyenSinh } =
@@ -124,6 +138,9 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
       isLoadingChiTietDotTuyenSinh,
       id,
       dotTuyenSinhItems,
+      deleteDotTuyenSinh,
+      isDeletingDotTuyenSinh,
+      idDotTuyenSinh,
 
       // state
       openFormCreate,

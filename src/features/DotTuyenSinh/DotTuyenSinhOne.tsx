@@ -24,18 +24,18 @@ import {
   type TieuChiTuyenSinhDto,
 } from "./DotTuyenSinhProvider";
 import { useNavigate } from "react-router-dom";
-import { HoSoTuyenSinhTable } from "./TableHoSotuyenSinh";
 import { useHoSoTuyenSinhContext } from "./HoSoTuyenSInhProvider";
 import CreateHoSoModal from "./ModalCreateHoSoTuyenSinh";
+import { HoSoTuyenSinhTable } from "./TableHoSotuyenSinh";
 
 const AdmissionDetail = () => {
   const { chiTietDotTuyenSinh, isLoadingChiTietDotTuyenSinh } =
     useDotTuyenSinhContext();
   const {
-    hoSoTuyenSinhs,
-    isLoadingHoSoTuyenSinhs,
     setIsCreateHoSoModalOpen,
     isCreateHoSoModalOpen,
+    hoSoTuyenSinhs,
+    isLoadingHoSoTuyenSinhs,
   } = useHoSoTuyenSinhContext();
   const navigate = useNavigate();
 
@@ -260,7 +260,6 @@ const AdmissionDetail = () => {
         </div>
       </div>
 
-      {/* Hồ sơ tuyển sinh table */}
       <div className="my-8">
         <h1 className="text-xl font-bold text-slate-800 leading-none pb-4">
           Hồ sơ tuyển sinh

@@ -3,8 +3,12 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import type { HoSoTuyenSinhDto } from "./HoSoTuyenSInhProvider";
+import {
+  useHoSoTuyenSinhContext,
+  type HoSoTuyenSinhDto,
+} from "./HoSoTuyenSInhProvider";
 import { columns } from "./TableHoSoTuyenSinhColumn";
+import { Trash } from "lucide-react";
 
 interface Props {
   hoSoTuyenSinhs?: HoSoTuyenSinhDto[];
@@ -15,9 +19,37 @@ export function HoSoTuyenSinhTable({
   hoSoTuyenSinhs,
   isLoadingHoSoTuyenSinh,
 }: Props) {
+  const { deleteHoSo, isDeleting } = useHoSoTuyenSinhContext();
   const table = useReactTable({
     data: hoSoTuyenSinhs ?? [],
-    columns: columns,
+    columns: [
+      ...columns,
+      {
+        accessorKey: "actions",
+        cell: (info) => {
+          const id = info.row.original.id;
+          return (
+            <button
+              onClick={() =>
+                deleteHoSo(
+                  {
+                    params: { path: { id } },
+                  },
+                  {
+                    onSuccess: () => {
+                      alert("Xóa hồ sơ tuyển sinh thành công!");
+                    },
+                  },
+                )
+              }
+              disabled={isDeleting}
+            >
+              <Trash className="w-4 h-4 text-gray-400 hover:text-red-500 transition-colors" />
+            </button>
+          );
+        },
+      },
+    ],
     getCoreRowModel: getCoreRowModel(),
   });
 

@@ -3,7 +3,7 @@ import PageShell from "../../../../components/ui/PageShell";
 import StatsOverview from "../components/StatsOverview";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import FilterSection from "../components/FilterSection";
-import AdmissionTable from "../../../../features/DotTuyenSinh/TuyenSinhTable";
+import AdmissionTable from "../../../../features/DotTuyenSinh/TableDotTuyenSinh";
 import {
   DotTuyenSinhProvider,
   useDotTuyenSinhContext,
@@ -51,6 +51,16 @@ const Inner = () => {
           />
         </main>
       </div>
+
+      {/* <div className="my-8">
+        <h1 className="text-xl font-bold text-slate-800 leading-none pb-4">
+          Hồ sơ tuyển sinh
+        </h1>
+        <HoSoTuyenSinhTable
+          hoSoTuyenSinhs={hoSoTuyenSinhs}
+          isLoadingHoSoTuyenSinh={isLoadingHoSoTuyenSinhs}
+        />
+      </div> */}
     </PageShell>
   );
 };

@@ -20,10 +20,6 @@ const statusMap = {
     label: "Từ chối",
     color: "bg-red-100 text-red-700 border-red-200",
   },
-  ENROLLED: {
-    label: "Đã nhập học",
-    color: "bg-purple-100 text-purple-700 border-purple-200",
-  },
 };
 
 export const columns: ColumnDef<HoSoTuyenSinhDto>[] = [
@@ -52,6 +48,17 @@ export const columns: ColumnDef<HoSoTuyenSinhDto>[] = [
         </div>
       </div>
     ),
+  },
+  {
+    header: "Đợt tuyển sinh",
+    accessorKey: "admissionItem.admissionId",
+    cell: (info) => {
+      return (
+        <span className="italic text-gray-400">
+          {info.getValue() as string}
+        </span>
+      );
+    },
   },
   {
     header: "Ngành ứng tuyển",

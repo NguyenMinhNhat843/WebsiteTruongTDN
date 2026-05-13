@@ -30,7 +30,7 @@ export const [HoSoTuyenSinhProvider, useHoSoTuyenSinhContext] =
         {
           params: {
             query: {
-              admissionItemId: Number(idDotTuyenSinh),
+              admissionId: idDotTuyenSinh ? Number(idDotTuyenSinh) : undefined, // Lọc theo đợt tuyển sinh nếu có
             },
           },
         },
@@ -116,10 +116,9 @@ export const [HoSoTuyenSinhProvider, useHoSoTuyenSinhContext] =
           body: data,
         }),
 
-      deleteHoSo: (deleteId: number) =>
-        deleteHoSo({
-          params: { path: { id: deleteId } },
-        }),
+      deleteHoSo,
+
+      isDeleting,
 
       // Status flags
       isActionLoading: isCreating || isUpdating || isDeleting,

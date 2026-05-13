@@ -500,6 +500,24 @@ export interface paths {
         get: operations["AdmissionController_findOne"];
         put?: never;
         post?: never;
+        /** Xóa một đợt tuyển sinh theo ID */
+        delete: operations["AdmissionController_deleteAdmissionById"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admissions/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Chốt đợt xét tuyển */
+        post: operations["AdmissionController_approveAdmissionBatch"];
         delete?: never;
         options?: never;
         head?: never;
@@ -541,13 +559,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lấy danh sách các đơn ứng tuyển */
         get: operations["ApplicationController_findAll"];
         put?: never;
-        /**
-         * Nộp đơn ứng tuyển mới
-         * @description Thí sinh gửi thông tin cá nhân và dữ liệu điểm số để ứng tuyển vào một ngành học.
-         */
         post: operations["ApplicationController_create"];
         delete?: never;
         options?: never;
@@ -562,10 +575,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Thống kê số lượng đơn theo trạng thái
-         * @description Trả về số lượng đơn cho mỗi trạng thái (PENDING, ADMITTED, ...)
-         */
+        /** Thống kê số lượng đơn theo trạng thái */
         get: operations["ApplicationController_getStats"];
         put?: never;
         post?: never;
@@ -902,7 +912,7 @@ export interface components {
         StudentResponseDto: {
             id: number;
             studentCode: string;
-            userId: number;
+            userId: Record<string, never> | null;
             /** @example nguyenvana */
             username: string;
             /** @example Nguyễn Văn A */
@@ -926,6 +936,7 @@ export interface components {
             /** @enum {string} */
             role: "admin" | "teacher" | "student" | "staff";
             isActive: boolean;
+            applicationId: Record<string, never>;
             classId: Record<string, never>;
             enrollmentDate: Record<string, never>;
             graduationDate: Record<string, never>;
@@ -2079,6 +2090,13 @@ export interface components {
             /** @description Danh sách các ngành và chỉ tiêu tương ứng */
             items?: components["schemas"]["AdmissionItemResponseDto"][];
         };
+        ApproveAdmissionDto: {
+            /**
+             * @description ID của đợt xét tuyển cần duyệt
+             * @example 1
+             */
+            admissionId: number;
+        };
         CreateCriterionDto: {
             /**
              * @description Tên của tiêu chí tuyển sinh
@@ -2116,6 +2134,7 @@ export interface components {
              * @example 10
              */
             admissionItemId: number;
+            admissionId?: number;
             /**
              * @description Dữ liệu điểm số/chứng chỉ dạng JSON
              * @example {
@@ -2147,7 +2166,7 @@ export interface components {
              * @example PENDING
              * @enum {string}
              */
-            status: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED" | "ENROLLED";
+            status: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED";
             /**
              * Format: date-time
              * @example 2024-03-20T08:00:00.000Z
@@ -2160,7 +2179,7 @@ export interface components {
              * @example PENDING
              * @enum {string}
              */
-            status: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED" | "ENROLLED";
+            status: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED";
             /**
              * @description Số lượng đơn ở trạng thái này
              * @example 15
@@ -2179,6 +2198,7 @@ export interface components {
              * @example 10
              */
             admissionItemId?: number;
+            admissionId?: number;
             /**
              * @description Dữ liệu điểm số/chứng chỉ dạng JSON
              * @example {
@@ -2193,7 +2213,7 @@ export interface components {
              * @example ADMITTED
              * @enum {string}
              */
-            status?: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED" | "ENROLLED";
+            status?: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED";
         };
         PayTuitionFeeDto: {
             /**
@@ -3710,6 +3730,62 @@ export interface operations {
             };
         };
     };
+    AdmissionController_deleteAdmissionById: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Không tìm thấy đợt tuyển sinh với ID đã cho. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionController_approveAdmissionBatch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApproveAdmissionDto"];
+            };
+        };
+        responses: {
+            /** @description Chốt đợt xét tuyển thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Dữ liệu đầu vào không hợp lệ hoặc đợt tuyển sinh không tồn tại. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     CriterionController_findAll: {
         parameters: {
             query?: never;
@@ -3788,10 +3864,8 @@ export interface operations {
             query?: {
                 skip?: number;
                 take?: number;
-                /** @description Lọc theo trạng thái hồ sơ */
-                status?: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED" | "ENROLLED";
-                /** @description Lọc theo ID mục tuyển sinh */
-                admissionItemId?: number;
+                status?: string;
+                admissionId?: number;
             };
             header?: never;
             path?: never;
@@ -3799,8 +3873,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Trả về danh sách đơn ứng tuyển. */
-            200: {
+            default: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3823,21 +3896,20 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Nộp đơn thành công. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApplicationResponseDto"];
-                };
-            };
             /** @description Dữ liệu đầu vào không hợp lệ. */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplicationResponseDto"];
+                };
             };
         };
     };

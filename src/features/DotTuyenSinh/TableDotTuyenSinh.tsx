@@ -5,10 +5,16 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { type DotTuyenSinhDto } from "./DotTuyenSinhProvider";
+import {
+  useDotTuyenSinhContext,
+  type DotTuyenSinhDto,
+} from "./DotTuyenSinhProvider";
 import { useNavigate } from "react-router-dom";
+import { Trash2 } from "lucide-react";
 
 const AdmissionTable = ({ data }: { data: DotTuyenSinhDto[] }) => {
+  const { deleteDotTuyenSinh, isDeletingDotTuyenSinh } =
+    useDotTuyenSinhContext();
   const columns = useMemo<ColumnDef<DotTuyenSinhDto>[]>(
     () => [
       {
@@ -79,6 +85,31 @@ const AdmissionTable = ({ data }: { data: DotTuyenSinhDto[] }) => {
             >
               {status}
             </span>
+          );
+        },
+      },
+      {
+        accessorKey: "__action",
+        header: "",
+        cell: (info) => {
+          const id = info.row.original.id;
+          return (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteDotTuyenSinh(
+                  { params: { path: { id } } },
+                  {
+                    onSuccess: () => {
+                      alert("Xóa đợt tuyển sinh thành công!");
+                    },
+                  },
+                );
+              }}
+              disabled={isDeletingDotTuyenSinh}
+            >
+              <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500 transition-colors" />
+            </button>
           );
         },
       },
