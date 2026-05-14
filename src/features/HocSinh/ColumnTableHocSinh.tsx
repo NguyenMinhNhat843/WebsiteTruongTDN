@@ -1,6 +1,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "../../util/formatDate";
 import type { HocSinhDto } from "./HocSinhProvider";
+import { BadgeStudentStatus } from "../../components/enum/StudentStatusBadge";
 
 export const studentColumns: ColumnDef<HocSinhDto>[] = [
   {
@@ -68,9 +69,9 @@ export const studentColumns: ColumnDef<HocSinhDto>[] = [
   {
     accessorKey: "status",
     header: "Trạng thái",
-    cell: ({ getValue }) => {
-      const status = getValue<string>();
-      return <span>{status}</span>;
+    cell: ({ row }) => {
+      const status = row.original.status;
+      return <BadgeStudentStatus status={status} />;
     },
   },
 ];

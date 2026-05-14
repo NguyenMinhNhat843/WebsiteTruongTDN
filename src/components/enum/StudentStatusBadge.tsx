@@ -32,7 +32,7 @@ export const BadgeStudentStatus: React.FC<BadgeStudentStatusProps> = ({
     { label: string; classes: string; icon: React.ReactNode }
   > = {
     approved: {
-      label: "Chờ nhập học (Chưa đóng phí)",
+      label: "Chờ nhập học",
       classes:
         "bg-amber-50 text-amber-700 border-amber-200/60 bg-animate-pulse",
       icon: <UserCheck size={13} className="text-amber-500" />,

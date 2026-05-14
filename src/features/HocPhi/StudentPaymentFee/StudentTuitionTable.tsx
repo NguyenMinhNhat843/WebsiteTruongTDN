@@ -173,7 +173,7 @@ export const StudentTuitionTable = () => {
         <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
           <h3 className="font-bold text-slate-800 flex items-center gap-2">
             <Wallet className="text-indigo-600" size={20} />
-            Danh mục học phí
+            Học phí
           </h3>
           {selectedRowsData.length > 0 && (
             <span className="text-xs font-bold bg-indigo-50 text-indigo-600 px-3 py-1 rounded-full border border-indigo-100 animate-fade-in">

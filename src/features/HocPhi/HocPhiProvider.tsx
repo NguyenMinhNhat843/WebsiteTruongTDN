@@ -2,6 +2,7 @@ import { useState } from "react";
 import { $api } from "../../api/client";
 import type { components } from "../../api/v1";
 import { createContextProvider } from "../../util/createContextProvider";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type TaoCongNoPreviewDto =
   components["schemas"]["TuitionPreviewResponseDto"];
@@ -10,7 +11,8 @@ export type InvoiceDto = components["schemas"]["InvoiceDto"];
 
 export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
   const [isOpenModalTaoCongNo, setIsOpenModalTaoCongNo] = useState(false);
-  const [studentCodeInput, setStudentCodeInput] = useState("63893284");
+  const [studentCodeInput, setStudentCodeInput] = useState("63889026");
+  const queryClient = useQueryClient();
   // get danh sách học kỳ
   const { data: hockys, isPending: isPendingHocKys } = $api.useQuery(
     "get",
@@ -61,7 +63,13 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
 
   // thanh toán học phí
   const { mutate: thanhToanHocPhi, isPending: isPendingThanhToanHocPhi } =
-    $api.useMutation("post", "/tuition-fee/pay");
+    $api.useMutation("post", "/tuition-fee/pay", {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["get", `/tuition-fee/fees/{studentId}`],
+        });
+      },
+    });
 
   // Lấy danh sách hóa đơn học phí của sinh viên theo mã sinh viên
   const { data, isPending: isPendingStudentTuitionInvoices } = $api.useQuery(
