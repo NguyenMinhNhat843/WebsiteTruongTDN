@@ -30,7 +30,6 @@ import DotTuyenSinhList from "./pages/admin/TuyenSinh/TuyenSinhList/TuyenSinhLis
 import TuyenSinh from "./pages/admin/TuyenSinh/TuyenSinh";
 import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
 import NguonTuyenSinh from "./pages/admin/NguonTuyenSinh/NguonTuyenSinh";
-import TuitionFee from "./pages/admin/ThuHocPhi/ThuHocPhi";
 import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
 import MediaLibrary from "./pages/admin/QuanLyMedia/QuanLyMedia";
 import QuanLyXetTotNghiep from "./pages/admin/QuanLyVanBang/QuanLyVanBang";
@@ -58,6 +57,8 @@ import AdmissionDetail from "./features/DotTuyenSinh/DotTuyenSinhOne";
 import HocSinhLayout from "./pages/admin/HoSoHocSinh/HocSinhLayout";
 import HocKyLayout from "./pages/admin/HocKy/HocKyLayout";
 import HocKyList from "./pages/admin/HocKy/HocKyList";
+import HocPhiLayout from "./features/HocPhi/HocPhiLayout";
+import QuanLyDotHocPhi from "./features/HocPhi/QuanLyDotHocPhi";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -196,8 +197,8 @@ function App() {
           </Route>
 
           {/* Tài chính */}
-          <Route>
-            <Route path="tai-chinh/thu-hoc-phi" element={<TuitionFee />} />
+          <Route element={<HocPhiLayout />}>
+            <Route path="tai-chinh/thu-hoc-phi" element={<QuanLyDotHocPhi />} />
             <Route
               path="tai-chinh/mien-giam"
               element={<ExemptionManagement />}

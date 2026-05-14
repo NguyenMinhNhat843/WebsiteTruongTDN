@@ -609,6 +609,43 @@ export interface paths {
         patch: operations["ApplicationController_update"];
         trace?: never;
     };
+    "/tuition-fee/delete-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * Xóa tất cả dữ liệu học phí
+         * @description Dùng cho mục đích testing, xóa tất cả feeInvoice và feeInvoiceItem
+         */
+        delete: operations["TuitionFeeController_deleteAll"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-fee/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Xem trước thông số học phí dự kiến */
+        get: operations["TuitionFeeController_getPreview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/tuition-fee/create-semester-fees": {
         parameters: {
             query?: never;
@@ -638,6 +675,46 @@ export interface paths {
          * @description Dựa trên ID sinh viên, lấy danh sách các khoản phí học kỳ đã tạo.
          */
         get: operations["TuitionFeeController_getTuitionFees"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-fee/fees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy tất cả các khoản phí học kỳ của tất cả sinh viên
+         * @description Lấy danh sách tất cả các khoản phí học kỳ đã tạo.
+         */
+        get: operations["TuitionFeeController_getAllTuitionFees"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-fee/student-tuition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy thông tin học phí của sinh viên
+         * @description Dựa trên các tiêu chí tìm kiếm, lấy thông tin học phí của sinh viên.
+         */
+        get: operations["TuitionFeeController_getStudentTuition"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2216,6 +2293,81 @@ export interface components {
              */
             status?: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED";
         };
+        TuitionPreviewResponseDto: {
+            /**
+             * @description Tên học kỳ hiện tại dùng để tính toán preview
+             * @example HK1 - 2026
+             */
+            semesterName: string;
+            /**
+             * @description Tổng số sinh viên dự kiến sẽ được lập hóa đơn
+             * @example 1284
+             */
+            totalStudents: number;
+            /**
+             * @description Tổng số tín chỉ của tất cả sinh viên trong đợt này
+             * @example 14220
+             */
+            totalCredits: number;
+            /**
+             * @description Tổng số tiền dự kiến thu được (VND)
+             * @example 12800000000
+             */
+            estimatedTotalAmount: number;
+            /**
+             * @description Số tiền học phí trung bình trên mỗi sinh viên
+             * @example 10000000
+             */
+            averagePerStudent: number;
+            /**
+             * Format: date-time
+             * @description Thời điểm tạo thông số xem trước
+             * @example 2026-05-14T10:58:00.000Z
+             */
+            generatedAt: string;
+        };
+        /**
+         * @description Trạng thái thanh toán
+         * @enum {string}
+         */
+        FeeInvoiceItemStatus: "paid" | "unpaid";
+        TuitionFeeItemsDto: {
+            /**
+             * @description ID của payment
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description Trạng thái thanh toán
+             * @example paid
+             */
+            status: components["schemas"]["FeeInvoiceItemStatus"];
+            /**
+             * @description Tên khoản thanh toán
+             * @example Học phí học kỳ 1
+             */
+            name: string;
+            /**
+             * @description Số tiền
+             * @example 3500000
+             */
+            amount: number;
+            /**
+             * @description ID sinh viên
+             * @example 101
+             */
+            studentId?: number | null;
+            /**
+             * @description ID hóa đơn
+             * @example 5001
+             */
+            invoiceId?: number | null;
+            /**
+             * @description ID học kỳ
+             * @example 2
+             */
+            semesterId?: number | null;
+        };
         PayTuitionFeeDto: {
             /**
              * @description ID của sinh viên thực hiện thanh toán
@@ -2517,6 +2669,8 @@ export interface operations {
                 /** @description Lọc theo ngày nhập học đến (YYYY-MM-DD) */
                 toDate?: string;
                 sortBy?: string;
+                /** @description Tìm kiếm theo mã sinh viên */
+                studentCode?: string;
                 sortOrder?: "asc" | "desc";
             };
             header?: never;
@@ -4073,6 +4227,43 @@ export interface operations {
             };
         };
     };
+    TuitionFeeController_deleteAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionFeeController_getPreview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Thông số học phí dự kiến cho đợt học phí sắp mở. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionPreviewResponseDto"];
+                };
+            };
+        };
+    };
     TuitionFeeController_createSemesterFees: {
         parameters: {
             query?: never;
@@ -4103,6 +4294,46 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Danh sách các khoản phí học kỳ của sinh viên. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionFeeItemsDto"][];
+                };
+            };
+        };
+    };
+    TuitionFeeController_getAllTuitionFees: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Danh sách tất cả các khoản phí học kỳ. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionFeeController_getStudentTuition: {
+        parameters: {
+            query?: {
+                studentCode?: string;
+                semesterId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
             200: {
                 headers: {
                     [name: string]: unknown;
