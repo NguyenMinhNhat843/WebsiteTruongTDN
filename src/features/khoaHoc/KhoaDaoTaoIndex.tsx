@@ -3,6 +3,7 @@ import PageShell from "../../components/ui/PageShell";
 import { KhoaDaoTaoProvider, useKhoaDaoTaoContext } from "./KhoaHocProvider";
 import CreateBatchModal from "./CreateKhoaDaoTao";
 import KhoaDaoTaoTable from "./TableKhoaDaotao";
+import { UpdateBatchModal } from "./UpdateKhoaDaoTaoModal";
 
 const KhoaDaoTao = () => {
   return (
@@ -19,6 +20,9 @@ const Inner = () => {
     setIsOpenModalCreateBatch,
     isAddBatchPending,
     batches,
+    batchSelected,
+    setBatchSelected,
+    updateBatch,
   } = useKhoaDaoTaoContext();
 
   return (
@@ -81,6 +85,26 @@ const Inner = () => {
           );
         }}
         isPending={isAddBatchPending}
+      />
+
+      <UpdateBatchModal
+        isOpen={batchSelected !== null}
+        onClose={() => setBatchSelected(null)}
+        data={batchSelected}
+        onSave={(id, payload) =>
+          updateBatch({
+            params: {
+              path: {
+                id,
+              },
+            },
+            body: {
+              curriculumId: payload.curriculumId!,
+              status: batchSelected!.status, // PHẢI CÓ: Lấy giá trị hiện tại của batch
+              batchName: batchSelected!.batchName,
+            },
+          })
+        }
       />
     </PageShell>
   );

@@ -995,6 +995,8 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
             major: components["schemas"]["MajorResponseDto"] | null;
+            curriculumId: number | null;
+            majorId: number;
         };
         StudentResponseDto: {
             id: number;
@@ -3587,7 +3589,9 @@ export interface operations {
     };
     CurriculumController_findAll: {
         parameters: {
-            query?: never;
+            query?: {
+                majorId?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;

@@ -12,6 +12,9 @@ export const [KhoaDaoTaoProvider, useKhoaDaoTaoContext] = createContextProvider(
     const [isOpenModalCreateBatch, setIsOpenModalCreateBatch] =
       useState<boolean>(false);
     const queryClient = useQueryClient();
+    const [batchSelected, setBatchSelected] = useState<khoaDaoTaoDto | null>(
+      null,
+    );
 
     // get khóa đào tạo
     const {
@@ -26,6 +29,13 @@ export const [KhoaDaoTaoProvider, useKhoaDaoTaoContext] = createContextProvider(
       isPending: isMajorsPending,
       isError: isMajorsError,
     } = $api.useQuery("get", "/majors");
+
+    // get chương trình học
+    const {
+      data: curriculums,
+      isPending: isCurriculumsPending,
+      isError: isCurriculumsError,
+    } = $api.useQuery("get", "/curriculums");
 
     // thêm
     const {
@@ -50,6 +60,18 @@ export const [KhoaDaoTaoProvider, useKhoaDaoTaoContext] = createContextProvider(
       },
     );
 
+    // update
+    const { mutate: updateBatch, isPending: isUpdating } = $api.useMutation(
+      "patch",
+      "/batches/{id}",
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["get", "/batches"] });
+          alert("Cập nhật khóa đào tạo thành công");
+        },
+      },
+    );
+
     return {
       batches,
       isBatchesPending,
@@ -62,10 +84,17 @@ export const [KhoaDaoTaoProvider, useKhoaDaoTaoContext] = createContextProvider(
       isMajorsError,
       deleteBatch,
       isDeleting,
+      updateBatch,
+      isUpdating,
+      curriculums,
+      isCurriculumsPending,
+      isCurriculumsError,
 
       // state
       isOpenModalCreateBatch,
       setIsOpenModalCreateBatch,
+      batchSelected,
+      setBatchSelected,
     };
   },
 );

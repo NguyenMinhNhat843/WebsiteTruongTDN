@@ -39,8 +39,18 @@ const renderStatusBadge = (status: string) => {
   );
 };
 
-const useKhoaDaoTaoColumns = (): ColumnDef<khoaDaoTaoDto>[] => {
-  return useMemo(
+interface KhoaDaoTaoTableProps {
+  data: khoaDaoTaoDto[];
+  columns?: ColumnDef<khoaDaoTaoDto>[];
+}
+
+const KhoaDaoTaoTable: React.FC<KhoaDaoTaoTableProps> = ({
+  data,
+  columns: customColumns,
+}) => {
+  const { deleteBatch, setBatchSelected } = useKhoaDaoTaoContext();
+
+  const defaultColumns = useMemo<ColumnDef<khoaDaoTaoDto>[]>(
     () => [
       {
         accessorKey: "batchCode",
@@ -58,7 +68,13 @@ const useKhoaDaoTaoColumns = (): ColumnDef<khoaDaoTaoDto>[] => {
         accessorKey: "batchName",
         header: "Tên khóa đào tạo",
         cell: (info) => (
-          <span className="font-semibold text-gray-800">
+          <span
+            className="font-semibold cursor-pointer text-blue-600 underline transition-colors duration-200"
+            onClick={(e) => {
+              e.stopPropagation(); // Ngăn sự kiện click lan ra hàng (nếu hàng cũng có sự kiện click)
+              setBatchSelected(info.row.original);
+            }}
+          >
             {info.getValue() as string}
           </span>
         ),
@@ -87,27 +103,24 @@ const useKhoaDaoTaoColumns = (): ColumnDef<khoaDaoTaoDto>[] => {
         ),
       },
       {
+        accessorKey: "curriculumId",
+        header: "Chương trình học",
+        cell: (info) => (
+          <span className="font-medium text-green-600">
+            {info.getValue() as string}
+          </span>
+        ),
+      },
+      {
         accessorKey: "status",
         header: "Trạng thái",
         cell: (info) => renderStatusBadge(info.getValue() as string),
       },
     ],
     [],
-  );
-};
+  ); // dependency array
 
-interface KhoaDaoTaoTableProps {
-  data: khoaDaoTaoDto[];
-  columns?: ColumnDef<khoaDaoTaoDto>[];
-}
-
-const KhoaDaoTaoTable: React.FC<KhoaDaoTaoTableProps> = ({
-  data,
-  columns: customColumns,
-}) => {
-  const defaultColumns = useKhoaDaoTaoColumns();
   const tableColumns = customColumns || defaultColumns;
-  const { deleteBatch } = useKhoaDaoTaoContext();
 
   const table = useReactTable({
     data,
