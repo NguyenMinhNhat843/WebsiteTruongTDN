@@ -6,6 +6,7 @@ import { createContextProvider } from "../../util/createContextProvider";
 export type TaoCongNoPreviewDto =
   components["schemas"]["TuitionPreviewResponseDto"];
 export type ChiTietHocPhiDto = components["schemas"]["TuitionFeeItemsDto"];
+export type InvoiceDto = components["schemas"]["InvoiceDto"];
 
 export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
   const [isOpenModalTaoCongNo, setIsOpenModalTaoCongNo] = useState(false);
@@ -62,6 +63,20 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
   const { mutate: thanhToanHocPhi, isPending: isPendingThanhToanHocPhi } =
     $api.useMutation("post", "/tuition-fee/pay");
 
+  // Lấy danh sách hóa đơn học phí của sinh viên theo mã sinh viên
+  const { data, isPending: isPendingStudentTuitionInvoices } = $api.useQuery(
+    "get",
+    `/tuition-fee/invoices/{studentCode}`,
+    {
+      params: {
+        path: {
+          studentCode: studentCodeInput,
+        },
+      },
+    },
+  );
+  const studentTuitionInvoices: InvoiceDto[] = data || [];
+
   return {
     hockys,
     isPendingHocKys,
@@ -80,5 +95,7 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
     student,
     thanhToanHocPhi,
     isPendingThanhToanHocPhi,
+    studentTuitionInvoices,
+    isPendingStudentTuitionInvoices,
   };
 });

@@ -167,7 +167,7 @@ export const StudentTuitionTable = () => {
         );
 
   return (
-    <div className="col-span-12 lg:col-span-8">
+    <div className="col-span-12 lg:col-span-8 h-full">
       <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
         {/* Table Header */}
         <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white">

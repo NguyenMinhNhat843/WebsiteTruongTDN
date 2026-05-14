@@ -671,10 +671,30 @@ export interface paths {
             cookie?: never;
         };
         /**
-         * Lấy danh sách các khoản phí học kỳ của sinh viên
+         * Lấy danh sách các hóa đơn của sinh viên
          * @description Dựa trên ID sinh viên, lấy danh sách các khoản phí học kỳ đã tạo.
          */
         get: operations["TuitionFeeController_getTuitionFees"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-fee/invoices/{studentCode}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy danh sách hóa đơn học phí của sinh viên
+         * @description Dựa trên mã sinh viên, lấy danh sách các hóa đơn học phí đã tạo.
+         */
+        get: operations["TuitionFeeController_getTuitionInvoiceByStudentCode"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2367,6 +2387,36 @@ export interface components {
              * @example 2
              */
             semesterId?: number | null;
+        };
+        InvoiceDto: {
+            /**
+             * @description ID của sinh viên thuộc hóa đơn này
+             * @example 1
+             */
+            studentId: number;
+            /**
+             * @description ID của học kỳ áp dụng hóa đơn
+             * @example 2
+             */
+            semesterId: number;
+            /**
+             * @description Tổng số tiền phải đóng của cả kỳ
+             * @example 15500000.5
+             */
+            totalAmount: number;
+            /**
+             * @description Trạng thái thanh toán của hóa đơn
+             * @default unpaid
+             * @example unpaid
+             * @enum {string}
+             */
+            status: "unpaid" | "partial" | "paid";
+            /**
+             * Format: date-time
+             * @description Thời điểm tạo hóa đơn
+             * @example 2026-05-14T10:58:00.000Z
+             */
+            createdAt: string;
         };
         PayTuitionFeeDto: {
             /**
@@ -4300,6 +4350,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TuitionFeeItemsDto"][];
+                };
+            };
+        };
+    };
+    TuitionFeeController_getTuitionInvoiceByStudentCode: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                studentCode: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InvoiceDto"][];
                 };
             };
         };

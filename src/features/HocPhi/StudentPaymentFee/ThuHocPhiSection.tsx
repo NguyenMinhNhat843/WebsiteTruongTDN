@@ -9,6 +9,7 @@ import {
 import { useHocphisContext } from "../HocPhiProvider";
 import { StudentTuitionTable } from "./StudentTuitionTable";
 import { BadgeStudentStatus } from "../../../components/enum/StudentStatusBadge";
+import LichSuThanhToan from "./LichSuThanhToan";
 
 export const ThuHocPhiPage = () => {
   const {
@@ -150,6 +151,7 @@ export const ThuHocPhiPage = () => {
 
         {/* CỘT PHẢI: DANH MỤC KHOẢN PHÍ */}
         <StudentTuitionTable />
+        <LichSuThanhToan />
       </div>
     </div>
   );
