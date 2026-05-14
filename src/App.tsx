@@ -56,6 +56,8 @@ import MonHocIndex from "./features/MonHoc/MonHocIndex";
 import TieuChuanTuyenSinh from "./features/TieuChuanTuyenSinh/TieuChuanTuyenSinh";
 import AdmissionDetail from "./features/DotTuyenSinh/DotTuyenSinhOne";
 import HocSinhLayout from "./pages/admin/HoSoHocSinh/HocSinhLayout";
+import HocKyLayout from "./pages/admin/HocKy/HocKyLayout";
+import HocKyList from "./pages/admin/HocKy/HocKyList";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -172,6 +174,11 @@ function App() {
               path="hoc-sinh/dot-xet-tot-nghiep"
               element={<QuanLyXetTotNghiep />}
             />
+          </Route>
+
+          {/* Học kỳ */}
+          <Route element={<HocKyLayout />}>
+            <Route path="hoc-ky" element={<HocKyList />} />
           </Route>
 
           {/* Tuyển sinh */}
