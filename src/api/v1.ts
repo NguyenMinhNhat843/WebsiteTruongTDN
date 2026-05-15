@@ -143,6 +143,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả tài khoản */
+        get: operations["AuthController_getAllAccount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/departments": {
         parameters: {
             query?: never;
@@ -283,6 +300,46 @@ export interface paths {
         put?: never;
         /** Tạo mới lớp học */
         post: operations["ClassController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/assign-classes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Tự động chia lớp danh nghĩa cho sinh viên chính thức
+         * @description Gom các sinh viên có trạng thái "studying" chưa có lớp thuộc Ngành và Khóa học được chỉ định để thực hiện thuật toán chia đều lớp dựa trên sĩ số tối đa.
+         */
+        post: operations["ClassController_assignStudentsToClasses"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/classes/eligible-for-assignment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy danh sách sinh viên đủ điều kiện phân lớp
+         * @description Danh sách sinh viên có trạng thái "studying" nhưng chưa có classId.
+         */
+        get: operations["ClassController_getEligibleStudents"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -908,6 +965,23 @@ export interface paths {
         patch: operations["PostController_update"];
         trace?: never;
     };
+    "/course-offers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả lớp học phần */
+        get: operations["CourseOfferController_getAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/course-offers/preview": {
         parameters: {
             query?: never;
@@ -1278,6 +1352,51 @@ export interface components {
             departmentId?: number;
             position?: string;
         };
+        StaffResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example STF001 */
+            staffCode: string;
+            /** @example staff_account */
+            username: string;
+            /** @enum {string} */
+            role: "admin" | "teacher" | "student" | "staff";
+            /** @example true */
+            isActive: boolean;
+            /** @example Nguyễn Văn C */
+            fullName?: string;
+            /** @example staff@school.edu.vn */
+            email?: string;
+            /** @example true */
+            gender?: boolean;
+            /**
+             * Format: date-time
+             * @example 1990-01-01
+             */
+            dob?: string;
+            /** @example 0901234567 */
+            phone?: string;
+            /** @example 123 Đường ABC, Nha Trang */
+            address?: string;
+            /** @example 056205001234 */
+            identityNumber?: string;
+            /** @example 1 */
+            departmentId?: number;
+            /** @example Kế toán trưởng */
+            position?: string;
+            /**
+             * Format: date-time
+             * @example 2024-01-15
+             */
+            hireDate?: string;
+            /** @example Full-time */
+            contractType?: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+        };
         LoginDto: {
             /** @example admin */
             username: string;
@@ -1528,6 +1647,26 @@ export interface components {
              * @example 35
              */
             studentCount?: number;
+        };
+        AssignStudentsToClassesDto: {
+            batchId?: number;
+            /** @default 40 */
+            studentsPerClass: number;
+        };
+        StudentSimpleDto: {
+            /** @example 1 */
+            id: number;
+            /** @example SV2026001 */
+            studentCode: string;
+            /** @example Nguyễn Văn A */
+            fullName: string;
+            /** @example Tuyển sinh Đợt 1 - 2026 */
+            admissionName: string;
+        };
+        EligibleStudentsResponseDto: {
+            /** @example 150 */
+            totalEligible: number;
+            students: components["schemas"]["StudentSimpleDto"][];
         };
         UpdateClassDto: {
             /**
@@ -2681,6 +2820,11 @@ export interface components {
              */
             classId?: number;
             /**
+             * @description ID giảng viên phụ trách (nếu muốn chỉ định ngay)
+             * @example 15
+             */
+            teacherId?: number;
+            /**
              * @description Tên hiển thị của lớp
              * @example Lớp học lại Chính trị kinh tế - K18
              */
@@ -2906,7 +3050,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["StaffResponseDto"][];
+                };
             };
         };
     };
@@ -2966,6 +3112,23 @@ export interface operations {
                 "application/json": components["schemas"]["LoginDto"];
             };
         };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AuthController_getAllAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             200: {
                 headers: {
@@ -3380,6 +3543,50 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ClassResponseDto"];
+                };
+            };
+        };
+    };
+    ClassController_assignStudentsToClasses: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignStudentsToClassesDto"];
+            };
+        };
+        responses: {
+            /** @description Tự động xử lý phân phối lớp cho sinh viên thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ClassController_getEligibleStudents: {
+        parameters: {
+            query?: {
+                /** @description ID của Khóa đào tạo cần phân lớp */
+                batchId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EligibleStudentsResponseDto"];
                 };
             };
         };
@@ -4827,6 +5034,24 @@ export interface operations {
             };
             /** @description Không tìm thấy bài viết. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CourseOfferController_getAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Danh sách lớp học phần */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

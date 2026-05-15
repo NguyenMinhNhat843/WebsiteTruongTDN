@@ -1,35 +1,22 @@
-import { TABS } from "./constants";
-import {
-  LopHocVaKhoaHocProvider,
-  useLopHocVaKhoaHocContext,
-} from "./LopHocVaKhoaHocProvider";
+import { useLopHocPhanContext } from "./LopHocPhanProvider";
 import CreatePanel from "./Create/CreateForm";
 import DetailModal from "./One/ModalOne";
 import { Grid } from "lucide-react";
-import Table from "./Table/Table";
 import PageShell from "../../../components/ui/PageShell";
 import StatsOverview from "./components/StatsOverview";
-import FilterSection from "./components/FilterSection";
 import { SelectOption } from "../../../components/ui/Form/SelectOption";
-
+import DanhSachLopHocPhan from "./Table/Table";
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
-export default function LopHocVaKhoaHoc() {
-  return (
-    <LopHocVaKhoaHocProvider>
-      <Inner />
-    </LopHocVaKhoaHocProvider>
-  );
-}
-function Inner() {
+export default function LopHocPhanList() {
   const {
-    activeTab,
     detail,
-    handleTabChange,
     setShowCreate,
     setDetail,
-    tabCounts,
     showCreate,
-  } = useLopHocVaKhoaHocContext();
+
+    lopHocPhans,
+    isLoadingLopHocPhans,
+  } = useLopHocPhanContext();
 
   return (
     <PageShell
@@ -66,44 +53,12 @@ function Inner() {
             {/* STATS */}
             <StatsOverview />
 
-            {/* TABS */}
-            <div className="flex gap-1 bg-gray-200/50 p-1.5 rounded-xl w-fit mb-6 backdrop-blur-sm">
-              {TABS.map((t) => {
-                const isActive = activeTab === t.key;
-                return (
-                  <button
-                    key={t.key}
-                    onClick={() => handleTabChange(t.key)}
-                    className={`relative px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 group
-                          ${
-                            isActive
-                              ? "bg-white text-blue-600 shadow-md translate-y-px"
-                              : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-                          }`}
-                  >
-                    <span className="relative z-10 flex items-center gap-2">
-                      {t.label}
-                      <span
-                        className={`text-[10px] px-1.5 py-0.5 rounded-full border 
-                              ${
-                                isActive
-                                  ? "bg-blue-50 border-blue-100 text-blue-500"
-                                  : "bg-gray-200 border-transparent text-gray-500"
-                              }`}
-                      >
-                        {tabCounts[t.key]}
-                      </span>
-                    </span>
-                  </button>
-                );
-              })}
+            <div className="pt-8">
+              <DanhSachLopHocPhan
+                data={lopHocPhans || []}
+                isLoading={isLoadingLopHocPhans}
+              />
             </div>
-
-            {/* Filter section */}
-            <FilterSection />
-
-            {/* TABLE */}
-            <Table className="mt-6" />
           </main>
         </div>
 

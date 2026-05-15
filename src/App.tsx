@@ -21,7 +21,6 @@ import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import Dashboard from "./pages/admin/Dashboard/Home";
 import QuanLyNhanVien from "./pages/admin/QuanLyNhanVien/NhanVienList/QuanLyNhanVienList";
 import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung/ChuongTrinhKhung";
-import ClassManagement from "./pages/admin/LopHocVaKhoaHoc/LopHocVaKhoaHoc";
 import TimetablePage from "./pages/admin/ThoiKhoaBieu/ThoiKhoaBieu";
 import GradeManagement from "./pages/admin/QuanLyDiem/QuanLyDiemThi";
 import PhanQuyenNguoiDung from "./pages/admin/CaiDatHeThong/PhanQuyenNguoiDung/PhanQuyenNguoiDung";
@@ -39,7 +38,6 @@ import TaoChuongTrinhKhung from "./pages/admin/TaoChuongTrinhKhung/TaoChuongTrin
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import KhoaList from "./pages/admin/Khoa/KhoaList";
 import KhoaIndex from "./pages/admin/Khoa/KhoaIndex";
-import LopHocPhan from "./pages/admin/LopHocPhan/LopHocPhan";
 import MemberLayout from "./pages/MembersDashboard/MemberSideBar/MemberLayout";
 import MemberDashboard from "./pages/MembersDashboard/Home";
 import LopHocGiangDay from "./pages/MembersDashboard/LopGiangDay/LopGiangDay";
@@ -59,6 +57,12 @@ import HocKyLayout from "./pages/admin/HocKy/HocKyLayout";
 import HocKyList from "./pages/admin/HocKy/HocKyList";
 import HocPhiLayout from "./features/HocPhi/HocPhiLayout";
 import QuanLyDotHocPhi from "./features/HocPhi/QuanLyDotHocPhi";
+import PhanLop from "./pages/admin/PhanLop/PhanLop";
+import PhanLopLayout from "./pages/admin/PhanLop/PhanLopLayout";
+import NhanVienLayout from "./pages/admin/QuanLyNhanVien/NhanVienLayout";
+import TaoLopHocPhan from "./pages/admin/LopHocPhan/LopHocPhan";
+import LopHocPhanLayout from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanLayout";
+import LopHocPhanList from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanList";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -140,11 +144,20 @@ function App() {
               element={<TaoChuongTrinhKhung />}
             />
 
-            <Route path="dao-tao/lop-hoc-phan" element={<LopHocPhan />} />
-            <Route path="dao-tao/lop-hoc" element={<ClassManagement />} />
-            <Route path="dao-tao/lop-hoc/:slug" element={<ClassManagement />} />
+            <Route
+              path="dao-tao/tao-lop-hoc-phan"
+              element={<TaoLopHocPhan />}
+            />
+            <Route element={<LopHocPhanLayout />}>
+              <Route path="dao-tao/lop-hoc-phan" element={<LopHocPhanList />} />
+            </Route>
+            <Route path="dao-tao/lop-hoc/:slug" element={<LopHocPhanList />} />
             <Route path="dao-tao/thoi-khoa-bieu" element={<TimetablePage />} />
             <Route path="dao-tao/diem-thi" element={<GradeManagement />} />
+          </Route>
+
+          <Route element={<PhanLopLayout />}>
+            <Route path="hoc-sinh/phan-lop" element={<PhanLop />} />
           </Route>
 
           {/* Khoa */}
@@ -209,7 +222,7 @@ function App() {
           <Route path="hoc-sinh/tot-nghiep" element={<XetTotNghiep />} />
 
           {/* Quản trị nhân sự */}
-          <Route>
+          <Route element={<NhanVienLayout />}>
             <Route path="phan-cong-giang-day" element={<PhanCongGiangDay />} />
             <Route path="users" element={<QuanLyNhanVien />} />
           </Route>

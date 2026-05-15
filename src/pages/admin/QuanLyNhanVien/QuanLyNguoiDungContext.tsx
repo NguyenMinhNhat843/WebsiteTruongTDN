@@ -6,10 +6,28 @@ import {
   type UserResponse,
 } from "../../../features/users/types/User.types";
 import { useQuery } from "@tanstack/react-query";
-import { client } from "../../../api/client";
+import { $api, client } from "../../../api/client";
+import type { components } from "../../../api/v1";
+
+export type StaffDto = components["schemas"]["StaffResponseDto"];
 
 export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
   createContextProvider(() => {
+    // Get danh sách nhân viên gồm staff và teacher để hiển thị trong table
+    const { data: staffs, isPending: isPendingStaffs } = $api.useQuery(
+      "get",
+      "/staffs",
+      {
+        params: {
+          query: {
+            page: 1,
+            limit: 100, // Giới hạn số lượng nhân viên lấy về (có thể điều chỉnh theo nhu cầu)
+            role: "teacher",
+          },
+        },
+      },
+    );
+
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState("ALL");
     const [statusFilter, setStatusFilter] = useState("ALL");
@@ -99,6 +117,8 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
     });
 
     return {
+      staffs,
+      isPendingStaffs,
       search,
       setSearch,
       roleFilter,

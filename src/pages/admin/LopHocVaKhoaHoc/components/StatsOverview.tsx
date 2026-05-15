@@ -1,9 +1,9 @@
 import { StatCard } from "../../../../components/ui/StatCard";
 import { Activity, LayoutGrid, PieChart, Users } from "lucide-react";
-import { useLopHocVaKhoaHocContext } from "../LopHocVaKhoaHocProvider";
+import { useLopHocPhanContext } from "../LopHocPhanProvider";
 
 const StatsOverview = () => {
-  const { stats } = useLopHocVaKhoaHocContext();
+  const { stats } = useLopHocPhanContext();
   return (
     <div className="grid grid-cols-4 gap-3 mb-5">
       {[

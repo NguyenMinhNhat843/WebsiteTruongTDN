@@ -53,6 +53,9 @@ const KhoaDaoTaoTable: React.FC<KhoaDaoTaoTableProps> = ({
   const defaultColumns = useMemo<ColumnDef<khoaDaoTaoDto>[]>(
     () => [
       {
+        accessorKey: "id",
+      },
+      {
         accessorKey: "batchCode",
         header: "Mã khóa",
         cell: (info) => (

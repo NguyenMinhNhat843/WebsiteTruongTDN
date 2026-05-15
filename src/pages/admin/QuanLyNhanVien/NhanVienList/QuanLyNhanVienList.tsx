@@ -1,194 +1,210 @@
+import { useMemo } from "react";
 import {
-  ROLE_COLOR,
-  ROLE_LABEL,
-} from "../../../../features/users/constants/user.constants";
-import UserDetailModal from "../NhanVienOne/UserDetailModal";
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  createColumnHelper,
+} from "@tanstack/react-table";
 import {
-  QuanLyNguoiDungProvider,
+  Calendar,
+  Briefcase,
+  Hash,
+  Building2,
+  MoreHorizontal,
+  User,
+} from "lucide-react";
+import {
   useQuanLyNguoiDungContext,
+  type StaffDto,
 } from "../QuanLyNguoiDungContext";
 import PageShell from "../../../../components/ui/PageShell";
-import { User } from "lucide-react";
-import CreateNhanVien from "../CreateNhanVien/CreateNhanVienForm";
-import NhanVienTable from "./TableNhanVien";
 
-export default function QuanLyNhanVien() {
-  return (
-    <QuanLyNguoiDungProvider>
-      <Inner />
-    </QuanLyNguoiDungProvider>
+const columnHelper = createColumnHelper<StaffDto>();
+
+const QuanLyNhanVienList = () => {
+  const { staffs, isPendingStaffs } = useQuanLyNguoiDungContext();
+
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("id", {
+        header: () => (
+          <span className="flex items-center gap-2">
+            <Hash size={14} /> ID
+          </span>
+        ),
+        cell: (info) => (
+          <span className="font-medium text-slate-500">#{info.getValue()}</span>
+        ),
+      }),
+      columnHelper.accessor("fullName", {
+        header: "Họ và tên",
+      }),
+      columnHelper.accessor("staffCode", {
+        header: "Mã NV",
+        cell: (info) => (
+          <div className="flex flex-col">
+            <span className="font-bold text-slate-700">{info.getValue()}</span>
+            <span className="text-xs text-slate-400">
+              {info.row.original.username}
+            </span>
+          </div>
+        ),
+      }),
+      columnHelper.accessor("role", {
+        header: "Vai trò",
+        cell: (info) => {
+          const role = info.getValue();
+          const colors = {
+            admin: "bg-rose-50 text-rose-600 border-rose-100",
+            teacher: "bg-blue-50 text-blue-600 border-blue-100",
+            staff: "bg-emerald-50 text-emerald-600 border-emerald-100",
+            student: "bg-amber-50 text-amber-600 border-amber-100",
+          };
+          return (
+            <span
+              className={`px-2.5 py-1 rounded-full text-xs font-bold border ${colors[role] || colors.staff} capitalize`}
+            >
+              {role}
+            </span>
+          );
+        },
+      }),
+      columnHelper.accessor("position", {
+        header: () => (
+          <span className="flex items-center gap-2">
+            <Briefcase size={14} /> Chức vụ
+          </span>
+        ),
+        cell: (info) =>
+          info.getValue() || (
+            <span className="text-slate-300 italic text-xs">Chưa cập nhật</span>
+          ),
+      }),
+      columnHelper.accessor("departmentId", {
+        header: () => (
+          <span className="flex items-center gap-2">
+            <Building2 size={14} /> Phòng ban
+          </span>
+        ),
+        cell: (info) => (
+          <div className="flex items-center gap-2">
+            <span className="text-sm">{info.getValue()}</span>
+          </div>
+        ),
+      }),
+      columnHelper.accessor("createdAt", {
+        header: () => (
+          <span className="flex items-center gap-2">
+            <Calendar size={14} /> Ngày tạo
+          </span>
+        ),
+        cell: (info) => (
+          <span className="text-sm text-slate-500">
+            {new Date(info.getValue()).toLocaleDateString("vi-VN")}
+          </span>
+        ),
+      }),
+      columnHelper.display({
+        id: "actions",
+        cell: () => (
+          <button className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600">
+            <MoreHorizontal size={18} />
+          </button>
+        ),
+      }),
+    ],
+    [],
   );
-}
 
-function Inner() {
-  const {
-    filtered,
-    stats,
-    search,
-    setSearch,
-    roleFilter,
-    setRoleFilter,
-    statusFilter,
-    setStatusFilter,
-    sortBy,
-    setSortBy,
-    selectedUser,
-    setSelectedUser,
-    openModalCreate,
-    setOpenModalCreate,
-    users,
-  } = useQuanLyNguoiDungContext();
-  console.log("🚀 ~ file: QuanLyNhanVienList.tsx:28 ~ Inner ~ users:", users);
+  const table = useReactTable({
+    data: staffs || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
     <PageShell
-      title="Quản lý người dùng"
-      sub={`${stats.total} tài khoản · ${stats.active} đang hoạt động`}
+      title="Quản lý nhân viên"
       icon={User}
       renderRight={
-        <button
-          className="ml-auto px-4.5 py-2.25 rounded-[10px] 
-        bg-linear-to-br from-indigo-600 to-violet-600 text-white text-[13px] 
-        font-bold tracking-wide shadow-lg shadow-indigo-200 border-none cursor-pointer 
-        hover:opacity-90 active:scale-95 transition-all"
-          onClick={() => setOpenModalCreate(true)}
-        >
-          + Thêm người dùng
+        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm shadow-blue-200 flex items-center gap-2">
+          + Thêm nhân viên
         </button>
       }
     >
-      <div className="">
-        {/* Toolbar */}
-        <div className="flex flex-wrap items-center gap-3 p-4 mb-4 bg-white border border-solid border-slate-200 rounded-[14px] shadow-sm">
-          {/* Search */}
-          <div className="relative flex-[1_1_220px]">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[14px]">
-              🔍
-            </span>
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Tìm theo tên, email, mã số..."
-              className="w-full pl-8.5 pr-3 py-2.25 bg-slate-50 border border-solid border-slate-200 rounded-[10px] text-slate-800 text-[13px] outline-none focus:border-indigo-400 focus:bg-white transition-all"
-            />
-          </div>
-
-          {/* Role filter */}
-          <div className="flex flex-wrap gap-1.5">
-            {["ALL", "ADMIN", "TEACHER", "STAFF"].map((r) => {
-              const rc =
-                r !== "ALL" ? ROLE_COLOR[r as keyof typeof ROLE_COLOR] : null;
-              const active = roleFilter === r;
-
-              return (
-                <button
-                  key={r}
-                  onClick={() => setRoleFilter(r)}
-                  style={{
-                    borderColor: active ? rc?.dot || "#4f46e5" : "#e2e8f0",
-                    backgroundColor: active
-                      ? `${rc?.dot || "#4f46e5"}12`
-                      : "transparent",
-                    color: active ? rc?.dot || "#4f46e5" : "#64748b",
-                  }}
-                  className="px-3.5 py-1.75 rounded-full border border-solid text-[12px] font-semibold transition-all cursor-pointer hover:bg-slate-50"
-                >
-                  {r === "ALL"
-                    ? "Tất cả"
-                    : ROLE_LABEL[r as keyof typeof ROLE_LABEL]}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Status filter */}
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-3 py-2 bg-white border border-solid border-slate-200 rounded-[10px] text-slate-600 text-[12px] cursor-pointer outline-none hover:border-slate-300"
-          >
-            <option value="ALL">Mọi trạng thái</option>
-            <option value="active">Hoạt động</option>
-            <option value="inactive">Không HĐ</option>
-            <option value="locked">Đã khoá</option>
-          </select>
-
-          {/* Sort */}
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="px-3 py-2 bg-white border border-solid border-slate-200 rounded-[10px] text-slate-600 text-[12px] cursor-pointer outline-none hover:border-slate-300"
-          >
-            <option value="name">Sắp xếp: Tên</option>
-            <option value="role">Sắp xếp: Vai trò</option>
-            <option value="date">Sắp xếp: Mới nhất</option>
-          </select>
-
-          {/* Add button */}
+      <div className="w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id} className="border-b border-slate-100">
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="px-6 py-4 text-xs font-bold text-slate-400 uppercase tracking-wider"
+                    >
+                      {flexRender(
+                        header.column.columnDef.header,
+                        header.getContext(),
+                      )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+            <tbody className="divide-y divide-slate-50">
+              {isPendingStaffs ? (
+                // Skeleton Loading
+                [...Array(5)].map((_, i) => (
+                  <tr key={i} className="animate-pulse">
+                    {[...Array(7)].map((_, j) => (
+                      <td key={j} className="px-6 py-4">
+                        <div className="h-4 bg-slate-100 rounded w-full"></div>
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : table.getRowModel().rows.length > 0 ? (
+                table.getRowModel().rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="hover:bg-blue-50/30 transition-colors group"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className="px-6 py-4 text-sm text-slate-600"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={7}
+                    className="px-6 py-12 text-center text-slate-400 italic"
+                  >
+                    Không có dữ liệu nhân viên nào.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
 
-        {/* Result count */}
-        <div style={{ fontSize: 12, color: "#334155", marginBottom: 10 }}>
-          Hiển thị{" "}
-          <strong style={{ color: "#64748b" }}>{filtered.length}</strong> kết
-          quả
+        <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100">
+          <span className="text-xs text-slate-500 font-medium">
+            Hiển thị {staffs?.length || 0} nhân viên trong hệ thống
+          </span>
         </div>
-
-        <NhanVienTable
-          filtered={filtered}
-          setSelectedUser={(user) => setSelectedUser(user)}
-        />
       </div>
-
-      {/* Modal */}
-      {selectedUser && (
-        <UserDetailModal
-          user={selectedUser}
-          onClose={() => setSelectedUser(null)}
-        />
-      )}
-
-      {openModalCreate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          {/* Lớp nền mờ (Backdrop) */}
-          <div
-            className="absolute inset-0 bg-slate-900/40 transition-opacity"
-            onClick={() => setOpenModalCreate(false)}
-          />
-
-          {/* Nội dung Modal */}
-          <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-            {/* Header của Modal */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h3 className="text-lg font-bold text-slate-800">
-                Thêm nhân viên mới
-              </h3>
-              <button
-                onClick={() => setOpenModalCreate(false)}
-                className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600"
-              >
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </button>
-            </div>
-
-            {/* Body chứa Form - Giới hạn chiều cao nếu form dài */}
-            <div className="max-h-[80vh] overflow-y-auto p-6">
-              <CreateNhanVien />
-            </div>
-          </div>
-        </div>
-      )}
     </PageShell>
   );
-}
+};
+
+export default QuanLyNhanVienList;

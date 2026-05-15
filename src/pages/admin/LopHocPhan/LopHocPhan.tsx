@@ -47,7 +47,7 @@ const MOCK_CLASSES = [
   },
 ];
 
-const LopHocPhan = () => {
+const TaoLopHocPhan = () => {
   const [formData, setFormData] = useState({
     semester: "",
     major: "",
@@ -220,4 +220,4 @@ const LopHocPhan = () => {
   );
 };
 
-export default LopHocPhan;
+export default TaoLopHocPhan;

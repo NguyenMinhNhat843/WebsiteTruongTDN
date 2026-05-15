@@ -1,11 +1,16 @@
 import { useMemo, useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { PAGE_SIZE } from "./constants";
-import { HE_DAO_TAO, SAMPLE_DATA } from "./mockData";
+import { SAMPLE_DATA } from "./mockData";
 import type { LopHoc } from "./mockType";
+import { $api } from "../../../api/client";
 
-export const [LopHocVaKhoaHocProvider, useLopHocVaKhoaHocContext] =
-  createContextProvider(() => {
+export const [LopHocPhanProvider, useLopHocPhanContext] = createContextProvider(
+  () => {
+    // get all lớp học phần
+    const { data: lopHocPhans, isLoading: isLoadingLopHocPhans } =
+      $api.useQuery("get", "/course-offers");
+
     const [activeTab, setActiveTab] = useState<string>("all");
     const [fKhoa, setFKhoa] = useState("");
     const [fStatus, setFStatus] = useState("");
@@ -63,15 +68,10 @@ export const [LopHocVaKhoaHocProvider, useLopHocVaKhoaHocContext] =
     };
     const handleFilter = () => setPage(1);
 
-    const tabCounts = useMemo(() => {
-      const counts: Record<string, number> = { all: SAMPLE_DATA.length };
-      Object.keys(HE_DAO_TAO).forEach((k) => {
-        counts[k] = SAMPLE_DATA.filter((r) => r.he === k).length;
-      });
-      return counts;
-    }, []);
-
     return {
+      lopHocPhans,
+      isLoadingLopHocPhans,
+
       activeTab,
       setActiveTab,
       fKhoa,
@@ -94,7 +94,7 @@ export const [LopHocVaKhoaHocProvider, useLopHocVaKhoaHocContext] =
       stats,
       handleTabChange,
       handleFilter,
-      tabCounts,
       pageSize: PAGE_SIZE,
     };
-  });
+  },
+);

@@ -28,9 +28,9 @@ const navItems: NavItem[] = [
         roles: ["ADMIN", "TEACHER"],
       },
       {
-        id: "quan-ly-lop-hoc",
-        label: "Lớp học & Khóa học",
-        href: "/admin/dao-tao/lop-hoc",
+        id: "quan-ly-lop-hoc-phan",
+        label: "Lớp học phần",
+        href: "/admin/dao-tao/lop-hoc-phan",
         roles: ["ADMIN", "TEACHER"],
       },
       {
@@ -98,6 +98,11 @@ const navItems: NavItem[] = [
         id: "ho-so-hoc-sinh",
         label: "Hồ sơ học sinh",
         href: "/admin/hoc-sinh/ho-so",
+      },
+      {
+        id: "phan-lop",
+        label: "Phân lớp",
+        href: "/admin/hoc-sinh/phan-lop",
       },
       {
         id: "quan-ly-tot-nghiep",
