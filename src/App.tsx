@@ -63,6 +63,9 @@ import NhanVienLayout from "./pages/admin/QuanLyNhanVien/NhanVienLayout";
 import TaoLopHocPhan from "./pages/admin/LopHocPhan/LopHocPhan";
 import LopHocPhanLayout from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanLayout";
 import LopHocPhanList from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanList";
+import LopHocPhanOne from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanOne/LopHocPhanOne";
+import GradeComponentLayout from "./pages/admin/GradeComponent/GradeComponentLayout";
+import GradeComponentList from "./pages/admin/GradeComponent/GradeComponentList";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -150,10 +153,19 @@ function App() {
             />
             <Route element={<LopHocPhanLayout />}>
               <Route path="dao-tao/lop-hoc-phan" element={<LopHocPhanList />} />
+              <Route
+                path="dao-tao/lop-hoc-phan/:id"
+                element={<LopHocPhanOne />}
+              />
             </Route>
             <Route path="dao-tao/lop-hoc/:slug" element={<LopHocPhanList />} />
             <Route path="dao-tao/thoi-khoa-bieu" element={<TimetablePage />} />
             <Route path="dao-tao/diem-thi" element={<GradeManagement />} />
+          </Route>
+
+          {/* Quản lý điểm */}
+          <Route element={<GradeComponentLayout />}>
+            <Route path="diem-thanh-phan" element={<GradeComponentList />} />
           </Route>
 
           <Route element={<PhanLopLayout />}>

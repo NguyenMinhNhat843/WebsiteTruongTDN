@@ -15,6 +15,7 @@ import {
   MoreVertical,
   SlidersHorizontal,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 type CourseOfferItem = {
   id: number;
@@ -36,6 +37,9 @@ type CourseOfferItem = {
   endDate: string | null;
   createdAt: string;
   updatedAt: string;
+  _count: {
+    registrations: number | null;
+  };
   subject: {
     id: number;
     subjectCode: string;
@@ -63,6 +67,7 @@ interface Props {
 const columnHelper = createColumnHelper<CourseOfferItem>();
 
 const DanhSachLopHocPhan = ({ data, isLoading }: Props) => {
+  const navigate = useNavigate();
   const columns = useMemo(
     () => [
       // 1. ID
@@ -90,7 +95,10 @@ const DanhSachLopHocPhan = ({ data, isLoading }: Props) => {
         cell: (info) => {
           const row = info.row.original;
           return (
-            <div className="flex flex-col gap-0.5">
+            <div
+              className="flex flex-col gap-0.5"
+              onClick={() => navigate("" + row.id)}
+            >
               <span className="font-bold text-slate-800 tracking-tight">
                 {row.courseCode}
               </span>
@@ -170,7 +178,7 @@ const DanhSachLopHocPhan = ({ data, isLoading }: Props) => {
           const row = info.row.original;
           return (
             <span className="text-sm font-medium text-slate-600">
-              {row.currentStudents} /{" "}
+              {row._count.registrations || 0} /{" "}
               <span className="text-slate-400 text-xs">{row.maxStudents}</span>
             </span>
           );

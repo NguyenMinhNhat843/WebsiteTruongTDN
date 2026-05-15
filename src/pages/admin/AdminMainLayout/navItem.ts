@@ -51,6 +51,12 @@ const navItems: NavItem[] = [
         roles: ["ADMIN", "TEACHER"],
       },
       {
+        id: "diem-thanh-phan",
+        label: "Điểm thành phần",
+        href: "/admin/diem-thanh-phan",
+        roles: ["ADMIN", "TEACHER"],
+      },
+      {
         id: "khoa-dao-tao",
         label: "Khóa đào tạo",
         href: "/admin/khoa-dao-tao",
