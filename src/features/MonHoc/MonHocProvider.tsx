@@ -6,9 +6,12 @@ import { useState } from "react";
 
 export type MonHocResponse = components["schemas"]["SubjectResponseDto"];
 export type CreatemonHocDto = components["schemas"]["CreateSubjectDto"];
+export type UpdateMonHocDto = components["schemas"]["UpdateSubjectDto"];
 
 export const [MonHocProvider, useMonHocContext] = createContextProvider(() => {
   const queryClient = useQueryClient();
+  const [monHocIdSelected, setMonHocIdSelected] = useState<number | null>(null);
+
   const [isOpenModalCreateMonHoc, setIsOpenModalCreateMonHoc] =
     useState<boolean>(false);
   // get
@@ -17,6 +20,26 @@ export const [MonHocProvider, useMonHocContext] = createContextProvider(() => {
     isLoading: isMonHocsLoading,
     error: monHocsError,
   } = $api.useQuery("get", "/subjects");
+
+  // get one
+  const {
+    data: monHocDetail,
+    isLoading: isMonHocDetailLoading,
+    error: monHocDetailError,
+  } = $api.useQuery(
+    "get",
+    "/subjects/{id}",
+    {
+      params: {
+        path: {
+          id: monHocIdSelected!, // Lấy ID môn học được chọn để lấy chi tiết
+        },
+      },
+    },
+    {
+      enabled: !!monHocIdSelected, // Chỉ chạy query khi có ID môn học được chọn
+    },
+  );
 
   // post
   const {
@@ -48,6 +71,25 @@ export const [MonHocProvider, useMonHocContext] = createContextProvider(() => {
     },
   });
 
+  // update môn hoc
+  const {
+    mutate: updateMonHoc,
+    isPending: isUpdateMonHocPending,
+    isError: isUpdateMonHocError,
+  } = $api.useMutation("patch", "/subjects/{id}", {
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["get", "/subjects"],
+      });
+    },
+    onError: (err) => {
+      alert(JSON.stringify(err) || "Cập nhật môn học thất bại!");
+    },
+  });
+
+  // Lấy danh mục các cột điểm
+  const { data: diemComponents } = $api.useQuery("get", "/grade-components");
+
   return {
     monHocs,
     isMonHocsLoading,
@@ -58,6 +100,15 @@ export const [MonHocProvider, useMonHocContext] = createContextProvider(() => {
     deleteMonHoc,
     isDeleteMonHocPending,
     isDeleteMonHocError,
+    diemComponents,
+    updateMonHoc,
+    isUpdateMonHocPending,
+    isUpdateMonHocError,
+    monHocDetail,
+    isMonHocDetailLoading,
+    monHocDetailError,
+    monHocIdSelected,
+    setMonHocIdSelected,
 
     // state
     isOpenModalCreateMonHoc,

@@ -1,8 +1,9 @@
-import { PlusIcon, Trash2 } from "lucide-react";
+import { BookOpen, Edit3, PlusIcon, Trash2 } from "lucide-react";
 import PageShell from "../../components/ui/PageShell";
 import { MonHocProvider, useMonHocContext } from "./MonHocProvider";
 import MonHocTable from "./TableMonHoc";
 import CreateMonHocModal from "./CreateMonHoc";
+import Abc from "./abc";
 
 const MonHocIndex = () => {
   return (
@@ -20,11 +21,15 @@ const Inner = () => {
     setIsOpenModalCreateMonHoc,
     createMonHoc,
     isCreateMonHocPending,
+    isMonHocsLoading,
+    monHocIdSelected,
+    setMonHocIdSelected,
   } = useMonHocContext();
   return (
     <PageShell
       title="Môn học"
       sub="Quản lý thông tin môn học"
+      icon={BookOpen}
       renderRight={
         <button
           onClick={() => setIsOpenModalCreateMonHoc(true)}
@@ -37,27 +42,40 @@ const Inner = () => {
     >
       <MonHocTable
         data={monHocs || []}
+        isLoading={isMonHocsLoading}
+        onClickRow={(id) => setMonHocIdSelected(id)}
         columns={[
           {
             header: "Thao tác",
             cell: (info) => {
-              const rowData = info.row.original;
+              const rowId = Number(info.row.original.id);
+
               return (
-                <button
-                  onClick={() =>
-                    deleteMonHoc({
-                      params: {
-                        path: {
-                          id: rowData.id,
+                <div className="flex items-center justify-end gap-1">
+                  <button
+                    type="button"
+                    className="p-2.5 hover:bg-slate-100 text-slate-400 hover:text-blue-600 rounded-xl transition-colors"
+                  >
+                    <Edit3 size={18} />
+                  </button>
+                  <button
+                    onClick={() =>
+                      deleteMonHoc({
+                        params: {
+                          path: {
+                            id: rowId,
+                          },
                         },
-                      },
-                    })
-                  }
-                  className="group inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 bg-white border border-red-300 rounded-lg hover:bg-red-50 hover:border-red-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-150 shadow-sm"
-                >
-                  <Trash2 className="w-4 h-4 transition-transform duration-150 group-hover:-rotate-12" />
-                  <span>Xóa</span>
-                </button>
+                      })
+                    }
+                    type="button"
+                    className={`p-2.5 rounded-xl transition-colors 
+                  hover:bg-rose-50 text-slate-400 hover:text-rose-600 disabled:opacity-40"
+                `}
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               );
             },
           },
@@ -81,6 +99,11 @@ const Inner = () => {
           );
         }}
         isPending={isCreateMonHocPending}
+      />
+
+      <Abc
+        idSelected={monHocIdSelected}
+        onClose={() => setMonHocIdSelected(null)}
       />
     </PageShell>
   );

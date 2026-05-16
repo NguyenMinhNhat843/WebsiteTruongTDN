@@ -1,48 +1,42 @@
-import { useState } from "react";
+import {
+  useGetGradeComponents,
+  useGetMonHocDetail,
+  useUpdateMonHoc,
+} from "./monHocHooks";
+import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
-import type { CreatemonHocDto } from "./MonHocProvider";
-import { useMonHocContext } from "./MonHocProvider"; // Giả định import context từ file này
+import type { UpdateMonHocDto } from "./MonHocProvider";
+import { useEffect, useMemo, useState } from "react";
 
-interface Props {
-  isOpen: boolean;
+interface UpdateMonHocModalProps {
+  idSelected: number | null;
   onClose: () => void;
-  onSubmit: (
-    data: CreatemonHocDto & { gradeComponentIds: number[] },
-    reset: () => void,
-  ) => void;
-  isPending: boolean;
 }
 
-const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
-  // Lấy danh sách danh mục cột điểm từ context
-  const { diemComponents } = useMonHocContext();
+const Abc = ({ idSelected, onClose }: UpdateMonHocModalProps) => {
+  const { isPending, updateMonHoc } = useUpdateMonHoc();
+  const { monHocDetail, isMonHocDetailLoading } =
+    useGetMonHocDetail(idSelected);
+  const { diemComponents } = useGetGradeComponents();
+  const diemComponentsMap = Object.fromEntries(
+    diemComponents?.map((component) => [component.id, component]) ?? [],
+  );
 
   // State quản lý các ID cột điểm được chọn
-  const [selectedComponentIds, setSelectedComponentIds] = useState<number[]>(
-    [],
+  const gradeIds = useMemo(
+    () => monHocDetail?.gradeComponents.map((component) => component.id) || [],
+    [monHocDetail],
   );
+
+  const [selectedComponentIds, setSelectedComponentIds] = useState<number[]>(
+    gradeIds || [],
+  );
+
+  useEffect(() => {
+    setSelectedComponentIds(gradeIds);
+  }, [gradeIds]);
+
   const [weightError, setWeightError] = useState<string | null>(null);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<CreatemonHocDto>({
-    defaultValues: {
-      isMandatory: true,
-      credits: 0,
-      theoryHours: 0,
-      practiceHours: 0,
-    },
-  });
-
-  // Tính tổng trọng số hiện tại của các cột điểm đã chọn
-  const currentTotalWeight = diemComponents
-    ? diemComponents
-        .filter((comp) => selectedComponentIds.includes(comp.id))
-        .reduce((sum, comp) => sum + comp.weight, 0)
-    : 0;
 
   // Xử lý bật/tắt chọn cột điểm
   const handleToggleComponent = (id: number) => {
@@ -52,7 +46,35 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
     );
   };
 
-  const handleInternalSubmit = (data: CreatemonHocDto) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<UpdateMonHocDto>({
+    defaultValues: {
+      isMandatory: true,
+      credits: 0,
+      theoryHours: 0,
+      practiceHours: 0,
+    },
+  });
+
+  useEffect(() => {
+    if (monHocDetail) {
+      reset({
+        subjectCode: monHocDetail.subjectCode,
+        subjectName: monHocDetail.subjectName,
+        credits: monHocDetail.credits,
+        theoryHours: monHocDetail.theoryHours,
+        practiceHours: monHocDetail.practiceHours,
+        isMandatory: monHocDetail.isMandatory,
+        description: monHocDetail.description || "",
+      });
+    }
+  }, [idSelected, monHocDetail]);
+
+  const handleInternalSubmit = (data: UpdateMonHocDto) => {
     // 1. Kiểm tra xem đã chọn cột điểm nào chưa
     if (selectedComponentIds.length === 0) {
       setWeightError("Vui lòng cấu hình ít nhất một cột điểm thành phần.");
@@ -69,11 +91,44 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
 
     setWeightError(null);
     // Gửi kèm mảng gradeComponentIds lên backend xử lý tiếp
-    onSubmit({ ...data, gradeComponentIds: selectedComponentIds }, reset);
+    updateMonHoc(
+      {
+        body: {
+          ...data,
+          gradeComponentIds: selectedComponentIds,
+        },
+        params: {
+          path: {
+            id: idSelected!, // ID môn học đang cập nhật
+          },
+        },
+      },
+      {
+        onSuccess: () => {
+          alert("Cập nhật môn học thành công!");
+          reset(); // Reset form về default values sau khi cập nhật thành công
+          onClose();
+        },
+        onError: (err) => {
+          alert(JSON.stringify(err) || "Cập nhật môn học thất bại!");
+        },
+      },
+    );
   };
 
-  if (!isOpen) return null;
+  if (isMonHocDetailLoading) {
+    return <div>Đang tải thông tin môn học...</div>;
+  }
 
+  const selectedComponents = selectedComponentIds
+    .map((id) => diemComponentsMap[id]) // Tìm component trong Map theo id
+    .filter(Boolean); // Loại bỏ các giá trị undefined/null nếu chẳng may id không tồn tại trong map
+
+  const currentTotalWeight = selectedComponents.reduce((sum, component) => {
+    return sum + component.weight;
+  }, 0);
+
+  if (!idSelected) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 transition-all animate-fadeIn">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh]">
@@ -81,7 +136,7 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
         <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
           <div>
             <h3 className="text-xl font-bold text-slate-800 tracking-tight">
-              Tạo Môn Học Mới
+              Cập nhật môn học
             </h3>
             <p className="text-sm text-slate-500 mt-0.5">
               Thiết lập thông tin chung và cấu hình khung điểm thành phần.
@@ -92,23 +147,11 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
             className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
             disabled={isPending}
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Form Body - Scrollable */}
+        {/* Form */}
         <form
           onSubmit={handleSubmit(handleInternalSubmit)}
           className="flex-1 overflow-y-auto p-8 space-y-6"
@@ -232,7 +275,7 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
 
           <hr className="border-slate-100" />
 
-          {/* Section 2: Cấu hình cột điểm thành phần */}
+          {/* Section trọng số điểm */}
           <div className="space-y-4">
             <div className="flex justify-between items-end">
               <div>
@@ -390,4 +433,4 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
   );
 };
 
-export default CreateMonHocModal;
+export default Abc;

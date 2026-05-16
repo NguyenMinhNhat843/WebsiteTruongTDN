@@ -1836,6 +1836,15 @@ export interface components {
             isMandatory: boolean;
             /** @example Học về Java hoặc C++ */
             description?: string;
+            /**
+             * @description Mảng các ID điểm thành phần
+             * @example [
+             *       1,
+             *       4,
+             *       7
+             *     ]
+             */
+            gradeComponentIds: number[];
         };
         SubjectResponseDto: {
             /** @example 1 */
@@ -1857,6 +1866,11 @@ export interface components {
             /** @example Mô tả môn học */
             description?: string | null;
             /**
+             * @description Chuỗi ID của các thành phần điểm (grade components) liên kết với môn học, cách nhau bằng dấu phẩy. Ví dụ: '1,2,3'
+             * @example 1,2,3
+             */
+            grade_components?: string | null;
+            /**
              * Format: date-time
              * @example 2024-04-25T10:00:00Z
              */
@@ -1873,6 +1887,67 @@ export interface components {
              * @example 5
              */
             curriculumCount?: number;
+        };
+        GradeComponentDto: {
+            /**
+             * @description ID định danh cấu hình thành phần điểm
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description Tên thành phần điểm (Ví dụ: attendance, midterm, final)
+             * @example midterm
+             */
+            name: string;
+            /**
+             * @description Trọng số điểm hệ số thập phân (Ví dụ: Giữa kỳ chiếm 30% = 0.3)
+             * @example 0.3
+             */
+            weight: number;
+        };
+        ResponseFindOneSubject: {
+            /** @example 1 */
+            id: number;
+            /** @example BAS1201 */
+            subjectCode: string;
+            /** @example Lập trình hướng đối tượng */
+            subjectName: string;
+            /** @example 3 */
+            credits: number;
+            /** @example 30 */
+            theoryHours: number;
+            /** @example 15 */
+            practiceHours: number;
+            /** @example 1 */
+            deptId: number;
+            /** @example true */
+            isMandatory: boolean;
+            /** @example Mô tả môn học */
+            description?: string | null;
+            /**
+             * @description Chuỗi ID của các thành phần điểm (grade components) liên kết với môn học, cách nhau bằng dấu phẩy. Ví dụ: '1,2,3'
+             * @example 1,2,3
+             */
+            grade_components?: string | null;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /** @description Thông tin khoa quản lý */
+            department?: Record<string, never>;
+            /**
+             * @description Số lượng chương trình đào tạo có môn này
+             * @example 5
+             */
+            curriculumCount?: number;
+            /** @description Danh sách các thành phần điểm của môn học */
+            gradeComponents: components["schemas"]["GradeComponentDto"][];
         };
         UpdateSubjectDto: {
             /**
@@ -1904,6 +1979,15 @@ export interface components {
             isMandatory: boolean;
             /** @example Học về Java hoặc C++ */
             description?: string;
+            /**
+             * @description Mảng các ID điểm thành phần
+             * @example [
+             *       1,
+             *       4,
+             *       7
+             *     ]
+             */
+            gradeComponentIds?: number[];
         };
         CreateSemesterDto: {
             /**
@@ -2967,28 +3051,6 @@ export interface components {
              */
             weight: number;
         };
-        GradeComponentDto: {
-            /**
-             * @description ID định danh cấu hình thành phần điểm
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description Tên thành phần điểm (Ví dụ: attendance, midterm, final)
-             * @example midterm
-             */
-            name: string;
-            /**
-             * @description Trọng số điểm hệ số thập phân (Ví dụ: Giữa kỳ chiếm 30% = 0.3)
-             * @example 0.3
-             */
-            weight: number;
-            /**
-             * @description Chuỗi hiển thị phần trăm trực quan cho giao diện
-             * @example 0.3
-             */
-            weightLabel: number;
-        };
         UpdateGradeComponentDto: {
             /**
              * @description Tên thành phần điểm (attendance, midterm, final, assignment...)
@@ -3876,7 +3938,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SubjectResponseDto"];
+                    "application/json": components["schemas"]["ResponseFindOneSubject"];
                 };
             };
         };
