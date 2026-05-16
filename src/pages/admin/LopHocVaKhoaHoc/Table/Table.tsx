@@ -16,6 +16,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getStatusBadgeLopHocPhan } from "../components/getStatusLopHocPhan";
 
 type CourseOfferItem = {
   id: number;
@@ -195,28 +196,7 @@ const DanhSachLopHocPhan = ({ data, isLoading }: Props) => {
         cell: (info) => {
           const status = info.getValue()?.toLowerCase();
 
-          const statusStyles: Record<string, string> = {
-            open: "bg-emerald-50 text-emerald-700 border-emerald-200",
-            planned: "bg-blue-50 text-blue-700 border-blue-200",
-            closed: "bg-slate-100 text-slate-600 border-slate-200",
-            cancelled: "bg-rose-50 text-rose-700 border-rose-200",
-          };
-
-          const labelMap: Record<string, string> = {
-            open: "Mở đăng ký",
-            planned: "Lên kế hoạch",
-            closed: "Đã đóng",
-            cancelled: "Đã hủy",
-          };
-
-          return (
-            <span
-              className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold border ${statusStyles[status] || statusStyles.closed}`}
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-current mr-1.5 animate-pulse" />
-              {labelMap[status] || status}
-            </span>
-          );
+          return <div>{getStatusBadgeLopHocPhan(status)}</div>;
         },
       }),
 

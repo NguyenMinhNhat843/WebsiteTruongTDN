@@ -3,7 +3,7 @@ import PageShell from "../../components/ui/PageShell";
 import { MonHocProvider, useMonHocContext } from "./MonHocProvider";
 import MonHocTable from "./TableMonHoc";
 import CreateMonHocModal from "./CreateMonHoc";
-import Abc from "./abc";
+import UpdateMonHoc from "./UpdatemonHoc";
 
 const MonHocIndex = () => {
   return (
@@ -101,7 +101,7 @@ const Inner = () => {
         isPending={isCreateMonHocPending}
       />
 
-      <Abc
+      <UpdateMonHoc
         idSelected={monHocIdSelected}
         onClose={() => setMonHocIdSelected(null)}
       />

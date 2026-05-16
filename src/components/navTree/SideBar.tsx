@@ -100,7 +100,7 @@ export default function Sidebar({
       className={[
         "relative flex h-screen flex-col transition-all duration-300 ease-in-out",
         "bg-[#0f172a] text-slate-300",
-        isCollapsed ? "w-20" : "w-72",
+        isCollapsed ? "w-20" : "w-66",
         "border-r border-blue-500/10 shadow-xl",
       ].join(" ")}
     >

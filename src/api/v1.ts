@@ -1039,6 +1039,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/course-offers/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Chấp nhận mở lớp học phần */
+        patch: operations["CourseOfferController_approve"];
+        trace?: never;
+    };
     "/course-offers/{id}": {
         parameters: {
             query?: never;
@@ -1046,6 +1063,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** Lấy chi tiết lớp học phần */
         get: operations["CourseOfferController_getDetail"];
         put?: never;
         post?: never;
@@ -1055,14 +1073,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-offers/{id}/approve": {
+    "/course-offers/{courseOfferId}/eligible-students": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["CourseOfferController_approve"];
+        /** Lấy danh sách học sinh đủ điều kiện đăng ký vào lớp học phần */
+        get: operations["CourseOfferController_getEligibleStudents"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1846,48 +1865,6 @@ export interface components {
              */
             gradeComponentIds: number[];
         };
-        SubjectResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example BAS1201 */
-            subjectCode: string;
-            /** @example Lập trình hướng đối tượng */
-            subjectName: string;
-            /** @example 3 */
-            credits: number;
-            /** @example 30 */
-            theoryHours: number;
-            /** @example 15 */
-            practiceHours: number;
-            /** @example 1 */
-            deptId: number;
-            /** @example true */
-            isMandatory: boolean;
-            /** @example Mô tả môn học */
-            description?: string | null;
-            /**
-             * @description Chuỗi ID của các thành phần điểm (grade components) liên kết với môn học, cách nhau bằng dấu phẩy. Ví dụ: '1,2,3'
-             * @example 1,2,3
-             */
-            grade_components?: string | null;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            updatedAt: string;
-            /** @description Thông tin khoa quản lý */
-            department?: Record<string, never>;
-            /**
-             * @description Số lượng chương trình đào tạo có môn này
-             * @example 5
-             */
-            curriculumCount?: number;
-        };
         GradeComponentDto: {
             /**
              * @description ID định danh cấu hình thành phần điểm
@@ -1988,6 +1965,48 @@ export interface components {
              *     ]
              */
             gradeComponentIds?: number[];
+        };
+        SubjectResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example BAS1201 */
+            subjectCode: string;
+            /** @example Lập trình hướng đối tượng */
+            subjectName: string;
+            /** @example 3 */
+            credits: number;
+            /** @example 30 */
+            theoryHours: number;
+            /** @example 15 */
+            practiceHours: number;
+            /** @example 1 */
+            deptId: number;
+            /** @example true */
+            isMandatory: boolean;
+            /** @example Mô tả môn học */
+            description?: string | null;
+            /**
+             * @description Chuỗi ID của các thành phần điểm (grade components) liên kết với môn học, cách nhau bằng dấu phẩy. Ví dụ: '1,2,3'
+             * @example 1,2,3
+             */
+            grade_components?: string | null;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /** @description Thông tin khoa quản lý */
+            department?: Record<string, never>;
+            /**
+             * @description Số lượng chương trình đào tạo có môn này
+             * @example 5
+             */
+            curriculumCount?: number;
         };
         CreateSemesterDto: {
             /**
@@ -3022,6 +3041,161 @@ export interface components {
             /** @example 2026-05-15T23:59:59Z */
             registrationEnd?: string;
         };
+        CourseOfferRegisResponseDto: {
+            /**
+             * @description ID duy nhất của bản ghi đăng ký học phần
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description ID của lớp học phần được mở (CourseOffer)
+             * @example 101
+             */
+            courseOfferId: number;
+            /**
+             * @description ID của sinh viên đăng ký
+             * @example 20260001
+             */
+            studentId: number;
+            /**
+             * @description Trạng thái của đơn đăng ký học phần
+             * @example PENDING
+             * @enum {string}
+             */
+            status: "PENDING" | "APPROVED" | "REJECTED";
+            /**
+             * @description Ghi chú của sinh viên khi đăng ký
+             * @example Đăng ký học cải thiện điểm
+             */
+            note?: string | null;
+            /**
+             * Format: date-time
+             * @description Thời điểm hệ thống ghi nhận đăng ký
+             * @example 2026-05-16T02:15:00.000Z
+             */
+            registeredAt: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm đơn đăng ký được phê duyệt
+             * @example 2026-05-16T03:00:00.000Z
+             */
+            approvedAt?: string | null;
+            /**
+             * Format: date-time
+             * @description Thời điểm tạo bản ghi
+             * @example 2026-05-16T02:15:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm cập nhật bản ghi gần nhất
+             * @example 2026-05-16T03:00:00.000Z
+             */
+            updatedAt: string;
+            /** @description Thông tin chi tiết của sinh viên đăng ký */
+            student: components["schemas"]["StudentResponseDto"];
+        };
+        CourseOfferDetailResponseDto: {
+            /**
+             * @description ID duy nhất của lớp học phần
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description Mã lớp học phần (thường gồm mã môn + số thứ tự lớp)
+             * @example COMP1411_02
+             */
+            courseCode: string;
+            /**
+             * @description Tên hiển thị tùy chỉnh của lớp học phần
+             * @example Lớp kỹ thuật lập trình - Nhóm 2
+             */
+            courseName?: string | null;
+            /**
+             * @description ID của giảng viên phụ trách lớp học phần
+             * @example 12
+             */
+            teacherId?: number | null;
+            /**
+             * @description ID của lớp sinh viên hành chính (nếu mở riêng cho lớp cố định)
+             * @example 5
+             */
+            classId?: number | null;
+            /**
+             * @description ID của học kỳ mở lớp học phần này
+             * @example 2
+             */
+            semesterId: number;
+            /**
+             * @description ID của môn học gốc
+             * @example 104
+             */
+            subjectId: number;
+            /**
+             * @description Số lượng sinh viên tối đa của lớp học phần
+             * @example 40
+             */
+            maxStudents: number;
+            /**
+             * @description Số lượng sinh viên hiện tại đã đăng ký thành công
+             * @example 35
+             */
+            currentStudents: number;
+            /**
+             * @description Trạng thái hiện tại của lớp học phần
+             * @example OPEN
+             * @enum {string}
+             */
+            status: "planned" | "open" | "closed" | "cancelled";
+            /**
+             * Format: date-time
+             * @description Ngày bắt đầu học
+             * @example 2026-06-01T00:00:00.000Z
+             */
+            startDate?: string | null;
+            /**
+             * Format: date-time
+             * @description Ngày kết thúc học phần
+             * @example 2026-10-15T00:00:00.000Z
+             */
+            endDate?: string | null;
+            /**
+             * Format: date-time
+             * @description Thời gian bắt đầu mở cổng đăng ký
+             * @example 2026-05-15T00:00:00.000Z
+             */
+            registrationStart?: string | null;
+            /**
+             * Format: date-time
+             * @description Thời gian đóng cổng đăng ký
+             * @example 2026-05-25T23:59:59.000Z
+             */
+            registrationEnd?: string | null;
+            /**
+             * Format: date-time
+             * @description Thời điểm tạo bản ghi lớp học phần
+             * @example 2026-05-16T02:15:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm cập nhật bản ghi gần nhất
+             * @example 2026-05-16T03:00:00.000Z
+             */
+            updatedAt: string;
+            /** @description Thông tin lớp hành chính liên kết */
+            baseClass?: components["schemas"]["ClassResponseDto"] | null;
+            /** @description Thông tin chi tiết của môn học */
+            subject?: components["schemas"]["ResponseFindOneSubject"] | null;
+            /** @description Thông tin chi tiết của học kỳ */
+            semester?: components["schemas"]["SemesterResponseDto"] | null;
+            /** @description Thông tin chi tiết của giảng viên phụ trách */
+            teacher?: components["schemas"]["StaffResponseDto"] | null;
+            /** @description Danh sách các đơn đăng ký của sinh viên vào lớp học phần này */
+            registrations?: components["schemas"]["CourseOfferRegisResponseDto"][] | null;
+            /** @description Cấu hình phân bổ đầu điểm và trọng số của lớp học phần */
+            gradeConfig?: components["schemas"]["GradeComponentDto"][] | null;
+        };
         CreateCourseRegistrationDto: {
             /**
              * @description ID của Sinh viên
@@ -3894,7 +4068,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SubjectResponseDto"][];
+                    "application/json": components["schemas"]["ResponseFindOneSubject"][];
                 };
             };
         };
@@ -3917,7 +4091,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SubjectResponseDto"];
+                    "application/json": components["schemas"]["ResponseFindOneSubject"];
                 };
             };
         };
@@ -5349,7 +5523,7 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_getDetail: {
+    CourseOfferController_approve: {
         parameters: {
             query?: never;
             header?: never;
@@ -5368,7 +5542,7 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_approve: {
+    CourseOfferController_getDetail: {
         parameters: {
             query?: never;
             header?: never;
@@ -5383,7 +5557,30 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["CourseOfferDetailResponseDto"];
+                };
+            };
+        };
+    };
+    CourseOfferController_getEligibleStudents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                courseOfferId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentResponseDto"];
+                };
             };
         };
     };

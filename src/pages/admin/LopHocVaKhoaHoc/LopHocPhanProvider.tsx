@@ -1,12 +1,23 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { PAGE_SIZE } from "./constants";
 import { SAMPLE_DATA } from "./mockData";
 import type { LopHoc } from "./mockType";
 import { $api } from "../../../api/client";
+import { useAppContext } from "../../../AppProvider";
 
 export const [LopHocPhanProvider, useLopHocPhanContext] = createContextProvider(
   () => {
+    const { hocKysData } = useAppContext();
+    // state
+    const [hocKyIdSelected, setHocKyIdSelected] = useState<number | null>(null);
+
+    useEffect(() => {
+      setHocKyIdSelected(
+        hocKysData.find((hk) => hk.isCurrent)?.id || hocKysData[0]?.id,
+      );
+    }, [hocKysData]);
+
     // get all lớp học phần
     const { data: lopHocPhans, isLoading: isLoadingLopHocPhans } =
       $api.useQuery("get", "/course-offers");
@@ -71,6 +82,11 @@ export const [LopHocPhanProvider, useLopHocPhanContext] = createContextProvider(
     return {
       lopHocPhans,
       isLoadingLopHocPhans,
+
+      // state
+      hocKyIdSelected,
+      setHocKyIdSelected,
+      hocKysData,
 
       activeTab,
       setActiveTab,
