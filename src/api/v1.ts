@@ -1144,6 +1144,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/course-offers/{courseOfferId}/diem": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy điểm của 1 lớp */
+        get: operations["CourseOfferController_getDiemCua1Lop"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/course-registrations": {
         parameters: {
             query?: never;
@@ -1887,6 +1904,18 @@ export interface components {
             /** @description Mảng các ID điểm thành phần */
             gradeComponents: components["schemas"]["SubjectGradeDto"][];
         };
+        GradeComponentDto: {
+            /**
+             * @description ID định danh cấu hình thành phần điểm
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description Tên thành phần điểm (Ví dụ: attendance, midterm, final)
+             * @example midterm
+             */
+            name: string;
+        };
         SubjetGradeWeightResponseDtoSimple: {
             /**
              * @description ID cấu hình trọng số
@@ -1920,6 +1949,8 @@ export interface components {
              * @example 2026-05-16T07:30:00.000Z
              */
             updatedAt: string;
+            /** @description Thông tin thành phần điểm */
+            gradeComponent: components["schemas"]["GradeComponentDto"];
         };
         SubjectResponseDto: {
             /** @example 1 */
@@ -2005,18 +2036,6 @@ export interface components {
              */
             name: string;
         };
-        GradeComponentDto: {
-            /**
-             * @description ID định danh cấu hình thành phần điểm
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description Tên thành phần điểm (Ví dụ: attendance, midterm, final)
-             * @example midterm
-             */
-            name: string;
-        };
         UpdateGradeComponentDto: {
             /**
              * @description Tên thành phần điểm (attendance, midterm, final, assignment...)
@@ -2026,15 +2045,15 @@ export interface components {
         };
         CreateGradeEntryDto: {
             /**
-             * @description ID của học sinh được nhập điểm
-             * @example 30
-             */
-            studentId: number;
-            /**
              * @description ID của thành phần điểm (Ví dụ: 1 là Thường kỳ 1, 3 là Giữa kỳ)
              * @example 1
              */
             componentId: number;
+            /**
+             * @description ID của học sinh (Student)
+             * @example 123
+             */
+            courseRegistrationId: number;
             /**
              * @description Điểm số của học sinh (Thang điểm 10, chấp nhận số thập phân). Để null nếu chưa nhập.
              * @example 8.5
@@ -3128,6 +3147,7 @@ export interface components {
              * @example 2026-05-16T02:15:00.000Z
              */
             registeredAt: string;
+            finalGrade?: number;
             /**
              * Format: date-time
              * @description Thời điểm đơn đăng ký được phê duyệt
@@ -3148,6 +3168,7 @@ export interface components {
             updatedAt: string;
             /** @description Thông tin chi tiết của sinh viên đăng ký */
             student: components["schemas"]["StudentResponseDto"];
+            gradeEntries: unknown[];
         };
         CourseOfferDetailResponseDto: {
             /**
@@ -3247,8 +3268,6 @@ export interface components {
             teacher?: components["schemas"]["StaffResponseDto"] | null;
             /** @description Danh sách các đơn đăng ký của sinh viên vào lớp học phần này */
             registrations?: components["schemas"]["CourseOfferRegisResponseDto"][] | null;
-            /** @description Cấu hình phân bổ đầu điểm và trọng số của lớp học phần */
-            gradeConfig?: components["schemas"]["GradeComponentDto"][] | null;
         };
         CreateCourseRegistrationDto: {
             /**
@@ -5790,6 +5809,25 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StudentResponseDto"];
                 };
+            };
+        };
+    };
+    CourseOfferController_getDiemCua1Lop: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                courseOfferId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

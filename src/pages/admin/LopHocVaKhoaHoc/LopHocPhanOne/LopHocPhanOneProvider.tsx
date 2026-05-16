@@ -34,6 +34,11 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
           enabled: !!lopHocPhanId, // Chỉ chạy query khi có ID lớp học phần được chọn
         },
       );
+    const registration = lopHocPhanDetail?.registrations;
+    const students = registration?.map((regis) => regis.student) || [];
+    const gradeEntries =
+      registration?.map((regis) => regis.gradeEntries).flat() || [];
+    console.log(gradeEntries);
 
     // Chấp nhận mở lớp học phần
     const { mutate: acceptLopHocPhan, isPending: isAcceptingLopHocPhan } =
@@ -83,6 +88,8 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
         });
       },
       isSubmittingGrades,
+      gradeEntries,
+      students,
 
       // state
       isOpenModalAddStudent,

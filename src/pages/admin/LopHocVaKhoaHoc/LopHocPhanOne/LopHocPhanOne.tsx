@@ -74,7 +74,7 @@ const Inner = () => {
           Không tìm thấy dữ liệu
         </h3>
         <p className="text-sm text-slate-500 mt-1">
-          Lớp học phần #{lopHocPhanId} không tồn tại hoặc dữ liệu bị thiếu.
+          Lớp học phần # {lopHocPhanId} không tồn tại hoặc dữ liệu bị thiếu.
         </p>
       </div>
     );
@@ -106,16 +106,16 @@ const Inner = () => {
       <Header />
 
       {/* 2. KHU VỰC BỐ CỤC CHÍNH (MAIN LAYOUT) */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* CỘT TRÁI (2/3 BỐ CỤC) - THÔNG TIN TỔNG QUAN & DANH SÁCH SINH VIÊN */}
-        <div className="lg:col-span-2 space-y-6">
+      <div className="max-w-7xl mx-auto space-y-6">
+        {/* HÀNG 1: THÔNG TIN TỔNG QUAN, SĨ SỐ & MỐC THỜI GIAN */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Card Thông tin chung */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 lg:col-span-1">
             <h2 className="text-base font-bold text-slate-800 flex items-center gap-2 mb-4 border-b border-slate-100 pb-3">
               <BookOpen size={18} className="text-blue-500" />
               Thông tin tổng quan học phần
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="space-y-4">
               <div className="flex gap-3 items-start">
                 <div className="p-2 bg-slate-50 border border-slate-100 rounded-xl text-slate-400 shrink-0">
                   <Bookmark size={18} />
@@ -179,7 +179,109 @@ const Inner = () => {
             </div>
           </div>
 
-          {/* Card Danh sách sinh viên đã đăng ký thành công */}
+          {/* Box Sĩ số & Giới hạn */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col justify-between">
+            <div>
+              <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">
+                Tỷ lệ lấp đầy sĩ số
+              </h3>
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black text-slate-800 tracking-tighter">
+                  {currentStudents}
+                </span>
+                <span className="text-slate-400 text-sm font-medium">
+                  / tối đa {maxStudents} sinh viên
+                </span>
+              </div>
+
+              {/* Thanh Progress bar */}
+              <div className="w-full h-3 bg-slate-100 rounded-full mt-4 overflow-hidden border border-slate-50">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    fillPercentage >= 90
+                      ? "bg-rose-500"
+                      : fillPercentage >= 70
+                        ? "bg-amber-500"
+                        : "bg-blue-600"
+                  }`}
+                  style={{ width: `${fillPercentage}%` }}
+                ></div>
+              </div>
+            </div>
+            <div className="flex justify-between items-center text-xs text-slate-400 mt-4 font-medium border-t border-slate-50 pt-3">
+              <span>Đã đăng ký: {fillPercentage}%</span>
+              <span> Còn trống: {maxStudents - currentStudents} chỗ </span>
+            </div>
+          </div>
+
+          {/* Box Các mốc thời gian quan trọng */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
+            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">
+              Khung mốc thời gian
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-blue-50 text-blue-500 rounded-xl shrink-0 mt-0.5">
+                  <Clock size={16} />
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400 block font-medium">
+                    Mở cổng đăng ký
+                  </span>
+                  <span className="text-xs font-bold text-slate-700">
+                    {formatDateTime(registrationStart)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-rose-50 text-rose-500 rounded-xl shrink-0 mt-0.5">
+                  <Clock size={16} />
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400 block font-medium">
+                    Đóng cổng đăng ký
+                  </span>
+                  <span className="text-xs font-bold text-slate-700">
+                    {formatDateTime(registrationEnd)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-slate-50 text-slate-500 rounded-xl shrink-0 mt-0.5">
+                  <Calendar size={16} />
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400 block font-medium">
+                    Ngày bắt đầu học (Dự kiến)
+                  </span>
+                  <span className="text-xs font-bold text-slate-700">
+                    {formatDateTime(startDate)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-3">
+                <div className="p-2 bg-slate-50 text-slate-500 rounded-xl shrink-0 mt-0.5">
+                  <CalendarDays size={16} />
+                </div>
+                <div>
+                  <span className="text-xs text-slate-400 block font-medium">
+                    Ngày bế mạc môn (Dự kiến)
+                  </span>
+                  <span className="text-xs font-bold text-slate-700">
+                    {formatDateTime(endDate)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* HÀNG 2: KHU VỰC CHỨA TABLE */}
+        <div className="w-full">
           {lopHocPhanDetail.status === "open" ? (
             <TableHocSinhVoiDiem />
           ) : (
@@ -263,113 +365,12 @@ const Inner = () => {
             </div>
           )}
         </div>
-
-        {/* CỘT PHẢI (1/3 BỐ CỤC) - TIẾN ĐỘ SĨ SỐ & KHUNG THỜI GIAN */}
-        <div className="space-y-6">
-          {/* Box Sĩ số & Giới hạn */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">
-              Tỷ lệ lấp đầy sĩ số
-            </h3>
-            <div className="flex items-baseline gap-2">
-              <span className="text-4xl font-black text-slate-800 tracking-tighter">
-                {currentStudents}
-              </span>
-              <span className="text-slate-400 text-sm font-medium">
-                / tối đa {maxStudents} sinh viên
-              </span>
-            </div>
-
-            {/* Thanh Progress bar */}
-            <div className="w-full h-3 bg-slate-100 rounded-full mt-4 overflow-hidden border border-slate-50">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  fillPercentage >= 90
-                    ? "bg-rose-500"
-                    : fillPercentage >= 70
-                      ? "bg-amber-500"
-                      : "bg-blue-600"
-                }`}
-                style={{ width: `${fillPercentage}%` }}
-              ></div>
-            </div>
-            <div className="flex justify-between items-center text-xs text-slate-400 mt-2 font-medium">
-              <span>Đã đăng ký: {fillPercentage}%</span>
-              <span>Còn trống: {maxStudents - currentStudents} chỗ</span>
-            </div>
-          </div>
-
-          {/* Box Các mốc thời gian quan trọng */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 space-y-4">
-            <h3 className="text-sm font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100 pb-2">
-              Khung mốc thời gian
-            </h3>
-
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-blue-50 text-blue-500 rounded-xl shrink-0 mt-0.5">
-                  <Clock size={16} />
-                </div>
-                <div>
-                  <span className="text-xs text-slate-400 block font-medium">
-                    Mở cổng đăng ký
-                  </span>
-                  <span className="text-xs font-bold text-slate-700">
-                    {formatDateTime(registrationStart)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-rose-50 text-rose-500 rounded-xl shrink-0 mt-0.5">
-                  <Clock size={16} />
-                </div>
-                <div>
-                  <span className="text-xs text-slate-400 block font-medium">
-                    Đóng cổng đăng ký
-                  </span>
-                  <span className="text-xs font-bold text-slate-700">
-                    {formatDateTime(registrationEnd)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-slate-50 text-slate-500 rounded-xl shrink-0 mt-0.5">
-                  <Calendar size={16} />
-                </div>
-                <div>
-                  <span className="text-xs text-slate-400 block font-medium">
-                    Ngày bắt đầu học (Dự kiến)
-                  </span>
-                  <span className="text-xs font-bold text-slate-700">
-                    {formatDateTime(startDate)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-slate-50 text-slate-500 rounded-xl shrink-0 mt-0.5">
-                  <CalendarDays size={16} />
-                </div>
-                <div>
-                  <span className="text-xs text-slate-400 block font-medium">
-                    Ngày bế mạc môn (Dự kiến)
-                  </span>
-                  <span className="text-xs font-bold text-slate-700">
-                    {formatDateTime(endDate)}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <ModalAddStudent
-          isOpen={isOpenModalAddStudent}
-          onClose={() => setIsOpenModalAddStudent(false)}
-        />
       </div>
+
+      <ModalAddStudent
+        isOpen={isOpenModalAddStudent}
+        onClose={() => setIsOpenModalAddStudent(false)}
+      />
     </div>
   );
 };
