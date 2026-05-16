@@ -1,26 +1,36 @@
-import { useState } from "react";
+import { useMemo, useState, type ChangeEvent } from "react";
 import { useForm } from "react-hook-form";
 import type { CreatemonHocDto } from "./MonHocProvider";
-import { useMonHocContext } from "./MonHocProvider"; // Giả định import context từ file này
+import { useMonHocContext } from "./MonHocProvider";
+import { Trash2, AlertTriangle, Check, BookOpen, Layers } from "lucide-react";
+
+// Định nghĩa kiểu dữ liệu cho từng cột điểm được cấu hình động
+interface SelectedGradeComponent {
+  gradeComponentId: number;
+  name: string;
+  weight: number | "";
+}
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (
-    data: CreatemonHocDto & { gradeComponentIds: number[] },
+    data: CreatemonHocDto & {
+      gradeComponents: { gradeComponentId: number; weight: number }[];
+    },
     reset: () => void,
   ) => void;
   isPending: boolean;
 }
 
 const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
-  // Lấy danh sách danh mục cột điểm từ context
+  // Lấy danh mục các loại điểm hệ thống từ Context (Ví dụ: Chuyên cần, Giữa kỳ, Cuối kỳ...)
   const { diemComponents } = useMonHocContext();
 
-  // State quản lý các ID cột điểm được chọn
-  const [selectedComponentIds, setSelectedComponentIds] = useState<number[]>(
-    [],
-  );
+  // State quản lý danh sách các đầu điểm đã chọn để cấu hình trọng số
+  const [selectedComponents, setSelectedComponents] = useState<
+    SelectedGradeComponent[]
+  >([]);
   const [weightError, setWeightError] = useState<string | null>(null);
 
   const {
@@ -37,63 +47,156 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
     },
   });
 
-  // Tính tổng trọng số hiện tại của các cột điểm đã chọn
-  const currentTotalWeight = diemComponents
-    ? diemComponents
-        .filter((comp) => selectedComponentIds.includes(comp.id))
-        .reduce((sum, comp) => sum + comp.weight, 0)
-    : 0;
+  // 1. Tính tổng trọng số hiện tại của các cấu hình (Quy đổi về hệ số 1 để validate)
+  const currentTotalWeight = useMemo(() => {
+    return selectedComponents.reduce((sum, comp) => {
+      const w = comp.weight === "" ? 0 : comp.weight;
+      return sum + w;
+    }, 0);
+  }, [selectedComponents]);
 
-  // Xử lý bật/tắt chọn cột điểm
-  const handleToggleComponent = (id: number) => {
-    setWeightError(null); // Xóa lỗi cũ khi user thay đổi lựa chọn
-    setSelectedComponentIds((prev) =>
-      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id],
+  // 2. Xử lý khi chọn một đầu điểm mới từ thẻ Select Option
+  const handleSelectComponent = (e: ChangeEvent<HTMLSelectElement>) => {
+    const componentId = Number(e.target.value);
+    if (!componentId || !diemComponents) return;
+
+    // Kiểm tra xem đầu điểm này đã được thêm vào danh sách cấu hình hay chưa
+    const isExisted = selectedComponents.some(
+      (c) => c.gradeComponentId === componentId,
     );
-  };
-
-  const handleInternalSubmit = (data: CreatemonHocDto) => {
-    // 1. Kiểm tra xem đã chọn cột điểm nào chưa
-    if (selectedComponentIds.length === 0) {
-      setWeightError("Vui lòng cấu hình ít nhất một cột điểm thành phần.");
+    if (isExisted) {
+      setWeightError("Thành phần điểm này đã được chọn.");
+      e.target.value = ""; // Reset giá trị thẻ select về rỗng
       return;
     }
 
-    // 2. Kiểm tra tổng trọng số (Dùng sai số nhỏ Math.abs để tránh lỗi số thập phân Javascript)
-    if (Math.abs(currentTotalWeight - 1) > 0.00001) {
+    const targetComponent = diemComponents.find((c) => c.id === componentId);
+    if (targetComponent) {
+      setWeightError(null);
+      setSelectedComponents((prev) => [
+        ...prev,
+        {
+          gradeComponentId: targetComponent.id,
+          name: targetComponent.name,
+          weight: "", // Để trống để giảng viên tự tay điền trọng số
+        },
+      ]);
+    }
+    e.target.value = ""; // Reset giá trị thẻ select về rỗng
+  };
+
+  // 3. Thay đổi trọng số (weight) của một đầu điểm cụ thể
+  const handleWeightChange = (componentId: number, value: string) => {
+    setWeightError(null);
+
+    // Nếu rỗng thì cho phép xóa
+    if (value === "") {
+      setSelectedComponents((prev) =>
+        prev.map((c) =>
+          c.gradeComponentId === componentId ? { ...c, weight: "" } : c,
+        ),
+      );
+      return;
+    }
+
+    const numericWeight = parseFloat(value);
+    // Chặn nhập số âm hoặc vượt quá 100% (tương đương hệ số 1)
+    if (numericWeight < 0 || numericWeight > 100) return;
+
+    setSelectedComponents((prev) =>
+      prev.map((c) =>
+        c.gradeComponentId === componentId
+          ? { ...c, weight: numericWeight / 100 }
+          : c,
+      ),
+    );
+  };
+
+  // 4. Xóa một đầu điểm ra khỏi cấu hình hiện tại
+  const handleRemoveComponent = (componentId: number) => {
+    setWeightError(null);
+    setSelectedComponents((prev) =>
+      prev.filter((c) => c.gradeComponentId !== componentId),
+    );
+  };
+
+  // 5. Kiểm tra tính hợp lệ toàn bộ Form trước khi submit lên Backend
+  const handleInternalSubmit = (data: CreatemonHocDto) => {
+    if (selectedComponents.length === 0) {
       setWeightError(
-        `Tổng trọng số các cột điểm phải bằng 100% (Hiện tại là: ${(currentTotalWeight * 100).toFixed(0)}%)`,
+        "Vui lòng cấu hình ít nhất một cột điểm thành phần cho môn học.",
+      );
+      return;
+    }
+
+    // Kiểm tra xem có ô điểm nào chưa được điền trọng số hay không
+    const hasEmptyWeight = selectedComponents.some((c) => c.weight === "");
+    if (hasEmptyWeight) {
+      setWeightError(
+        "Vui lòng nhập đầy đủ trọng số % cho các đầu điểm đã chọn.",
+      );
+      return;
+    }
+
+    // Kiểm tra tổng trọng số bắt buộc phải bằng 100% (hệ số 1)
+    if (Math.abs(currentTotalWeight - 1) > 0.001) {
+      setWeightError(
+        `Tổng trọng số các cột điểm phải bằng 100% (Hiện tại là: ${(
+          currentTotalWeight * 100
+        ).toFixed(0)}%)`,
       );
       return;
     }
 
     setWeightError(null);
-    // Gửi kèm mảng gradeComponentIds lên backend xử lý tiếp
-    onSubmit({ ...data, gradeComponentIds: selectedComponentIds }, reset);
+
+    // Chuẩn bị payload chuẩn hóa mảng object chứa { gradeComponentId, weight } khớp với cấu trúc API mới
+    const formattedGradeComponents = selectedComponents.map((c) => ({
+      gradeComponentId: c.gradeComponentId,
+      weight: c.weight as number,
+    }));
+
+    // Gửi dữ liệu thông qua callback hàm cha
+    onSubmit(
+      {
+        ...data,
+        gradeComponents: formattedGradeComponents,
+      },
+      () => {
+        reset();
+        setSelectedComponents([]);
+      },
+    );
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 transition-all animate-fadeIn">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 transition-all duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="px-8 py-5 border-b border-slate-100 flex justify-between items-center bg-gradient-to-r from-slate-50 to-white">
-          <div>
-            <h3 className="text-xl font-bold text-slate-800 tracking-tight">
-              Tạo Môn Học Mới
-            </h3>
-            <p className="text-sm text-slate-500 mt-0.5">
-              Thiết lập thông tin chung và cấu hình khung điểm thành phần.
-            </p>
+        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 bg-blue-50 text-blue-600 rounded-xl">
+              <BookOpen size={20} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-slate-800 tracking-tight">
+                Tạo Môn Học Mới
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Thiết lập thông tin chung và cấu hình khung điểm thành phần
+                riêng biệt.
+              </p>
+            </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all"
+            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-all cursor-pointer"
             disabled={isPending}
           >
             <svg
-              className="w-6 h-6"
+              className="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -111,54 +214,54 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
         {/* Form Body - Scrollable */}
         <form
           onSubmit={handleSubmit(handleInternalSubmit)}
-          className="flex-1 overflow-y-auto p-8 space-y-6"
+          className="flex-1 overflow-y-auto p-6 space-y-6"
         >
           {/* Section 1: Thông tin cơ bản */}
           <div className="space-y-4">
-            <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-              Thông tin cơ bản
+            <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+              <Layers size={12} /> Thông tin cơ bản
             </h4>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">
                   Mã môn học <span className="text-red-500">*</span>
                 </label>
                 <input
                   {...register("subjectCode", {
                     required: "Vui lòng nhập mã môn học",
                   })}
-                  className={`w-full text-base font-normal border rounded-xl px-4 py-2.5 outline-none transition-all focus:ring-4 ${
+                  className={`w-full text-sm font-medium border rounded-xl px-3.5 py-2 outline-none transition-all ${
                     errors.subjectCode
-                      ? "border-red-400 focus:border-red-500 focus:ring-red-100"
-                      : "border-slate-200 focus:border-blue-500 focus:ring-blue-500/10"
+                      ? "border-red-400 focus:border-red-500 bg-red-50/10"
+                      : "border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 bg-slate-50/30 focus:bg-white"
                   }`}
                   placeholder="VD: IT101"
                 />
                 {errors.subjectCode && (
-                  <p className="text-red-500 text-sm mt-1.5 font-medium">
+                  <p className="text-red-500 text-xs mt-1 font-semibold">
                     {errors.subjectCode.message}
                   </p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">
                   Tên môn học <span className="text-red-500">*</span>
                 </label>
                 <input
                   {...register("subjectName", {
                     required: "Vui lòng nhập tên môn học",
                   })}
-                  className={`w-full text-base font-normal border rounded-xl px-4 py-2.5 outline-none transition-all focus:ring-4 ${
+                  className={`w-full text-sm font-medium border rounded-xl px-3.5 py-2 outline-none transition-all ${
                     errors.subjectName
-                      ? "border-red-400 focus:border-red-500 focus:ring-red-100"
-                      : "border-slate-200 focus:border-blue-500 focus:ring-blue-500/10"
+                      ? "border-red-400 focus:border-red-500 bg-red-50/10"
+                      : "border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 bg-slate-50/30 focus:bg-white"
                   }`}
                   placeholder="VD: Cấu trúc dữ liệu và giải thuật"
                 />
                 {errors.subjectName && (
-                  <p className="text-red-500 text-sm mt-1.5 font-medium">
+                  <p className="text-red-500 text-xs mt-1 font-semibold">
                     {errors.subjectName.message}
                   </p>
                 )}
@@ -167,7 +270,7 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
 
             <div className="grid grid-cols-3 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">
                   Tín chỉ
                 </label>
                 <input
@@ -176,41 +279,41 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
                     valueAsNumber: true,
                     min: { value: 0, message: "Tối thiểu là 0" },
                   })}
-                  className="w-full text-base border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  className="w-full text-sm font-medium border border-slate-200 rounded-xl px-3.5 py-2 outline-none focus:border-blue-500 bg-slate-50/30 focus:bg-white transition-all"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">
                   Lý thuyết (h)
                 </label>
                 <input
                   type="number"
                   {...register("theoryHours", { valueAsNumber: true })}
-                  className="w-full text-base border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  className="w-full text-sm font-medium border border-slate-200 rounded-xl px-3.5 py-2 outline-none focus:border-blue-500 bg-slate-50/30 focus:bg-white transition-all"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">
                   Thực hành (h)
                 </label>
                 <input
                   type="number"
                   {...register("practiceHours", { valueAsNumber: true })}
-                  className="w-full text-base border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  className="w-full text-sm font-medium border border-slate-200 rounded-xl px-3.5 py-2 outline-none focus:border-blue-500 bg-slate-50/30 focus:bg-white transition-all"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5 items-start">
-              <div className="md:col-span-1">
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-1">
                   Loại môn học
                 </label>
                 <select
                   {...register("isMandatory", {
                     setValueAs: (v) => v === "true",
                   })}
-                  className="w-full text-base border border-slate-200 rounded-xl px-4 py-2.5 outline-none bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  className="w-full text-sm font-semibold border border-slate-200 rounded-xl px-3.5 py-2 outline-none bg-slate-50/30 focus:bg-white focus:border-blue-500 transition-all cursor-pointer"
                 >
                   <option value="true">Bắt buộc</option>
                   <option value="false">Tự chọn</option>
@@ -218,12 +321,12 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-1.5">
+                <label className="block text-sm font-semibold text-slate-700 mb-1">
                   Mô tả (tùy chọn)
                 </label>
                 <input
                   {...register("description")}
-                  className="w-full text-base border border-slate-200 rounded-xl px-4 py-2.5 outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all"
+                  className="w-full text-sm font-medium border border-slate-200 rounded-xl px-3.5 py-2 outline-none focus:border-blue-500 bg-slate-50/30 focus:bg-white transition-all"
                   placeholder="Nhập ghi chú ngắn về môn học..."
                 />
               </div>
@@ -232,156 +335,175 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
 
           <hr className="border-slate-100" />
 
-          {/* Section 2: Cấu hình cột điểm thành phần */}
+          {/* Section 2: Cấu hình cột điểm thành phần theo cơ chế Select Option và tự nhập Trọng số */}
           <div className="space-y-4">
-            <div className="flex justify-between items-end">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-2">
               <div>
-                <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
-                  Cấu hình cột điểm
+                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
+                  Cấu hình cột điểm môn học
                 </h4>
-                <p className="text-sm text-slate-500 mt-0.5">
-                  Chọn các đầu điểm cấu thành môn học này.
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Chọn đầu điểm từ danh mục và nhập tỷ lệ phần trăm trọng số
+                  mong muốn.
                 </p>
               </div>
-              {/* Thanh hiển thị tiến trình tổng trọng số trực quan */}
-              <div className="text-right">
-                <span className="text-sm text-slate-500">Tổng trọng số: </span>
+
+              {/* Vòng hiển thị tiến trình tổng % */}
+              <div className="bg-slate-50 px-3 py-1 border border-slate-100 rounded-lg text-sm font-medium">
+                <span className="text-slate-500">Tổng trọng số: </span>
                 <span
-                  className={`text-base font-bold ${Math.abs(currentTotalWeight - 1) < 0.00001 ? "text-emerald-600" : "text-amber-500"}`}
+                  className={`font-bold ${Math.abs(currentTotalWeight - 1) < 0.001 ? "text-emerald-600" : "text-amber-500"}`}
                 >
                   {(currentTotalWeight * 100).toFixed(0)}%
                 </span>
-                <span className="text-sm text-slate-400"> / 100%</span>
+                <span className="text-slate-400 text-xs"> / 100%</span>
               </div>
             </div>
 
-            {/* Grid danh sách các cột điểm thành phần */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-56 overflow-y-auto pr-1">
-              {diemComponents && diemComponents.length > 0 ? (
-                diemComponents.map((component) => {
-                  const isChecked = selectedComponentIds.includes(component.id);
+            {/* THẺ SELECT OPTION ĐỂ THÊM ĐẦU ĐIỂM HỆ THỐNG */}
+            <div className="w-full">
+              <select
+                onChange={handleSelectComponent}
+                defaultValue=""
+                className="w-full text-sm font-semibold border border-slate-200 rounded-xl px-3.5 py-2.5 outline-none bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/5 transition-all cursor-pointer text-slate-700"
+              >
+                <option value="" disabled>
+                  --- Bấm vào đây để chọn đầu điểm muốn thêm ---
+                </option>
+                {diemComponents?.map((comp) => (
+                  <option key={comp.id} value={comp.id}>
+                    {comp.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* DANH SÁCH CÁC ĐẦU ĐIỂM ĐÃ CHỌN ĐỂ NHẬP TRỌNG SỐ */}
+            <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+              {selectedComponents.length > 0 ? (
+                selectedComponents.map((component) => {
+                  const displayValue =
+                    component.weight === ""
+                      ? ""
+                      : (component.weight * 100).toString();
                   return (
                     <div
-                      key={component.id}
-                      onClick={() => handleToggleComponent(component.id)}
-                      className={`flex items-center justify-between p-4 rounded-xl border cursor-pointer select-none transition-all duration-200 ${
-                        isChecked
-                          ? "border-blue-500 bg-blue-50/40 shadow-sm"
-                          : "border-slate-200 hover:border-slate-300 hover:bg-slate-50/50"
-                      }`}
+                      key={component.gradeComponentId}
+                      className="flex items-center justify-between p-3 rounded-xl border border-blue-100 bg-blue-50/20 group hover:bg-blue-50/40 transition-all"
                     >
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${
-                            isChecked
-                              ? "bg-blue-600 border-blue-600 text-white"
-                              : "border-slate-300 bg-white"
-                          }`}
-                        >
-                          {isChecked && (
-                            <svg
-                              className="w-3.5 h-3.5 stroke-[3]"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M5 13l4 4L19 7"
-                              />
-                            </svg>
-                          )}
-                        </div>
-                        <span
-                          className={`text-base font-medium ${isChecked ? "text-blue-900" : "text-slate-700"}`}
-                        >
+                      <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-blue-500" />
+                        <span className="text-sm font-bold text-blue-950 uppercase">
                           {component.name}
                         </span>
                       </div>
-                      <span
-                        className={`text-sm font-semibold px-2.5 py-1 rounded-md ${
-                          isChecked
-                            ? "bg-blue-100/70 text-blue-700"
-                            : "bg-slate-100 text-slate-600"
-                        }`}
-                      >
-                        {`${component.weight * 100}%`}
-                      </span>
+
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs text-slate-400 font-medium">
+                            Trọng số:
+                          </span>
+                          <div className="relative flex items-center">
+                            <input
+                              type="number"
+                              min="0"
+                              max="100"
+                              step="1"
+                              value={displayValue}
+                              placeholder="0"
+                              onChange={(e) =>
+                                handleWeightChange(
+                                  component.gradeComponentId,
+                                  e.target.value,
+                                )
+                              }
+                              className="w-16 text-center text-sm font-bold text-slate-800 border border-slate-200 focus:border-blue-500 bg-white rounded-lg py-1 outline-none transition-all pr-4"
+                            />
+                            <span className="absolute right-1.5 text-xs font-bold text-slate-400">
+                              %
+                            </span>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleRemoveComponent(component.gradeComponentId)
+                          }
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
                     </div>
                   );
                 })
               ) : (
-                <div className="col-span-2 text-center py-6 border border-dashed border-slate-200 rounded-xl bg-slate-50">
-                  <p className="text-sm text-slate-400 font-medium">
-                    Không tìm thấy dữ liệu cột điểm hệ thống
+                <div className="text-center py-6 border border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+                  <p className="text-xs text-slate-400 font-medium">
+                    Chưa chọn đầu điểm nào. Vui lòng chọn ở ô Select phía trên.
                   </p>
                 </div>
               )}
             </div>
 
-            {/* Hiển thị thông báo lỗi tính toán trọng số */}
+            {/* Thông báo lỗi logic trọng số */}
             {weightError && (
-              <div className="flex items-start gap-2 bg-red-50 text-red-700 p-3.5 rounded-xl border border-red-100 animate-shake">
-                <svg
-                  className="w-5 h-5 flex-shrink-0 mt-0.5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                  />
-                </svg>
-                <p className="text-sm font-medium">{weightError}</p>
+              <div className="flex items-start gap-2 bg-rose-50 text-rose-700 p-3 rounded-xl border border-rose-100/70 animate-in fade-in slide-in-from-top-1 duration-200">
+                <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
+                <p className="text-xs font-semibold">{weightError}</p>
               </div>
             )}
           </div>
 
           {/* Footer Actions */}
-          <div className="flex justify-end gap-3 pt-5 border-t border-slate-100 mt-4">
+          <div className="flex justify-end gap-2.5 pt-4 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
               disabled={isPending}
-              className="px-6 py-2.5 text-base font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200/80 rounded-xl transition-all disabled:opacity-50"
+              className="px-5 py-2 text-sm font-bold text-slate-600 bg-slate-100 hover:bg-slate-200/70 rounded-xl transition-all cursor-pointer disabled:opacity-50"
             >
               Hủy
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className={`px-6 py-2.5 text-base font-semibold text-white rounded-xl shadow-md shadow-blue-500/10 transition-all flex items-center gap-2 ${
-                Math.abs(currentTotalWeight - 1) < 0.00001
-                  ? "bg-blue-600 hover:bg-blue-700"
+              className={`px-5 py-2 text-sm font-bold text-white rounded-xl shadow-md shadow-blue-500/5 transition-all flex items-center gap-1.5 ${
+                Math.abs(currentTotalWeight - 1) < 0.001
+                  ? "bg-blue-600 hover:bg-blue-700 cursor-pointer"
                   : "bg-blue-600/80 hover:bg-blue-700 cursor-pointer"
-              } disabled:bg-blue-400`}
+              } disabled:bg-blue-400 disabled:cursor-not-allowed`}
             >
-              {isPending && (
-                <svg
-                  className="animate-spin h-5 w-5 text-white"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
+              {isPending ? (
+                <>
+                  <svg
+                    className="animate-spin h-4 w-4 text-white"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  <span>Đang lưu...</span>
+                </>
+              ) : (
+                <>
+                  <Check size={16} />
+                  <span>Lưu môn học</span>
+                </>
               )}
-              {isPending ? "Đang xử lý..." : "Lưu môn học"}
             </button>
           </div>
         </form>

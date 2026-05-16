@@ -9,6 +9,8 @@ export type LopHocPhanDetailType =
 export type RegistrationCourseOffer =
   components["schemas"]["CreateCourseRegistrationDto"];
 export type StudentData = components["schemas"]["StudentResponseDto"];
+export type SubmitGradeInClass =
+  components["schemas"]["CreateManyGradeEntriesDto"];
 
 export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
   createContextProvider(() => {
@@ -61,6 +63,10 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
       );
     const eligibleStudentsData: StudentData[] = eligibleStudents || [];
 
+    // Gửi duyệt điểm
+    const { mutate: submitGrades, isPending: isSubmittingGrades } =
+      $api.useMutation("post", "/grade-entries/submit-grade");
+
     return {
       lopHocPhanDetail,
       isLoadingLopHocPhanDetail,
@@ -71,6 +77,12 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
       isAddingStudentToLopHocPhan,
       eligibleStudentsData,
       isLoadingEligibleStudents,
+      submitGrades: (dto: SubmitGradeInClass) => {
+        submitGrades({
+          body: dto,
+        });
+      },
+      isSubmittingGrades,
 
       // state
       isOpenModalAddStudent,

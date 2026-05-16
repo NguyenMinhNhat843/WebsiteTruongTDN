@@ -64,9 +64,9 @@ import TaoLopHocPhan from "./pages/admin/LopHocPhan/LopHocPhan";
 import LopHocPhanLayout from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanLayout";
 import LopHocPhanList from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanList";
 import LopHocPhanOne from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanOne/LopHocPhanOne";
-import GradeComponentLayout from "./pages/admin/GradeComponent/GradeComponentLayout";
-import GradeComponentList from "./pages/admin/GradeComponent/GradeComponentList";
+import GradeComponentLayout from "./pages/admin/DiemThanhPhan/GradeComponentLayout";
 import { AppProvider } from "./AppProvider";
+import GradeComponentList from "./pages/admin/DiemThanhPhan/GradeComponentList";
 
 const queryClient = new QueryClient({
   defaultOptions: {
