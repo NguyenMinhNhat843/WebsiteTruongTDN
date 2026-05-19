@@ -456,6 +456,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/grade-entries/approve-grade": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Phê duyệt điểm cho 1 lớp học */
+        post: operations["GradeEntryController_approveGrade"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/semesters": {
         parameters: {
             query?: never;
@@ -2059,13 +2076,6 @@ export interface components {
              * @example 8.5
              */
             score?: number | null;
-            /**
-             * @description Trạng thái lưu trữ của đầu điểm
-             * @default PENDING
-             * @example PENDING
-             * @enum {string}
-             */
-            status: "DARFT" | "PENDING" | "APPROVED" | "REJECTED";
         };
         CreateManyGradeEntriesDto: {
             /**
@@ -2080,6 +2090,18 @@ export interface components {
             createdBy: number;
             /** @description Danh sách mảng các đầu điểm chi tiết của từng học sinh */
             grades: components["schemas"]["CreateGradeEntryDto"][];
+        };
+        SubmitGradeResponse: {
+            message: string;
+            status: boolean;
+        };
+        ApproveGradeEntryDto: {
+            /**
+             * @description ID của bản ghi nhập điểm (GradeEntry)
+             * @example 1
+             */
+            gradeSubmissionId: number;
+            approverId: number;
         };
         CreateSemesterDto: {
             /**
@@ -3114,6 +3136,33 @@ export interface components {
             /** @example 2026-05-15T23:59:59Z */
             registrationEnd?: string;
         };
+        GradeEntryResponseDto: {
+            /**
+             * @description ID tự tăng của bản ghi điểm số
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description ID của đơn phê duyệt điểm (GradeSubmission), có thể null nếu điểm dạng nháp chưa nộp
+             * @example 19
+             */
+            gradeSubmissionId?: number | null;
+            /**
+             * @description ID của thành phần điểm (Ví dụ: Điểm chuyên cần, Điểm giữa kỳ...)
+             * @example 2
+             */
+            componentId: number;
+            /**
+             * @description ID lượt đăng ký học phần của sinh viên (Liên kết với bảng CourseRegistration)
+             * @example 154
+             */
+            courseRegistrationId?: number | null;
+            /**
+             * @description Điểm số của học sinh (Thang điểm hệ 10), có thể null nếu chưa nhập điểm
+             * @example 8.5
+             */
+            score?: number | null;
+        };
         CourseOfferRegisResponseDto: {
             /**
              * @description ID duy nhất của bản ghi đăng ký học phần
@@ -3168,7 +3217,7 @@ export interface components {
             updatedAt: string;
             /** @description Thông tin chi tiết của sinh viên đăng ký */
             student: components["schemas"]["StudentResponseDto"];
-            gradeEntries: unknown[];
+            gradeEntries: components["schemas"]["GradeEntryResponseDto"][] | null;
         };
         CourseOfferDetailResponseDto: {
             /**
@@ -4381,8 +4430,31 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Nhập điểm thành công */
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmitGradeResponse"];
+                };
+            };
+        };
+    };
+    GradeEntryController_approveGrade: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApproveGradeEntryDto"];
+            };
+        };
+        responses: {
+            /** @description Phê duyệt điểm thành công */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -11,6 +11,18 @@ export type RegistrationCourseOffer =
 export type StudentData = components["schemas"]["StudentResponseDto"];
 export type SubmitGradeInClass =
   components["schemas"]["CreateManyGradeEntriesDto"];
+export type GradeEntry = components["schemas"]["GradeEntryResponseDto"];
+export type GradeEntries = {
+  id: number;
+  componentId: number;
+  courseRegistrationId: number;
+  score: number;
+  status: "PENDING" | "APPROVED" | "REJECTED" | string;
+  createdBy: number;
+  updatedBy: number | null;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
   createContextProvider(() => {
@@ -36,9 +48,9 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
       );
     const registration = lopHocPhanDetail?.registrations;
     const students = registration?.map((regis) => regis.student) || [];
-    const gradeEntries =
-      registration?.map((regis) => regis.gradeEntries).flat() || [];
-    console.log(gradeEntries);
+    const gradeEntries = (registration
+      ?.map((regis) => regis.gradeEntries)
+      .flat() ?? []) as GradeEntries[];
 
     // Chấp nhận mở lớp học phần
     const { mutate: acceptLopHocPhan, isPending: isAcceptingLopHocPhan } =

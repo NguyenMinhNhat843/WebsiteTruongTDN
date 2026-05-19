@@ -7,25 +7,28 @@ import {
 } from "@tanstack/react-table";
 import {
   useLopHocPhanOneContext,
+  type GradeEntry,
   type SubmitGradeInClass,
 } from "./LopHocPhanOneProvider";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface StudentRowData {
   id: number;
   studentCode: string;
   fullName: string;
   // Lưu trữ điểm theo ID thành phần điểm dưới dạng object: { [componentId]: score }
-  diem: Record<number, number | string>;
+  diem: Record<number, GradeEntry | null>; // Giá trị có thể là điểm số hoặc chuỗi rỗng nếu chưa nhập
   regisId: number; // ID của CourseRegistration để mapping khi gửi điểm lên server
 }
 
 const TableHocSinhVoiDiem = () => {
-  const { lopHocPhanDetail, submitGrades, isSubmittingGrades, gradeEntries } =
+  const { lopHocPhanDetail, submitGrades, isSubmittingGrades } =
     useLopHocPhanOneContext();
   const courseOfferId = lopHocPhanDetail?.id;
   const createdBy = lopHocPhanDetail?.teacherId;
 
-  // 1. Lấy cấu hình đầu điểm từ Context
+  // 1. Lấy điểm thành phần từ môn học
   const gradesConfig = useMemo(() => {
     return (
       lopHocPhanDetail?.subject?.subjectGrades?.map((subjectGrade) => {
@@ -42,23 +45,22 @@ const TableHocSinhVoiDiem = () => {
   const [tableData, setTableData] = useState<StudentRowData[]>(() => {
     return (
       lopHocPhanDetail?.registrations?.map((regis) => {
-        const student = regis.student; //
-        const diemMap: Record<number, number | string> = {}; //
+        const student = regis.student;
+        const diemMap: Record<number, GradeEntry | null> = {};
+        const gradeEntries = regis.gradeEntries || [];
 
-        // Duyệt qua từng đầu điểm được cấu hình (ví dụ: Chuyên cần, Giữa kỳ, Cuối kỳ)
-        gradesConfig.forEach((grade) => {
+        // Duyệt qua điểm thành phần (ví dụ: Chuyên cần, Giữa kỳ, Cuối kỳ)
+        gradesConfig.forEach((gradeComponent) => {
           // Tìm xem sinh viên này (regis.id) đã có điểm của đầu điểm này (grade.id) chưa
-          const matchingGrade: any = gradeEntries?.find(
-            (entry) =>
-              entry.courseRegistrationId === regis.id &&
-              entry.componentId === grade.id,
+          const matchingGrade = gradeEntries?.find(
+            (entry) => entry.componentId === gradeComponent.id,
           );
 
           // Nếu tìm thấy điểm thì hiển thị score, nếu không thấy (hoặc null) thì để chuỗi rỗng ""
-          diemMap[grade.id] =
+          diemMap[gradeComponent.id] =
             matchingGrade && matchingGrade.score !== null
-              ? matchingGrade.score
-              : "";
+              ? matchingGrade
+              : null;
         });
 
         return {
@@ -91,7 +93,7 @@ const TableHocSinhVoiDiem = () => {
             ...row,
             diem: {
               ...row.diem,
-              [componentId]: value, // Cập nhật giá trị điểm của thành phần tương ứng
+              [componentId]: null, // Cập nhật giá trị điểm của thành phần tương ứng
             },
           };
         }
@@ -101,12 +103,12 @@ const TableHocSinhVoiDiem = () => {
   };
 
   // 4. Hàm tính toán tổng điểm dựa trên trọng số thực tế (Hệ số 10)
-  const calculateTotalScore = (diem: Record<number, number | string>) => {
+  const calculateTotalScore = (diem: Record<number, any>) => {
     let total = 0;
     let hasAllScores = true;
 
     for (const grade of gradesConfig) {
-      const score = diem[grade.id];
+      const score = diem[grade.id].score;
       if (score === "" || score === undefined || score === null) {
         hasAllScores = false; // Nếu học sinh bị thiếu bất kỳ đầu điểm nào, chưa tính tổng điểm hiển thị
         break;
@@ -119,30 +121,27 @@ const TableHocSinhVoiDiem = () => {
 
   // 5. Khởi tạo Định nghĩa Cột động với TanStack Table
   const columns = useMemo(() => {
-    const columnHelper = createColumnHelper<StudentRowData>(); //
+    const columnHelper = createColumnHelper<StudentRowData>();
 
     return [
       columnHelper.accessor("studentCode", {
-        //
-        header: "Mã SV", //
+        header: "Mã SV",
         cell: (info) => (
           <span className="font-semibold text-slate-700">
             {info.getValue()}
           </span>
-        ), //  159, 160]
+        ),
       }),
       columnHelper.accessor("fullName", {
-        //
-        header: "Họ và tên", //
+        header: "Họ và tên",
         cell: (info) => (
           <span className="font-medium text-slate-900">{info.getValue()}</span>
-        ), //  167]
+        ),
       }),
 
       // Duyệt mảng cấu hình để sinh cột điểm tự động  171]
       ...gradesConfig.map((grade) =>
         columnHelper.accessor((row) => row.diem[grade.id], {
-          //
           id: `grade-${grade.id}`,
           header: () => (
             <div className="text-center">
@@ -154,22 +153,31 @@ const TableHocSinhVoiDiem = () => {
           ),
           cell: (info) => {
             const studentId = info.row.original.id;
-            const currentValue = info.getValue() ?? "";
+            const currentValue = info.getValue();
+
+            const score = currentValue?.score || "";
+
             return (
-              <div className="text-center">
-                <input
-                  type="number"
-                  min={0}
-                  max={10}
-                  step="0.1"
-                  placeholder="-"
-                  className="w-16 text-center py-1 border border-slate-200 rounded focus:outline-none focus:border-blue-500 text-sm font-medium bg-slate-50/50 focus:bg-white transition-all disabled:opacity-50"
-                  value={currentValue}
-                  disabled={isSubmittingGrades} // Khóa ô nhập khi đang gọi API gửi lên
-                  onChange={(e) =>
-                    handleScoreChange(studentId, grade.id, e.target.value)
-                  }
-                />
+              <div className="text-center flex items-center justify-center">
+                {/* Bọc input và badge trong một khung relative để định vị icon tuyệt đối */}
+                <div className="relative inline-block pr-6">
+                  <input
+                    type="number"
+                    min={0}
+                    max={10}
+                    step="0.1"
+                    placeholder="-"
+                    className={`w-16 text-center py-1 border rounded focus:outline-none focus:border-blue-500 text-sm font-medium bg-slate-50/50 focus:bg-white transition-all disabled:opacity-50
+                      ${status === "REJECTED" ? "border-rose-200 bg-rose-50/30" : "border-slate-200"}
+                      ${status === "APPROVED" ? "border-emerald-200 bg-emerald-50/30" : ""}
+                    `}
+                    value={score}
+                    disabled={isSubmittingGrades || status === "APPROVED"} // Khóa luôn nếu điểm đã được duyệt
+                    onChange={(e) =>
+                      handleScoreChange(studentId, grade.id, e.target.value)
+                    }
+                  />
+                </div>
               </div>
             );
           },
@@ -178,10 +186,10 @@ const TableHocSinhVoiDiem = () => {
 
       // Cột tổng điểm tính toán tự động dựa trên hàm logic thực tế  202]
       columnHelper.display({
-        id: "totalScore", //
+        id: "totalScore",
         header: () => (
           <div className="text-center font-bold text-blue-600">
-            <div>Tổng điểm</div> {/*  */}
+            <div>Tổng điểm</div>
           </div>
         ),
         cell: ({ row }) => {
@@ -198,8 +206,8 @@ const TableHocSinhVoiDiem = () => {
 
   const table = useReactTable({
     data: tableData, // Chuyển sang sử dụng State thay vì dữ liệu tĩnh hằng số
-    columns, //
-    getCoreRowModel: getCoreRowModel(), //
+    columns,
+    getCoreRowModel: getCoreRowModel(),
   });
 
   // 6. Xử lý đóng gói payload và gửi dữ liệu lên server
@@ -220,7 +228,7 @@ const TableHocSinhVoiDiem = () => {
         gradeEntriesPayload.push({
           courseRegistrationId: studentRow.regisId,
           componentId: compId, //
-          score: rawValue === "" ? null : parseFloat(rawValue as string),
+          score: rawValue?.score,
           status: statusType,
         });
       });
