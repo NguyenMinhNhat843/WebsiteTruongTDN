@@ -473,6 +473,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/grade-entries/submission-history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy lịch sử submit điểm của 1 lớp học phần */
+        get: operations["GradeEntryController_getSubmissionHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/semesters": {
         parameters: {
             query?: never;
@@ -1153,23 +1170,6 @@ export interface paths {
         };
         /** Lấy danh sách học sinh đủ điều kiện đăng ký vào lớp học phần */
         get: operations["CourseOfferController_getEligibleStudents"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/course-offers/{courseOfferId}/diem": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy điểm của 1 lớp */
-        get: operations["CourseOfferController_getDiemCua1Lop"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2067,15 +2067,11 @@ export interface components {
              */
             componentId: number;
             /**
-             * @description ID của học sinh (Student)
-             * @example 123
-             */
-            courseRegistrationId: number;
-            /**
              * @description Điểm số của học sinh (Thang điểm 10, chấp nhận số thập phân). Để null nếu chưa nhập.
              * @example 8.5
              */
             score?: number | null;
+            courseRegistrationId: number;
         };
         CreateManyGradeEntriesDto: {
             /**
@@ -2102,6 +2098,74 @@ export interface components {
              */
             gradeSubmissionId: number;
             approverId: number;
+        };
+        GradeEntryResponseDto: {
+            /**
+             * @description ID tự tăng của bản ghi điểm số
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description ID của đơn phê duyệt điểm (GradeSubmission), có thể null nếu điểm dạng nháp chưa nộp
+             * @example 19
+             */
+            gradeSubmissionId?: number | null;
+            /**
+             * @description ID của thành phần điểm (Ví dụ: Điểm chuyên cần, Điểm giữa kỳ...)
+             * @example 2
+             */
+            componentId: number;
+            /**
+             * @description ID lượt đăng ký học phần của sinh viên (Liên kết với bảng CourseRegistration)
+             * @example 154
+             */
+            courseRegistrationId?: number | null;
+            /**
+             * @description Điểm số của học sinh (Thang điểm hệ 10), có thể null nếu chưa nhập điểm
+             * @example 8.5
+             */
+            score?: number | null;
+        };
+        SubmissionHistoryResponse: {
+            /**
+             * @description ID của lượt submit
+             * @example 4
+             */
+            id: number;
+            /**
+             * @description ID của đợt mở lớp (Course Offer)
+             * @example 5
+             */
+            courseOfferId: number;
+            /**
+             * @description Trạng thái phê duyệt điểm
+             * @example PENDING
+             * @enum {string}
+             */
+            status: "PENDING" | "APPROVED" | "REJECTED";
+            /**
+             * @description ID người tạo submit
+             * @example 5
+             */
+            submitedBy: number;
+            /**
+             * @description ID người phê duyệt
+             * @example null
+             */
+            approvedBy: Record<string, never> | null;
+            /**
+             * Format: date-time
+             * @description Ngày tạo
+             * @example 2026-05-19T07:05:59.648Z
+             */
+            createdAt: string;
+            /**
+             * @description Ngày cập nhật cuối
+             * @example null
+             */
+            updatedAt: Record<string, never> | null;
+            /** @description Danh sách điểm chi tiết đi kèm */
+            gradeEntries: components["schemas"]["GradeEntryResponseDto"][];
         };
         CreateSemesterDto: {
             /**
@@ -3135,33 +3199,6 @@ export interface components {
             registrationStart?: string;
             /** @example 2026-05-15T23:59:59Z */
             registrationEnd?: string;
-        };
-        GradeEntryResponseDto: {
-            /**
-             * @description ID tự tăng của bản ghi điểm số
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description ID của đơn phê duyệt điểm (GradeSubmission), có thể null nếu điểm dạng nháp chưa nộp
-             * @example 19
-             */
-            gradeSubmissionId?: number | null;
-            /**
-             * @description ID của thành phần điểm (Ví dụ: Điểm chuyên cần, Điểm giữa kỳ...)
-             * @example 2
-             */
-            componentId: number;
-            /**
-             * @description ID lượt đăng ký học phần của sinh viên (Liên kết với bảng CourseRegistration)
-             * @example 154
-             */
-            courseRegistrationId?: number | null;
-            /**
-             * @description Điểm số của học sinh (Thang điểm hệ 10), có thể null nếu chưa nhập điểm
-             * @example 8.5
-             */
-            score?: number | null;
         };
         CourseOfferRegisResponseDto: {
             /**
@@ -4459,6 +4496,27 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    GradeEntryController_getSubmissionHistory: {
+        parameters: {
+            query: {
+                courseOfferId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmissionHistoryResponse"][];
+                };
             };
         };
     };
@@ -5881,25 +5939,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StudentResponseDto"];
                 };
-            };
-        };
-    };
-    CourseOfferController_getDiemCua1Lop: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                courseOfferId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };

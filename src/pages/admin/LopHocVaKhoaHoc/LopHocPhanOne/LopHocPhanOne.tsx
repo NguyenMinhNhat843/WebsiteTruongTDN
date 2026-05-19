@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import TableHocSinhVoiDiem from "./TableHocSinhVoiDiem";
 import ModalAddStudent from "./ModalAddStudent";
+import SectionSubmissionHistory from "./SectionSubmissionHistory";
 
 const LopHocPhanOne = () => {
   return (
@@ -365,6 +366,8 @@ const Inner = () => {
             </div>
           )}
         </div>
+
+        <SectionSubmissionHistory />
       </div>
 
       <ModalAddStudent

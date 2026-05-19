@@ -11,18 +11,10 @@ export type RegistrationCourseOffer =
 export type StudentData = components["schemas"]["StudentResponseDto"];
 export type SubmitGradeInClass =
   components["schemas"]["CreateManyGradeEntriesDto"];
+export type GradeEntryRequestDto = components["schemas"]["CreateGradeEntryDto"];
 export type GradeEntry = components["schemas"]["GradeEntryResponseDto"];
-export type GradeEntries = {
-  id: number;
-  componentId: number;
-  courseRegistrationId: number;
-  score: number;
-  status: "PENDING" | "APPROVED" | "REJECTED" | string;
-  createdBy: number;
-  updatedBy: number | null;
-  createdAt: string;
-  updatedAt: string;
-};
+export type SubmissionHistoryResponse =
+  components["schemas"]["SubmissionHistoryResponse"];
 
 export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
   createContextProvider(() => {
@@ -48,9 +40,6 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
       );
     const registration = lopHocPhanDetail?.registrations;
     const students = registration?.map((regis) => regis.student) || [];
-    const gradeEntries = (registration
-      ?.map((regis) => regis.gradeEntries)
-      .flat() ?? []) as GradeEntries[];
 
     // Chấp nhận mở lớp học phần
     const { mutate: acceptLopHocPhan, isPending: isAcceptingLopHocPhan } =
@@ -84,6 +73,31 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
     const { mutate: submitGrades, isPending: isSubmittingGrades } =
       $api.useMutation("post", "/grade-entries/submit-grade");
 
+    /**
+     * Load danh sách các submit
+     */
+    const { data: submissionHistory, isLoading: isLoadingSubmissionHistory } =
+      $api.useQuery(
+        "get",
+        "/grade-entries/submission-history",
+        {
+          params: {
+            query: {
+              courseOfferId: lopHocPhanId!,
+            },
+          },
+        },
+        {
+          enabled: !!lopHocPhanId,
+        },
+      );
+
+    /**
+     * Duyệt điểm
+     */
+    const { mutate: approveGrade, isPending: isApprovingGrade } =
+      $api.useMutation("post", "/grade-entries/submit-grade");
+
     return {
       lopHocPhanDetail,
       isLoadingLopHocPhanDetail,
@@ -95,13 +109,28 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
       eligibleStudentsData,
       isLoadingEligibleStudents,
       submitGrades: (dto: SubmitGradeInClass) => {
-        submitGrades({
-          body: dto,
-        });
+        submitGrades(
+          {
+            body: dto,
+          },
+          {
+            onSuccess: () => {
+              alert(
+                "Điểm đã được nộp phê duyệt thành công. Vui lòng chờ giảng viên duyệt điểm.",
+              );
+            },
+            onError: () => {
+              alert("Có lỗi xảy ra khi nộp điểm. Vui lòng thử lại sau.");
+            },
+          },
+        );
       },
       isSubmittingGrades,
-      gradeEntries,
       students,
+      submissionHistory,
+      isLoadingSubmissionHistory,
+      approveGrade,
+      isApprovingGrade,
 
       // state
       isOpenModalAddStudent,

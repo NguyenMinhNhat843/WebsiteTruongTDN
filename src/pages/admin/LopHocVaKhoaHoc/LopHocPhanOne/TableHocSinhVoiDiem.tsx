@@ -8,16 +8,16 @@ import {
 import {
   useLopHocPhanOneContext,
   type GradeEntry,
+  type GradeEntryRequestDto,
   type SubmitGradeInClass,
 } from "./LopHocPhanOneProvider";
+import { Loader2 } from "lucide-react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 interface StudentRowData {
   id: number;
   studentCode: string;
   fullName: string;
-  // Lưu trữ điểm theo ID thành phần điểm dưới dạng object: { [componentId]: score }
   diem: Record<number, GradeEntry | null>; // Giá trị có thể là điểm số hoặc chuỗi rỗng nếu chưa nhập
   regisId: number; // ID của CourseRegistration để mapping khi gửi điểm lên server
 }
@@ -41,7 +41,9 @@ const TableHocSinhVoiDiem = () => {
     );
   }, [lopHocPhanDetail]);
 
-  // 2. CHUYỂN ĐỔI SANG STATE: Quản lý toàn bộ dữ liệu bảng để có thể tương tác nhập liệu
+  /**
+   * Quản lý state dữ liệu cho table
+   */
   const [tableData, setTableData] = useState<StudentRowData[]>(() => {
     return (
       lopHocPhanDetail?.registrations?.map((regis) => {
@@ -74,13 +76,14 @@ const TableHocSinhVoiDiem = () => {
     );
   });
 
-  // 3. Hàm xử lý khi thay đổi điểm số trên từng ô Input
+  /**
+   * Xử lý change input điểm: Cập nhật State tableData theo đúng componentId và studentId
+   */
   const handleScoreChange = (
     studentId: number,
     componentId: number,
     value: string,
   ) => {
-    // Chặn người dùng nhập vượt quá thang điểm từ 0 đến 10
     if (value !== "") {
       const num = parseFloat(value);
       if (num < 0 || num > 10) return;
@@ -89,11 +92,27 @@ const TableHocSinhVoiDiem = () => {
     setTableData((prevData) =>
       prevData.map((row) => {
         if (row.id === studentId) {
+          // 1. Lấy ra object điểm hiện tại của componentId này (nếu có)
+          const currentGradeEntry = row.diem[componentId];
+          const newScore = value === "" ? null : parseFloat(value);
+
           return {
             ...row,
             diem: {
               ...row.diem,
-              [componentId]: null, // Cập nhật giá trị điểm của thành phần tương ứng
+              [componentId]: {
+                // 2. Nếu đã có thông tin cũ thì spread lại, nếu chưa có (null/undefined) thì tạo object mới
+                ...currentGradeEntry,
+
+                // 3. Đảm bảo các trường bắt buộc 'id' và 'componentId' luôn có giá trị number, không bị undefined
+                id: currentGradeEntry?.id ?? 0, // Hoặc một logic sinh ID tạm thời của bạn, ví dụ: Date.now()
+                componentId: currentGradeEntry?.componentId ?? componentId,
+                courseRegistrationId:
+                  currentGradeEntry?.courseRegistrationId ?? row.regisId, // mapping luôn regisId của học sinh nếu cần
+
+                // 4. Cập nhật score mới
+                score: newScore,
+              },
             },
           };
         }
@@ -102,7 +121,10 @@ const TableHocSinhVoiDiem = () => {
     );
   };
 
-  // 4. Hàm tính toán tổng điểm dựa trên trọng số thực tế (Hệ số 10)
+  /**
+   * Hàm tính tổng điểm dựa trên các điểm thành phần và trọng số tương ứng
+   * Nếu có bất kỳ điểm thành phần nào chưa được nhập (score là null), sẽ trả về "-"
+   */
   const calculateTotalScore = (diem: Record<number, any>) => {
     let total = 0;
     let hasAllScores = true;
@@ -119,7 +141,9 @@ const TableHocSinhVoiDiem = () => {
     return hasAllScores ? total.toFixed(2) : "-";
   };
 
-  // 5. Khởi tạo Định nghĩa Cột động với TanStack Table
+  /**
+   * Columns table
+   */
   const columns = useMemo(() => {
     const columnHelper = createColumnHelper<StudentRowData>();
 
@@ -167,10 +191,9 @@ const TableHocSinhVoiDiem = () => {
                     max={10}
                     step="0.1"
                     placeholder="-"
-                    className={`w-16 text-center py-1 border rounded focus:outline-none focus:border-blue-500 text-sm font-medium bg-slate-50/50 focus:bg-white transition-all disabled:opacity-50
-                      ${status === "REJECTED" ? "border-rose-200 bg-rose-50/30" : "border-slate-200"}
-                      ${status === "APPROVED" ? "border-emerald-200 bg-emerald-50/30" : ""}
-                    `}
+                    className={`w-16 text-center py-1 border rounded focus:outline-none 
+                      focus:border-blue-500 text-sm font-medium bg-slate-50/50 
+                      focus:bg-white transition-all disabled:opacity-50 border-slate-200`}
                     value={score}
                     disabled={isSubmittingGrades || status === "APPROVED"} // Khóa luôn nếu điểm đã được duyệt
                     onChange={(e) =>
@@ -210,15 +233,17 @@ const TableHocSinhVoiDiem = () => {
     getCoreRowModel: getCoreRowModel(),
   });
 
-  // 6. Xử lý đóng gói payload và gửi dữ liệu lên server
-  const handleSubmit = async (statusType: "DRAFT" | "PENDING") => {
+  /**
+   * Xử lý submit tạo đơn duyệt điểm
+   */
+  const handleSubmit = async () => {
     if (!courseOfferId || !createdBy) {
       alert("Thiếu thông tin lớp học phần hoặc giảng viên phụ trách!");
       return;
     }
 
     // Biến đổi cấu trúc từ State Table sang đúng cấu trúc API yêu cầu
-    const gradeEntriesPayload: any[] = [];
+    const gradeEntriesPayload: GradeEntryRequestDto[] = [];
 
     tableData.forEach((studentRow) => {
       Object.keys(studentRow.diem).forEach((componentIdStr) => {
@@ -226,10 +251,9 @@ const TableHocSinhVoiDiem = () => {
         const rawValue = studentRow.diem[compId];
 
         gradeEntriesPayload.push({
-          courseRegistrationId: studentRow.regisId,
-          componentId: compId, //
+          componentId: compId,
           score: rawValue?.score,
-          status: statusType,
+          courseRegistrationId: studentRow.regisId,
         });
       });
     });
@@ -240,7 +264,7 @@ const TableHocSinhVoiDiem = () => {
       grades: gradeEntriesPayload,
     };
 
-    submitGrades(payload); // Trigger hàm API từ context của bạn
+    submitGrades(payload);
   };
 
   return (
@@ -308,40 +332,12 @@ const TableHocSinhVoiDiem = () => {
         <div className="flex justify-end items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl">
           <button
             type="button"
-            disabled={isSubmittingGrades} //
-            onClick={() => handleSubmit("DRAFT")}
-            className="px-4 py-2 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-white disabled:opacity-50 active:scale-[0.99] transition-all cursor-pointer"
-          >
-            Lưu bản nháp
-          </button>
-
-          <button
-            type="button"
-            disabled={isSubmittingGrades} //
-            onClick={() => handleSubmit("PENDING")}
+            disabled={isSubmittingGrades}
+            onClick={() => handleSubmit()}
             className="px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white text-sm font-semibold rounded-lg shadow-sm shadow-blue-500/10 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer"
           >
-            {isSubmittingGrades && ( // Hiển thị spinner khi đang trong quá trình kết nối mạng
-              <svg
-                className="animate-spin h-4 w-4 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
+            {isSubmittingGrades && (
+              <Loader2 className="h-4 w-4 animate-spin text-white" />
             )}
             Gửi nộp phê duyệt
           </button>
