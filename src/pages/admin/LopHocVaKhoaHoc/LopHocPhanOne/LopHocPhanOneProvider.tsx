@@ -3,6 +3,8 @@ import { createContextProvider } from "../../../../util/createContextProvider";
 import { $api } from "../../../../api/client";
 import type { components } from "../../../../api/v1";
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { downloadFromBlob } from "../../../../util/download";
 
 export type LopHocPhanDetailType =
   components["schemas"]["CourseOfferDetailResponseDto"];
@@ -13,14 +15,14 @@ export type SubmitGradeInClass =
   components["schemas"]["CreateManyGradeEntriesDto"];
 export type GradeEntryRequestDto = components["schemas"]["CreateGradeEntryDto"];
 export type GradeEntry = components["schemas"]["GradeEntryResponseDto"];
-export type SubmissionHistoryResponse =
-  components["schemas"]["SubmissionHistoryResponse"];
+export type GradeStatus = GradeEntry["status"];
 
 export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
   createContextProvider(() => {
     const { id } = useParams();
     const lopHocPhanId = Number(id);
     const [isOpenModalAddStudent, setIsOpenModalAddStudent] = useState(false);
+    const queryClient = useQueryClient();
 
     // Get chi tiết lớp học phần
     const { data: lopHocPhanDetail, isLoading: isLoadingLopHocPhanDetail } =
@@ -69,34 +71,65 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
       );
     const eligibleStudentsData: StudentData[] = eligibleStudents || [];
 
-    // Gửi duyệt điểm
-    const { mutate: submitGrades, isPending: isSubmittingGrades } =
-      $api.useMutation("post", "/grade-entries/submit-grade");
-
     /**
-     * Load danh sách các submit
+     * Lưu nháp
      */
-    const { data: submissionHistory, isLoading: isLoadingSubmissionHistory } =
-      $api.useQuery(
-        "get",
-        "/grade-entries/submission-history",
-        {
-          params: {
-            query: {
-              courseOfferId: lopHocPhanId!,
-            },
-          },
+    const { mutate: submitGrades, isPending: isSubmittingGrades } =
+      $api.useMutation("post", "/grade-entries/submit-grade", {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: [
+              "get",
+              "/course-offers/{id}",
+              { params: { path: { id: lopHocPhanId } } },
+            ],
+          });
         },
-        {
-          enabled: !!lopHocPhanId,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (error: any) => {
+          alert(
+            error?.message ||
+              "Có lỗi xảy ra khi nộp điểm. Vui lòng thử lại sau.",
+          );
         },
-      );
+      });
 
     /**
-     * Duyệt điểm
+     * Chốt bảng điểm
      */
     const { mutate: approveGrade, isPending: isApprovingGrade } =
-      $api.useMutation("post", "/grade-entries/submit-grade");
+      $api.useMutation("post", "/grade-entries/save-grade", {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            queryKey: [
+              "get",
+              "/course-offers/{id}",
+              { params: { path: { id: lopHocPhanId } } },
+            ],
+          });
+        },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onError: (error: any) => {
+          alert(
+            error?.message ||
+              "Có lỗi xảy ra khi phê duyệt điểm. Vui lòng thử lại sau.",
+          );
+        },
+      });
+
+    /**
+     * Xuất file excel
+     */
+    const { mutate: exportExcel, isPending: isExportingExcel } =
+      $api.useMutation("get", "/course-offers/{id}/export-excel", {
+        onSuccess: (blob) => {
+          downloadFromBlob(
+            blob as never,
+            lopHocPhanDetail?.courseCode || `lop-hoc-phan-${lopHocPhanId}`,
+            ".xlsx",
+          );
+        },
+      });
 
     return {
       lopHocPhanDetail,
@@ -114,23 +147,18 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
             body: dto,
           },
           {
-            onSuccess: () => {
-              alert(
-                "Điểm đã được nộp phê duyệt thành công. Vui lòng chờ giảng viên duyệt điểm.",
-              );
-            },
-            onError: () => {
-              alert("Có lỗi xảy ra khi nộp điểm. Vui lòng thử lại sau.");
+            onSuccess: (response) => {
+              alert(JSON.stringify(response) || "Lưu nháp thành công");
             },
           },
         );
       },
       isSubmittingGrades,
       students,
-      submissionHistory,
-      isLoadingSubmissionHistory,
       approveGrade,
       isApprovingGrade,
+      exportExcel,
+      isExportingExcel,
 
       // state
       isOpenModalAddStudent,

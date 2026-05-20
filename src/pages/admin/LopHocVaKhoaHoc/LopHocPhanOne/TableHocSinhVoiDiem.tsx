@@ -12,6 +12,7 @@ import {
   type SubmitGradeInClass,
 } from "./LopHocPhanOneProvider";
 import { Loader2 } from "lucide-react";
+import { renderStatusIcon } from "./StatusGrade";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface StudentRowData {
@@ -23,10 +24,13 @@ interface StudentRowData {
 }
 
 const TableHocSinhVoiDiem = () => {
-  const { lopHocPhanDetail, submitGrades, isSubmittingGrades } =
-    useLopHocPhanOneContext();
-  const courseOfferId = lopHocPhanDetail?.id;
-  const createdBy = lopHocPhanDetail?.teacherId;
+  const {
+    lopHocPhanDetail,
+    submitGrades,
+    isSubmittingGrades,
+    approveGrade,
+    isApprovingGrade,
+  } = useLopHocPhanOneContext();
 
   // 1. Lấy điểm thành phần từ môn học
   const gradesConfig = useMemo(() => {
@@ -130,7 +134,7 @@ const TableHocSinhVoiDiem = () => {
     let hasAllScores = true;
 
     for (const grade of gradesConfig) {
-      const score = diem[grade.id].score;
+      const score = diem[grade.id]?.score;
       if (score === "" || score === undefined || score === null) {
         hasAllScores = false; // Nếu học sinh bị thiếu bất kỳ đầu điểm nào, chưa tính tổng điểm hiển thị
         break;
@@ -163,7 +167,7 @@ const TableHocSinhVoiDiem = () => {
         ),
       }),
 
-      // Duyệt mảng cấu hình để sinh cột điểm tự động  171]
+      // Duyệt mảng cấu hình để sinh cột điểm tự động
       ...gradesConfig.map((grade) =>
         columnHelper.accessor((row) => row.diem[grade.id], {
           id: `grade-${grade.id}`,
@@ -171,20 +175,22 @@ const TableHocSinhVoiDiem = () => {
             <div className="text-center">
               <div>{grade.name}</div>
               <div className="text-[11px] text-slate-400 font-normal">
-                ( {grade.weight * 100}%)
-              </div>{" "}
+                ({grade.weight * 100}%)
+              </div>
             </div>
           ),
           cell: (info) => {
             const studentId = info.row.original.id;
             const currentValue = info.getValue();
 
-            const score = currentValue?.score || "";
+            // Trích xuất score và status từ object của ô điểm hiện tại
+            const score = currentValue?.score ?? "";
+            const currentStatus = currentValue?.status; // PENDING | APPROVED | REJECTED hoặc undefined
 
             return (
               <div className="text-center flex items-center justify-center">
-                {/* Bọc input và badge trong một khung relative để định vị icon tuyệt đối */}
-                <div className="relative inline-block pr-6">
+                {/* Khung chứa relative có padding-right để chứa icon mà không lo đẩy lệch input */}
+                <div className="relative inline-block pr-5">
                   <input
                     type="number"
                     min={0}
@@ -192,14 +198,24 @@ const TableHocSinhVoiDiem = () => {
                     step="0.1"
                     placeholder="-"
                     className={`w-16 text-center py-1 border rounded focus:outline-none 
-                      focus:border-blue-500 text-sm font-medium bg-slate-50/50 
-                      focus:bg-white transition-all disabled:opacity-50 border-slate-200`}
+                focus:border-blue-500 text-sm font-medium bg-slate-50/50 
+                focus:bg-white transition-all disabled:opacity-60 border-slate-200
+                ${currentStatus === "APPROVED" ? "border-emerald-200 bg-emerald-50/10 text-emerald-700 font-semibold" : ""}
+                ${currentStatus === "REJECTED" ? "border-rose-200 bg-rose-50/10 text-rose-700" : ""}
+              `}
                     value={score}
-                    disabled={isSubmittingGrades || status === "APPROVED"} // Khóa luôn nếu điểm đã được duyệt
+                    // Khóa ô input nếu đang trong quá trình submit hoặc điểm đó đã được APPROVED duyệt chính thức
+                    disabled={
+                      isSubmittingGrades ||
+                      currentStatus === "APPROVED" ||
+                      status === "APPROVED"
+                    }
                     onChange={(e) =>
                       handleScoreChange(studentId, grade.id, e.target.value)
                     }
                   />
+                  {/* Thực thi hàm để hiển thị icon tương ứng */}
+                  {renderStatusIcon(currentStatus)}
                 </div>
               </div>
             );
@@ -234,15 +250,9 @@ const TableHocSinhVoiDiem = () => {
   });
 
   /**
-   * Xử lý submit tạo đơn duyệt điểm
+   * Xử lý payload save điểm
    */
-  const handleSubmit = async () => {
-    if (!courseOfferId || !createdBy) {
-      alert("Thiếu thông tin lớp học phần hoặc giảng viên phụ trách!");
-      return;
-    }
-
-    // Biến đổi cấu trúc từ State Table sang đúng cấu trúc API yêu cầu
+  const handlePayloadSaveGrade = () => {
     const gradeEntriesPayload: GradeEntryRequestDto[] = [];
 
     tableData.forEach((studentRow) => {
@@ -250,21 +260,24 @@ const TableHocSinhVoiDiem = () => {
         const compId = Number(componentIdStr);
         const rawValue = studentRow.diem[compId];
 
-        gradeEntriesPayload.push({
-          componentId: compId,
-          score: rawValue?.score,
-          courseRegistrationId: studentRow.regisId,
-        });
+        // Lấy giá trị score ra trước
+        const currentScore = rawValue?.score;
+
+        // Chỉ push khi score khác null, khác undefined và không phải là chuỗi rỗng
+        if (currentScore !== undefined && currentScore !== null) {
+          gradeEntriesPayload.push({
+            componentId: compId,
+            score: Number(currentScore), // Ép kiểu về Number để chuẩn data type của API
+            courseRegistrationId: studentRow.regisId,
+          });
+        }
       });
     });
 
     const payload: SubmitGradeInClass = {
-      courseOfferId,
-      createdBy,
       grades: gradeEntriesPayload,
     };
-
-    submitGrades(payload);
+    return payload;
   };
 
   return (
@@ -330,16 +343,35 @@ const TableHocSinhVoiDiem = () => {
       {/* Thanh công cụ Action Bar nằm dưới bảng để điều khiển hành động submit */}
       {tableData.length > 0 && (
         <div className="flex justify-end items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl">
+          {/* Nút Lưu nháp - Hành động phụ (Secondary) */}
           <button
             type="button"
-            disabled={isSubmittingGrades}
-            onClick={() => handleSubmit()}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white text-sm font-semibold rounded-lg shadow-sm shadow-blue-500/10 active:scale-[0.99] transition-all flex items-center gap-2 cursor-pointer"
+            disabled={isSubmittingGrades || isApprovingGrade}
+            onClick={() => submitGrades(handlePayloadSaveGrade())}
+            className="px-5 py-2 border border-slate-300 bg-white hover:bg-slate-50 disabled:bg-slate-50 disabled:border-slate-200 disabled:text-slate-400 text-slate-700 text-sm font-medium rounded-lg shadow-sm active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
           >
             {isSubmittingGrades && (
+              <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
+            )}
+            Lưu nháp
+          </button>
+
+          {/* Nút Chốt bảng điểm - Hành động chính (Primary) */}
+          <button
+            type="button"
+            disabled={isSubmittingGrades || isApprovingGrade}
+            onClick={() => {
+              const gradesPayload = handlePayloadSaveGrade();
+              return approveGrade({
+                body: gradesPayload,
+              });
+            }}
+            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:shadow-none text-white text-sm font-semibold rounded-lg shadow-sm shadow-blue-500/10 active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
+          >
+            {isApprovingGrade && (
               <Loader2 className="h-4 w-4 animate-spin text-white" />
             )}
-            Gửi nộp phê duyệt
+            Chốt bảng điểm
           </button>
         </div>
       )}

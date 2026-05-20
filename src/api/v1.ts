@@ -365,6 +365,23 @@ export interface paths {
         patch: operations["ClassController_update"];
         trace?: never;
     };
+    "/classes/update-class-sizes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cập nhật sĩ số hiện tại của các lớp trong một batch */
+        post: operations["ClassController_updateClassSizesByBatch"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/subjects": {
         parameters: {
             query?: never;
@@ -448,7 +465,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Nộp duyệt nhập điểm cho 1 lớp học */
+        /** Lưu nháp điểm */
         post: operations["GradeEntryController_submitGrade"];
         delete?: never;
         options?: never;
@@ -456,7 +473,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/grade-entries/approve-grade": {
+    "/grade-entries/save-grade": {
         parameters: {
             query?: never;
             header?: never;
@@ -465,25 +482,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Phê duyệt điểm cho 1 lớp học */
+        /** Chốt bảng điểm */
         post: operations["GradeEntryController_approveGrade"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/grade-entries/submission-history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy lịch sử submit điểm của 1 lớp học phần */
-        get: operations["GradeEntryController_getSubmissionHistory"];
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1178,6 +1178,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/course-offers/{id}/export-excel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["CourseOfferController_exportExcel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/course-registrations": {
         parameters: {
             query?: never;
@@ -1812,15 +1828,24 @@ export interface components {
              * @example 2024-04-25T10:00:00Z
              */
             updatedAt: string;
+            /** @example 1 */
+            batchId?: number | null;
+            /**
+             * @description Số lượng sinh viên hiện tại
+             * @example 35
+             */
+            currentSize?: number;
             /** @description Thông tin ngành đào tạo */
-            major?: Record<string, never>;
+            major?: components["schemas"]["MajorResponseDto"];
             /** @description Thông tin giáo viên chủ nhiệm */
-            formTeacher?: Record<string, never>;
+            formTeacher?: components["schemas"]["StaffResponseDto"];
             /**
              * @description Số lượng sinh viên hiện tại
              * @example 35
              */
             studentCount?: number;
+            /** @description Thông tin khóa học (batch) */
+            batch?: components["schemas"]["BatchResponseDto"];
         };
         AssignStudentsToClassesDto: {
             batchId?: number;
@@ -2074,98 +2099,12 @@ export interface components {
             courseRegistrationId: number;
         };
         CreateManyGradeEntriesDto: {
-            /**
-             * @description ID của lớp học phần (CourseOffer)
-             * @example 5
-             */
-            courseOfferId: number;
-            /**
-             * @description ID của giảng viên thực hiện nhập điểm (Staff)
-             * @example 5
-             */
-            createdBy: number;
             /** @description Danh sách mảng các đầu điểm chi tiết của từng học sinh */
             grades: components["schemas"]["CreateGradeEntryDto"][];
         };
-        SubmitGradeResponse: {
-            message: string;
-            status: boolean;
-        };
-        ApproveGradeEntryDto: {
-            /**
-             * @description ID của bản ghi nhập điểm (GradeEntry)
-             * @example 1
-             */
-            gradeSubmissionId: number;
-            approverId: number;
-        };
-        GradeEntryResponseDto: {
-            /**
-             * @description ID tự tăng của bản ghi điểm số
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description ID của đơn phê duyệt điểm (GradeSubmission), có thể null nếu điểm dạng nháp chưa nộp
-             * @example 19
-             */
-            gradeSubmissionId?: number | null;
-            /**
-             * @description ID của thành phần điểm (Ví dụ: Điểm chuyên cần, Điểm giữa kỳ...)
-             * @example 2
-             */
-            componentId: number;
-            /**
-             * @description ID lượt đăng ký học phần của sinh viên (Liên kết với bảng CourseRegistration)
-             * @example 154
-             */
-            courseRegistrationId?: number | null;
-            /**
-             * @description Điểm số của học sinh (Thang điểm hệ 10), có thể null nếu chưa nhập điểm
-             * @example 8.5
-             */
-            score?: number | null;
-        };
-        SubmissionHistoryResponse: {
-            /**
-             * @description ID của lượt submit
-             * @example 4
-             */
-            id: number;
-            /**
-             * @description ID của đợt mở lớp (Course Offer)
-             * @example 5
-             */
-            courseOfferId: number;
-            /**
-             * @description Trạng thái phê duyệt điểm
-             * @example PENDING
-             * @enum {string}
-             */
-            status: "PENDING" | "APPROVED" | "REJECTED";
-            /**
-             * @description ID người tạo submit
-             * @example 5
-             */
-            submitedBy: number;
-            /**
-             * @description ID người phê duyệt
-             * @example null
-             */
-            approvedBy: Record<string, never> | null;
-            /**
-             * Format: date-time
-             * @description Ngày tạo
-             * @example 2026-05-19T07:05:59.648Z
-             */
-            createdAt: string;
-            /**
-             * @description Ngày cập nhật cuối
-             * @example null
-             */
-            updatedAt: Record<string, never> | null;
-            /** @description Danh sách điểm chi tiết đi kèm */
-            gradeEntries: components["schemas"]["GradeEntryResponseDto"][];
+        SaveGradeEntries: {
+            /** @description Danh sách mảng các đầu điểm chi tiết của từng học sinh */
+            grades: components["schemas"]["CreateGradeEntryDto"][];
         };
         CreateSemesterDto: {
             /**
@@ -3200,6 +3139,38 @@ export interface components {
             /** @example 2026-05-15T23:59:59Z */
             registrationEnd?: string;
         };
+        GradeEntryResponseDto: {
+            /**
+             * @description ID tự tăng của bản ghi điểm số
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description ID của đơn phê duyệt điểm (GradeSubmission), có thể null nếu điểm dạng nháp chưa nộp
+             * @example 19
+             */
+            gradeSubmissionId?: number | null;
+            /**
+             * @description ID của thành phần điểm (Ví dụ: Điểm chuyên cần, Điểm giữa kỳ...)
+             * @example 2
+             */
+            componentId: number;
+            /**
+             * @description ID lượt đăng ký học phần của sinh viên (Liên kết với bảng CourseRegistration)
+             * @example 154
+             */
+            courseRegistrationId?: number | null;
+            /**
+             * @description Điểm số của học sinh (Thang điểm hệ 10), có thể null nếu chưa nhập điểm
+             * @example 8.5
+             */
+            score?: number | null;
+            /**
+             * @example APPROVED
+             * @enum {string|null}
+             */
+            status?: "PENDING" | "APPROVED" | "REJECTED" | null;
+        };
         CourseOfferRegisResponseDto: {
             /**
              * @description ID duy nhất của bản ghi đăng ký học phần
@@ -4189,6 +4160,25 @@ export interface operations {
             };
         };
     };
+    ClassController_updateClassSizesByBatch: {
+        parameters: {
+            query: {
+                batchId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     SubjectController_findAll: {
         parameters: {
             query?: never;
@@ -4471,9 +4461,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["SubmitGradeResponse"];
-                };
+                content?: never;
             };
         };
     };
@@ -4486,37 +4474,16 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ApproveGradeEntryDto"];
+                "application/json": components["schemas"]["SaveGradeEntries"];
             };
         };
         responses: {
-            /** @description Phê duyệt điểm thành công */
+            /** @description Chốt bảng điểm thành công */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-        };
-    };
-    GradeEntryController_getSubmissionHistory: {
-        parameters: {
-            query: {
-                courseOfferId: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SubmissionHistoryResponse"][];
-                };
             };
         };
     };
@@ -5939,6 +5906,25 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StudentResponseDto"];
                 };
+            };
+        };
+    };
+    CourseOfferController_exportExcel: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

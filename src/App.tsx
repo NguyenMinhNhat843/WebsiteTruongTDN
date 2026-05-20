@@ -67,6 +67,8 @@ import LopHocPhanOne from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanOne/LopHocPha
 import GradeComponentLayout from "./pages/admin/DiemThanhPhan/GradeComponentLayout";
 import { AppProvider } from "./AppProvider";
 import GradeComponentList from "./pages/admin/DiemThanhPhan/GradeComponentList";
+import LopHocLayout from "./pages/admin/LopHocVaKhoaHoc/LopHocDanhNghia/LopHocLayout";
+import LopHocList from "./pages/admin/LopHocVaKhoaHoc/LopHocDanhNghia/LopHocList";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -165,6 +167,9 @@ function App() {
                   path="dao-tao/lop-hoc-phan/:id"
                   element={<LopHocPhanOne />}
                 />
+              </Route>
+              <Route element={<LopHocLayout />}>
+                <Route path="dao-tao/lop-hoc" element={<LopHocList />} />
               </Route>
               <Route
                 path="dao-tao/lop-hoc/:slug"

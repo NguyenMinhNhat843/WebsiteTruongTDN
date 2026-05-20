@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import { getStatusBadgeLopHocPhan } from "../../components/getStatusLopHocPhan";
 import { useLopHocPhanOneContext } from "../LopHocPhanOneProvider";
 import { useNavigate } from "react-router-dom";
+import ButtonExport from "../../../../../components/ui/ButtonExport";
 
 const Header = () => {
   const {
@@ -9,10 +10,12 @@ const Header = () => {
     acceptLopHocPhan,
     lopHocPhanId,
     setIsOpenModalAddStudent,
+    exportExcel,
+    isExportingExcel,
   } = useLopHocPhanOneContext();
   const navigate = useNavigate();
   return (
-    <div className="max-w-7xl mx-auto mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div className="flex items-center gap-3">
         <button
           onClick={() => navigate(-1)}
@@ -33,9 +36,19 @@ const Header = () => {
         </div>
       </div>
       <div className="flex gap-2">
-        <button className="bg-white border border-slate-200 hover:bg-slate-50 font-semibold px-4 py-2 rounded-xl text-sm transition-colors text-slate-700 shadow-sm">
-          Xuất dữ liệu
-        </button>
+        <ButtonExport
+          isPending={isExportingExcel}
+          onClick={() =>
+            exportExcel({
+              parseAs: "blob",
+              params: {
+                path: {
+                  id: lopHocPhanId,
+                },
+              },
+            })
+          }
+        />
         <button
           className="bg-white border border-slate-200 hover:bg-slate-50 font-semibold px-4 py-2 rounded-xl text-sm transition-colors text-slate-700 shadow-sm"
           onClick={() => setIsOpenModalAddStudent(true)}

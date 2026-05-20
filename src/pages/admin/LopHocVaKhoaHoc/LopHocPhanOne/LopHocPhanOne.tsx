@@ -9,7 +9,6 @@ import {
   Calendar,
   Users,
   Hash,
-  Clock,
   CheckCircle,
   AlertCircle,
   FileText,
@@ -18,7 +17,6 @@ import {
 } from "lucide-react";
 import TableHocSinhVoiDiem from "./TableHocSinhVoiDiem";
 import ModalAddStudent from "./ModalAddStudent";
-import SectionSubmissionHistory from "./SectionSubmissionHistory";
 
 const LopHocPhanOne = () => {
   return (
@@ -85,8 +83,6 @@ const Inner = () => {
     courseName,
     maxStudents,
     currentStudents,
-    registrationStart,
-    registrationEnd,
     startDate,
     endDate,
     registrations,
@@ -107,7 +103,7 @@ const Inner = () => {
       <Header />
 
       {/* 2. KHU VỰC BỐ CỤC CHÍNH (MAIN LAYOUT) */}
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="space-y-6">
         {/* HÀNG 1: THÔNG TIN TỔNG QUAN, SĨ SỐ & MỐC THỜI GIAN */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Card Thông tin chung */}
@@ -222,34 +218,6 @@ const Inner = () => {
             </h3>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-blue-50 text-blue-500 rounded-xl shrink-0 mt-0.5">
-                  <Clock size={16} />
-                </div>
-                <div>
-                  <span className="text-xs text-slate-400 block font-medium">
-                    Mở cổng đăng ký
-                  </span>
-                  <span className="text-xs font-bold text-slate-700">
-                    {formatDateTime(registrationStart)}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="p-2 bg-rose-50 text-rose-500 rounded-xl shrink-0 mt-0.5">
-                  <Clock size={16} />
-                </div>
-                <div>
-                  <span className="text-xs text-slate-400 block font-medium">
-                    Đóng cổng đăng ký
-                  </span>
-                  <span className="text-xs font-bold text-slate-700">
-                    {formatDateTime(registrationEnd)}
-                  </span>
-                </div>
-              </div>
-
               <div className="flex items-start gap-3">
                 <div className="p-2 bg-slate-50 text-slate-500 rounded-xl shrink-0 mt-0.5">
                   <Calendar size={16} />
@@ -366,8 +334,6 @@ const Inner = () => {
             </div>
           )}
         </div>
-
-        <SectionSubmissionHistory />
       </div>
 
       <ModalAddStudent
