@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import {
   useHoSoTuyenSinhContext,
   type CreateHoSoTuyenSinhDto,
-} from "./HoSoTuyenSInhProvider";
+} from "./HoSoTuyenSinhProvider";
 import { useDotTuyenSinhContext } from "./DotTuyenSinhProvider";
 
 interface CreateHoSoModalProps {
