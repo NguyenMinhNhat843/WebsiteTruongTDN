@@ -6,7 +6,7 @@ import {
 import {
   useHoSoTuyenSinhContext,
   type HoSoTuyenSinhDto,
-} from "./HoSoTuyenSInhProvider";
+} from "./HoSoTuyenSinhProvider";
 import { columns } from "./TableHoSoTuyenSinhColumn";
 import { Trash } from "lucide-react";
 

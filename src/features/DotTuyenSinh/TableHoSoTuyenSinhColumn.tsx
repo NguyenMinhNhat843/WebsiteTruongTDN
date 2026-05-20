@@ -1,6 +1,6 @@
 import { type ColumnDef } from "@tanstack/react-table";
 import { Mail, Phone, Calendar } from "lucide-react";
-import type { HoSoTuyenSinhDto } from "./HoSoTuyenSInhProvider";
+import type { HoSoTuyenSinhDto } from "./HoSoTuyenSinhProvider";
 
 // Định nghĩa màu sắc cho từng trạng thái
 const statusMap = {
