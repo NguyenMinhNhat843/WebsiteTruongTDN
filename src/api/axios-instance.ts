@@ -1,7 +1,23 @@
 import axios, { AxiosError, type AxiosRequestConfig } from "axios";
 
+// Xác định URL dựa trên môi trường chạy của Frontend
+const getBaseUrl = (): string => {
+  const prodUrl =
+    import.meta.env.VITE_SERVER_PRODUCTION ||
+    "https://quantritruonghoc-be.onrender.com";
+  const localUrl = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
+
+  // Nếu đang chạy 'npm run dev' ở máy local, ưu tiên dùng localUrl trước
+  if (import.meta.env.DEV) {
+    return localUrl;
+  }
+
+  // Khi đã build deploy lên mạng, luôn luôn dùng Production
+  return prodUrl;
+};
+
 export const AXIOS_INSTANCE = axios.create({
-  baseURL: import.meta.env.VITE_BASE_URL || "http://localhost:3000",
+  baseURL: getBaseUrl(),
   headers: { "Content-Type": "application/json" },
 });
 
