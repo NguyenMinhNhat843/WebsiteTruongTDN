@@ -3,10 +3,10 @@ import PageShell from "../../components/ui/PageShell";
 import { useHocphisContext } from "./HocPhiProvider";
 import { CreateTuitionModal } from "./ModalTaoCongNo";
 import { ThuHocPhiPage } from "./StudentPaymentFee/ThuHocPhiSection";
+import { useAppContext } from "../../AppProvider";
 
 const QuanLyDotHocPhi = () => {
   const {
-    hockys,
     setIsOpenModalTaoCongNo,
     isOpenModalTaoCongNo,
     isPendingCreateSemesterFees,
@@ -14,6 +14,7 @@ const QuanLyDotHocPhi = () => {
     hocPhiXemTruoc,
     isPendingHocPhiXemTruoc,
   } = useHocphisContext();
+  const { hocKysData: hockys } = useAppContext();
   return (
     <PageShell
       title="Quản lý đợt học phí"

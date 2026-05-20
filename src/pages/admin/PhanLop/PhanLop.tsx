@@ -8,7 +8,7 @@ const PhanLop = () => {
     nganhs,
     isPendingNganhs,
     students,
-    isPendingStudents,
+    isLoadingStudents,
     selectedMajorId,
     setSelectedMajorId,
     latestBatch,
@@ -170,7 +170,7 @@ const PhanLop = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {isPendingStudents ? (
+                {isLoadingStudents ? (
                   <tr>
                     <td colSpan={4} className="py-20">
                       <div className="flex flex-col items-center gap-3">

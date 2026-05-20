@@ -10,20 +10,24 @@ import { useHocphisContext } from "../HocPhiProvider";
 import { StudentTuitionTable } from "./StudentTuitionTable";
 import { BadgeStudentStatus } from "../../../components/enum/StudentStatusBadge";
 import LichSuThanhToan from "./LichSuThanhToan";
+import { useState } from "react";
 
 export const ThuHocPhiPage = () => {
+  const [studentCode, setStudentCode] = useState("");
   const {
-    student: studentData,
-    studentCodeInput: studentCode,
-    setStudentCodeInput: setStudentCode,
-    isPendingStudentTuitionInfo: isSearching,
+    getStudentTuitionInfo,
+    isPendingGetStudentTuitionInfo,
+    studentTuitionInfoData,
   } = useHocphisContext();
 
-  // Giả lập hàm tìm kiếm
   const handleSearch = () => {
-    // Gọi API của bạn ở đây...
-    console.log("Searching for:", studentCode);
-    // Sau khi có data: setStudentData(res); setIsSearching(false);
+    getStudentTuitionInfo({
+      params: {
+        query: {
+          studentCode: studentCode,
+        },
+      },
+    });
   };
 
   return (
@@ -39,17 +43,20 @@ export const ThuHocPhiPage = () => {
             type="text"
             placeholder="Nhập mã sinh viên (VD: SV2026...)"
             value={studentCode}
-            onChange={(e) => setStudentCode(e.target.value)}
+            onChange={(e) => {
+              console.log("Mã sinh viên nhập vào:", e.target.value);
+              return setStudentCode(e.target.value);
+            }}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}
             className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 outline-none transition-all font-medium"
           />
         </div>
         <button
           onClick={handleSearch}
-          disabled={isSearching}
+          disabled={isPendingGetStudentTuitionInfo}
           className="px-8 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 transition-all flex items-center gap-2 active:scale-95 disabled:bg-indigo-300"
         >
-          {isSearching ? (
+          {isPendingGetStudentTuitionInfo ? (
             <Clock className="animate-spin" size={18} />
           ) : (
             <Search size={18} />
@@ -58,17 +65,17 @@ export const ThuHocPhiPage = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-12 gap-6 items-start">
+      <div className="grid grid-cols-12 gap-6 items-stretch">
         {/* CỘT TRÁI: THÔNG TIN SINH VIÊN */}
         <div className="col-span-12 lg:col-span-4 space-y-6">
-          {studentData ? (
-            <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+          {studentTuitionInfoData ? (
+            <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden h-full">
               <div className="bg-indigo-600 h-24 w-full relative">
                 <div className="absolute -bottom-12 left-6">
                   <div className="w-24 h-24 rounded-2xl border-4 border-white bg-slate-200 overflow-hidden shadow-md">
-                    {studentData.avatarUrl ? (
+                    {studentTuitionInfoData.avatarUrl ? (
                       <img
-                        src={studentData.avatarUrl}
+                        src={studentTuitionInfoData.avatarUrl}
                         alt="Avatar"
                         className="w-full h-full object-cover"
                       />
@@ -84,7 +91,7 @@ export const ThuHocPhiPage = () => {
               <div className="pt-16 p-6 space-y-4">
                 <div>
                   <h2 className="text-xl font-black text-slate-800">
-                    {studentData.fullName}
+                    {studentTuitionInfoData.fullName}
                   </h2>
                   <p className="text-indigo-600 font-medium text-sm">
                     Sinh viên
@@ -95,34 +102,36 @@ export const ThuHocPhiPage = () => {
                   <div className="flex items-center gap-3 text-slate-600">
                     <Fingerprint size={18} className="text-slate-400" />
                     <span className="text-sm font-semibold uppercase tracking-wider">
-                      MSSV: {studentData.studentCode}
+                      MSSV: {studentTuitionInfoData.studentCode}
                     </span>
                   </div>
                   <div className="flex items-center gap-3 text-slate-600">
                     <Fingerprint size={18} className="text-slate-400" />
                     <span className="text-sm font-semibold uppercase tracking-wider">
-                      ID: {studentData.id}
+                      ID: {studentTuitionInfoData.id}
                     </span>
                   </div>
                   <div className="flex items-center gap-3 text-slate-600">
                     <Phone size={18} className="text-slate-400" />
                     <span className="text-sm">
-                      {studentData.phone || "Chưa cập nhật"}
+                      {studentTuitionInfoData.phone || "Chưa cập nhật"}
                     </span>
                   </div>
                   <div className="flex items-center gap-3 text-slate-600">
                     <GraduationCap size={18} className="text-slate-400" />
                     <span className="text-sm font-medium">
-                      {studentData.batch?.batchName}
+                      {studentTuitionInfoData.batch?.batchName}
                     </span>
                   </div>
                   <div>
-                    <BadgeStudentStatus status={studentData.status} />
+                    <BadgeStudentStatus
+                      status={studentTuitionInfoData.status}
+                    />
                   </div>
                   <div className="flex items-center gap-3 text-slate-600">
                     <GraduationCap size={18} className="text-slate-400" />
                     <span className="text-sm font-medium">
-                      {studentData.classId || "Chưa phân lớp"}
+                      {studentTuitionInfoData?.classId || "Chưa phân lớp"}
                     </span>
                   </div>
                 </div>
@@ -132,7 +141,7 @@ export const ThuHocPhiPage = () => {
                     Ngành học
                   </p>
                   <p className="text-sm font-bold text-slate-700">
-                    {studentData.batch?.major?.majorName || "N/A"}
+                    {studentTuitionInfoData?.batch?.major?.majorName || "N/A"}
                   </p>
                 </div>
               </div>
@@ -151,8 +160,9 @@ export const ThuHocPhiPage = () => {
 
         {/* CỘT PHẢI: DANH MỤC KHOẢN PHÍ */}
         <StudentTuitionTable />
-        <LichSuThanhToan />
       </div>
+      {/* Lịch sử thanh toán */}
+      <LichSuThanhToan />
     </div>
   );
 };

@@ -11,19 +11,18 @@ export type InvoiceDto = components["schemas"]["InvoiceDto"];
 
 export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
   const [isOpenModalTaoCongNo, setIsOpenModalTaoCongNo] = useState(false);
-  const [studentCodeInput, setStudentCodeInput] = useState("63889026");
+  const [studentCodeInput, setStudentCodeInput] = useState("");
   const queryClient = useQueryClient();
-  // get danh sách học kỳ
-  const { data: hockys, isPending: isPendingHocKys } = $api.useQuery(
-    "get",
-    "/semesters",
-  );
 
-  // get thông tin học phí xem trước khi mở đợt học phí
+  /**
+   * Lấy thông tin xem trước công nợ học phí của học kỳ mới
+   */
   const { data: hocPhiXemTruoc, isPending: isPendingHocPhiXemTruoc } =
     $api.useQuery("get", "/tuition-fee/preview");
 
-  // post tạo công nợ toàn trường
+  /**
+   * Tạo công nợ toàn trường cho học kỳ mới
+   */
   const { mutate: createSemesterFees, isPending: isPendingCreateSemesterFees } =
     $api.useMutation("post", "/tuition-fee/create-semester-fees", {
       onSuccess: () => {
@@ -31,23 +30,15 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
       },
     });
 
-  // get sinh viên theo mã sinh viên
-  const { data: studentTuitionInfo, isPending: isPendingStudentTuitionInfo } =
-    $api.useQuery(
-      "get",
-      "/students",
-      {
-        params: {
-          query: {
-            studentCode: studentCodeInput,
-          },
-        },
-      },
-      {
-        enabled: studentCodeInput.trim() !== "", // Chỉ gọi API khi có mã sinh viên
-      },
-    );
-  const student = studentTuitionInfo?.[0];
+  /**
+   * Hàm lấy thông tin sinh viên
+   */
+  const {
+    data: students,
+    mutate: getStudentTuitionInfo,
+    isPending: isPendingGetStudentTuitionInfo,
+  } = $api.useMutation("get", "/students");
+  const studentTuitionInfoData = students?.[0];
 
   // Lấy chi tiết công nợ của sinh viên theo mã sinh viên
   const {
@@ -56,7 +47,7 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
   } = $api.useQuery("get", `/tuition-fee/fees/{studentId}`, {
     params: {
       path: {
-        studentId: studentTuitionInfo?.[0]?.id || 0,
+        studentId: studentTuitionInfoData?.id || 0,
       },
     },
   });
@@ -78,7 +69,7 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
     {
       params: {
         path: {
-          studentCode: studentCodeInput,
+          studentCode: studentTuitionInfoData?.studentCode,
         },
       },
     },
@@ -86,8 +77,9 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
   const studentTuitionInvoices: InvoiceDto[] = data || [];
 
   return {
-    hockys,
-    isPendingHocKys,
+    getStudentTuitionInfo,
+    isPendingGetStudentTuitionInfo,
+    studentTuitionInfoData,
     hocPhiXemTruoc,
     isPendingHocPhiXemTruoc,
     createSemesterFees,
@@ -96,11 +88,8 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
     setIsOpenModalTaoCongNo,
     studentCodeInput,
     setStudentCodeInput,
-    studentTuitionInfo,
-    isPendingStudentTuitionInfo,
     studentTuitionDetails,
     isPendingStudentTuitionDetails,
-    student,
     thanhToanHocPhi,
     isPendingThanhToanHocPhi,
     studentTuitionInvoices,

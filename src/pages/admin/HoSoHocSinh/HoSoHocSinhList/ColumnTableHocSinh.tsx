@@ -1,7 +1,7 @@
 import { type ColumnDef } from "@tanstack/react-table";
-import { formatDate } from "../../util/formatDate";
-import type { HocSinhDto } from "./HocSinhProvider";
-import { BadgeStudentStatus } from "../../components/enum/StudentStatusBadge";
+import { formatDate } from "../../../../util/formatDate";
+import type { HocSinhDto } from "../HocSinhProvider";
+import { BadgeStudentStatus } from "../../../../components/enum/StudentStatusBadge";
 
 export const studentColumns: ColumnDef<HocSinhDto>[] = [
   {
@@ -13,12 +13,10 @@ export const studentColumns: ColumnDef<HocSinhDto>[] = [
 
       return (
         <div className="flex flex-col gap-0.5 group">
-          {/* Mã lớp ở trên: Chữ đậm, màu tối, nổi bật */}
           <span className="font-bold text-slate-800 tracking-tight group-hover:text-blue-600 transition-colors">
             {String(code)}
           </span>
 
-          {/* ID ở dưới: Nhỏ, màu nhạt, đi kèm icon hoặc prefix nhạt */}
           <div className="flex items-center gap-1">
             <span className="text-[10px] font-medium uppercase text-slate-400 bg-slate-100 px-1 rounded">
               ID
@@ -85,10 +83,10 @@ export const studentColumns: ColumnDef<HocSinhDto>[] = [
     accessorKey: "batch.batchName",
     header: "Ngành nghề",
   },
-  {
-    accessorKey: "phone",
-    header: "Số điện thoại",
-  },
+  // {
+  //   accessorKey: "phone",
+  //   header: "Số điện thoại",
+  // },
   {
     accessorKey: "status",
     header: "Trạng thái",

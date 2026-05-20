@@ -1,5 +1,5 @@
-import { HocSinhProvider } from "../../../features/HocSinh/HocSInhProvider";
 import { Outlet } from "react-router-dom";
+import { HocSinhProvider } from "./HocSinhProvider";
 
 const HocSinhLayout = () => {
   return (

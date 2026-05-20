@@ -24,7 +24,7 @@ export const [PhanLopProvider, usePhanLopContext] = createContextProvider(
     }, [selectedMajorId, batches]);
 
     // get danh sách học sinh đủ điều kiện phân lớp
-    const { data: students, isPending: isPendingStudents } = $api.useQuery(
+    const { data: students, isLoading: isLoadingStudents } = $api.useQuery(
       "get",
       "/classes/eligible-for-assignment",
       {
@@ -47,7 +47,7 @@ export const [PhanLopProvider, usePhanLopContext] = createContextProvider(
 
     return {
       students,
-      isPendingStudents,
+      isLoadingStudents,
       nganhs,
       isPendingNganhs,
       batches,

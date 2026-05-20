@@ -18,11 +18,10 @@ import { useHocphisContext, type ChiTietHocPhiDto } from "../HocPhiProvider";
 const columnHelper = createColumnHelper<ChiTietHocPhiDto>();
 
 export const StudentTuitionTable = () => {
-  // Lấy data và trạng thái từ Context
   const {
     studentTuitionDetails,
     isPendingStudentTuitionDetails,
-    student: studentData,
+    studentTuitionInfoData: studentData,
     thanhToanHocPhi,
     isPendingThanhToanHocPhi,
   } = useHocphisContext();
@@ -168,7 +167,7 @@ export const StudentTuitionTable = () => {
 
   return (
     <div className="col-span-12 lg:col-span-8 h-full">
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden h-full flex flex-col justify-between">
         {/* Table Header */}
         <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-white">
           <h3 className="font-bold text-slate-800 flex items-center gap-2">
