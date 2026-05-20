@@ -69,9 +69,12 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
     {
       params: {
         path: {
-          studentCode: studentTuitionInfoData?.studentCode,
+          studentCode: studentTuitionInfoData!.studentCode!,
         },
       },
+    },
+    {
+      enabled: !!studentTuitionInfoData?.studentCode,
     },
   );
   const studentTuitionInvoices: InvoiceDto[] = data || [];

@@ -60,7 +60,6 @@ import QuanLyDotHocPhi from "./features/HocPhi/QuanLyDotHocPhi";
 import PhanLop from "./pages/admin/PhanLop/PhanLop";
 import PhanLopLayout from "./pages/admin/PhanLop/PhanLopLayout";
 import NhanVienLayout from "./pages/admin/QuanLyNhanVien/NhanVienLayout";
-import TaoLopHocPhan from "./pages/admin/LopHocPhan/LopHocPhan";
 import LopHocPhanLayout from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanLayout";
 import LopHocPhanList from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanList";
 import LopHocPhanOne from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanOne/LopHocPhanOne";
@@ -152,11 +151,6 @@ function App() {
               <Route
                 path="dao-tao/tao-chuong-trinh-khung"
                 element={<TaoChuongTrinhKhung />}
-              />
-
-              <Route
-                path="dao-tao/tao-lop-hoc-phan"
-                element={<TaoLopHocPhan />}
               />
               <Route element={<LopHocPhanLayout />}>
                 <Route

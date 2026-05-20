@@ -16,7 +16,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getStatusBadgeLopHocPhan } from "../components/getStatusLopHocPhan";
+import { getStatusBadgeLopHocPhan } from "./components/getStatusLopHocPhan";
 
 type CourseOfferItem = {
   id: number;
@@ -234,9 +234,6 @@ const DanhSachLopHocPhan = ({ data, isLoading }: Props) => {
         <div className="flex gap-2 w-full sm:w-auto">
           <button className="p-2 border border-slate-200 rounded-xl hover:bg-white text-slate-600 transition-colors flex items-center justify-center gap-2 text-sm bg-slate-50">
             <SlidersHorizontal size={16} /> Bộ lọc
-          </button>
-          <button className="flex-1 sm:flex-initial bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm shadow-blue-100">
-            + Mở lớp mới
           </button>
         </div>
       </div>

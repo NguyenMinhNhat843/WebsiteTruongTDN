@@ -22,6 +22,7 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
     const { id } = useParams();
     const lopHocPhanId = Number(id);
     const [isOpenModalAddStudent, setIsOpenModalAddStudent] = useState(false);
+    const [isOpenModalImportExcel, setIsOpenModalImportExcel] = useState(false);
     const queryClient = useQueryClient();
 
     // Get chi tiết lớp học phần
@@ -163,5 +164,7 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
       // state
       isOpenModalAddStudent,
       setIsOpenModalAddStudent,
+      isOpenModalImportExcel,
+      setIsOpenModalImportExcel,
     };
   });

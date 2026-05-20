@@ -86,12 +86,6 @@ const navItems: NavItem[] = [
         href: "/admin/dao-tao/thoi-khoa-bieu",
         roles: ["ADMIN", "TEACHER"],
       },
-      {
-        id: "quan-ly-diem",
-        label: "Quản lý Điểm & Thi",
-        href: "/admin/dao-tao/diem-thi",
-        roles: ["ADMIN", "TEACHER"],
-      },
     ],
   },
   // --- NHÓM CÔNG TÁC HỌC SINH ---

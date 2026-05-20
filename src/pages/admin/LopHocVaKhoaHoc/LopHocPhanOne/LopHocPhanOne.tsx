@@ -17,11 +17,15 @@ import {
 } from "lucide-react";
 import TableHocSinhVoiDiem from "./TableHocSinhVoiDiem";
 import ModalAddStudent from "./ModalAddStudent";
+import ModalImportExcel from "./ModalImportExcel";
+import { TableDiemProvider } from "./TableDiemProvider";
 
 const LopHocPhanOne = () => {
   return (
     <LopHocPhanOneProvider>
-      <Inner />
+      <TableDiemProvider>
+        <Inner />
+      </TableDiemProvider>
     </LopHocPhanOneProvider>
   );
 };
@@ -33,6 +37,8 @@ const Inner = () => {
     lopHocPhanId,
     isOpenModalAddStudent,
     setIsOpenModalAddStudent,
+    isOpenModalImportExcel,
+    setIsOpenModalImportExcel,
   } = useLopHocPhanOneContext();
 
   // Định dạng hiển thị ngày giờ dạng: 14:30, 15 Th05, 2026
@@ -339,6 +345,11 @@ const Inner = () => {
       <ModalAddStudent
         isOpen={isOpenModalAddStudent}
         onClose={() => setIsOpenModalAddStudent(false)}
+      />
+
+      <ModalImportExcel
+        isOpen={isOpenModalImportExcel}
+        onClose={() => setIsOpenModalImportExcel(false)}
       />
     </div>
   );
