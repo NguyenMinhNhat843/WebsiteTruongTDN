@@ -226,7 +226,7 @@ const Inner = () => {
                   onSuccess: () => {
                     alert("Bảng điểm đã được chốt thành công!");
                   },
-                  onError: (error) => {
+                  onError: (error: any) => {
                     alert(
                       error?.message ||
                         "Có lỗi xảy ra khi chốt bảng điểm. Vui lòng thử lại sau.",
