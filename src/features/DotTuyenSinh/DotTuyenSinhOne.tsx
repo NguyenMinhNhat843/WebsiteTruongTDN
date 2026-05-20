@@ -21,7 +21,7 @@ import {
   type StatusDotTuyenSinh,
 } from "./DotTuyenSinhProvider";
 import { useNavigate } from "react-router-dom";
-import { useHoSoTuyenSinhContext } from "./HoSoTuyenSInhProvider";
+import { useHoSoTuyenSinhContext } from "./HoSoTuyenSinhProvider";
 import CreateHoSoModal from "./ModalCreateHoSoTuyenSinh";
 import { HoSoTuyenSinhTable } from "./TableHoSotuyenSinh";
 import PageShell from "../../components/ui/PageShell";
