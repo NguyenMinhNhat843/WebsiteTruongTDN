@@ -97,10 +97,12 @@ const DanhSachLopHocPhan = ({ data, isLoading }: Props) => {
           const row = info.row.original;
           return (
             <div
-              className="flex flex-col gap-0.5"
+              className="flex flex-col gap-0.5 cursor-pointer p-1.5 -m-1.5 rounded-lg 
+              transition-all duration-150 ease-in-out hover:bg-slate-50 
+              active:scale-[0.98] active:opacity-90 group"
               onClick={() => navigate("" + row.id)}
             >
-              <span className="font-bold text-slate-800 tracking-tight">
+              <span className="font-bold text-slate-800 tracking-tight transition-colors group-hover:text-blue-600">
                 {row.courseCode}
               </span>
               <span className="text-xs text-slate-500 font-medium line-clamp-1">
@@ -278,7 +280,7 @@ const DanhSachLopHocPhan = ({ data, isLoading }: Props) => {
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="hover:bg-slate-50/60 transition-all duration-200 group"
+                  className="hover:bg-slate-50/60 transition-all duration-200"
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td

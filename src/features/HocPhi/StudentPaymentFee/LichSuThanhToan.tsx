@@ -19,7 +19,7 @@ type InvoiceDto = {
 const columnHelper = createColumnHelper<InvoiceDto>();
 
 const LichSuThanhToan = () => {
-  const { studentTuitionInvoices, isPendingStudentTuitionInvoices } =
+  const { studentTuitionInvoices, isLoadingStudentTuitionInvoices } =
     useHocphisContext();
 
   // 2. Định nghĩa cấu hình các cột cho Lịch sử hóa đơn
@@ -133,7 +133,7 @@ const LichSuThanhToan = () => {
 
             <tbody className="divide-y divide-slate-100">
               {/* 1. Trạng thái đang tải dữ liệu (Loading) */}
-              {isPendingStudentTuitionInvoices ? (
+              {isLoadingStudentTuitionInvoices ? (
                 <tr>
                   <td colSpan={columns.length} className="py-16 text-center">
                     <Loader2

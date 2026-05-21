@@ -150,6 +150,14 @@ export const [LopHocPhanOneProvider, useLopHocPhanOneContext] =
           {
             onSuccess: (response) => {
               alert(JSON.stringify(response) || "Lưu nháp thành công");
+              window.location.reload();
+            },
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onError: (error: any) => {
+              alert(
+                error?.message ||
+                  "Có lỗi xảy ra khi nộp điểm. Vui lòng thử lại sau.",
+              );
             },
           },
         );

@@ -6,14 +6,14 @@ import {
   createColumnHelper,
 } from "@tanstack/react-table";
 import { useLopHocPhanOneContext } from "./LopHocPhanOneProvider";
-import { Loader2 } from "lucide-react";
 import { renderStatusIcon } from "./StatusGrade";
 import {
   TableDiemProvider,
   useTableDiemContext,
   type StudentRowData,
 } from "./TableDiemProvider";
-
+import ButtonAction from "../../../../components/ui/ButtonAction";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const TableHocSinhVoiDiem = () => {
   return (
     <TableDiemProvider>
@@ -196,26 +196,24 @@ const Inner = () => {
         </div>
       </div>
 
-      {/* Thanh công cụ Action Bar nằm dưới bảng để điều khiển hành động submit */}
       {tableData.length > 0 && (
         <div className="flex justify-end items-center gap-3 p-4 bg-slate-50 border border-slate-100 rounded-xl">
-          {/* Nút Lưu nháp - Hành động phụ (Secondary) */}
-          <button
+          <ButtonAction
             type="button"
+            variant="outline"
             disabled={isSubmittingGrades || isApprovingGrade}
+            loading={isSubmittingGrades}
+            label="Lưu nháp"
             onClick={() => submitGrades(handlePayloadSaveGrade())}
-            className="px-5 py-2 border border-slate-300 bg-white hover:bg-slate-50 disabled:bg-slate-50 disabled:border-slate-200 disabled:text-slate-400 text-slate-700 text-sm font-medium rounded-lg shadow-sm active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
-          >
-            {isSubmittingGrades && (
-              <Loader2 className="h-4 w-4 animate-spin text-slate-500" />
-            )}
-            Lưu nháp
-          </button>
+            className="h-9 px-5 rounded-lg text-sm" // Đồng bộ chiều cao h-9 và bo góc với thiết kế cũ
+          />
 
-          {/* Nút Chốt bảng điểm - Hành động chính (Primary) */}
-          <button
+          <ButtonAction
             type="button"
+            variant="primary"
             disabled={isSubmittingGrades || isApprovingGrade}
+            loading={isApprovingGrade}
+            label="Chốt bảng điểm"
             onClick={() => {
               const gradesPayload = handlePayloadSaveGrade();
               return approveGrade(
@@ -225,6 +223,7 @@ const Inner = () => {
                 {
                   onSuccess: () => {
                     alert("Bảng điểm đã được chốt thành công!");
+                    window.location.reload();
                   },
                   onError: (error: any) => {
                     alert(
@@ -235,13 +234,8 @@ const Inner = () => {
                 },
               );
             }}
-            className="px-5 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:shadow-none text-white text-sm font-semibold rounded-lg shadow-sm shadow-blue-500/10 active:scale-[0.98] transition-all flex items-center gap-2 cursor-pointer"
-          >
-            {isApprovingGrade && (
-              <Loader2 className="h-4 w-4 animate-spin text-white" />
-            )}
-            Chốt bảng điểm
-          </button>
+            className="h-9 px-5 rounded-lg text-sm"
+          />
         </div>
       )}
     </div>

@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
-import { useLopHocContext, type CreateLopHocDto } from "./LopHocProvider";
-import Input from "../../../../components/ui/Form/Input";
-import { SelectOption } from "../../../../components/ui/Form/SelectOption";
+import Input from "../../../components/ui/Form/Input";
+import { SelectOption } from "../../../components/ui/Form/SelectOption";
 import {
   FolderKanban,
   GraduationCap,
@@ -11,7 +10,8 @@ import {
   UserCheck,
   X,
 } from "lucide-react";
-import ButtonAction from "../../../../components/ui/ButtonAction";
+import ButtonAction from "../../../components/ui/ButtonAction";
+import { useLopHocContext, type CreateLopHocDto } from "./LopHocProvider";
 
 interface CreateLopHocProps {
   isOpen: boolean;

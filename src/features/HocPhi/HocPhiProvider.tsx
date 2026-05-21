@@ -40,7 +40,9 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
   } = $api.useMutation("get", "/students");
   const studentTuitionInfoData = students?.[0];
 
-  // Lấy chi tiết công nợ của sinh viên theo mã sinh viên
+  /**
+   * Lấy chi tiết công nợ sinh viên
+   */
   const {
     data: studentTuitionDetails,
     isPending: isPendingStudentTuitionDetails,
@@ -52,7 +54,9 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
     },
   });
 
-  // thanh toán học phí
+  /**
+   * Api Thanh toán học phí
+   */
   const { mutate: thanhToanHocPhi, isPending: isPendingThanhToanHocPhi } =
     $api.useMutation("post", "/tuition-fee/pay", {
       onSuccess: () => {
@@ -62,19 +66,21 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
       },
     });
 
-  // Lấy danh sách hóa đơn học phí của sinh viên theo mã sinh viên
-  const { data, isPending: isPendingStudentTuitionInvoices } = $api.useQuery(
+  /**
+   * Lấy danh sách lịch sử thanh toán học phí của sinh viên
+   */
+  const { data, isLoading: isLoadingStudentTuitionInvoices } = $api.useQuery(
     "get",
     `/tuition-fee/invoices/{studentCode}`,
     {
       params: {
         path: {
-          studentCode: studentTuitionInfoData!.studentCode!,
+          studentCode: studentTuitionInfoData?.studentCode || "",
         },
       },
     },
     {
-      enabled: !!studentTuitionInfoData?.studentCode,
+      enabled: Boolean(studentTuitionInfoData?.studentCode),
     },
   );
   const studentTuitionInvoices: InvoiceDto[] = data || [];
@@ -96,6 +102,6 @@ export const [HocPhiProvider, useHocphisContext] = createContextProvider(() => {
     thanhToanHocPhi,
     isPendingThanhToanHocPhi,
     studentTuitionInvoices,
-    isPendingStudentTuitionInvoices,
+    isLoadingStudentTuitionInvoices,
   };
 });

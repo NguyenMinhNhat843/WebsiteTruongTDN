@@ -2,6 +2,8 @@ import { useLopHocPhanContext } from "./LopHocPhanProvider";
 import { Calendar, Grid, Plus } from "lucide-react";
 import PageShell from "../../../../components/ui/PageShell";
 import DanhSachLopHocPhan from "./TableLopHocPhanList";
+import { SelectOption } from "../../../../components/ui/Form/SelectOption";
+import ButtonAction from "../../../../components/ui/ButtonAction";
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
 export default function LopHocPhanList() {
   const {
@@ -29,42 +31,25 @@ export default function LopHocPhanList() {
       renderRight={
         <header className="flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3 flex-nowrap">
-            <div className="relative flex items-center w-56">
-              <span className="absolute left-3 text-slate-400 pointer-events-none">
-                <Calendar className="w-4 h-4" />
-              </span>
+            {/* Bộ chọn Học kỳ - Sử dụng SelectOption */}
+            <SelectOption
+              containerClassName="w-56"
+              icon={<Calendar size={16} />}
+              value={hocKyIdSelected ?? -1}
+              onChange={(e) => setHocKyIdSelected(Number(e.target.value))}
+              options={hocKyOptions}
+            />
 
-              <select
-                value={hocKyIdSelected ?? -1}
-                onChange={(e) => setHocKyIdSelected(Number(e.target.value))}
-                className="w-full pl-9 pr-10 py-2 bg-white border border-slate-200 
-                  text-slate-700 text-sm rounded-lg 
-                   shadow-sm appearance-none cursor-pointer transition-all duration-200 font-medium
-                   hover:border-slate-300 hover:bg-slate-50/50
-                   focus:outline-none focus:ring-2 focus:ring-blue-500/10 focus:border-blue-500"
-              >
-                {hocKyOptions.map((option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                    className="text-slate-800 py-2 bg-white"
-                  >
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Nút thêm lớp: Thêm whitespace-nowrap để không bao giờ bị vỡ hàng */}
-            <button
+            {/* Nút Thêm lớp học phần - Sử dụng ButtonAction */}
+            <ButtonAction
+              type="button"
+              variant="primary"
+              size="md"
+              icon={<Plus size={16} />}
+              label="Sinh lớp học phần"
+              className="whitespace-nowrap rounded-lg h-9" // Giữ h-9 và rounded-lg để khớp giao diện cũ nếu cần
               onClick={() => setShowCreate(true)}
-              className="bg-blue-600 hover:bg-blue-700 active:scale-[0.98] cursor-pointer text-white text-sm font-semibold 
-                 px-4 py-2 rounded-lg shadow-sm shadow-blue-500/10 
-                 transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <Plus className="w-4 h-4" />
-              Tạo lớp học phần thủ công
-            </button>
+            />
           </div>
         </header>
       }

@@ -6,6 +6,7 @@ import type { components } from "../../../../api/v1";
 
 export type createLopHocPhan =
   components["schemas"]["CreateOptionalCourseOfferDto"];
+export type GenLopHocphan = components["schemas"]["CreateBulkCourseOfferDto"];
 
 export const [LopHocPhanProvider, useLopHocPhanContext] = createContextProvider(
   () => {
@@ -42,14 +43,30 @@ export const [LopHocPhanProvider, useLopHocPhanContext] = createContextProvider(
       $api.useMutation("post", "/course-offers/optional");
 
     /**
-     * Lấy danh sách lớp học trong học kỳ này
+     * Generate lớp học phần thoe khóa đào tạo (batchId), theo ngành, học kỳ
      */
+    const { mutate: generateLopHocPhan, isPending: isGeneratingLopHocPhan } =
+      $api.useMutation("post", "/course-offers/generate");
+
+    /**
+     * Lấy danh sách ngành
+     */
+    const { data: nganhHocs } = $api.useQuery("get", "/majors");
+
+    /**
+     * Lấy danh sách khóa đào tạo
+     */
+    const { data: khoaHocs } = $api.useQuery("get", "/batches");
 
     return {
       lopHocPhans,
       isLoadingLopHocPhans,
       createLopHocPhan,
       isCreatingLopHocPhan,
+      generateLopHocPhan,
+      isGeneratingLopHocPhan,
+      nganhHocs,
+      khoaHocs,
 
       // state
       hocKyIdSelected,

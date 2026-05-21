@@ -15,10 +15,11 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
     /**
      * Lấy danh sách học sinh
      */
-    const { data: students, isLoading: isLoadingStudents } = $api.useQuery(
-      "get",
-      "/students",
-    );
+    const {
+      data: students,
+      isLoading: isLoadingStudents,
+      refetch: refetchStudents,
+    } = $api.useQuery("get", "/students");
     // thống kê đơn giản
     const dataAnalyst = {
       total: students?.length || 0,
@@ -41,12 +42,21 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
         },
       });
 
+    /**
+     * Thêm học sinh
+     */
+    const { mutate: createStudent, isPending: isCreatingStudent } =
+      $api.useMutation("post", "/students");
+
     return {
       students: students || [],
       deleteStudent,
       isDeletingStudent,
       isLoadingStudents,
       dataAnalyst,
+      createStudent,
+      isCreatingStudent,
+      refetchStudents,
 
       navigate,
     };

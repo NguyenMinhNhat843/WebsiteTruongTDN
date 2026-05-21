@@ -66,8 +66,8 @@ import LopHocPhanOne from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanOne/LopHocPha
 import GradeComponentLayout from "./pages/admin/DiemThanhPhan/GradeComponentLayout";
 import { AppProvider } from "./AppProvider";
 import GradeComponentList from "./pages/admin/DiemThanhPhan/GradeComponentList";
-import LopHocLayout from "./pages/admin/LopHocVaKhoaHoc/LopHocDanhNghia/LopHocLayout";
-import LopHocList from "./pages/admin/LopHocVaKhoaHoc/LopHocDanhNghia/LopHocList";
+import LopHocList from "./pages/admin/LopDanhNghia/LopHocList";
+import LopHocLayout from "./pages/admin/LopDanhNghia/LopHocLayout";
 
 const queryClient = new QueryClient({
   defaultOptions: {
