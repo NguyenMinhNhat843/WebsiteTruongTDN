@@ -1,31 +1,51 @@
-import { Search } from "lucide-react";
+import { Search, ChevronDown, GraduationCap, CalendarDays } from "lucide-react";
 
 const Filters = () => {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-3.5 space-y-3">
-      <div className="flex flex-wrap gap-2.5 items-center">
-        <div className="relative flex-1 min-w-52">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pr-2" />
+    <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm">
+      {/* Tất cả bộ lọc trên cùng 1 hàng, tự động xuống hàng nếu màn hình quá nhỏ (flex-wrap) */}
+      <div className="flex flex-wrap items-center gap-4">
+        {/* 1. Ô tìm kiếm (Tăng padding và text-base cho to, dễ đọc) */}
+        <div className="relative flex-[2] min-w-[280px]">
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
-            placeholder="Tìm mã, tên ngành, khoa…"
-            className="w-full pl-8 pr-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400/20 focus:border-blue-400"
+            placeholder="Tìm theo mã, tên ngành, khoa…"
+            className="w-full pl-11 pr-4 py-2.5 text-base border border-slate-200 
+            rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-500/10 
+            focus:border-blue-500 transition-all placeholder:text-slate-400 text-slate-700"
           />
         </div>
-        <select className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none">
-          <option value="all">Tất cả TT</option>
-          <option value="active">Đang áp dụng</option>
-          <option value="draft">Bản nháp</option>
-          <option value="archived">Lưu trữ</option>
-        </select>
-        <p className="text-xs text-slate-400 ml-auto">{0} kết quả</p>
-      </div>
-      {/* System filter pills */}
-      <div className="flex gap-1.5 flex-wrap">
-        <button
-          className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-colors text-slate-500 hover:bg-slate-100"}`}
-        >
-          Tất cả hệ
-        </button>
+
+        {/* 2. Lọc theo Ngành (UI tạm thời) */}
+        <div className="relative flex-1 min-w-[200px]">
+          <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+          <select
+            className="w-full pl-11 pr-10 py-2.5 text-base border border-slate-200 
+            rounded-xl appearance-none bg-white text-slate-500 focus:outline-none"
+          >
+            <option value="">Tất cả ngành học</option>
+          </select>
+          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
+        </div>
+
+        {/* 3. Lọc theo Niên khóa (UI tạm thời) */}
+        <div className="relative flex-1 min-w-[160px]">
+          <CalendarDays className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+          <select
+            className="w-full pl-11 pr-10 py-2.5 text-base border border-slate-200 
+            rounded-xl appearance-none bg-white text-slate-500 focus:outline-none"
+          >
+            <option value="">Tất cả khóa học</option>
+          </select>
+          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
+        </div>
+
+        {/* 4. Số lượng kết quả (Hiển thị rõ ràng ở cuối hàng) */}
+        <div className="bg-slate-50 px-4 py-2.5 rounded-xl border border-slate-100 shrink-0 ml-auto">
+          <p className="text-sm font-medium text-slate-600">
+            Tìm thấy: <span className="font-bold text-blue-600">0</span> kết quả
+          </p>
+        </div>
       </div>
     </div>
   );

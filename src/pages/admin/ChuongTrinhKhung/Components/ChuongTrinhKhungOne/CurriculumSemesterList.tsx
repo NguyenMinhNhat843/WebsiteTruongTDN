@@ -85,11 +85,53 @@ const CurriculumSemesterList = ({
     return Object.entries(grouped).sort(([a], [b]) => Number(a) - Number(b));
   }, [subjectList]);
 
+  // Tính toán thống kê tổng quan toàn bộ chương trình học
+  const overviewStats = useMemo(() => {
+    const totalSemesters = sections.length;
+    const totalSubjects = subjectList.length;
+    const totalCredits = subjectList.reduce(
+      (sum, item) => sum + (item.subject?.credits || 0),
+      0,
+    );
+    return { totalSemesters, totalSubjects, totalCredits };
+  }, [sections, subjectList]);
+
   return (
-    <div className="flex flex-col gap-10 p-6 bg-gray-50 min-h-screen">
-      {sections.map(([semester, data]) => (
-        <SemesterTable key={semester} semester={semester} data={data} />
-      ))}
+    <div className="flex flex-col gap-8 p-6 bg-gray-50 min-h-screen">
+      {/* Header Thống kê tổng quan đơn giản */}
+      <div className="bg-white rounded-xl border border-gray-200 p-5 flex items-center justify-around text-center shadow-sm">
+        <div className="flex flex-col gap-1 flex-1 border-r border-gray-100">
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            Tổng số học kỳ
+          </span>
+          <span className="text-2xl font-bold text-gray-800">
+            {overviewStats.totalSemesters}
+          </span>
+        </div>
+        <div className="flex flex-col gap-1 flex-1 border-r border-gray-100">
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            Tổng số môn học
+          </span>
+          <span className="text-2xl font-bold text-gray-800">
+            {overviewStats.totalSubjects}
+          </span>
+        </div>
+        <div className="flex flex-col gap-1 flex-1">
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+            Tổng số tín chỉ
+          </span>
+          <span className="text-2xl font-bold text-blue-600">
+            {overviewStats.totalCredits}
+          </span>
+        </div>
+      </div>
+
+      {/* Danh sách bảng theo từng học kỳ */}
+      <div className="flex flex-col gap-8">
+        {sections.map(([semester, data]) => (
+          <SemesterTable key={semester} semester={semester} data={data} />
+        ))}
+      </div>
     </div>
   );
 };
@@ -117,7 +159,10 @@ const SemesterTable = ({
       {/* Header của từng kỳ */}
       <div className="px-6 py-4 bg-white border-b border-gray-100 flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <h2 className="text-xl font-bold text-gray-800">Học kỳ {semester}</h2>
+          <h2 className="text-xl font-bold text-gray-800">
+            {" "}
+            Học kỳ {semester}
+          </h2>
         </div>
         <div className="text-sm text-gray-500">
           Số môn: <span className="font-bold text-gray-800">{data.length}</span>{" "}
@@ -160,6 +205,7 @@ const SemesterTable = ({
               </tr>
             ))}
           </tbody>
+          {/* Bạn có thể bổ sung tfoot nếu cần */}
         </table>
       </div>
     </div>

@@ -365,23 +365,6 @@ export interface paths {
         patch: operations["ClassController_update"];
         trace?: never;
     };
-    "/classes/update-class-sizes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Cập nhật sĩ số hiện tại của các lớp trong một batch */
-        post: operations["ClassController_updateClassSizesByBatch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/subjects": {
         parameters: {
             query?: never;
@@ -2405,7 +2388,7 @@ export interface components {
              */
             updatedAt: string;
             /** @description Thông tin ngành đào tạo */
-            major?: Record<string, never>;
+            major?: components["schemas"]["MajorResponseDto"];
             /**
              * @description Số lượng môn học trong chương trình
              * @example 40
@@ -4157,25 +4140,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ClassResponseDto"];
                 };
-            };
-        };
-    };
-    ClassController_updateClassSizesByBatch: {
-        parameters: {
-            query: {
-                batchId: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };

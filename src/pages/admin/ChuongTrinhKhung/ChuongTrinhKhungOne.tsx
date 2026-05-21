@@ -1,5 +1,5 @@
 import { type CuriculumResponseDto } from "./ChuongTrinhKhungProvider";
-import CurriculumSemesterList from "./Components/ChuongTrinhKhungOne/Modules";
+import CurriculumSemesterList from "./Components/ChuongTrinhKhungOne/CurriculumSemesterList";
 
 interface Props {
   data: CuriculumResponseDto;

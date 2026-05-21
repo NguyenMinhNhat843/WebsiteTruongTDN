@@ -6,7 +6,7 @@ const getBaseUrl = (): string => {
   const prodUrl =
     import.meta.env.VITE_SERVER_PRODUCTION ||
     "https://quantritruonghoc-be.onrender.com";
-  // const localUrl = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
+  const localUrl = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
 
   // Khi đã build deploy lên mạng, luôn luôn dùng Production
   if (import.meta.env.PROD) {
@@ -14,7 +14,7 @@ const getBaseUrl = (): string => {
   }
 
   // Ngược lại, nếu chạy local (dev) thì trả về localUrl
-  return prodUrl;
+  return localUrl;
 };
 
 export const client = createFetchClient<paths>({
