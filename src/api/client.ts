@@ -8,14 +8,14 @@ const getBaseUrl = (): string => {
     "https://quantritruonghoc-be.onrender.com";
   const localUrl = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
 
-  console.log(import.meta.env.DEV);
-  // Nếu đang chạy 'npm run dev' ở máy local, ưu tiên dùng localUrl trước
-  if (import.meta.env.DEV) {
-    return localUrl;
-  }
-
   // Khi đã build deploy lên mạng, luôn luôn dùng Production
-  return prodUrl;
+  if (import.meta.env.PROD) {
+    return prodUrl;
+  }
+  console.log(import.meta.env.PROD);
+
+  // Ngược lại, nếu chạy local (dev) thì trả về localUrl
+  return localUrl;
 };
 
 export const client = createFetchClient<paths>({
