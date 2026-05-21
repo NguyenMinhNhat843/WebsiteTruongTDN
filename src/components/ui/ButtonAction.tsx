@@ -5,10 +5,10 @@ import { twMerge } from "tailwind-merge";
 export interface ButtonActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
   size?: "sm" | "md" | "lg";
+  variant?: "primary" | "secondary" | "outline" | "danger"; // Thêm variant mới ở đây
   loading?: boolean;
   label?: string;
-  className?: string;
-  withText?: boolean; // Nếu true, luôn hiển thị text (dù có icon hay không)
+  withText?: boolean;
 }
 
 const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
@@ -17,6 +17,7 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
       children,
       icon,
       size = "md",
+      variant = "primary", // Mặc định là primary
       loading = false,
       disabled,
       className,
@@ -25,16 +26,28 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
     },
     ref,
   ) => {
+    // Loại bỏ border cố định để các variant tự quyết định màu sắc
     const baseClasses =
-      "border border-slate-400 inline-flex items-center justify-center font-semibold \
-        transition-all duration-150 ease-in-out \
-        cursor-pointer \
-        focus:outline-none \
-        active:scale-95 active:opacity-90 \
-        hover:shadow-sm hover:-translate-y-[1px] \
-        disabled:opacity-70 disabled:cursor-not-allowed";
+      "inline-flex items-center justify-center font-semibold \
+      transition-all duration-150 ease-in-out \
+      cursor-pointer \
+      focus:outline-none \
+      active:scale-95 active:opacity-90 \
+      hover:shadow-sm hover:-translate-y-[1px] \
+      disabled:opacity-70 disabled:cursor-not-allowed";
 
-    // Kiểm tra xem có text hiển thị hay không
+    // Định nghĩa bảng màu theo hệ thống Variant hiện đại
+    const variantClasses = {
+      primary:
+        "bg-blue-600 hover:bg-blue-700 text-white shadow-sm border border-transparent",
+      secondary:
+        "bg-slate-100 hover:bg-slate-200 text-slate-800 border border-transparent",
+      outline:
+        "bg-white hover:bg-slate-50 text-slate-700 border border-slate-300",
+      danger:
+        "bg-red-600 hover:bg-red-700 text-white shadow-sm border border-transparent",
+    };
+
     const hasText = Boolean(children || label);
 
     const sizeClasses = {
@@ -44,10 +57,7 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
     };
 
     const content = children || label;
-
     const isLoading = loading && !disabled;
-
-    // Auto aria-label nếu chỉ có icon
     const ariaLabel =
       props["aria-label"] || (icon && !children ? "Action" : undefined);
 
@@ -57,10 +67,11 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
         className={twMerge(
           clsx(
             baseClasses,
+            variantClasses[variant], // Áp dụng style màu sắc theo variant
             sizeClasses[size],
-            !hasText && "aspect-square p-0", // Nếu không có text, đảm bảo button là hình vuông
+            !hasText && "aspect-square p-0",
             { "opacity-75 cursor-wait": isLoading },
-            className, // className truyền vào sau sẽ ghi đè các class trước đó
+            className,
           ),
         )}
         disabled={disabled || isLoading}
@@ -68,7 +79,7 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
         {...props}
       >
         {isLoading ? (
-          <span className="flex items-center">
+          <span className="flex items-center justify-center">
             <svg
               className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
               xmlns="http://www.w3.org/2000/svg"
@@ -82,14 +93,14 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
                 r="10"
                 stroke="currentColor"
                 strokeWidth="4"
-              ></circle>
+              />
               <path
                 className="opacity-75"
                 fill="currentColor"
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
+              />
             </svg>
-            {hasText && <span>{content}</span>}
+            {hasText && <span>Đang xử lý...</span>}
           </span>
         ) : (
           <div className="flex items-center justify-center">
@@ -103,5 +114,4 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
 );
 
 ButtonAction.displayName = "ButtonAction";
-
 export default ButtonAction;

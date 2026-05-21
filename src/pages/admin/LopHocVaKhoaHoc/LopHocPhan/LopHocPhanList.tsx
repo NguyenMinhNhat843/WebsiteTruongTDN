@@ -1,6 +1,6 @@
 import { useLopHocPhanContext } from "./LopHocPhanProvider";
 import { Calendar, Grid, Plus } from "lucide-react";
-import PageShell from "../../../components/ui/PageShell";
+import PageShell from "../../../../components/ui/PageShell";
 import DanhSachLopHocPhan from "./TableLopHocPhanList";
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
 export default function LopHocPhanList() {
@@ -63,7 +63,7 @@ export default function LopHocPhanList() {
                  transition-all duration-150 flex items-center gap-1.5 whitespace-nowrap"
             >
               <Plus className="w-4 h-4" />
-              Tạo lớp mới
+              Tạo lớp học phần thủ công
             </button>
           </div>
         </header>

@@ -8,9 +8,11 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
     "/semesters",
   );
   const hocKysData = hocKys || [];
+  const currentSemester = hocKysData.find((hk) => hk.isCurrent);
 
   return {
     hocKysData,
     isHocKysLoading,
+    currentSemester,
   };
 });

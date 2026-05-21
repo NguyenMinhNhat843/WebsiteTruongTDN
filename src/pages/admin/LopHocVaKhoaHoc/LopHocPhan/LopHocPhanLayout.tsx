@@ -1,5 +1,5 @@
-import { LopHocPhanProvider } from "./LopHocPhanProvider";
 import { Outlet } from "react-router-dom";
+import { LopHocPhanProvider } from "./LopHocPhanProvider";
 
 const LopHocPhanLayout = () => {
   return (

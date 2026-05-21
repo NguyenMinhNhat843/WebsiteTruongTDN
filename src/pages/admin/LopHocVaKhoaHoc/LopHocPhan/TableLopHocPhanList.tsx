@@ -16,7 +16,7 @@ import {
   SlidersHorizontal,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { getStatusBadgeLopHocPhan } from "./components/getStatusLopHocPhan";
+import { getStatusBadgeLopHocPhan } from "../components/getStatusLopHocPhan";
 
 type CourseOfferItem = {
   id: number;
@@ -104,7 +104,7 @@ const DanhSachLopHocPhan = ({ data, isLoading }: Props) => {
                 {row.courseCode}
               </span>
               <span className="text-xs text-slate-500 font-medium line-clamp-1">
-                {row.courseName || "Chưa cập nhật tên"}
+                {row.baseClass?.className || "Lớp: Chưa cập nhật"}
               </span>
             </div>
           );

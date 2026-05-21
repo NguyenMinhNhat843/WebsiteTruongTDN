@@ -18,12 +18,13 @@ const PhanLop = () => {
 
   return (
     <PageShell
-      title="Phân lớp Sinh viên"
+      title="Phân lớp tự động cho Sinh viên"
       sub="Quản lý việc phân lớp cho sinh viên dựa trên ngành và khóa đào tạo"
       icon={Users} // Icon chính cho trang
       renderRight={
         <button
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-all shadow-md active:scale-95"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 
+          text-white px-4 py-2 rounded-lg font-medium transition-all shadow-md active:scale-95"
           onClick={() =>
             phanLop(
               {
@@ -47,7 +48,7 @@ const PhanLop = () => {
         </button>
       }
     >
-      <div className="p-8 max-w-7xl mx-auto bg-gray-50 min-h-screen font-sans text-slate-900">
+      <div className=" bg-gray-50 min-h-screen font-sans text-slate-900">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
           {/* Card: Cấu hình lọc */}
           <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-6 items-end">

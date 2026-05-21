@@ -6,7 +6,7 @@ const Filters = () => {
       {/* Tất cả bộ lọc trên cùng 1 hàng, tự động xuống hàng nếu màn hình quá nhỏ (flex-wrap) */}
       <div className="flex flex-wrap items-center gap-4">
         {/* 1. Ô tìm kiếm (Tăng padding và text-base cho to, dễ đọc) */}
-        <div className="relative flex-[2] min-w-[280px]">
+        <div className="relative flex-[2 min-w-70">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
           <input
             placeholder="Tìm theo mã, tên ngành, khoa…"
@@ -17,7 +17,7 @@ const Filters = () => {
         </div>
 
         {/* 2. Lọc theo Ngành (UI tạm thời) */}
-        <div className="relative flex-1 min-w-[200px]">
+        <div className="relative flex-1 min-w-50">
           <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
           <select
             className="w-full pl-11 pr-10 py-2.5 text-base border border-slate-200 
@@ -29,7 +29,7 @@ const Filters = () => {
         </div>
 
         {/* 3. Lọc theo Niên khóa (UI tạm thời) */}
-        <div className="relative flex-1 min-w-[160px]">
+        <div className="relative flex-1 min-w-40">
           <CalendarDays className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
           <select
             className="w-full pl-11 pr-10 py-2.5 text-base border border-slate-200 

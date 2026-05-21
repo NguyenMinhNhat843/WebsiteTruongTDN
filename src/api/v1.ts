@@ -271,23 +271,6 @@ export interface paths {
         patch: operations["BatchController_update"];
         trace?: never;
     };
-    "/classes/auto-assign": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Tự động phân lớp cho sinh viên mới */
-        post: operations["ClassController_autoAssign"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/classes": {
         parameters: {
             query?: never;
@@ -1043,7 +1026,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lấy danh sách tất cả lớp học phần */
+        /**
+         * Lấy danh sách tất cả lớp học phần theo bộ lọc tìm kiếm
+         * @description Hỗ trợ tìm kiếm không phân trang theo từ khóa, ngành học, lớp hành chính, học kỳ, giảng viên và trạng thái.
+         */
         get: operations["CourseOfferController_getAll"];
         put?: never;
         post?: never;
@@ -1732,24 +1718,6 @@ export interface components {
              */
             status: string;
         };
-        AssignClassDto: {
-            /**
-             * @description ID của Ngành cần phân lớp
-             * @example 1
-             */
-            majorId: number;
-            /**
-             * @description ID của Khóa đào tạo cần phân lớp
-             * @example 1
-             */
-            batchId: number;
-            /**
-             * @description Số lượng sinh viên tối đa trong một lớp
-             * @default 40
-             * @example 30
-             */
-            maxStudents: number;
-        };
         CreateClassDto: {
             /**
              * @description Mã lớp học duy nhất
@@ -1763,25 +1731,18 @@ export interface components {
              * @example 1
              */
             majorId: number;
-            /**
-             * @description Năm nhập học/Khóa
-             * @example 2024
-             */
-            courseYear: number;
-            /**
-             * @description ID của giáo viên chủ nhiệm
-             * @example 1
-             */
+            /** @description Số lượng sinh viên hiện tại trong lớp */
+            currentSize?: number;
+            /** @description ID giáo viên chủ nhiệm */
             formTeacherId?: number;
+            /** @description ID của Khóa đào tạo (batchID) */
+            batchId?: number;
             /**
              * @default 40
              * @example 40
              */
             maxStudents: number;
-            /**
-             * @default active
-             * @example active
-             */
+            /** @default active */
             status: string;
         };
         ClassResponseDto: {
@@ -1863,25 +1824,18 @@ export interface components {
              * @example 1
              */
             majorId?: number;
-            /**
-             * @description Năm nhập học/Khóa
-             * @example 2024
-             */
-            courseYear?: number;
-            /**
-             * @description ID của giáo viên chủ nhiệm
-             * @example 1
-             */
+            /** @description Số lượng sinh viên hiện tại trong lớp */
+            currentSize?: number;
+            /** @description ID giáo viên chủ nhiệm */
             formTeacherId?: number;
+            /** @description ID của Khóa đào tạo (batchID) */
+            batchId?: number;
             /**
              * @default 40
              * @example 40
              */
             maxStudents: number;
-            /**
-             * @default active
-             * @example active
-             */
+            /** @default active */
             status: string;
         };
         SubjectGradeDto: {
@@ -3085,6 +3039,10 @@ export interface components {
              * @example 2026-05-15T23:59:59Z
              */
             registrationEnd?: string;
+            /** @description Thời gian bắt đầu, format StringDate */
+            startTime?: string;
+            /** @description Thời gian kết thúc, format StringDate */
+            endTime?: string;
             /**
              * @description Số lượng sinh viên tối đa mặc định nếu lớp danh nghĩa không có dữ liệu
              * @example 50
@@ -3971,30 +3929,14 @@ export interface operations {
             };
         };
     };
-    ClassController_autoAssign: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AssignClassDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     ClassController_findAll: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Mã lớp học (classCode) */
+                classCode?: string;
+                /** @description ID ngành học */
+                majorId?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -5730,14 +5672,27 @@ export interface operations {
     };
     CourseOfferController_getAll: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description ID của lớp hành chính (Lớp danh nghĩa) */
+                classId?: number;
+                /** @description ID của ngành học */
+                majorId?: number;
+                /** @description ID của học kỳ */
+                semesterId?: number;
+                /** @description ID của giảng viên phụ trách */
+                teacherId?: number;
+                /** @description Tìm kiếm theo Mã hoặc Tên lớp học phần */
+                search?: string;
+                /** @description Trạng thái lớp học phần (planned, open, closed, cancelled) */
+                status?: "planned" | "open" | "closed" | "cancelled";
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Danh sách lớp học phần */
+            /** @description Tìm kiếm và lấy danh sách lớp học phần thành công. */
             200: {
                 headers: {
                     [name: string]: unknown;

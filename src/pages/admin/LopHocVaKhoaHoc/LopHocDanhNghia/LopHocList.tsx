@@ -2,9 +2,18 @@ import { CalendarDays, CheckCircle2, Plus, School } from "lucide-react";
 import PageShell from "../../../../components/ui/PageShell";
 import { useLopHocContext } from "./LopHocProvider";
 import TableLopHocList from "./TableLopHocList";
+import { useNavigate } from "react-router-dom";
+import CreateLopHoc from "./CreateLopHoc";
+import ButtonAction from "../../../../components/ui/ButtonAction";
 
 const LopHocList = () => {
-  const { LopHocList, isLoadingLopHocList } = useLopHocContext();
+  const {
+    LopHocList,
+    isLoadingLopHocList,
+    isOpenModalCreate,
+    setIsOpenModalCreate,
+  } = useLopHocContext();
+  const navigate = useNavigate();
 
   // --- TRẠNG THÁI LOADING UI (SKELETON) ---
   if (isLoadingLopHocList) {
@@ -34,14 +43,23 @@ const LopHocList = () => {
       title="Danh sách lớp học"
       sub="Quản lý và theo dõi thông tin tổng quan các lớp học trong hệ thống"
       renderRight={
-        <button
-          className="bg-blue-600 hover:bg-blue-700 text-white 
-        font-medium px-4 py-2.5 rounded-xl text-sm transition-all 
-        shadow-sm flex items-center gap-2 shadow-blue-100 cursor-pointer"
-        >
-          <Plus className="w-4 h-4" />
-          Thêm lớp mới
-        </button>
+        <div className="flex gap-3">
+          <ButtonAction
+            type="button"
+            variant="primary"
+            icon={<Plus size={16} />}
+            label="Phân lớp tự động"
+            onClick={() => navigate("/admin/hoc-sinh/phan-lop")}
+          />
+
+          <ButtonAction
+            type="button"
+            variant="outline"
+            icon={<Plus size={16} />}
+            label="Tạo lớp thủ công"
+            onClick={() => setIsOpenModalCreate(true)}
+          />
+        </div>
       }
     >
       <div className="space-y-6 bg-slate-50 text-slate-800">
@@ -96,6 +114,11 @@ const LopHocList = () => {
         {/* MAIN DATA TABLE SECTION */}
         <TableLopHocList />
       </div>
+
+      <CreateLopHoc
+        isOpen={isOpenModalCreate}
+        onClose={() => setIsOpenModalCreate(false)}
+      />
     </PageShell>
   );
 };
