@@ -68,6 +68,7 @@ import { AppProvider } from "./AppProvider";
 import GradeComponentList from "./pages/admin/DiemThanhPhan/GradeComponentList";
 import LopHocList from "./pages/admin/LopDanhNghia/LopHocList";
 import LopHocLayout from "./pages/admin/LopDanhNghia/LopHocLayout";
+import LopHocOne from "./pages/admin/LopDanhNghia/LopHocOne";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -164,11 +165,11 @@ function App() {
               </Route>
               <Route element={<LopHocLayout />}>
                 <Route path="dao-tao/lop-hoc" element={<LopHocList />} />
+                <Route
+                  path="dao-tao/lop-hoc/:idLopHoc"
+                  element={<LopHocOne />}
+                />
               </Route>
-              <Route
-                path="dao-tao/lop-hoc/:slug"
-                element={<LopHocPhanList />}
-              />
               <Route
                 path="dao-tao/thoi-khoa-bieu"
                 element={<TimetablePage />}

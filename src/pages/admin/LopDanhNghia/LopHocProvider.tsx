@@ -2,13 +2,17 @@ import { useState } from "react";
 import type { components } from "../../../api/v1";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { $api } from "../../../api/client";
+import { useParams } from "react-router-dom";
 
 export type LopHocResponseDto = components["schemas"]["ClassResponseDto"];
 export type CreateLopHocDto = components["schemas"]["CreateClassDto"];
 
 export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
   const [isOpenModalCreate, setIsOpenModalCreate] = useState(false);
-  const [selectedLopHocId, setSelectedLopHocId] = useState<number | null>(null);
+  const [isOpenModalAddStudent, setIsOpenModalAddStudent] = useState(false);
+  const { idLopHoc } = useParams();
+  const idLopHocNumber = Number(idLopHoc);
+
   /**
    * Lấy danh sách lớp học
    */
@@ -28,12 +32,12 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
       {
         params: {
           path: {
-            id: selectedLopHocId!,
+            id: idLopHocNumber!,
           },
         },
       },
       {
-        enabled: !!selectedLopHocId,
+        enabled: !!idLopHocNumber,
       },
     );
 
@@ -53,6 +57,47 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
    */
   const { data: khoaHocs } = $api.useQuery("get", "/batches");
 
+  /**
+   * Lấy danh sách học sinh 1 lớp học
+   */
+  const {
+    data: studentsInLopHoc,
+    isLoading: isLoadingStudentsInLopHoc,
+    refetch: refetchStudentsInLopHoc,
+  } = $api.useQuery(
+    "get",
+    "/students",
+    {
+      params: {
+        query: {
+          classId: idLopHocNumber,
+        },
+      },
+    },
+    {
+      enabled: !!idLopHocNumber,
+    },
+  );
+
+  /**
+   * Thêm học sinh vào 1 lớp học
+   */
+  const { mutate: addStudentToLopHoc, isPending: isAddingStudentToLopHoc } =
+    $api.useMutation("post", "/classes/{classId}/add-student", {
+      onSuccess: () => {
+        refetchStudentsInLopHoc();
+      },
+    });
+
+  /**
+   * Tìm học sinh theo mã sinh viên
+   */
+  const {
+    mutate: findStudentByMssv,
+    isPending: isFindingStudentByMssv,
+    data: studentFound,
+  } = $api.useMutation("get", "/students/search-by-code");
+
   return {
     LopHocList,
     isLoadingLopHocList,
@@ -63,11 +108,20 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     khoaHocs,
     LopHocDetail,
     isLoadingLopHocDetail,
+    studentsInLopHoc,
+    isLoadingStudentsInLopHoc,
+    idLopHocNumber,
+    addStudentToLopHoc,
+    isAddingStudentToLopHoc,
+    findStudentByMssv,
+    isFindingStudentByMssv,
+    studentFound,
+    refetchStudentsInLopHoc,
 
     //state
     isOpenModalCreate,
     setIsOpenModalCreate,
-    selectedLopHocId,
-    setSelectedLopHocId,
+    isOpenModalAddStudent,
+    setIsOpenModalAddStudent,
   };
 });

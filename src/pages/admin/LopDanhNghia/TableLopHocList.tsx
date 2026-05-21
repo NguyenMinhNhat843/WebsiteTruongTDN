@@ -1,7 +1,9 @@
+import { useNavigate } from "react-router-dom";
 import { useLopHocContext } from "./LopHocProvider";
 
 const TableLopHocList = () => {
   const { LopHocList, isLoadingLopHocList } = useLopHocContext();
+  const navigate = useNavigate();
 
   return (
     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
@@ -50,7 +52,12 @@ const TableLopHocList = () => {
                   </td>
 
                   {/* 2. Tên lớp */}
-                  <td className="py-4 px-4 font-medium text-slate-800">
+                  <td
+                    onClick={() =>
+                      navigate(`/admin/dao-tao/lop-hoc/${lopHoc.id}`)
+                    }
+                    className="py-4 px-4 font-medium text-slate-800 cursor-pointer hover:text-blue-600"
+                  >
                     {lopHoc.className}
                   </td>
 

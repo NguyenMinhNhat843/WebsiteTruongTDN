@@ -57,6 +57,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/students/search-by-code": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tìm sinh viên theo mã sinh viên */
+        get: operations["findStudentByStudentCode"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users": {
         parameters: {
             query?: never;
@@ -346,6 +363,23 @@ export interface paths {
         head?: never;
         /** Cập nhật thông tin lớp học */
         patch: operations["ClassController_update"];
+        trace?: never;
+    };
+    "/classes/{classId}/add-student": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Thêm một sinh viên vào lớp học */
+        post: operations["ClassController_addStudentToClass"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/subjects": {
@@ -3417,6 +3451,27 @@ export interface operations {
             };
         };
     };
+    findStudentByStudentCode: {
+        parameters: {
+            query: {
+                studentCode: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentResponseDto"];
+                };
+            };
+        };
+    };
     UserController_createUser: {
         parameters: {
             query?: never;
@@ -4082,6 +4137,27 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ClassResponseDto"];
                 };
+            };
+        };
+    };
+    ClassController_addStudentToClass: {
+        parameters: {
+            query: {
+                studentId: number;
+            };
+            header?: never;
+            path: {
+                classId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
