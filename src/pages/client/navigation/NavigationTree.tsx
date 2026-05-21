@@ -47,7 +47,7 @@ const NavigationTree = ({ data = navData, className = "" }: Props) => {
             <div className="flex items-center justify-between">
               <a
                 href={item.href ?? "#"}
-                className="text-base text-white py-3 lg:py-2 px-2 block w-full hover:text-blue-200 transition-colors uppercase font-medium lg:font-normal lg:normal-case"
+                className="text-md text-white py-3 lg:py-2 px-2 block w-full hover:text-blue-200 transition-colors uppercase font-medium lg:font-normal lg:normal-case"
               >
                 {item.label}
               </a>

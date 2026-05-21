@@ -82,48 +82,48 @@ export const navData: MenuItem[] = [
     label: "TIN TỨC",
     href: "/tin-tuc",
   },
-  {
-    id: "thong-tin-hoc-sinh-sinh-vien",
-    label: "THÔNG TIN HỌC SINH - SINH VIÊN",
-    href: "#",
-    children: [
-      {
-        id: "thoi-khoa-bieu",
-        label: "Thời khóa biểu",
-        href: "#",
-      },
-      {
-        id: "thong-bao",
-        label: "Thông báo",
-        href: "#",
-      },
-      {
-        id: "lich-thi",
-        label: "Lịch thi",
-        href: "#",
-      },
-      {
-        id: "cuu-hoc-sinh-sinh-vien",
-        label: "Cứu học sinh - Sinh viên",
-        href: "#",
-      },
-      {
-        id: "hoat-dong-hs-sv",
-        label: "Hoạt động học sinh - Sinh viên",
-        href: "#",
-      },
-      {
-        id: "chia-se-kinh-nghiem",
-        label: "Chia sẻ kinh nghiệm",
-        href: "#",
-      },
-      {
-        id: "doanh-nghiep-viec-lam",
-        label: "Doanh nghiệp - Việc làm",
-        href: "#",
-      },
-    ],
-  },
+  // {
+  //   id: "thong-tin-hoc-sinh-sinh-vien",
+  //   label: "THÔNG TIN HỌC SINH - SINH VIÊN",
+  //   href: "#",
+  //   children: [
+  //     {
+  //       id: "thoi-khoa-bieu",
+  //       label: "Thời khóa biểu",
+  //       href: "#",
+  //     },
+  //     {
+  //       id: "thong-bao",
+  //       label: "Thông báo",
+  //       href: "#",
+  //     },
+  //     {
+  //       id: "lich-thi",
+  //       label: "Lịch thi",
+  //       href: "#",
+  //     },
+  //     {
+  //       id: "cuu-hoc-sinh-sinh-vien",
+  //       label: "Cứu học sinh - Sinh viên",
+  //       href: "#",
+  //     },
+  //     {
+  //       id: "hoat-dong-hs-sv",
+  //       label: "Hoạt động học sinh - Sinh viên",
+  //       href: "#",
+  //     },
+  //     {
+  //       id: "chia-se-kinh-nghiem",
+  //       label: "Chia sẻ kinh nghiệm",
+  //       href: "#",
+  //     },
+  //     {
+  //       id: "doanh-nghiep-viec-lam",
+  //       label: "Doanh nghiệp - Việc làm",
+  //       href: "#",
+  //     },
+  //   ],
+  // },
   {
     id: "tuyen-sinh",
     label: "TUYỂN SINH",

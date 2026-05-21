@@ -57,7 +57,9 @@ const UserProfileHeader = () => {
         {/* Action Buttons: Tinh gọn thành dạng Circle Ghost Buttons */}
         <div className="flex items-center gap-1">
           <button
-            onClick={() => window.open("http://localhost:5173/", "_blank")}
+            onClick={() =>
+              window.open("https://website-truong-tdn.vercel.app/", "_blank")
+            }
             title="Ghé thăm website"
             className="p-2 cursor-pointer text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-all"
           >
