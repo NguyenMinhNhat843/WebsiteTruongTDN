@@ -4,7 +4,6 @@ import {
   Hash,
   Book,
   Calendar,
-  Info,
   Layers,
   FileText,
   Activity,
@@ -13,6 +12,9 @@ import {
   useKhoaDaoTaoContext,
   type createKhoaDaoTaoDTO,
 } from "./KhoaHocProvider";
+import Input from "../../components/ui/Form/Input";
+import { SelectOption } from "../../components/ui/Form/SelectOption";
+import ButtonAction from "../../components/ui/ButtonAction";
 
 interface Props {
   isOpen: boolean;
@@ -22,24 +24,48 @@ interface Props {
 }
 
 const CreateBatchModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
-  const { majors } = useKhoaDaoTaoContext();
+  const { majors, curriculums } = useKhoaDaoTaoContext();
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<createKhoaDaoTaoDTO>({
     defaultValues: {
-      status: "ACTIVE", // Giá trị mặc định cho status
+      status: "ACTIVE",
       startYear: new Date().getFullYear(),
       endYear: new Date().getFullYear() + 4,
     },
   });
 
+  // Chuyển đổi danh sách ngành học sang định dạng Option
+  const majorOptions =
+    majors?.map((major) => ({
+      value: major.id,
+      label: major.majorName,
+    })) || [];
+
+  // Chuyển đổi danh sách chương trình khung sang định dạng Option
+  const curriculumOptions = [
+    { value: "", label: "-- Tùy chọn (Chọn chương trình khung) --" },
+    ...(curriculums?.map((curriculum) => ({
+      value: curriculum.id,
+      label: curriculum.curriculumName,
+    })) || []),
+  ];
+
+  // Khai báo danh sách trạng thái
+  const statusOptions = [
+    { value: "ACTIVE", label: "Đang hoạt động" },
+    { value: "INACTIVE", label: "Ngưng hoạt động" },
+    { value: "UPCOMING", label: "Sắp mở" },
+  ];
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-      <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+      <div className="bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
           <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
@@ -59,148 +85,116 @@ const CreateBatchModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
           className="p-6 space-y-4 max-h-[80vh] overflow-y-auto"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Batch Code */}
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Hash size={14} /> Mã khóa
-              </label>
-              <input
-                {...register("batchCode", { required: "Không được để trống" })}
-                placeholder="VD: K24-CNTT"
-                className={`w-full px-4 py-2 border rounded-xl focus:ring-2 outline-none transition-all ${errors.batchCode ? "border-red-500 focus:ring-red-100" : "border-gray-200 focus:ring-blue-100"}`}
-              />
-              {errors.batchCode && (
-                <span className="text-red-500 text-xs">
-                  {errors.batchCode.message}
-                </span>
-              )}
-            </div>
+            {/* Mã khóa */}
+            <Input
+              label="Mã khóa"
+              icon={Hash}
+              placeholder="VD: K24-CNTT"
+              error={errors.batchCode?.message}
+              {...register("batchCode", { required: "Không được để trống" })}
+            />
 
-            {/* Batch Name */}
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Info size={14} /> Tên khóa
-              </label>
-              <input
-                {...register("batchName", { required: "Không được để trống" })}
-                placeholder="VD: Khóa 2024 Công nghệ thông tin"
-                className={`w-full px-4 py-2 border rounded-xl focus:ring-2 outline-none transition-all ${errors.batchName ? "border-red-500 focus:ring-red-100" : "border-gray-200 focus:ring-blue-100"}`}
-              />
-              {errors.batchName && (
-                <span className="text-red-500 text-xs">
-                  {errors.batchName.message}
-                </span>
-              )}
-            </div>
+            {/* Tên khóa */}
+            <Input
+              label="Tên khóa"
+              icon={Book} // Thay thế icon Info để giao diện đồng bộ, chuyên nghiệp hơn
+              placeholder="VD: Khóa 2024 Công nghệ thông tin"
+              error={errors.batchName?.message}
+              {...register("batchName", { required: "Không được để trống" })}
+            />
 
-            {/* Start Year */}
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Calendar size={14} /> Năm bắt đầu
-              </label>
-              <input
-                type="number"
-                {...register("startYear", {
-                  required: "Bắt buộc",
-                  valueAsNumber: true,
-                })}
-                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none"
-              />
-            </div>
+            {/* Năm bắt đầu */}
+            <Input
+              type="number"
+              label="Năm bắt đầu"
+              icon={Calendar}
+              error={errors.startYear?.message}
+              {...register("startYear", {
+                required: "Bắt buộc",
+                valueAsNumber: true,
+              })}
+            />
 
-            {/* End Year */}
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Calendar size={14} /> Năm kết thúc
-              </label>
-              <input
-                type="number"
-                {...register("endYear", {
-                  required: "Bắt buộc",
-                  valueAsNumber: true,
-                })}
-                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none"
-              />
-            </div>
+            {/* Năm kết thúc */}
+            <Input
+              type="number"
+              label="Năm kết thúc"
+              icon={Calendar}
+              error={errors.endYear?.message}
+              {...register("endYear", {
+                required: "Bắt buộc",
+                valueAsNumber: true,
+              })}
+            />
 
-            {/* Major ID Selection */}
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Layers size={14} className="text-blue-500" /> Ngành học
-              </label>
-              <select
-                {...register("majorId", {
-                  required: "Vui lòng chọn ngành học",
-                  valueAsNumber: true,
-                })}
-                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none bg-white appearance-none cursor-pointer"
-              >
-                <option value="">-- Chọn ngành học --</option>
-                {majors?.map((major) => (
-                  <option key={major.id} value={major.id}>
-                    {major.majorName}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Ngành học */}
+            <SelectOption
+              label="Ngành học"
+              icon={<Layers size={14} className="text-blue-500" />}
+              options={[
+                { value: "", label: "-- Chọn ngành học --" },
+                ...majorOptions,
+              ]}
+              error={errors.majorId?.message}
+              {...register("majorId", {
+                required: "Vui lòng chọn ngành học",
+                valueAsNumber: true,
+              })}
+            />
 
-            {/* Curriculum ID */}
-            <div className="space-y-1">
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <FileText size={14} /> Chương trình khung (ID)
-              </label>
-              <input
-                type="number"
-                {...register("curriculumId", { valueAsNumber: true })}
-                placeholder="Tùy chọn"
-                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none"
-              />
-            </div>
+            {/* Chương trình khung */}
+            <SelectOption
+              label="Chương trình khung"
+              icon={<FileText size={14} />}
+              options={curriculumOptions}
+              error={errors.curriculumId?.message}
+              {...register("curriculumId", {
+                valueAsNumber: true,
+              })}
+            />
 
-            {/* Status */}
-            <div className="space-y-1 md:col-span-2">
-              <label className="text-sm font-semibold text-gray-700 flex items-center gap-2">
-                <Activity size={14} /> Trạng thái
-              </label>
-              <select
-                {...register("status")}
-                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none appearance-none bg-white"
-              >
-                <option value="ACTIVE">Đang hoạt động</option>
-                <option value="INACTIVE">Ngưng hoạt động</option>
-                <option value="UPCOMING">Sắp mở</option>
-              </select>
-            </div>
+            {/* Trạng thái */}
+            <SelectOption
+              containerClassName="md:col-span-2"
+              label="Trạng thái"
+              icon={<Activity size={14} />}
+              options={statusOptions}
+              error={errors.status?.message}
+              {...register("status")}
+            />
 
-            {/* Description */}
-            <div className="space-y-1 md:col-span-2">
-              <label className="text-sm font-semibold text-gray-700">
+            {/* Mô tả */}
+            <div className="space-y-1.5 md:col-span-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1">
                 Mô tả
               </label>
               <textarea
                 {...register("description")}
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-100 outline-none resize-none"
+                placeholder="Nhập mô tả cho khóa học học..."
+                className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-xl focus:border-blue-500 focus:ring-4 focus:ring-blue-50 outline-none resize-none transition-all duration-200 shadow-sm placeholder:text-gray-400"
               />
             </div>
           </div>
 
           {/* Footer Buttons */}
           <div className="flex gap-3 pt-4">
-            <button
+            <ButtonAction
               type="button"
+              variant="outline"
+              className="flex-1"
               onClick={onClose}
-              className="flex-1 py-2.5 border border-gray-200 text-gray-600 rounded-xl font-bold hover:bg-gray-50 transition-all"
             >
               Hủy bỏ
-            </button>
-            <button
+            </ButtonAction>
+            <ButtonAction
               type="submit"
-              disabled={isPending}
-              className="flex-1 py-2.5 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all active:scale-95 disabled:opacity-50"
+              variant="primary"
+              className="flex-1"
+              loading={isPending}
             >
-              {isPending ? "Đang xử lý..." : "Lưu khóa đào tạo"}
-            </button>
+              Lưu khóa đào tạo
+            </ButtonAction>
           </div>
         </form>
       </div>

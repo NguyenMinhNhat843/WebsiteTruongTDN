@@ -44,6 +44,14 @@ export const [NganhProvider, useNganhContext] = createContextProvider(() => {
     },
   });
 
+  /**
+   * Lấy danh sách phòng ban, khoa đào tạo
+   */
+  const { data: departments, isLoading: isLoadingDepartment } = $api.useQuery(
+    "get",
+    "/departments",
+  );
+
   return {
     nganhs,
     isPendingNganh,
@@ -54,6 +62,8 @@ export const [NganhProvider, useNganhContext] = createContextProvider(() => {
     deleteNganh,
     isPendingDeleteNganh,
     isErrorDeleteNganh,
+    departments,
+    isLoadingDepartment,
 
     // state
     isOpenModalCreate,

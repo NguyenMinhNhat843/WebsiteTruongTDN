@@ -4,6 +4,7 @@ import PageShell from "../../../../components/ui/PageShell";
 import DanhSachLopHocPhan from "./TableLopHocPhanList";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import ButtonAction from "../../../../components/ui/ButtonAction";
+// import GenLopHocPhanModal from "./ModalGenLopHocPhan";
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
 export default function LopHocPhanList() {
   const {
@@ -64,6 +65,7 @@ export default function LopHocPhanList() {
           </main>
         </div>
       </div>
+      {/* <GenLopHocPhanModal isOpen={true} onClose={() => {}} /> */}
     </PageShell>
   );
 }
