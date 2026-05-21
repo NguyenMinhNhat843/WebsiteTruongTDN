@@ -1,7 +1,7 @@
 import { useFieldArray, useForm } from "react-hook-form";
-import { $api } from "../../api/client";
-import type { components } from "../../api/v1";
-import { createContextProvider } from "../../util/createContextProvider";
+import { $api } from "../../../../api/client";
+import type { components } from "../../../../api/v1";
+import { createContextProvider } from "../../../../util/createContextProvider";
 
 export type CreateProgramDto = components["schemas"]["CreateCurriculumDto"];
 

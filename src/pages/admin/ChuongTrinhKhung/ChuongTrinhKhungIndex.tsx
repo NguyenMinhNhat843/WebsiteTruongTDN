@@ -3,10 +3,11 @@ import {
   ChuongTrinhKhungProvider,
   useChuongTrinhKhungContext,
 } from "./ChuongTrinhKhungProvider";
-import Filters from "./Components/Filters";
-import ChuongTrinhKhungList from "./Components/ChuongTrinhKhungList";
+import Filters from "./ChươngTrinhKhungList/Filters";
+import ChuongTrinhKhungList from "./ChươngTrinhKhungList/ChuongTrinhKhungList";
 import PageShell from "../../../components/ui/PageShell";
-import ChuongTrinhKhungOne from "./ChuongTrinhKhungOne";
+import ChuongTrinhKhungOne from "./ChuongTrinhKhungOne/ChuongTrinhKhungOne";
+import { useNavigate } from "react-router-dom";
 
 export default function CurriculumFrameworkPage() {
   return (
@@ -23,6 +24,7 @@ function Inner() {
     isCurriculumOnePending,
     curriculumOne,
   } = useChuongTrinhKhungContext();
+  const navigate = useNavigate();
 
   return (
     <PageShell
@@ -31,7 +33,12 @@ function Inner() {
       icon={School2}
       renderRight={
         <div className="flex items-center justify-between">
-          <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all shadow-sm hover:shadow-md active:scale-95">
+          <button
+            onClick={() => navigate("/admin/dao-tao/tao-chuong-trinh-khung")}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 
+          text-white text-sm font-semibold px-4 py-2.5 rounded-xl 
+          transition-all shadow-sm hover:shadow-md active:scale-95"
+          >
             <Plus className="w-4 h-4" />
             Thêm chương trình
           </button>

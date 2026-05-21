@@ -1,9 +1,12 @@
-import PageShell from "../../../components/ui/PageShell";
-import { GrabIcon, PlusIcon } from "lucide-react";
-import CreateProgramForm from "../../../features/ChuongTrinhKhung/CreateProgramForm";
-import SemesterManager from "../../../features/ChuongTrinhKhung/SemesterManager";
+import PageShell from "../../../../components/ui/PageShell";
+import { GrabIcon, PlusIcon, RotateCcw, Save } from "lucide-react";
+import CreateProgramForm from "./CreateProgramForm";
+import SemesterManager from "./SemesterManager";
 import { useState } from "react";
-import { TaoChuongTrinhKhungProvider } from "../../../features/ChuongTrinhKhung/CreateProgramProvider";
+import {
+  TaoChuongTrinhKhungProvider,
+  useTaoChuongTrinhKhungContext,
+} from "./CreateProgramProvider";
 
 const TaoChuongTrinhKhung = () => {
   return (
@@ -14,6 +17,7 @@ const TaoChuongTrinhKhung = () => {
 };
 
 const Inner = () => {
+  const { reset } = useTaoChuongTrinhKhungContext();
   const [semesterNumber, setSemesterNumber] = useState<number>(1);
   const handleAddSemester = () => {
     setSemesterNumber((prev) => prev + 1);
@@ -24,6 +28,29 @@ const Inner = () => {
       title="Tạo chương trình khung"
       sub="Xây dựng chương trình khung cho các ngành đào tạo"
       icon={GrabIcon}
+      renderRight={
+        <div className="pt-4 flex gap-3">
+          <button
+            type="submit"
+            form="create-program-form"
+            className="flex-1 flex items-center p-2 cursor-pointer justify-center gap-2 
+            bg-blue-600 hover:bg-blue-700 text-white font-semibold 
+            py-2.5 rounded-lg transition-all shadow-sm active:scale-[0.99]"
+          >
+            <Save className="w-4 h-4" />
+            Lưu thông tin
+          </button>
+
+          <button
+            type="button"
+            onClick={() => reset()}
+            className="px-6 py-2.5 border border-slate-200 text-slate-600 font-medium rounded-lg hover:bg-slate-50 hover:text-slate-800 transition-all active:scale-[0.99] flex items-center gap-2"
+          >
+            <RotateCcw className="w-4 h-4" />
+            Clear
+          </button>
+        </div>
+      }
     >
       <div>
         <CreateProgramForm />

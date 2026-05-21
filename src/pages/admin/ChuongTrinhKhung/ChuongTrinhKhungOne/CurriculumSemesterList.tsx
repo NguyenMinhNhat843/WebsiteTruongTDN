@@ -5,7 +5,7 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 import { useMemo } from "react";
-import type { CurriCulumSubjectDto } from "../../ChuongTrinhKhungProvider";
+import type { CurriCulumSubjectDto } from "../ChuongTrinhKhungProvider";
 
 const columns: ColumnDef<CurriCulumSubjectDto>[] = [
   {
