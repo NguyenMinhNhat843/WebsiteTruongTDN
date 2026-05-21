@@ -6,6 +6,7 @@ const getBaseUrl = (): string => {
     import.meta.env.VITE_SERVER_PRODUCTION ||
     "https://quantritruonghoc-be.onrender.com";
   const localUrl = import.meta.env.VITE_BASE_URL || "http://localhost:3000";
+  console.log(import.meta.env.DEV);
 
   // Nếu đang chạy 'npm run dev' ở máy local, ưu tiên dùng localUrl trước
   if (import.meta.env.DEV) {
