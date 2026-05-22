@@ -64,7 +64,7 @@ const ChuongTrinhKhungList = ({ data }: Props) => {
                       : "bg-slate-50 border-slate-200 text-slate-500"
                   }`}
               >
-                Hệ đào tạo: Không xác định
+                Hệ đào tạo: Trung cấp nghề
               </span>
 
               <span className="font-mono text-[11px] font-medium text-slate-400 bg-slate-100/60 px-1.5 py-0.5 rounded">

@@ -3,14 +3,17 @@ import { useQueryClient } from "@tanstack/react-query";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { $api } from "../../../api/client";
 import type { components } from "../../../api/v1";
+import { useState } from "react";
 
 export type HocSinhDto = components["schemas"]["StudentResponseDto"];
 export type StatusHocSinhEnum = HocSinhDto["status"];
+export type createStudentDto = components["schemas"]["CreateStudentDto"];
 
 export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
   () => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
+    const [isOpenModalImport, setIsOpenModalImport] = useState(false);
 
     /**
      * Lấy danh sách học sinh
@@ -48,6 +51,26 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
     const { mutate: createStudent, isPending: isCreatingStudent } =
       $api.useMutation("post", "/students");
 
+    /**
+     * Import dữ liệu học sinh
+     */
+    const { mutate: createManyStudents, isPending: isCreatingManyStudents } =
+      $api.useMutation("post", "/students/bulk", {
+        onSuccess: () => {
+          refetchStudents();
+        },
+      });
+
+    /**
+     * Lấy danh sách khóa từ ngành đang chọn
+     */
+    const {
+      data: khoaHocList,
+      mutate: searchBatches,
+      isPending: isSearchingBatches,
+    } = $api.useMutation("get", "/batches");
+    console.log("Danh sách khóa học:", khoaHocList);
+
     return {
       students: students || [],
       deleteStudent,
@@ -57,8 +80,15 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       createStudent,
       isCreatingStudent,
       refetchStudents,
+      createManyStudents,
+      isCreatingManyStudents,
+      khoaHocList: khoaHocList || [],
+      searchBatches,
+      isSearchingBatches,
 
       navigate,
+      isOpenModalImport,
+      setIsOpenModalImport,
     };
   },
 );

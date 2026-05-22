@@ -24,7 +24,11 @@ export const [PhanLopProvider, usePhanLopContext] = createContextProvider(
     }, [selectedMajorId, batches]);
 
     // get danh sách học sinh đủ điều kiện phân lớp
-    const { data: students, isLoading: isLoadingStudents } = $api.useQuery(
+    const {
+      data: students,
+      isLoading: isLoadingStudents,
+      refetch: refetchStudents,
+    } = $api.useQuery(
       "get",
       "/classes/eligible-for-assignment",
       {
@@ -43,6 +47,11 @@ export const [PhanLopProvider, usePhanLopContext] = createContextProvider(
     const { mutate: phanLop, isPending: isPendingPhanLop } = $api.useMutation(
       "post",
       "/classes/assign-classes",
+      {
+        onSuccess: () => {
+          refetchStudents();
+        },
+      },
     );
 
     return {

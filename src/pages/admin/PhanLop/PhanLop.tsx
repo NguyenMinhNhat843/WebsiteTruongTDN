@@ -1,6 +1,7 @@
 import { Users, Wand2 } from "lucide-react";
 import PageShell from "../../../components/ui/PageShell";
 import { usePhanLopContext } from "./PhanLopProvider";
+import ButtonAction from "../../../components/ui/ButtonAction";
 
 const PhanLop = () => {
   const {
@@ -22,15 +23,18 @@ const PhanLop = () => {
       sub="Quản lý việc phân lớp cho sinh viên dựa trên ngành và khóa đào tạo"
       icon={Users} // Icon chính cho trang
       renderRight={
-        <button
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 
-          text-white px-4 py-2 rounded-lg font-medium transition-all shadow-md active:scale-95"
+        <ButtonAction
+          variant="primary"
+          size="md"
+          icon={<Wand2 className="w-4 h-4" />}
+          loading={isPendingPhanLop}
+          disabled={isPendingPhanLop}
           onClick={() =>
             phanLop(
               {
                 body: {
-                  batchId: latestBatch!.id!, // Lấy batchId từ latestBatch đã tính toán ở trên
-                  studentsPerClass: 40, // Hoặc bạn có thể cho phép admin nhập số này thông qua UI nếu muốn linh hoạt hơn
+                  batchId: latestBatch!.id!,
+                  studentsPerClass: 40,
                 },
               },
               {
@@ -40,12 +44,9 @@ const PhanLop = () => {
               },
             )
           }
-          disabled={isPendingPhanLop}
         >
-          <Wand2 className="w-4 h-4" />{" "}
-          {/* Icon "đũa phép" gợi ý sự tự động hóa/phân lớp thông minh */}
           Phân lớp
-        </button>
+        </ButtonAction>
       }
     >
       <div className=" bg-gray-50 min-h-screen font-sans text-slate-900">

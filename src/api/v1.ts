@@ -22,6 +22,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/students/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tạo nhiều hồ sơ sinh viên cùng lúc */
+        post: operations["createManyStudents"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/students/{id}": {
         parameters: {
             query?: never;
@@ -1164,6 +1181,26 @@ export interface paths {
         patch: operations["CourseOfferController_approve"];
         trace?: never;
     };
+    "/course-offers/previewpreviewGenerateSectionForClass": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Xem trước danh sách lớp học phần tự động
+         * @description Trả về danh sách các môn học kèm theo mã và tên lớp học phần dự kiến sẽ được sinh ra, kèm trạng thái đã tồn tại hay chưa.
+         */
+        get: operations["CourseOfferController_previewGenerateSectionForClass"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/course-offers/{id}": {
         parameters: {
             query?: never;
@@ -1234,26 +1271,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-offers/previewpreviewGenerateSectionForClass": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Xem trước danh sách lớp học phần tự động
-         * @description Trả về danh sách các môn học kèm theo mã và tên lớp học phần dự kiến sẽ được sinh ra, kèm trạng thái đã tồn tại hay chưa.
-         */
-        get: operations["CourseOfferController_previewGenerateSectionForClass"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/course-registrations": {
         parameters: {
             query?: never;
@@ -1294,222 +1311,330 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         CreateStudentDto: {
-            /** @example Nguyễn Văn A */
+            /**
+             * @description ID tự tăng của học sinh (Nếu tạo mới có thể bỏ qua hoặc truyền 0 tùy logic backend)
+             * @example 1
+             */
+            id: number;
+            /**
+             * @description Mã số học sinh duy nhất
+             * @example HS20260001
+             */
+            studentCode: string;
+            /**
+             * @description Ngày nhập học (Định dạng YYYY-MM-DD)
+             * @example 2026-09-05
+             */
+            enrollmentDate?: string | null;
+            /**
+             * @description Ngày tốt nghiệp dự kiến/thực tế (Định dạng YYYY-MM-DD)
+             * @example 2029-06-15
+             */
+            graduationDate?: string | null;
+            /**
+             * @description ID Hồ sơ tuyển sinh liên kết
+             * @example 42
+             */
+            applicationId?: number | null;
+            /**
+             * @description Đường dẫn ảnh đại diện học sinh
+             * @example https://storage.googleapis.com/bucket/avatar.jpg
+             */
+            avatarUrl?: string | null;
+            /**
+             * @description ID tài khoản liên kết trong bảng User
+             * @example 102
+             */
+            userId?: number | null;
+            /**
+             * @description Thời gian khởi tạo bản ghi
+             * @example 2026-05-22T07:10:00.000Z
+             */
+            createdAt?: string;
+            /**
+             * @description Thời gian cập nhật bản ghi gần nhất
+             * @example 2026-05-22T07:10:00.000Z
+             */
+            updatedAt?: string;
+            /**
+             * @description Họ và tên đầy đủ của học sinh
+             * @example Nguyễn Văn A
+             */
             fullName: string;
-            /** @example student@example.com */
-            email?: string;
+            /** @example nguyenvana@gmail.com */
+            email?: string | null;
             /**
              * @description true: Nam, false: Nữ
              * @example true
              */
-            gender?: boolean;
-            /**
-             * Format: date-time
-             * @example 2005-05-20
-             */
-            dob?: string;
+            gender?: boolean | null;
+            /** @example 2008-05-20 */
+            dob?: string | null;
             /** @example 0987654321 */
-            phone?: string;
+            phone?: string | null;
             /** @example 123 Đường ABC, Nha Trang */
-            address?: string;
+            address?: string | null;
             /** @example 056205001234 */
-            identityNumber?: string;
-            /**
-             * @description Tên phụ huynh
-             * @example Nguyễn Văn B
-             */
-            parentName?: string;
+            identityNumber?: string | null;
+            /** @example Nguyễn Văn B */
+            fatherName?: string | null;
             /** @example 0912345678 */
-            parentPhone?: string;
-            /**
-             * @description ID của Khóa đào tạo (K1, K2...)
-             * @example 1
-             */
-            batchId?: number;
+            fatherPhone?: string | null;
+            /** @example 056201001234 */
+            fatherCCCD?: string | null;
+            /** @example 1975 */
+            fatherYearOfBirth?: number | null;
+            /** @example Kỹ sư */
+            fatherJob?: string | null;
+            /** @example Trần Thị C */
+            motherName?: string | null;
+            /** @example 0923456789 */
+            motherPhone?: string | null;
+            /** @example 056202001234 */
+            motherCCCD?: string | null;
+            /** @example 1978 */
+            motherYearOfBirth?: number | null;
+            /** @example Giáo viên */
+            motherJob?: string | null;
+            /** @example Nguyễn Văn D */
+            guardianName?: string | null;
+            /** @example Ông nội */
+            guardianRelationship?: string | null;
+            /** @example 0934567890 */
+            guardianPhone?: string | null;
+            /** @example 056200001234 */
+            guardianCCCD?: string | null;
+            /** @example 1950 */
+            guardianYearOfBirth?: number | null;
+            /** @example Hưu trí */
+            guardianJob?: string | null;
+            /** @example 1 */
+            batchId?: number | null;
+            /** @example 3 */
+            classId?: number | null;
             /**
              * @default approved
              * @enum {string}
              */
             status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         };
-        DepartmentResponseDto: {
-            /** @example 1 */
-            id: number;
+        StudentResponseDto: {
             /**
-             * @description Mã định danh duy nhất của khoa/phòng
-             * @example IT01
-             */
-            deptCode: string;
-            /** @example Khoa Công nghệ thông tin */
-            deptName: string;
-            /** @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống */
-            description?: string | null;
-            /**
-             * @description ID của nhân viên làm trưởng khoa
+             * @description ID tự tăng của học sinh (Nếu tạo mới có thể bỏ qua hoặc truyền 0 tùy logic backend)
              * @example 1
              */
-            headOfDepartmentId?: number | null;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            updatedAt: string;
-            /**
-             * @description Số lượng ngành học trực thuộc
-             * @example 5
-             */
-            majorCount?: number;
-            /**
-             * @description Số lượng môn học trực thuộc
-             * @example 20
-             */
-            subjectCount?: number;
-        };
-        MajorResponseDto: {
-            /** @example 1 */
             id: number;
-            /** @example CNTT */
-            majorCode: string;
-            /** @example Công nghệ thông tin */
-            majorName: string;
-            /** @example 1 */
-            deptId: number;
-            /** @example 90 */
-            totalCredits: number;
             /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
+             * @description Mã số học sinh duy nhất
+             * @example HS20260001
              */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            updatedAt: string;
-            department?: components["schemas"]["DepartmentResponseDto"];
-            /**
-             * @description Số lượng lớp học thuộc ngành này
-             * @example 10
-             */
-            classCount?: number;
-            /**
-             * @description Mô tả chi tiết về ngành học
-             * @example Ngành học tập trung vào phát triển phần mềm
-             */
-            description?: Record<string, never>;
-        };
-        BatchResponseDto: {
-            id: number;
-            batchCode: string;
-            batchName: string;
-            startYear: number;
-            endYear: number;
-            description: Record<string, never> | null;
-            status: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            major: components["schemas"]["MajorResponseDto"] | null;
-            curriculumId: number | null;
-            majorId: number;
-        };
-        StudentResponseDto: {
-            id: number;
             studentCode: string;
-            userId: number | null;
-            /** @example nguyenvana */
-            username: string;
-            /** @example Nguyễn Văn A */
+            /**
+             * @description Ngày nhập học (Định dạng YYYY-MM-DD)
+             * @example 2026-09-05
+             */
+            enrollmentDate?: string | null;
+            /**
+             * @description Ngày tốt nghiệp dự kiến/thực tế (Định dạng YYYY-MM-DD)
+             * @example 2029-06-15
+             */
+            graduationDate?: string | null;
+            /**
+             * @description ID Hồ sơ tuyển sinh liên kết
+             * @example 42
+             */
+            applicationId?: number | null;
+            /**
+             * @description Đường dẫn ảnh đại diện học sinh
+             * @example https://storage.googleapis.com/bucket/avatar.jpg
+             */
+            avatarUrl?: string | null;
+            /**
+             * @description ID tài khoản liên kết trong bảng User
+             * @example 102
+             */
+            userId?: number | null;
+            /**
+             * @description Thời gian khởi tạo bản ghi
+             * @example 2026-05-22T07:10:00.000Z
+             */
+            createdAt?: string;
+            /**
+             * @description Thời gian cập nhật bản ghi gần nhất
+             * @example 2026-05-22T07:10:00.000Z
+             */
+            updatedAt?: string;
+            /**
+             * @description Họ và tên đầy đủ của học sinh
+             * @example Nguyễn Văn A
+             */
             fullName: string;
-            /** @example student@school.edu.vn */
-            email: string;
+            /** @example nguyenvana@gmail.com */
+            email?: string | null;
             /**
              * @description true: Nam, false: Nữ
              * @example true
              */
-            gender: boolean;
-            /**
-             * Format: date-time
-             * @example 2000-01-01
-             */
+            gender?: boolean | null;
+            /** @example 2008-05-20 */
             dob?: string | null;
-            phone: string | null;
-            avatarUrl: string | null;
+            /** @example 0987654321 */
+            phone?: string | null;
             /** @example 123 Đường ABC, Nha Trang */
-            address: string;
-            /** @enum {string} */
-            role: "admin" | "teacher" | "student" | "staff";
-            isActive: boolean;
-            applicationId: number | null;
-            classId: number | null;
-            /** Format: date-time */
-            enrollmentDate: string | null;
-            /** Format: date-time */
-            graduationDate: string | null;
-            /** @enum {string} */
+            address?: string | null;
+            /** @example 056205001234 */
+            identityNumber?: string | null;
+            /** @example Nguyễn Văn B */
+            fatherName?: string | null;
+            /** @example 0912345678 */
+            fatherPhone?: string | null;
+            /** @example 056201001234 */
+            fatherCCCD?: string | null;
+            /** @example 1975 */
+            fatherYearOfBirth?: number | null;
+            /** @example Kỹ sư */
+            fatherJob?: string | null;
+            /** @example Trần Thị C */
+            motherName?: string | null;
+            /** @example 0923456789 */
+            motherPhone?: string | null;
+            /** @example 056202001234 */
+            motherCCCD?: string | null;
+            /** @example 1978 */
+            motherYearOfBirth?: number | null;
+            /** @example Giáo viên */
+            motherJob?: string | null;
+            /** @example Nguyễn Văn D */
+            guardianName?: string | null;
+            /** @example Ông nội */
+            guardianRelationship?: string | null;
+            /** @example 0934567890 */
+            guardianPhone?: string | null;
+            /** @example 056200001234 */
+            guardianCCCD?: string | null;
+            /** @example 1950 */
+            guardianYearOfBirth?: number | null;
+            /** @example Hưu trí */
+            guardianJob?: string | null;
+            /** @example 1 */
+            batchId?: number | null;
+            /** @example 3 */
+            classId?: number | null;
+            /**
+             * @default approved
+             * @enum {string}
+             */
             status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
-            parentName: string | null;
-            parentPhone: string | null;
-            identityNumber: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            batchId: number | null;
-            batch: components["schemas"]["BatchResponseDto"] | null;
-            majorId: number | null;
         };
         /** @enum {string} */
         StudentStatus: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         UpdateStudentDto: {
-            /** @example Nguyễn Văn A */
+            /**
+             * @description ID tự tăng của học sinh (Nếu tạo mới có thể bỏ qua hoặc truyền 0 tùy logic backend)
+             * @example 1
+             */
+            id?: number;
+            /**
+             * @description Mã số học sinh duy nhất
+             * @example HS20260001
+             */
+            studentCode?: string;
+            /**
+             * @description Ngày nhập học (Định dạng YYYY-MM-DD)
+             * @example 2026-09-05
+             */
+            enrollmentDate?: string | null;
+            /**
+             * @description Ngày tốt nghiệp dự kiến/thực tế (Định dạng YYYY-MM-DD)
+             * @example 2029-06-15
+             */
+            graduationDate?: string | null;
+            /**
+             * @description ID Hồ sơ tuyển sinh liên kết
+             * @example 42
+             */
+            applicationId?: number | null;
+            /**
+             * @description Đường dẫn ảnh đại diện học sinh
+             * @example https://storage.googleapis.com/bucket/avatar.jpg
+             */
+            avatarUrl?: string | null;
+            /**
+             * @description ID tài khoản liên kết trong bảng User
+             * @example 102
+             */
+            userId?: number | null;
+            /**
+             * @description Thời gian khởi tạo bản ghi
+             * @example 2026-05-22T07:10:00.000Z
+             */
+            createdAt?: string;
+            /**
+             * @description Thời gian cập nhật bản ghi gần nhất
+             * @example 2026-05-22T07:10:00.000Z
+             */
+            updatedAt?: string;
+            /**
+             * @description Họ và tên đầy đủ của học sinh
+             * @example Nguyễn Văn A
+             */
             fullName?: string;
-            /** @example student@example.com */
-            email?: string;
+            /** @example nguyenvana@gmail.com */
+            email?: string | null;
             /**
              * @description true: Nam, false: Nữ
              * @example true
              */
-            gender?: boolean;
-            /**
-             * Format: date-time
-             * @example 2005-05-20
-             */
-            dob?: string;
+            gender?: boolean | null;
+            /** @example 2008-05-20 */
+            dob?: string | null;
             /** @example 0987654321 */
-            phone?: string;
+            phone?: string | null;
             /** @example 123 Đường ABC, Nha Trang */
-            address?: string;
+            address?: string | null;
             /** @example 056205001234 */
-            identityNumber?: string;
-            /**
-             * @description Tên phụ huynh
-             * @example Nguyễn Văn B
-             */
-            parentName?: string;
+            identityNumber?: string | null;
+            /** @example Nguyễn Văn B */
+            fatherName?: string | null;
             /** @example 0912345678 */
-            parentPhone?: string;
-            /**
-             * @description ID của Khóa đào tạo (K1, K2...)
-             * @example 1
-             */
-            batchId?: number;
+            fatherPhone?: string | null;
+            /** @example 056201001234 */
+            fatherCCCD?: string | null;
+            /** @example 1975 */
+            fatherYearOfBirth?: number | null;
+            /** @example Kỹ sư */
+            fatherJob?: string | null;
+            /** @example Trần Thị C */
+            motherName?: string | null;
+            /** @example 0923456789 */
+            motherPhone?: string | null;
+            /** @example 056202001234 */
+            motherCCCD?: string | null;
+            /** @example 1978 */
+            motherYearOfBirth?: number | null;
+            /** @example Giáo viên */
+            motherJob?: string | null;
+            /** @example Nguyễn Văn D */
+            guardianName?: string | null;
+            /** @example Ông nội */
+            guardianRelationship?: string | null;
+            /** @example 0934567890 */
+            guardianPhone?: string | null;
+            /** @example 056200001234 */
+            guardianCCCD?: string | null;
+            /** @example 1950 */
+            guardianYearOfBirth?: number | null;
+            /** @example Hưu trí */
+            guardianJob?: string | null;
+            /** @example 1 */
+            batchId?: number | null;
+            /** @example 3 */
+            classId?: number | null;
             /**
              * @default approved
              * @enum {string}
              */
             status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
-            classId?: number;
-            /** Format: date-time */
-            enrollmentDate?: string;
-            /** Format: date-time */
-            graduationDate?: string;
         };
         CreateUserDto: {
             /**
@@ -1675,6 +1800,44 @@ export interface components {
              */
             headOfDepartmentId?: number;
         };
+        DepartmentResponseDto: {
+            /** @example 1 */
+            id: number;
+            /**
+             * @description Mã định danh duy nhất của khoa/phòng
+             * @example IT01
+             */
+            deptCode: string;
+            /** @example Khoa Công nghệ thông tin */
+            deptName: string;
+            /** @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống */
+            description?: string | null;
+            /**
+             * @description ID của nhân viên làm trưởng khoa
+             * @example 1
+             */
+            headOfDepartmentId?: number | null;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /**
+             * @description Số lượng ngành học trực thuộc
+             * @example 5
+             */
+            majorCount?: number;
+            /**
+             * @description Số lượng môn học trực thuộc
+             * @example 20
+             */
+            subjectCount?: number;
+        };
         UpdateDepartmentDto: {
             /**
              * @description Mã định danh duy nhất của phòng ban/khoa
@@ -1712,6 +1875,39 @@ export interface components {
             deptId?: number;
             /** @example Ngành học tập trung vào phát triển phần mềm */
             description?: string;
+        };
+        MajorResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example CNTT */
+            majorCode: string;
+            /** @example Công nghệ thông tin */
+            majorName: string;
+            /** @example 1 */
+            deptId: number;
+            /** @example 90 */
+            totalCredits: number;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            department?: components["schemas"]["DepartmentResponseDto"];
+            /**
+             * @description Số lượng lớp học thuộc ngành này
+             * @example 10
+             */
+            classCount?: number;
+            /**
+             * @description Mô tả chi tiết về ngành học
+             * @example Ngành học tập trung vào phát triển phần mềm
+             */
+            description?: Record<string, never>;
         };
         UpdateMajorDto: {
             /**
@@ -1768,6 +1964,22 @@ export interface components {
              * @example ADMISSION
              */
             status: string;
+        };
+        BatchResponseDto: {
+            id: number;
+            batchCode: string;
+            batchName: string;
+            startYear: number;
+            endYear: number;
+            description: Record<string, never> | null;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            major: components["schemas"]["MajorResponseDto"] | null;
+            curriculumId: number | null;
+            majorId: number;
         };
         UpdateBatchDto: {
             /**
@@ -2035,6 +2247,8 @@ export interface components {
             theoryHours: number;
             /** @example 15 */
             practiceHours: number;
+            /** @example 15 */
+            testHours?: number | null;
             /** @example 1 */
             deptId: number;
             /** @example true */
@@ -3171,6 +3385,43 @@ export interface components {
             /** @example 2026-05-15T23:59:59Z */
             registrationEnd?: string;
         };
+        ResponsePreviewGenerateSectionForClass: {
+            /**
+             * @description ID của môn học trong hệ thống
+             * @example 12
+             */
+            subjectId: number;
+            /**
+             * @description Mã viết tắt của môn học
+             * @example CO1023
+             */
+            subjectCode: string;
+            /**
+             * @description Tên đầy đủ của môn học
+             * @example Cấu trúc dữ liệu và giải thuật
+             */
+            subjectName: string;
+            /**
+             * @description Số tín chỉ của môn học
+             * @example 3
+             */
+            credits: number;
+            /**
+             * @description Mã lớp học phần dự kiến sẽ được sinh ra
+             * @example CO1023-22DTH01-HK2-2025-2026
+             */
+            expectedCourseCode: string;
+            /**
+             * @description Tên lớp học phần dự kiến hiển thị cho sinh viên
+             * @example Cấu trúc dữ liệu và giải thuật (Lớp Công nghệ thông tin 1)
+             */
+            expectedCourseName: string;
+            /**
+             * @description Trạng thái lớp học phần này đã tồn tại trong hệ thống hay chưa
+             * @example false
+             */
+            isExisted: boolean;
+        };
         GradeEntryResponseDto: {
             /**
              * @description ID tự tăng của bản ghi điểm số
@@ -3358,43 +3609,6 @@ export interface components {
             /** @description Danh sách các đơn đăng ký của sinh viên vào lớp học phần này */
             registrations?: components["schemas"]["CourseOfferRegisResponseDto"][] | null;
         };
-        ResponsePreviewGenerateSectionForClass: {
-            /**
-             * @description ID của môn học trong hệ thống
-             * @example 12
-             */
-            subjectId: number;
-            /**
-             * @description Mã viết tắt của môn học
-             * @example CO1023
-             */
-            subjectCode: string;
-            /**
-             * @description Tên đầy đủ của môn học
-             * @example Cấu trúc dữ liệu và giải thuật
-             */
-            subjectName: string;
-            /**
-             * @description Số tín chỉ của môn học
-             * @example 3
-             */
-            credits: number;
-            /**
-             * @description Mã lớp học phần dự kiến sẽ được sinh ra
-             * @example CO1023-22DTH01-HK2-2025-2026
-             */
-            expectedCourseCode: string;
-            /**
-             * @description Tên lớp học phần dự kiến hiển thị cho sinh viên
-             * @example Cấu trúc dữ liệu và giải thuật (Lớp Công nghệ thông tin 1)
-             */
-            expectedCourseName: string;
-            /**
-             * @description Trạng thái lớp học phần này đã tồn tại trong hệ thống hay chưa
-             * @example false
-             */
-            isExisted: boolean;
-        };
         CreateCourseRegistrationDto: {
             /**
              * @description ID của Sinh viên
@@ -3476,6 +3690,27 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StudentResponseDto"];
                 };
+            };
+        };
+    };
+    createManyStudents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": string[];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -3955,7 +4190,12 @@ export interface operations {
     };
     BatchController_findAll: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description Từ khóa tìm kiếm mã hoặc tên khóa */
+                majorId?: number;
+                /** @description Từ khóa tìm kiếm mã hoặc ngành */
+                majorCode?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -5978,6 +6218,29 @@ export interface operations {
             };
         };
     };
+    CourseOfferController_previewGenerateSectionForClass: {
+        parameters: {
+            query: {
+                classId: number;
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lấy dữ liệu cấu trúc xem trước thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponsePreviewGenerateSectionForClass"][];
+                };
+            };
+        };
+    };
     CourseOfferController_getDetail: {
         parameters: {
             query?: never;
@@ -6052,43 +6315,6 @@ export interface operations {
         requestBody?: never;
         responses: {
             201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CourseOfferController_previewGenerateSectionForClass: {
-        parameters: {
-            query: {
-                classId: number;
-                semesterId: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Lấy dữ liệu cấu trúc xem trước thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResponsePreviewGenerateSectionForClass"][];
-                };
-            };
-            /** @description Yêu cầu không hợp lệ hoặc lỗi logic nghiệp vụ ngầm. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Không tìm thấy thông tin lớp học hoặc học kỳ phù hợp. */
-            404: {
                 headers: {
                     [name: string]: unknown;
                 };
