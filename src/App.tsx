@@ -211,7 +211,10 @@ function App() {
             {/* Công tác học sinh */}
             <Route element={<HocSinhLayout />}>
               <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
-              <Route path="hoc-sinh/ho-so/:id" element={<HoSoHocSinhOne />} />
+              <Route
+                path="hoc-sinh/ho-so/:maSinhVien"
+                element={<HoSoHocSinhOne />}
+              />
               <Route path="hoc-sinh/tot-nghiep" element={<XetTotNghiep />} />
               <Route
                 path="hoc-sinh/dot-xet-tot-nghiep"

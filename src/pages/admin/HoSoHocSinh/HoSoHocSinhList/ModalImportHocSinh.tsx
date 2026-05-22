@@ -40,6 +40,7 @@ const ImportStudentModal = ({ isOpen, onClose }: ImportStudentModalProps) => {
 
   if (!isOpen) return null;
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formatExcelDate = (dateVal: any): string | null => {
     if (!dateVal) return null;
 
@@ -63,6 +64,7 @@ const ImportStudentModal = ({ isOpen, onClose }: ImportStudentModalProps) => {
     return null;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const formatStudentData = (row: any): createStudentDto => {
     return {
       enrollmentDate: formatExcelDate(row["Ngày nhập học"]),
@@ -181,6 +183,7 @@ const ImportStudentModal = ({ isOpen, onClose }: ImportStudentModalProps) => {
         body: finalData,
       },
       {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onSuccess: (res: any) => {
           alert(
             res?.message
@@ -196,7 +199,7 @@ const ImportStudentModal = ({ isOpen, onClose }: ImportStudentModalProps) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-[1000] p-4 animate-fadeIn">
+    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-1000 p-4 animate-fadeIn">
       <div className="bg-white p-6 rounded-xl w-full max-w-3xl shadow-2xl border border-gray-100 flex flex-col gap-4">
         <div>
           <h2 className="text-xl font-bold text-gray-800">

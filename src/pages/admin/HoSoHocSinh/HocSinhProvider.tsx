@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { $api } from "../../../api/client";
@@ -14,6 +14,7 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const [isOpenModalImport, setIsOpenModalImport] = useState(false);
+    const { maSinhVien } = useParams(); // Lấy id từ URL nếu có - dùng cho load trang chi tiết học sinh
 
     /**
      * Lấy danh sách học sinh
@@ -37,11 +38,14 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
     /**
      * Lấy chi tiết 1 học sinh
      */
-    const {
-      data: studentDetail,
-      mutate: getStudentDetail,
-      isPending: isGettingStudentDetail,
-    } = $api.useMutation("get", "/students/search-by-code");
+    const { data: studentDetail, isLoading: isGettingStudentDetail } =
+      $api.useQuery("get", "/students/search-by-code", {
+        params: {
+          query: {
+            studentCode: maSinhVien || "",
+          },
+        },
+      });
 
     /**
      * Xóa học sinh - dành cho development
@@ -95,7 +99,6 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       searchBatches,
       isSearchingBatches,
       studentDetail,
-      getStudentDetail,
       isGettingStudentDetail,
 
       navigate,

@@ -1315,12 +1315,12 @@ export interface components {
              * @description ID tự tăng của học sinh (Nếu tạo mới có thể bỏ qua hoặc truyền 0 tùy logic backend)
              * @example 1
              */
-            id: number;
+            id?: number;
             /**
              * @description Mã số học sinh duy nhất
              * @example HS20260001
              */
-            studentCode: string;
+            studentCode?: string;
             /**
              * @description Ngày nhập học (Định dạng YYYY-MM-DD)
              * @example 2026-09-05
@@ -1601,12 +1601,12 @@ export interface components {
              * @description ID tự tăng của học sinh (Nếu tạo mới có thể bỏ qua hoặc truyền 0 tùy logic backend)
              * @example 1
              */
-            id: number;
+            id?: number;
             /**
              * @description Mã số học sinh duy nhất
              * @example HS20260001
              */
-            studentCode: string;
+            studentCode?: string;
             /**
              * @description Ngày nhập học (Định dạng YYYY-MM-DD)
              * @example 2026-09-05
@@ -3702,9 +3702,10 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
+        /** @description Danh sách hồ sơ sinh viên cần tạo mới */
         requestBody: {
             content: {
-                "application/json": string[];
+                "application/json": components["schemas"]["CreateStudentDto"][];
             };
         };
         responses: {
