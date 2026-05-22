@@ -14,9 +14,12 @@ import {
   Loader2,
   Plus,
   ArrowLeft,
+  Calendar,
+  Layers,
 } from "lucide-react";
 import ModelThemHocSinh from "./ModelThemHocSinh";
 import { useNavigate } from "react-router-dom";
+import ModalSinhLopHocPhan from "./ModalSinhLopHocPhan";
 
 const LopHocOne = () => {
   const {
@@ -26,6 +29,8 @@ const LopHocOne = () => {
     isLoadingLopHocDetail,
     isOpenModalAddStudent,
     setIsOpenModalAddStudent,
+    isOpenModalSinhLopHocPhan,
+    setIsOpenModalSinhLopHocPhan,
   } = useLopHocContext();
   const navigate = useNavigate();
 
@@ -38,6 +43,8 @@ const LopHocOne = () => {
       giaoVien: LopHocDetail?.formTeacher?.fullName || "Chưa phân bổ",
       siSo: studentsInLopHoc?.length || 0,
       maxStudent: LopHocDetail?.maxStudents || 0,
+      hocKyBatDau: LopHocDetail?.batch?.startYear,
+      hocKyKetThuc: LopHocDetail?.batch?.endYear,
     }),
     [LopHocDetail, studentsInLopHoc],
   );
@@ -109,7 +116,7 @@ const LopHocOne = () => {
     <div className="mx-auto p-6 space-y-8">
       {/* --- PHẦN 1: THÔNG TIN CƠ BẢN (INFO CARDS) --- */}
       <div className="space-y-4">
-        {/* Nút Quay về đặt độc lập phía trên Card để tạo khoảng thoáng, hoặc bạn có thể nhét vào trong card tùy ý */}
+        {/* Nút Quay về đặt độc lập phía trên Card để tạo khoảng thoáng */}
         <button
           onClick={() => {
             navigate(-1);
@@ -138,21 +145,36 @@ const LopHocOne = () => {
               </div>
             </div>
 
-            {/* Nút "Thêm học sinh" ở góc phải trên */}
-            <button
-              onClick={() => {
-                setIsOpenModalAddStudent(true);
-              }}
-              className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-sm shadow-blue-100 transition-all active:scale-[0.98] self-start sm:self-center"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Thêm học sinh</span>
-            </button>
+            {/* Cụm nút hành động ở góc phải trên */}
+            <div className="flex items-center gap-2 self-start sm:self-center w-full sm:w-auto">
+              {/* Nút "Sinh lớp học phần" mới thêm */}
+              <button
+                onClick={() => {
+                  setIsOpenModalSinhLopHocPhan(true);
+                }}
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium text-sm px-4 py-2.5 rounded-xl shadow-sm transition-all active:scale-[0.98]"
+              >
+                <Layers className="h-4 w-4 text-gray-500" />
+                <span>Sinh lớp học phần</span>
+              </button>
+
+              {/* Nút "Thêm học sinh" */}
+              <button
+                onClick={() => {
+                  setIsOpenModalAddStudent(true);
+                }}
+                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-sm shadow-blue-100 transition-all active:scale-[0.98]"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Thêm học sinh</span>
+              </button>
+            </div>
           </div>
 
           {/* Phần grid thông tin bên dưới giữ nguyên */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex items-start gap-3">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {/* 1. Ngành học */}
+            <div className="flex items-start gap-3 col-span-2 md:col-span-1">
               <BookOpen className="h-5 w-5 text-gray-400 mt-0.5" />
               <div>
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
@@ -164,7 +186,8 @@ const LopHocOne = () => {
               </div>
             </div>
 
-            <div className="flex items-start gap-3">
+            {/* 2. Giáo viên chủ nhiệm */}
+            <div className="flex items-start gap-3 col-span-2 md:col-span-1">
               <User className="h-5 w-5 text-gray-400 mt-0.5" />
               <div>
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
@@ -176,6 +199,7 @@ const LopHocOne = () => {
               </div>
             </div>
 
+            {/* 3. Sĩ số lớp */}
             <div className="flex items-start gap-3">
               <Users className="h-5 w-5 text-gray-400 mt-0.5" />
               <div>
@@ -187,6 +211,25 @@ const LopHocOne = () => {
                     {dataHienThi.siSo} / {dataHienThi.maxStudent}
                   </span>{" "}
                   học sinh
+                </p>
+              </div>
+            </div>
+
+            {/* 4. Niên khóa */}
+            <div className="flex items-start gap-3">
+              <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
+              <div>
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                  Niên khóa
+                </p>
+                <p className="text-sm font-semibold text-gray-700 mt-0.5">
+                  {dataHienThi.hocKyBatDau
+                    ? `HK1 - ${dataHienThi.hocKyBatDau}`
+                    : "N/A"}
+                  <span className="text-gray-300 mx-1.5">→</span>
+                  {dataHienThi.hocKyKetThuc
+                    ? `HK1 - ${dataHienThi.hocKyKetThuc}`
+                    : "N/A"}
                 </p>
               </div>
             </div>
@@ -261,6 +304,11 @@ const LopHocOne = () => {
       <ModelThemHocSinh
         isOpen={isOpenModalAddStudent}
         onClose={() => setIsOpenModalAddStudent(false)}
+      />
+
+      <ModalSinhLopHocPhan
+        isOpen={isOpenModalSinhLopHocPhan}
+        onClose={() => setIsOpenModalSinhLopHocPhan(false)}
       />
     </div>
   );

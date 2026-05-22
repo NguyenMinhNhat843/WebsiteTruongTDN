@@ -9,7 +9,6 @@ const Header = () => {
     lopHocPhanDetail,
     acceptLopHocPhan,
     lopHocPhanId,
-    setIsOpenModalAddStudent,
     exportExcel,
     isExportingExcel,
     setIsOpenModalImportExcel,
@@ -50,12 +49,7 @@ const Header = () => {
             })
           }
         />
-        <button
-          className="bg-white border border-slate-200 hover:bg-slate-50 font-semibold px-4 py-2 rounded-xl text-sm transition-colors text-slate-700 shadow-sm"
-          onClick={() => setIsOpenModalAddStudent(true)}
-        >
-          Thêm học sinh
-        </button>
+
         <button
           className="bg-white border border-slate-200 hover:bg-slate-50 font-semibold px-4 py-2 rounded-xl text-sm transition-colors text-slate-700 shadow-sm"
           onClick={() => setIsOpenModalImportExcel(true)}

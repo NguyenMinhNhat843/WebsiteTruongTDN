@@ -599,6 +599,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/curriculums/subjects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách môn học theo học kỳ của 1 chương trình khung */
+        get: operations["CurriculumController_getSubjectsBySemester"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/curriculums/{id}": {
         parameters: {
             query?: never;
@@ -1189,6 +1206,46 @@ export interface paths {
             cookie?: never;
         };
         get: operations["CourseOfferController_exportExcel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/course-offers/generate-sections-for-class": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Tự động tạo lớp học phần cho một lớp hành chính
+         * @description Dựa trên danh sách môn học của lớp hành chính và học kỳ, hệ thống sẽ tự động tạo các lớp học phần tương ứng.
+         */
+        post: operations["CourseOfferController_generateSectionsForClass"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/course-offers/previewpreviewGenerateSectionForClass": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Xem trước danh sách lớp học phần tự động
+         * @description Trả về danh sách các môn học kèm theo mã và tên lớp học phần dự kiến sẽ được sinh ra, kèm trạng thái đã tồn tại hay chưa.
+         */
+        get: operations["CourseOfferController_previewGenerateSectionForClass"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3301,6 +3358,43 @@ export interface components {
             /** @description Danh sách các đơn đăng ký của sinh viên vào lớp học phần này */
             registrations?: components["schemas"]["CourseOfferRegisResponseDto"][] | null;
         };
+        ResponsePreviewGenerateSectionForClass: {
+            /**
+             * @description ID của môn học trong hệ thống
+             * @example 12
+             */
+            subjectId: number;
+            /**
+             * @description Mã viết tắt của môn học
+             * @example CO1023
+             */
+            subjectCode: string;
+            /**
+             * @description Tên đầy đủ của môn học
+             * @example Cấu trúc dữ liệu và giải thuật
+             */
+            subjectName: string;
+            /**
+             * @description Số tín chỉ của môn học
+             * @example 3
+             */
+            credits: number;
+            /**
+             * @description Mã lớp học phần dự kiến sẽ được sinh ra
+             * @example CO1023-22DTH01-HK2-2025-2026
+             */
+            expectedCourseCode: string;
+            /**
+             * @description Tên lớp học phần dự kiến hiển thị cho sinh viên
+             * @example Cấu trúc dữ liệu và giải thuật (Lớp Công nghệ thông tin 1)
+             */
+            expectedCourseName: string;
+            /**
+             * @description Trạng thái lớp học phần này đã tồn tại trong hệ thống hay chưa
+             * @example false
+             */
+            isExisted: boolean;
+        };
         CreateCourseRegistrationDto: {
             /**
              * @description ID của Sinh viên
@@ -4747,6 +4841,28 @@ export interface operations {
             };
         };
     };
+    CurriculumController_getSubjectsBySemester: {
+        parameters: {
+            query: {
+                classId: number;
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurriculumSubjectResponseDto"][];
+                };
+            };
+        };
+    };
     CurriculumController_findOne: {
         parameters: {
             query?: never;
@@ -5916,6 +6032,63 @@ export interface operations {
         requestBody?: never;
         responses: {
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CourseOfferController_generateSectionsForClass: {
+        parameters: {
+            query: {
+                classId: number;
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CourseOfferController_previewGenerateSectionForClass: {
+        parameters: {
+            query: {
+                classId: number;
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lấy dữ liệu cấu trúc xem trước thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponsePreviewGenerateSectionForClass"][];
+                };
+            };
+            /** @description Yêu cầu không hợp lệ hoặc lỗi logic nghiệp vụ ngầm. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Không tìm thấy thông tin lớp học hoặc học kỳ phù hợp. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

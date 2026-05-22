@@ -3,15 +3,24 @@ import type { components } from "../../../api/v1";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { $api } from "../../../api/client";
 import { useParams } from "react-router-dom";
+import { useAppContext } from "../../../AppProvider";
 
 export type LopHocResponseDto = components["schemas"]["ClassResponseDto"];
 export type CreateLopHocDto = components["schemas"]["CreateClassDto"];
+export type CurriculumSubjectResponseDto =
+  components["schemas"]["CurriculumSubjectResponseDto"];
 
 export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
   const [isOpenModalCreate, setIsOpenModalCreate] = useState(false);
   const [isOpenModalAddStudent, setIsOpenModalAddStudent] = useState(false);
+  const [semesterIdSelected, setSemesterIdSelected] = useState<number | null>(
+    null,
+  );
+  const [isOpenModalSinhLopHocPhan, setIsOpenModalSinhLopHocPhan] =
+    useState(false);
   const { idLopHoc } = useParams();
   const idLopHocNumber = Number(idLopHoc);
+  const { currentSemester } = useAppContext();
 
   /**
    * Lấy danh sách lớp học
@@ -98,6 +107,35 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     data: studentFound,
   } = $api.useMutation("get", "/students/search-by-code");
 
+  /**
+   * Sinh lớp học phần theo học kỳ
+   */
+  const { mutate: generateLopHocPhan, isPending: isGeneratingLopHocPhan } =
+    $api.useMutation("post", "/course-offers/generate-sections-for-class");
+
+  /**
+   * Xem trước danh sách lớp học phần cần sinh
+   */
+  const { data: subjectsData, isLoading: isLoadingSubjectData } = $api.useQuery(
+    "get",
+    "/course-offers/previewpreviewGenerateSectionForClass",
+    {
+      params: {
+        query: {
+          classId: idLopHocNumber,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
+          semesterId: semesterIdSelected! || currentSemester?.id!,
+        },
+      },
+    },
+    {
+      enabled:
+        Boolean(LopHocDetail) &&
+        Boolean(currentSemester) &&
+        Boolean(currentSemester?.id),
+    },
+  );
+
   return {
     LopHocList,
     isLoadingLopHocList,
@@ -117,11 +155,19 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     isFindingStudentByMssv,
     studentFound,
     refetchStudentsInLopHoc,
+    generateLopHocPhan,
+    isGeneratingLopHocPhan,
+    semesterIdSelected,
+    setSemesterIdSelected,
+    subjectsData,
+    isLoadingSubjectData,
 
     //state
     isOpenModalCreate,
     setIsOpenModalCreate,
     isOpenModalAddStudent,
     setIsOpenModalAddStudent,
+    isOpenModalSinhLopHocPhan,
+    setIsOpenModalSinhLopHocPhan,
   };
 });
