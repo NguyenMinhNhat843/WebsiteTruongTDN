@@ -1,14 +1,12 @@
 import { GraduationCap, Plus } from "lucide-react";
-import PageShell from "../../../../components/ui/PageShell";
-import StatsOverview from "../components/StatsOverview";
-import ButtonAction from "../../../../components/ui/ButtonAction";
-import FilterSection from "../components/FilterSection";
-import AdmissionTable from "../../../../features/DotTuyenSinh/TableDotTuyenSinh";
+import PageShell from "../../../components/ui/PageShell";
+import ButtonAction from "../../../components/ui/ButtonAction";
+import AdmissionTable from "../../../features/DotTuyenSinh/TableDotTuyenSinh";
 import {
   DotTuyenSinhProvider,
   useDotTuyenSinhContext,
-} from "../../../../features/DotTuyenSinh/DotTuyenSinhProvider";
-import CreateDotTuyenSinhModal from "../../../../features/DotTuyenSinh/CreateDotTuyenSinhForm";
+} from "../../../features/DotTuyenSinh/DotTuyenSinhProvider";
+import CreateDotTuyenSinhModal from "../../../features/DotTuyenSinh/CreateDotTuyenSinhForm";
 
 const DotTuyenSinhList = () => {
   return (
@@ -37,11 +35,8 @@ const Inner = () => {
       }
     >
       <div className="min-h-screen bg-gray-50">
-        <main className="flex-1 py-4">
+        <main className="flex-1 pb-4">
           <div className="space-y-5">
-            <StatsOverview />
-            <FilterSection />
-
             <AdmissionTable data={admissions || []} />
           </div>
 
@@ -51,16 +46,6 @@ const Inner = () => {
           />
         </main>
       </div>
-
-      {/* <div className="my-8">
-        <h1 className="text-xl font-bold text-slate-800 leading-none pb-4">
-          Hồ sơ tuyển sinh
-        </h1>
-        <HoSoTuyenSinhTable
-          hoSoTuyenSinhs={hoSoTuyenSinhs}
-          isLoadingHoSoTuyenSinh={isLoadingHoSoTuyenSinhs}
-        />
-      </div> */}
     </PageShell>
   );
 };

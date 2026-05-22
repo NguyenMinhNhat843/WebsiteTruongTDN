@@ -22,11 +22,10 @@ import Dashboard from "./pages/admin/Dashboard/Home";
 import QuanLyNhanVien from "./pages/admin/QuanLyNhanVien/NhanVienList/QuanLyNhanVienList";
 import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung/ChuongTrinhKhungIndex";
 import TimetablePage from "./pages/admin/ThoiKhoaBieu/ThoiKhoaBieu";
-import GradeManagement from "./pages/admin/QuanLyDiem/QuanLyDiemThi";
 import PhanQuyenNguoiDung from "./pages/admin/CaiDatHeThong/PhanQuyenNguoiDung/PhanQuyenNguoiDung";
 import DanhSachHoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoHocSinhList";
-import DotTuyenSinhList from "./pages/admin/TuyenSinh/TuyenSinhList/TuyenSinhList";
-import TuyenSinh from "./pages/admin/TuyenSinh/TuyenSinh";
+import DotTuyenSinhList from "./pages/admin/TuyenSinh/IndexTuyenSinh";
+import TuyenSinh from "./pages/admin/TuyenSinh/LayoutTuyenSinh";
 import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
 import NguonTuyenSinh from "./pages/admin/NguonTuyenSinh/NguonTuyenSinh";
 import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
@@ -84,6 +83,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AppProvider>
         <Routes>
+          {/*
+           * Route cho trang chủ và các trang thông tin chung
+           */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/gioi-thieu-chung" element={<GioiThieuVeTruong />} />
@@ -174,7 +176,6 @@ function App() {
                 path="dao-tao/thoi-khoa-bieu"
                 element={<TimetablePage />}
               />
-              <Route path="dao-tao/diem-thi" element={<GradeManagement />} />
             </Route>
 
             {/* Quản lý điểm */}
@@ -226,13 +227,6 @@ function App() {
               <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
               <Route path="dot-tuyen-sinh/:id" element={<AdmissionDetail />} />
               <Route path="thong-ke" element={<NguonTuyenSinh />} />
-              {/* <Route element={<QuanLyHoSoLayout />}>
-              <Route path="ho-so-moi" element={<AdmissionApplication />} />
-              <Route
-                path="ho-so-tuyen-sinh/:id"
-                element={<HoSoTuyenSinhOne />}
-              />
-            </Route> */}
             </Route>
 
             {/* Tài chính */}
