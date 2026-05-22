@@ -7,8 +7,8 @@ import PageShell from "../../../components/ui/PageShell";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import FilterSection from "./components/FilterSection";
 import TableSinhVienXetTotNghiep from "./TableSinhVienXetTotNghiep";
-import ButtonExportExcel from "../../../components/ui/ButtonExportExcel";
 import CreateHoSoXetTuyen from "./CreateHoSoXetTuyen/CreateHoSoXetTuyen";
+import ButtonExport from "../../../components/ui/ButtonExport";
 
 const GraduationManagement = () => {
   return (
@@ -37,7 +37,7 @@ const Inner = () => {
           >
             Thêm học sinh
           </ButtonAction>
-          <ButtonExportExcel label="Xuất báo cáo" />
+          <ButtonExport />
         </div>
       }
     >

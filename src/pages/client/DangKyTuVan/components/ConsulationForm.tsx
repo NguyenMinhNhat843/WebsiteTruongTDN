@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { CheckCircle } from "lucide-react";
-import FormInput from "../../../../components/ui/FormInput";
 import type { Option } from "../../../../components/ui/SelectOption";
 import SelectOption from "../../../../components/ui/SelectOption";
+import Input from "../../../../components/ui/Form/Input";
 
 interface FormState {
   fullName: string;
@@ -125,16 +125,18 @@ export default function ConsultationForm() {
 
             // Ngược lại render FormInput bình thường
             return (
-              <FormInput
-                key={field.name}
-                label={field.label}
-                name={field.name}
-                type={field.type || "text"}
-                value={form[field.name as keyof typeof form]}
-                onChange={handleChange}
-                placeholder={field.placeholder}
-                required={field.required}
-              />
+              <div>
+                <Input
+                  key={field.name}
+                  label={field.label}
+                  name={field.name}
+                  type={field.type || "text"}
+                  value={form[field.name as keyof typeof form]}
+                  onChange={handleChange}
+                  placeholder={field.placeholder}
+                  require={field.required}
+                />
+              </div>
             );
           })}
 
