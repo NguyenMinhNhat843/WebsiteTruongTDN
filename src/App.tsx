@@ -68,6 +68,7 @@ import GradeComponentList from "./pages/admin/DiemThanhPhan/GradeComponentList";
 import LopHocList from "./pages/admin/LopDanhNghia/LopHocList";
 import LopHocLayout from "./pages/admin/LopDanhNghia/LopHocLayout";
 import LopHocOne from "./pages/admin/LopDanhNghia/LopHocOne";
+import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -210,6 +211,7 @@ function App() {
             {/* Công tác học sinh */}
             <Route element={<HocSinhLayout />}>
               <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
+              <Route path="hoc-sinh/ho-so/:id" element={<HoSoHocSinhOne />} />
               <Route path="hoc-sinh/tot-nghiep" element={<XetTotNghiep />} />
               <Route
                 path="hoc-sinh/dot-xet-tot-nghiep"

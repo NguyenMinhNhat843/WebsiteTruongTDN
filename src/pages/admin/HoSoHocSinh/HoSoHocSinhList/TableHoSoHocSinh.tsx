@@ -8,8 +8,13 @@ import {
 } from "@tanstack/react-table";
 
 const TableHoSoHocSinh = () => {
-  const { navigate, students, deleteStudent, isLoadingStudents } =
-    useHocSinhContext();
+  const {
+    navigate,
+    students,
+    deleteStudent,
+    isLoadingStudents,
+    getStudentDetail,
+  } = useHocSinhContext();
 
   const table = useReactTable({
     data: students || [],
@@ -30,6 +35,13 @@ const TableHoSoHocSinh = () => {
           <div className="flex justify-end">
             <RowActions
               onView={() => {
+                getStudentDetail({
+                  params: {
+                    query: {
+                      studentCode: row.original.studentCode,
+                    },
+                  },
+                });
                 navigate(`/admin/hoc-sinh/ho-so/${row.original.id}`);
               }}
               onEdit={() => console.log("✏️ Sửa:", row.original)}

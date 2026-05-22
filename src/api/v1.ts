@@ -1418,6 +1418,184 @@ export interface components {
              */
             status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         };
+        DepartmentResponseDto: {
+            /** @example 1 */
+            id: number;
+            /**
+             * @description Mã định danh duy nhất của khoa/phòng
+             * @example IT01
+             */
+            deptCode: string;
+            /** @example Khoa Công nghệ thông tin */
+            deptName: string;
+            /** @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống */
+            description?: string | null;
+            /**
+             * @description ID của nhân viên làm trưởng khoa
+             * @example 1
+             */
+            headOfDepartmentId?: number | null;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /**
+             * @description Số lượng ngành học trực thuộc
+             * @example 5
+             */
+            majorCount?: number;
+            /**
+             * @description Số lượng môn học trực thuộc
+             * @example 20
+             */
+            subjectCount?: number;
+        };
+        MajorResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example CNTT */
+            majorCode: string;
+            /** @example Công nghệ thông tin */
+            majorName: string;
+            /** @example 1 */
+            deptId: number;
+            /** @example 90 */
+            totalCredits: number;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            department?: components["schemas"]["DepartmentResponseDto"];
+            /**
+             * @description Số lượng lớp học thuộc ngành này
+             * @example 10
+             */
+            classCount?: number;
+            /**
+             * @description Mô tả chi tiết về ngành học
+             * @example Ngành học tập trung vào phát triển phần mềm
+             */
+            description?: Record<string, never>;
+        };
+        BatchResponseDto: {
+            id: number;
+            batchCode: string;
+            batchName: string;
+            startYear: number;
+            endYear: number;
+            description: Record<string, never> | null;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            major: components["schemas"]["MajorResponseDto"] | null;
+            curriculumId: number | null;
+            majorId: number;
+        };
+        StaffResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example STF001 */
+            staffCode: string;
+            /** @example staff_account */
+            username: string;
+            /** @enum {string} */
+            role: "admin" | "teacher" | "student" | "staff";
+            /** @example true */
+            isActive: boolean;
+            /** @example Nguyễn Văn C */
+            fullName?: string;
+            /** @example staff@school.edu.vn */
+            email?: string;
+            /** @example true */
+            gender?: boolean;
+            /**
+             * Format: date-time
+             * @example 1990-01-01
+             */
+            dob?: string;
+            /** @example 0901234567 */
+            phone?: string;
+            /** @example 123 Đường ABC, Nha Trang */
+            address?: string;
+            /** @example 056205001234 */
+            identityNumber?: string;
+            /** @example 1 */
+            departmentId?: number;
+            /** @example Kế toán trưởng */
+            position?: string;
+            /**
+             * Format: date-time
+             * @example 2024-01-15
+             */
+            hireDate?: string;
+            /** @example Full-time */
+            contractType?: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+        };
+        ClassResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example CNTT17A */
+            classCode: string;
+            /** @example Lớp Công nghệ thông tin 17A */
+            className: string;
+            /** @example 1 */
+            majorId: number;
+            /** @example 2024 */
+            courseYear: number;
+            /** @example 1 */
+            formTeacherId?: number | null;
+            /** @example 40 */
+            maxStudents: number;
+            /** @example active */
+            status: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            updatedAt: string;
+            /** @example 1 */
+            batchId?: number | null;
+            /**
+             * @description Số lượng sinh viên hiện tại
+             * @example 35
+             */
+            currentSize?: number;
+            /** @description Thông tin ngành đào tạo */
+            major?: components["schemas"]["MajorResponseDto"];
+            /** @description Thông tin giáo viên chủ nhiệm */
+            formTeacher?: components["schemas"]["StaffResponseDto"];
+            /**
+             * @description Số lượng sinh viên hiện tại
+             * @example 35
+             */
+            studentCount?: number;
+            /** @description Thông tin khóa học (batch) */
+            batch?: components["schemas"]["BatchResponseDto"];
+        };
         StudentResponseDto: {
             /**
              * @description ID tự tăng của học sinh (Nếu tạo mới có thể bỏ qua hoặc truyền 0 tùy logic backend)
@@ -1525,6 +1703,8 @@ export interface components {
              * @enum {string}
              */
             status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            batch?: components["schemas"]["BatchResponseDto"] | null;
+            class?: components["schemas"]["ClassResponseDto"] | null;
         };
         /** @enum {string} */
         StudentStatus: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
@@ -1727,51 +1907,6 @@ export interface components {
             departmentId?: number;
             position?: string;
         };
-        StaffResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example STF001 */
-            staffCode: string;
-            /** @example staff_account */
-            username: string;
-            /** @enum {string} */
-            role: "admin" | "teacher" | "student" | "staff";
-            /** @example true */
-            isActive: boolean;
-            /** @example Nguyễn Văn C */
-            fullName?: string;
-            /** @example staff@school.edu.vn */
-            email?: string;
-            /** @example true */
-            gender?: boolean;
-            /**
-             * Format: date-time
-             * @example 1990-01-01
-             */
-            dob?: string;
-            /** @example 0901234567 */
-            phone?: string;
-            /** @example 123 Đường ABC, Nha Trang */
-            address?: string;
-            /** @example 056205001234 */
-            identityNumber?: string;
-            /** @example 1 */
-            departmentId?: number;
-            /** @example Kế toán trưởng */
-            position?: string;
-            /**
-             * Format: date-time
-             * @example 2024-01-15
-             */
-            hireDate?: string;
-            /** @example Full-time */
-            contractType?: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-        };
         LoginDto: {
             /** @example admin */
             username: string;
@@ -1799,44 +1934,6 @@ export interface components {
              * @example 1
              */
             headOfDepartmentId?: number;
-        };
-        DepartmentResponseDto: {
-            /** @example 1 */
-            id: number;
-            /**
-             * @description Mã định danh duy nhất của khoa/phòng
-             * @example IT01
-             */
-            deptCode: string;
-            /** @example Khoa Công nghệ thông tin */
-            deptName: string;
-            /** @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống */
-            description?: string | null;
-            /**
-             * @description ID của nhân viên làm trưởng khoa
-             * @example 1
-             */
-            headOfDepartmentId?: number | null;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            updatedAt: string;
-            /**
-             * @description Số lượng ngành học trực thuộc
-             * @example 5
-             */
-            majorCount?: number;
-            /**
-             * @description Số lượng môn học trực thuộc
-             * @example 20
-             */
-            subjectCount?: number;
         };
         UpdateDepartmentDto: {
             /**
@@ -1875,39 +1972,6 @@ export interface components {
             deptId?: number;
             /** @example Ngành học tập trung vào phát triển phần mềm */
             description?: string;
-        };
-        MajorResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example CNTT */
-            majorCode: string;
-            /** @example Công nghệ thông tin */
-            majorName: string;
-            /** @example 1 */
-            deptId: number;
-            /** @example 90 */
-            totalCredits: number;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            updatedAt: string;
-            department?: components["schemas"]["DepartmentResponseDto"];
-            /**
-             * @description Số lượng lớp học thuộc ngành này
-             * @example 10
-             */
-            classCount?: number;
-            /**
-             * @description Mô tả chi tiết về ngành học
-             * @example Ngành học tập trung vào phát triển phần mềm
-             */
-            description?: Record<string, never>;
         };
         UpdateMajorDto: {
             /**
@@ -1964,22 +2028,6 @@ export interface components {
              * @example ADMISSION
              */
             status: string;
-        };
-        BatchResponseDto: {
-            id: number;
-            batchCode: string;
-            batchName: string;
-            startYear: number;
-            endYear: number;
-            description: Record<string, never> | null;
-            status: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            major: components["schemas"]["MajorResponseDto"] | null;
-            curriculumId: number | null;
-            majorId: number;
         };
         UpdateBatchDto: {
             /**
@@ -2047,52 +2095,6 @@ export interface components {
             maxStudents: number;
             /** @default active */
             status: string;
-        };
-        ClassResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example CNTT17A */
-            classCode: string;
-            /** @example Lớp Công nghệ thông tin 17A */
-            className: string;
-            /** @example 1 */
-            majorId: number;
-            /** @example 2024 */
-            courseYear: number;
-            /** @example 1 */
-            formTeacherId?: number | null;
-            /** @example 40 */
-            maxStudents: number;
-            /** @example active */
-            status: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            updatedAt: string;
-            /** @example 1 */
-            batchId?: number | null;
-            /**
-             * @description Số lượng sinh viên hiện tại
-             * @example 35
-             */
-            currentSize?: number;
-            /** @description Thông tin ngành đào tạo */
-            major?: components["schemas"]["MajorResponseDto"];
-            /** @description Thông tin giáo viên chủ nhiệm */
-            formTeacher?: components["schemas"]["StaffResponseDto"];
-            /**
-             * @description Số lượng sinh viên hiện tại
-             * @example 35
-             */
-            studentCount?: number;
-            /** @description Thông tin khóa học (batch) */
-            batch?: components["schemas"]["BatchResponseDto"];
         };
         AssignStudentsToClassesDto: {
             batchId?: number;

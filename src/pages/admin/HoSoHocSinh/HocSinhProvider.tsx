@@ -35,6 +35,15 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
     };
 
     /**
+     * Lấy chi tiết 1 học sinh
+     */
+    const {
+      data: studentDetail,
+      mutate: getStudentDetail,
+      isPending: isGettingStudentDetail,
+    } = $api.useMutation("get", "/students/search-by-code");
+
+    /**
      * Xóa học sinh - dành cho development
      * Lên production sẽ bỏ đi
      */
@@ -85,6 +94,9 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       khoaHocList: khoaHocList || [],
       searchBatches,
       isSearchingBatches,
+      studentDetail,
+      getStudentDetail,
+      isGettingStudentDetail,
 
       navigate,
       isOpenModalImport,
