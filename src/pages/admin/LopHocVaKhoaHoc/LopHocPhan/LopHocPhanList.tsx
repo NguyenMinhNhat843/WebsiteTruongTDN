@@ -1,14 +1,12 @@
 import { useLopHocPhanContext } from "./LopHocPhanProvider";
-import { Calendar, Grid, Plus } from "lucide-react";
+import { Calendar, Grid } from "lucide-react";
 import PageShell from "../../../../components/ui/PageShell";
 import DanhSachLopHocPhan from "./TableLopHocPhanList";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
-import ButtonAction from "../../../../components/ui/ButtonAction";
 // import GenLopHocPhanModal from "./ModalGenLopHocPhan";
 // ─── MAIN APP ────────────────────────────────────────────────────────────────
 export default function LopHocPhanList() {
   const {
-    setShowCreate,
     hocKysData,
     hocKyIdSelected,
     setHocKyIdSelected,
@@ -39,17 +37,6 @@ export default function LopHocPhanList() {
               value={hocKyIdSelected ?? -1}
               onChange={(e) => setHocKyIdSelected(Number(e.target.value))}
               options={hocKyOptions}
-            />
-
-            {/* Nút Thêm lớp học phần - Sử dụng ButtonAction */}
-            <ButtonAction
-              type="button"
-              variant="primary"
-              size="md"
-              icon={<Plus size={16} />}
-              label="Sinh lớp học phần"
-              className="whitespace-nowrap rounded-lg h-9" // Giữ h-9 và rounded-lg để khớp giao diện cũ nếu cần
-              onClick={() => setShowCreate(true)}
             />
           </div>
         </header>

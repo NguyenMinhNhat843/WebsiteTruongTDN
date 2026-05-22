@@ -14,7 +14,6 @@ export const [LopHocPhanProvider, useLopHocPhanContext] = createContextProvider(
     // state
     const [hocKyIdSelected, setHocKyIdSelected] = useState<number | null>(null);
     const [page, setPage] = useState(1);
-    const [showCreate, setShowCreate] = useState(false);
 
     const handleFilter = () => setPage(1);
 
@@ -75,8 +74,6 @@ export const [LopHocPhanProvider, useLopHocPhanContext] = createContextProvider(
 
       page,
       setPage,
-      showCreate,
-      setShowCreate,
       handleFilter,
       pageSize: 10,
     };
