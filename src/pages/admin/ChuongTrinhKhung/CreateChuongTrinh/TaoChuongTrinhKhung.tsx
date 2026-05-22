@@ -7,6 +7,7 @@ import {
   TaoChuongTrinhKhungProvider,
   useTaoChuongTrinhKhungContext,
 } from "./CreateProgramProvider";
+import ButtonAction from "../../../../components/ui/ButtonAction";
 
 const TaoChuongTrinhKhung = () => {
   return (
@@ -17,7 +18,7 @@ const TaoChuongTrinhKhung = () => {
 };
 
 const Inner = () => {
-  const { reset } = useTaoChuongTrinhKhungContext();
+  const { reset, isCreatingCurriculum } = useTaoChuongTrinhKhungContext();
   const [semesterNumber, setSemesterNumber] = useState<number>(1);
   const handleAddSemester = () => {
     setSemesterNumber((prev) => prev + 1);
@@ -30,16 +31,15 @@ const Inner = () => {
       icon={GrabIcon}
       renderRight={
         <div className="pt-4 flex gap-3">
-          <button
+          <ButtonAction
             type="submit"
             form="create-program-form"
-            className="flex-1 flex items-center p-2 cursor-pointer justify-center gap-2 
-            bg-blue-600 hover:bg-blue-700 text-white font-semibold 
-            py-2.5 rounded-lg transition-all shadow-sm active:scale-[0.99]"
-          >
-            <Save className="w-4 h-4" />
-            Lưu thông tin
-          </button>
+            variant="primary"
+            label="Lưu chương trình"
+            loading={isCreatingCurriculum}
+            icon={<Save size={16} />}
+            className="px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm shadow-blue-100"
+          />
 
           <button
             type="button"
