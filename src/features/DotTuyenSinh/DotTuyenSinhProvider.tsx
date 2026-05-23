@@ -116,7 +116,6 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
     });
 
     const onSubmit = (data: CreateDotTuyenSinhDto) => {
-      console.log("Form Data:", data);
       createDotTuyenSinh(
         {
           body: {

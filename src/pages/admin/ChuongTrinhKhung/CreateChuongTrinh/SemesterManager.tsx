@@ -71,23 +71,11 @@ const SemesterManager = ({ title, semesterNumber }: SemesterManagerProps) => {
           <span className="text-slate-500">{info.getValue()}h</span>
         ),
       }),
-      columnHelper.accessor("isMandatory", {
-        header: "Loại môn",
-        cell: (info) => {
-          const isMandatory = info.getValue() === true;
-          return (
-            <span
-              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border
-                ${
-                  isMandatory
-                    ? "bg-rose-50 border-rose-100 text-rose-700"
-                    : "bg-emerald-50 border-emerald-100 text-emerald-700"
-                }`}
-            >
-              {isMandatory ? "Bắt buộc" : "Tự chọn"}
-            </span>
-          );
-        },
+      columnHelper.accessor("testHours", {
+        header: "KT (giờ)",
+        cell: (info) => (
+          <span className="text-slate-500">{info.getValue()}h</span>
+        ),
       }),
       columnHelper.display({
         id: "actions",

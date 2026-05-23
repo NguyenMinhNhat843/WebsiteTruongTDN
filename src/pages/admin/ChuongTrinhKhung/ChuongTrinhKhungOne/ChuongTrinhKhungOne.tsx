@@ -8,7 +8,7 @@ interface Props {
 const ChuongTrinhKhungOne = ({ data }: Props) => {
   return (
     <div className="flex-1 bg-white rounded-xl border border-slate-200 overflow-hidden min-w-0">
-      <CurriculumSemesterList subjectList={data.subjectList} />
+      <CurriculumSemesterList subjectList={data.curriculumSubjects} />
     </div>
   );
 };

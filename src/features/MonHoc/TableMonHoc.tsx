@@ -7,7 +7,7 @@ import {
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
-import { BookOpen, Hash, Layers, Clock, HelpCircle } from "lucide-react";
+import { BookOpen, Hash, Layers, Clock } from "lucide-react";
 
 const columnHelper = createColumnHelper<MonHocResponse>();
 
@@ -110,29 +110,17 @@ const MonHocTable: React.FC<Props> = ({
         ),
       }),
 
-      columnHelper.accessor("isMandatory", {
+      columnHelper.accessor("testHours", {
         header: () => (
           <span className="flex items-center gap-1.5">
-            <HelpCircle size={15} /> Đặc tính
+            <Clock size={15} /> KT (Giờ)
           </span>
         ),
-        cell: (info) => {
-          const isMandatory = info.getValue();
-          return (
-            <span
-              className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${
-                isMandatory
-                  ? "bg-rose-50 text-rose-700 border-rose-200"
-                  : "bg-slate-100 text-slate-600 border-slate-200"
-              }`}
-            >
-              <span
-                className={`w-1.5 h-1.5 rounded-full mr-1.5 ${isMandatory ? "bg-rose-500" : "bg-slate-400"}`}
-              />
-              {isMandatory ? "Bắt buộc" : "Tự chọn"}
-            </span>
-          );
-        },
+        cell: (info) => (
+          <span className="font-semibold text-slate-600">
+            {info.getValue()} h
+          </span>
+        ),
       }),
     ],
     [isDeleting, deleteMonHoc],

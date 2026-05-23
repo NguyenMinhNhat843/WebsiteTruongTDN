@@ -34,33 +34,27 @@ const columns: ColumnDef<CurriCulumSubjectDto>[] = [
     ),
   },
   {
-    header: "Số giờ (LT/TH)",
+    header: "Lý thuyết",
     id: "hours",
     cell: ({ row }) => {
       const sub = row.original.subject;
-      return (
-        <div className="text-center text-gray-500">
-          {sub?.theoryHours} / {sub?.practiceHours}
-        </div>
-      );
+      return <div className="text-gray-500">{sub?.theoryHours}</div>;
     },
   },
   {
-    header: "Loại môn",
-    accessorKey: "isMandatory",
-    cell: ({ getValue }) => {
-      const isMandatory = getValue() as boolean;
-      return (
-        <span
-          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-            isMandatory
-              ? "bg-orange-100 text-orange-800"
-              : "bg-green-100 text-green-800"
-          }`}
-        >
-          {isMandatory ? "Bắt buộc" : "Tự chọn"}
-        </span>
-      );
+    header: "Thực hành",
+    id: "practiceHours",
+    cell: ({ row }) => {
+      const sub = row.original.subject;
+      return <div className="text-gray-500">{sub?.practiceHours}</div>;
+    },
+  },
+  {
+    header: "Kiểm tra",
+    id: "testHours",
+    cell: ({ row }) => {
+      const sub = row.original.subject;
+      return <div className="text-gray-500">{sub?.testHours}</div>;
     },
   },
 ];

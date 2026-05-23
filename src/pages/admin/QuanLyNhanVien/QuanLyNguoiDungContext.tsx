@@ -12,6 +12,7 @@ import { useParams } from "react-router-dom";
 export type StaffDto = components["schemas"]["StaffResponseDto"];
 export type CreateStaffDto = components["schemas"]["CreateStaffDto"];
 export type StaffRole = CreateStaffDto["EmployeeRole"];
+export type SubjectResponseDto = components["schemas"]["SubjectResponseDto"];
 
 export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
   createContextProvider(() => {
@@ -22,6 +23,7 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
     const [sortBy, setSortBy] = useState("name");
     const [openModalCreate, setOpenModalCreate] = useState(false);
     const { staffCode } = useParams(); // Dùng cho xem chi tiết
+    const [isOpenModalMonHoc, setIsOpenModalMonHoc] = useState(false);
 
     const stats = useMemo(
       () => ({
@@ -90,6 +92,18 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
         },
       );
 
+    /**
+     * Đăng ký môn học cho giáo viên
+     */
+    const { mutate: registerSubjectsForTeacher, isPending: isRegistering } =
+      $api.useMutation("post", "/teacher-subjects/batch");
+
+    /**
+     * Lấy all danh sách môn học
+     */
+    const { data: allSubjects, isLoading: isLoadingAllSubjects } =
+      $api.useQuery("get", "/subjects");
+
     return {
       staffs,
       isPendingStaffs,
@@ -111,6 +125,12 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
       isCreatingStaff,
       staffDetail,
       isLoadingStaffDetail,
+      registerSubjectsForTeacher,
+      isRegistering,
+      allSubjects,
+      isLoadingAllSubjects,
+      isOpenModalMonHoc,
+      setIsOpenModalMonHoc,
 
       filters,
       setFilters,

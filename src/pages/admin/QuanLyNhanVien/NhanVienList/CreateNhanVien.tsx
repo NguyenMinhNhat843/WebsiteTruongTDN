@@ -7,6 +7,7 @@ import Input from "../../../../components/ui/Form/Input";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import { X } from "lucide-react";
+import { useAppContext } from "../../../../AppProvider";
 
 interface CreateNhanVienProps {
   isOpen: boolean;
@@ -15,6 +16,11 @@ interface CreateNhanVienProps {
 
 const CreateNhanVien = ({ isOpen, onClose }: CreateNhanVienProps) => {
   const { createStaff, isCreatingStaff } = useQuanLyNguoiDungContext();
+  const { departments } = useAppContext();
+  const departmentOptions = departments?.map((d) => ({
+    value: d.id,
+    label: d.deptName,
+  }));
 
   // Khởi tạo react-hook-form
   const {
@@ -31,6 +37,7 @@ const CreateNhanVien = ({ isOpen, onClose }: CreateNhanVienProps) => {
       phone: "",
       identityNumber: "",
       gender: true,
+      departmentId: null,
     },
   });
 
@@ -170,9 +177,15 @@ const CreateNhanVien = ({ isOpen, onClose }: CreateNhanVienProps) => {
             <Input
               label="Số CCCD / Định danh"
               placeholder="Nhập số CCCD..."
-              containerClassName="sm:col-span-2"
               error={errors.identityNumber?.message}
               {...register("identityNumber")}
+            />
+
+            <SelectOption
+              options={departmentOptions || []}
+              label="Khoa/Phòng ban"
+              error={errors.departmentId?.message}
+              {...register("departmentId")}
             />
           </div>
 

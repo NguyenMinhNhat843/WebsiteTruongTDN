@@ -40,6 +40,7 @@ export const [ChuongTrinhKhungProvider, useChuongTrinhKhungContext] =
           selectedId !== null &&
           !isNaN(selectedId),
       });
+    console.log(curriculumOne);
 
     return {
       curriculums,

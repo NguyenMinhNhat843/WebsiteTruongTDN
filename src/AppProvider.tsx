@@ -21,6 +21,15 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
     error: majorsError,
   } = $api.useQuery("get", "/majors");
 
+  /**
+   * Lấy danh sách phòng ban
+   */
+  const {
+    data: departments,
+    isLoading: isDepartmentsLoading,
+    error: departmentsError,
+  } = $api.useQuery("get", "/departments");
+
   return {
     hocKysData,
     isHocKysLoading,
@@ -28,5 +37,8 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
     majors,
     isMajorsLoading,
     majorsError,
+    departments,
+    isDepartmentsLoading,
+    departmentsError,
   };
 });

@@ -1,22 +1,19 @@
 import React from "react";
 import clsx from "clsx";
 
-// 1. Định nghĩa interface với Generic T
 interface Tab<T> {
-  id: T;
+  value: T;
   label: string;
   icon?: React.ReactNode;
 }
 
 interface TabsProps<T> {
-  tabs: readonly Tab<T>[]; // Thêm readonly để dùng được với "as const"
+  tabs: readonly Tab<T>[];
   activeTab?: T;
-  onChange?: (id: T) => void;
+  onChange?: (value: T) => void;
   className?: string;
 }
 
-// 2. Cú pháp Const với Generic: <T,> (có dấu phẩy) là mẹo để
-// TypeScript không nhầm lẫn T với một thẻ HTML (JSX)
 const Tabs = <T extends string>({
   tabs,
   activeTab,
@@ -26,12 +23,12 @@ const Tabs = <T extends string>({
   return (
     <div className={clsx("flex border-b border-gray-100 gap-8", className)}>
       {tabs.map((tab) => {
-        const isActive = activeTab === tab.id;
+        const isActive = activeTab === tab.value;
         return (
           <button
-            key={tab.id}
+            key={tab.value}
             type="button"
-            onClick={() => onChange?.(tab.id)}
+            onClick={() => onChange?.(tab.value)}
             className={clsx(
               "flex items-center gap-2 py-4 text-sm font-semibold transition-all relative cursor-pointer",
               isActive ? "text-blue-600" : "text-gray-400 hover:text-gray-600",
