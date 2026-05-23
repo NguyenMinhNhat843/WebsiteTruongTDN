@@ -160,6 +160,23 @@ export interface paths {
         patch: operations["StaffController_update"];
         trace?: never;
     };
+    "/staffs/{staffCode}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin chi tiết nhân viên kèm thông tin tài khoản (nếu có) */
+        get: operations["StaffController_getDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/login": {
         parameters: {
             query?: never;
@@ -1505,50 +1522,58 @@ export interface components {
             curriculumId: number | null;
             majorId: number;
         };
-        StaffResponseDto: {
+        UserResponseDto: {
             /** @example 1 */
             id: number;
-            /** @example STF001 */
-            staffCode: string;
-            /** @example staff_account */
+            /** @example u_9b1deb4d */
+            userId: string;
+            /** @example johndoe */
             username: string;
             /** @enum {string} */
             role: "admin" | "teacher" | "student" | "staff";
-            /** @example true */
             isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @example 2024-01-01T12:00:00Z */
+            lastLoginAt?: Record<string, never>;
+        };
+        StaffResponseDto: {
+            id?: number;
             /** @example Nguyễn Văn C */
-            fullName?: string;
-            /** @example staff@school.edu.vn */
-            email?: string;
-            /** @example true */
-            gender?: boolean;
+            fullName: string;
             /**
              * Format: date-time
              * @example 1990-01-01
              */
-            dob?: string;
+            dob: string;
+            /** @enum {string} */
+            EmployeeRole?: "STAFF" | "TEACHER";
+            /** @example staff@school.edu.vn */
+            email?: string;
             /** @example 0901234567 */
             phone?: string;
-            /** @example 123 Đường ABC, Nha Trang */
-            address?: string;
-            /** @example 056205001234 */
+            /** @example 0251369874 */
             identityNumber?: string;
-            /** @example 1 */
-            departmentId?: number;
-            /** @example Kế toán trưởng */
-            position?: string;
-            /**
-             * Format: date-time
-             * @example 2024-01-15
-             */
-            hireDate?: string;
-            /** @example Full-time */
-            contractType?: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
+            /** @description true: Nam, false: Nữ */
+            gender?: boolean;
+            /** @description Mã số nhân viên (duy nhất) */
+            staffCode?: string;
+            userId?: number | null;
+            position?: Record<string, never> | null;
+            address?: string | null;
+            avatarUrl?: string | null;
+            contractType?: string | null;
+            departmentId?: number | null;
+            isTeacher?: boolean | null;
+            salaryCoefficient?: number | null;
+            hireDate?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            user?: components["schemas"]["UserResponseDto"];
         };
         ClassResponseDto: {
             /** @example 1 */
@@ -1835,30 +1860,8 @@ export interface components {
             /** @default true */
             isActive: boolean;
         };
-        UserResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example u_9b1deb4d */
-            userId: string;
-            /** @example johndoe */
-            username: string;
-            /** @enum {string} */
-            role: "admin" | "teacher" | "student" | "staff";
-            isActive: boolean;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** @example 2024-01-01T12:00:00Z */
-            lastLoginAt?: Record<string, never>;
-        };
         CreateStaffDto: {
-            /** @example staff01 */
-            username: string;
-            /** @example 123456 */
-            password: string;
-            /** @enum {string} */
-            role?: "admin" | "teacher" | "student" | "staff";
+            id?: number;
             /** @example Nguyễn Văn C */
             fullName: string;
             /**
@@ -1866,25 +1869,34 @@ export interface components {
              * @example 1990-01-01
              */
             dob: string;
+            /** @enum {string} */
+            EmployeeRole?: "STAFF" | "TEACHER";
             /** @example staff@school.edu.vn */
             email?: string;
             /** @example 0901234567 */
             phone?: string;
             /** @example 0251369874 */
             identityNumber?: string;
-            /**
-             * @description true: Nam, false: Nữ
-             * @example true
-             */
+            /** @description true: Nam, false: Nữ */
             gender?: boolean;
+            /** @description Mã số nhân viên (duy nhất) */
+            staffCode?: string;
+            userId?: number | null;
+            position?: Record<string, never> | null;
+            address?: string | null;
+            avatarUrl?: string | null;
+            contractType?: string | null;
+            departmentId?: number | null;
+            isTeacher?: boolean | null;
+            salaryCoefficient?: number | null;
+            hireDate?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
         };
         UpdateStaffDto: {
-            /** @example staff01 */
-            username?: string;
-            /** @example 123456 */
-            password?: string;
-            /** @enum {string} */
-            role?: "admin" | "teacher" | "student" | "staff";
+            id?: number;
             /** @example Nguyễn Văn C */
             fullName?: string;
             /**
@@ -1892,20 +1904,32 @@ export interface components {
              * @example 1990-01-01
              */
             dob?: string;
+            /** @enum {string} */
+            EmployeeRole?: "STAFF" | "TEACHER";
             /** @example staff@school.edu.vn */
             email?: string;
             /** @example 0901234567 */
             phone?: string;
             /** @example 0251369874 */
             identityNumber?: string;
-            /**
-             * @description true: Nam, false: Nữ
-             * @example true
-             */
+            /** @description true: Nam, false: Nữ */
             gender?: boolean;
+            /** @description Mã số nhân viên (duy nhất) */
+            staffCode?: string;
+            userId?: number | null;
+            position?: string | null;
+            address?: string | null;
+            avatarUrl?: string | null;
+            contractType?: string | null;
+            departmentId?: number | null;
+            isTeacher?: boolean | null;
+            salaryCoefficient?: number | null;
+            hireDate?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
             isActive?: boolean;
-            departmentId?: number;
-            position?: string;
         };
         LoginDto: {
             /** @example admin */
@@ -3862,9 +3886,7 @@ export interface operations {
                 limit?: number;
                 /** @description Tìm theo tên, mã NV, username, email, CCCD */
                 keyword?: string;
-                role?: "admin" | "teacher" | "student" | "staff";
-                /** @description Lọc theo trạng thái tài khoản */
-                isActive?: boolean;
+                employeeRole?: "STAFF" | "TEACHER";
                 /** @description Lọc theo phòng ban */
                 departmentId?: number;
                 /** @description Lọc theo chức vụ */
@@ -3929,6 +3951,27 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    StaffController_getDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                staffCode: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffResponseDto"];
+                };
             };
         };
     };

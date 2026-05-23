@@ -18,11 +18,15 @@ import {
   type StaffDto,
 } from "../QuanLyNguoiDungContext";
 import PageShell from "../../../../components/ui/PageShell";
+import CreateNhanVien from "./CreateNhanVien";
+import { useNavigate } from "react-router-dom";
 
 const columnHelper = createColumnHelper<StaffDto>();
 
 const QuanLyNhanVienList = () => {
-  const { staffs, isPendingStaffs } = useQuanLyNguoiDungContext();
+  const { staffs, isPendingStaffs, openModalCreate, setOpenModalCreate } =
+    useQuanLyNguoiDungContext();
+  const navigate = useNavigate();
 
   const columns = useMemo(
     () => [
@@ -38,33 +42,41 @@ const QuanLyNhanVienList = () => {
       }),
       columnHelper.accessor("fullName", {
         header: "Họ và tên",
+        cell: (info) => (
+          <span
+            onClick={() =>
+              navigate(`/admin/users/${info.row.original.staffCode}`)
+            }
+          >
+            {info.getValue()}
+          </span>
+        ),
       }),
       columnHelper.accessor("staffCode", {
         header: "Mã NV",
         cell: (info) => (
           <div className="flex flex-col">
             <span className="font-bold text-slate-700">{info.getValue()}</span>
-            <span className="text-xs text-slate-400">
-              {info.row.original.username}
-            </span>
           </div>
         ),
       }),
-      columnHelper.accessor("role", {
+      columnHelper.accessor("EmployeeRole", {
         header: "Vai trò",
         cell: (info) => {
           const role = info.getValue();
           const colors = {
-            admin: "bg-rose-50 text-rose-600 border-rose-100",
-            teacher: "bg-blue-50 text-blue-600 border-blue-100",
-            staff: "bg-emerald-50 text-emerald-600 border-emerald-100",
-            student: "bg-amber-50 text-amber-600 border-amber-100",
+            STAFF: "bg-rose-50 text-rose-600 border-rose-100",
+            TEACHER: "bg-blue-50 text-blue-600 border-blue-100",
+            undefined: "bg-gray-50 text-gray-400 border-gray-100",
           };
+
+          const currentRole = role ?? "undefined";
+
           return (
             <span
-              className={`px-2.5 py-1 rounded-full text-xs font-bold border ${colors[role] || colors.staff} capitalize`}
+              className={`px-2.5 py-1 rounded-full text-xs font-bold border ${colors[currentRole]} capitalize`}
             >
-              {role}
+              {role ?? "N/A"}
             </span>
           );
         },
@@ -98,11 +110,17 @@ const QuanLyNhanVienList = () => {
             <Calendar size={14} /> Ngày tạo
           </span>
         ),
-        cell: (info) => (
-          <span className="text-sm text-slate-500">
-            {new Date(info.getValue()).toLocaleDateString("vi-VN")}
-          </span>
-        ),
+        cell: (info) => {
+          const dateValue = info.getValue();
+
+          return (
+            <span className="text-sm text-slate-500">
+              {dateValue
+                ? new Date(dateValue).toLocaleDateString("vi-VN")
+                : "-"}
+            </span>
+          );
+        },
       }),
       columnHelper.display({
         id: "actions",
@@ -127,7 +145,12 @@ const QuanLyNhanVienList = () => {
       title="Quản lý nhân viên"
       icon={User}
       renderRight={
-        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm shadow-blue-200 flex items-center gap-2">
+        <button
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 
+          rounded-lg text-sm font-semibold transition-all shadow-sm 
+          shadow-blue-200 flex items-center gap-2"
+          onClick={() => setOpenModalCreate(true)}
+        >
           + Thêm nhân viên
         </button>
       }
@@ -203,6 +226,11 @@ const QuanLyNhanVienList = () => {
           </span>
         </div>
       </div>
+
+      <CreateNhanVien
+        isOpen={openModalCreate}
+        onClose={() => setOpenModalCreate(false)}
+      />
     </PageShell>
   );
 };

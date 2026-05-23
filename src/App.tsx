@@ -69,6 +69,7 @@ import LopHocList from "./pages/admin/LopDanhNghia/LopHocList";
 import LopHocLayout from "./pages/admin/LopDanhNghia/LopHocLayout";
 import LopHocOne from "./pages/admin/LopDanhNghia/LopHocOne";
 import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne";
+import NhanVienOne from "./pages/admin/QuanLyNhanVien/NhanVienOne/NhanVienOne";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -256,6 +257,7 @@ function App() {
                 element={<PhanCongGiangDay />}
               />
               <Route path="users" element={<QuanLyNhanVien />} />
+              <Route path="users/:staffCode" element={<NhanVienOne />} />
             </Route>
 
             {/* Cài đặt hệ thống */}
