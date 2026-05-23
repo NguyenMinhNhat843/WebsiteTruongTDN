@@ -43,7 +43,7 @@ const Inner = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<
     "hoc-sinh" | "mon-hoc" | "chuong-trinh-hoc"
-  >("hoc-sinh");
+  >("mon-hoc");
 
   // 1. Chuẩn hóa dữ liệu thông tin cơ bản
   const dataHienThi = useMemo(
@@ -197,8 +197,8 @@ const Inner = () => {
       {/* --- PHẦN 2: DANH SÁCH HỌC SINH (TANSTACK TABLE) --- */}
       <Tabs
         tabs={[
-          { value: "hoc-sinh", label: "Học sinh" },
           { value: "mon-hoc", label: "Môn học" },
+          { value: "hoc-sinh", label: "Học sinh" },
           { value: "chuong-trinh-hoc", label: "Chương trình học" },
         ]}
         activeTab={activeTab}

@@ -1229,6 +1229,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/course-offers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết lớp học phần */
+        get: operations["CourseOfferController_getDetail"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin lớp học phần */
+        patch: operations["CourseOfferController_updateClassSubject"];
+        trace?: never;
+    };
     "/course-offers/preview": {
         parameters: {
             query?: never;
@@ -1286,23 +1304,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-offers/{id}/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Chấp nhận mở lớp học phần */
-        patch: operations["CourseOfferController_approve"];
-        trace?: never;
-    };
     "/course-offers/previewpreviewGenerateSectionForClass": {
         parameters: {
             query?: never;
@@ -1337,23 +1338,6 @@ export interface paths {
          * @description Dựa trên danh sách môn học của lớp hành chính và học kỳ, hệ thống sẽ tự động tạo các lớp học phần tương ứng.
          */
         post: operations["CourseOfferController_generateSectionsForClass"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/course-offers/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy chi tiết lớp học phần */
-        get: operations["CourseOfferController_getDetail"];
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -3579,6 +3563,37 @@ export interface components {
             subject: components["schemas"]["SubjectResponseDto"];
             baseClass?: components["schemas"]["ClassResponseDto"];
             semester: components["schemas"]["SemesterResponseDto"];
+        };
+        updateClassSubjectDto: {
+            /**
+             * @description ID học kỳ muốn mở lớp
+             * @example 1
+             */
+            semesterId?: number;
+            /**
+             * @description ID môn học
+             * @example 10
+             */
+            subjectId?: number;
+            /**
+             * @description ID lớp danh nghĩa nòng cốt (nếu có)
+             * @example 5
+             */
+            classId?: number;
+            /**
+             * @description ID giảng viên phụ trách (nếu muốn chỉ định ngay)
+             * @example 15
+             */
+            teacherId?: number;
+            /**
+             * @description Sĩ số tối đa
+             * @example 50
+             */
+            maxStudents?: number;
+            /** @example 2026-05-01T00:00:00Z */
+            registrationStart?: string;
+            /** @example 2026-05-15T23:59:59Z */
+            registrationEnd?: string;
         };
         CreateBulkCourseOfferDto: {
             /** @example 1 */
@@ -6642,6 +6657,52 @@ export interface operations {
             };
         };
     };
+    CourseOfferController_getDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourseOfferDetailResponseDto"];
+                };
+            };
+        };
+    };
+    CourseOfferController_updateClassSubject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["updateClassSubjectDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CourseOfferDto"];
+                };
+            };
+        };
+    };
     CourseOfferController_preview: {
         parameters: {
             query: {
@@ -6713,25 +6774,6 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_approve: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     CourseOfferController_previewGenerateSectionForClass: {
         parameters: {
             query: {
@@ -6772,27 +6814,6 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-        };
-    };
-    CourseOfferController_getDetail: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CourseOfferDetailResponseDto"];
-                };
             };
         };
     };

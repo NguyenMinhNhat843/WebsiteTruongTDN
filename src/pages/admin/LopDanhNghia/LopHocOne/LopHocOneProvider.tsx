@@ -41,22 +41,45 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
     /**
      * Lấy danh sách ClassSubject
      */
-    const { data: classSubjects, isLoading: isClassSubjectsLoading } =
-      $api.useQuery(
-        "get",
-        "/course-offers",
-        {
-          params: {
-            query: {
-              classId: idLopHocNumber,
-              semesterId: selectedSemesterId!,
-            },
+    const {
+      data: classSubjects,
+      isLoading: isClassSubjectsLoading,
+      refetch: refetchClassSubjects,
+    } = $api.useQuery(
+      "get",
+      "/course-offers",
+      {
+        params: {
+          query: {
+            classId: idLopHocNumber,
+            semesterId: selectedSemesterId!,
           },
         },
-        {
-          enabled: selectedSemesterId !== null,
+      },
+      {
+        enabled: selectedSemesterId !== null,
+      },
+    );
+
+    /**
+     * Load danh sách giáo viên
+     */
+    const { data: dataGiaoViens, isLoading: isGiaoViensLoading } =
+      $api.useQuery("get", "/staffs", {
+        params: {
+          query: {
+            employeeRole: "TEACHER",
+          },
         },
-      );
+      });
+
+    /**
+     * Cập nhật thông tin classSubject
+     */
+    const {
+      mutate: updateClassSubject,
+      isPending: isPendingUpdateClassSubject,
+    } = $api.useMutation("patch", "/course-offers/{id}");
 
     return {
       selectedSemesterId,
@@ -65,6 +88,11 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       isMonHocsLoading,
       classSubjects,
       isClassSubjectsLoading,
+      dataGiaoViens,
+      isGiaoViensLoading,
+      updateClassSubject,
+      isPendingUpdateClassSubject,
+      refetchClassSubjects,
     };
   },
 );
