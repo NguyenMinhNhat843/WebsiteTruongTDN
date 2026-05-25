@@ -111,7 +111,7 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
    * Sinh lớp học phần theo học kỳ
    */
   const { mutate: generateLopHocPhan, isPending: isGeneratingLopHocPhan } =
-    $api.useMutation("post", "/course-offers/generate-sections-for-class");
+    $api.useMutation("post", "/course-offers/gen-classSubject-grades");
 
   /**
    * Xem trước danh sách lớp học phần cần sinh

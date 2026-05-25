@@ -19,14 +19,9 @@ import TableDanhSachHocSinh from "./TabHocSinh";
 import Tabs from "../../../../components/ui/Tabs";
 import TabMonHoc from "./TabMonHoc";
 import TabChuongTrinhHoc from "./TabChuongTrinhHoc";
-import { LopHocOneProvider } from "./LopHocOneProvider";
 
 const LopHocOne = () => {
-  return (
-    <LopHocOneProvider>
-      <Inner />
-    </LopHocOneProvider>
-  );
+  return <Inner />;
 };
 
 const Inner = () => {

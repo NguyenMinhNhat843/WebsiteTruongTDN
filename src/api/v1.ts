@@ -1324,7 +1324,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-offers/generate-sections-for-class": {
+    "/course-offers/gen-classSubject-grades": {
         parameters: {
             query?: never;
             header?: never;
@@ -1410,6 +1410,23 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/course-registrations/save-grades": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Lưu bảng điểm cho một ClassSubject */
+        patch: operations["CourseRegistrationController_saveGrades"];
         trace?: never;
     };
 }
@@ -3711,15 +3728,19 @@ export interface components {
             status?: "PENDING" | "APPROVED" | "REJECTED" | null;
         };
         CourseOfferRegisResponseDto: {
-            /**
-             * @description ID duy nhất của bản ghi đăng ký học phần
-             * @example 1
-             */
             id: number;
-            /**
-             * @description ID của lớp học phần được mở (CourseOffer)
-             * @example 101
-             */
+            kttx1?: number;
+            kttx2?: number;
+            kttx3?: number;
+            ktdk1?: number;
+            ktdk2?: number;
+            ktdk3?: number;
+            ktdk4?: number;
+            diemKiemTra1?: number;
+            diemKiemTra2?: number;
+            diemTB?: number;
+            diemTongKet1?: number;
+            diemTongKet2?: number;
             courseOfferId: number;
             /**
              * @description ID của sinh viên đăng ký
@@ -3881,6 +3902,70 @@ export interface components {
              * @example Đăng ký học cải thiện điểm
              */
             note?: string;
+        };
+        UpdateCourseRegistrationDto: {
+            id?: number;
+            kttx1?: number;
+            kttx2?: number;
+            kttx3?: number;
+            ktdk1?: number;
+            ktdk2?: number;
+            ktdk3?: number;
+            ktdk4?: number;
+            diemKiemTra1?: number;
+            diemKiemTra2?: number;
+            diemTB?: number;
+            diemTongKet1?: number;
+            diemTongKet2?: number;
+            courseOfferId?: number;
+            /**
+             * @description ID của sinh viên đăng ký
+             * @example 20260001
+             */
+            studentId?: number;
+            /**
+             * @description Trạng thái của đơn đăng ký học phần
+             * @example PENDING
+             * @enum {string}
+             */
+            status?: "PENDING" | "APPROVED" | "REJECTED";
+            /**
+             * @description Ghi chú của sinh viên khi đăng ký
+             * @example Đăng ký học cải thiện điểm
+             */
+            note?: string | null;
+            /**
+             * Format: date-time
+             * @description Thời điểm hệ thống ghi nhận đăng ký
+             * @example 2026-05-16T02:15:00.000Z
+             */
+            registeredAt?: string;
+            finalGrade?: number;
+            /**
+             * Format: date-time
+             * @description Thời điểm đơn đăng ký được phê duyệt
+             * @example 2026-05-16T03:00:00.000Z
+             */
+            approvedAt?: string | null;
+            /**
+             * Format: date-time
+             * @description Thời điểm tạo bản ghi
+             * @example 2026-05-16T02:15:00.000Z
+             */
+            createdAt?: string;
+            /**
+             * Format: date-time
+             * @description Thời điểm cập nhật bản ghi gần nhất
+             * @example 2026-05-16T03:00:00.000Z
+             */
+            updatedAt?: string;
+            /** @description Thông tin chi tiết của sinh viên đăng ký */
+            student?: components["schemas"]["StudentResponseDto"];
+            gradeEntries?: components["schemas"]["GradeEntryResponseDto"][] | null;
+        };
+        SaveGradesDto: {
+            classSubjectId: number;
+            grades?: components["schemas"]["UpdateCourseRegistrationDto"][];
         };
     };
     responses: never;
@@ -6939,6 +7024,27 @@ export interface operations {
             };
             /** @description Không tìm thấy ID đăng ký. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CourseRegistrationController_saveGrades: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveGradesDto"];
+            };
+        };
+        responses: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

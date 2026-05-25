@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useAppContext } from "../../../../AppProvider";
 import { useLopHocOneContext } from "./LopHocOneProvider";
+import { SelectOption } from "../../../../components/ui/Form/SelectOption";
+import { useNavigate } from "react-router-dom";
 
 const TabMonHoc = () => {
+  const navigate = useNavigate();
   const { hocKysData, isHocKysLoading } = useAppContext();
   const {
     selectedSemesterId,
@@ -88,17 +91,15 @@ const TabMonHoc = () => {
           </p>
         </div>
         <div className="flex items-center gap-2.5">
-          <select
+          <SelectOption
+            containerClassName="w-52"
             value={selectedSemesterId ?? ""}
             onChange={(e) => setselectedSemesterId(Number(e.target.value))}
-            className="block w-52 px-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-slate-700 font-semibold cursor-pointer transition-all shadow-sm hover:bg-slate-100/50"
-          >
-            {hocKysData?.map((hocKy) => (
-              <option key={hocKy.id} value={hocKy.id}>
-                {hocKy.name} {hocKy.isCurrent ? "(Hiện tại)" : ""}
-              </option>
-            ))}
-          </select>
+            options={hocKysData?.map((hocKy) => ({
+              value: hocKy.id,
+              label: `${hocKy.name} ${hocKy.isCurrent ? "(Hiện tại)" : ""}`,
+            }))}
+          />
         </div>
       </div>
 
@@ -123,11 +124,17 @@ const TabMonHoc = () => {
                 <th className="px-6 py-4 font-semibold text-slate-600">
                   Tên môn học
                 </th>
-                <th className="px-6 py-4 font-semibold text-slate-600 text-center w-28">
+                <th className="px-6 py-4 font-semibold text-slate-600 text-center w-32">
                   Số tín chỉ
                 </th>
-                <th className="px-6 py-4 font-semibold text-slate-600 text-center w-44">
-                  Số giờ (LT / TH / KT)
+                <th className="px-4 py-4 font-semibold text-slate-600 text-center w-28 whitespace-nowrap">
+                  Lý thuyết
+                </th>
+                <th className="px-4 py-4 font-semibold text-slate-600 text-center w-28 whitespace-nowrap">
+                  Thực hành
+                </th>
+                <th className="px-4 py-4 font-semibold text-slate-600 text-center w-28 whitespace-nowrap">
+                  Kiểm tra
                 </th>
                 <th className="px-6 py-4 font-semibold text-slate-600 w-60">
                   Giáo viên giảng dạy
@@ -155,7 +162,10 @@ const TabMonHoc = () => {
                     {/* Tên môn học */}
                     <td className="px-6 py-4 align-middle">
                       <div className="max-w-md">
-                        <div className="font-semibold text-slate-800 text-[14px]">
+                        <div
+                          className="font-semibold text-slate-800 text-[14px] inline-block cursor-pointer hover:text-blue-600 active:scale-95 transition-all duration-150"
+                          onClick={() => navigate(`${item.id}`)}
+                        >
                           {item.tenMonHoc ?? "N/A"}
                         </div>
                       </div>
@@ -166,28 +176,23 @@ const TabMonHoc = () => {
                       {item.soTinChi ?? 0}
                     </td>
 
-                    {/* Số giờ */}
-                    <td className="px-6 py-4 align-middle text-center">
-                      <div className="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium bg-slate-50 px-2 py-1 rounded-lg border border-slate-100">
-                        <span className="font-bold text-slate-800">
-                          {item.soGioLyThuyet ?? 0}
-                        </span>
-                        <span className="text-slate-400 text-[10px]">LT</span>
-                        <span className="text-slate-300">|</span>
-                        <span className="font-bold text-slate-800">
-                          {item.soGioThucHanh ?? 0}
-                        </span>
-                        <span className="text-slate-400 text-[10px]">TH</span>
-                        <span className="text-slate-300">|</span>
-                        <span className="font-bold text-slate-800">
-                          {item.soGioKiemTra ?? 0}
-                        </span>
-                        <span className="text-slate-400 text-[10px]">KT</span>
-                      </div>
+                    {/* Cột Số giờ Lý thuyết */}
+                    <td className="px-4 py-4 align-middle text-center font-medium text-slate-600 tabular-nums">
+                      {item.soGioLyThuyet ?? 0}{" "}
+                    </td>
+
+                    {/* Cột Số giờ Thực hành */}
+                    <td className="px-4 py-4 align-middle text-center font-medium text-slate-600 tabular-nums">
+                      {item.soGioThucHanh ?? 0}{" "}
+                    </td>
+
+                    {/* Cột Số giờ Kiểm tra */}
+                    <td className="px-4 py-4 align-middle text-center font-medium text-slate-600 tabular-nums">
+                      {item.soGioKiemTra ?? 0}{" "}
                     </td>
 
                     {/* Giáo viên giảng dạy */}
-                    <td className="px-6 py-4 align-middle min-w-[200px]">
+                    <td className="px-6 py-4 align-middle min-w-50">
                       {isGiaoViensLoading ? (
                         <div className="inline-flex items-center gap-2 text-slate-400 text-xs bg-slate-50/50 px-2.5 py-1.5 rounded-xl border border-slate-200/60 font-medium">
                           <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
@@ -207,7 +212,7 @@ const TabMonHoc = () => {
                         </div>
                       ) : (
                         /* TRẠNG THÁI BÌNH THƯỜNG */
-                        <div className="relative max-w-[220px]">
+                        <div className="relative max-w-55">
                           <select
                             value={item.giaoVienId || ""}
                             disabled={isPendingUpdateClassSubject} // Khóa tất cả select trong lúc đang xử lý bất kì hàng nào

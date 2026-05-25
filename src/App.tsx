@@ -70,6 +70,7 @@ import LopHocLayout from "./pages/admin/LopDanhNghia/LopHocLayout";
 import LopHocOne from "./pages/admin/LopDanhNghia/LopHocOne/LopHocOne";
 import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne";
 import NhanVienOne from "./pages/admin/QuanLyNhanVien/NhanVienOne/NhanVienOne";
+import NhapDiem from "./pages/admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiem";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -172,6 +173,10 @@ function App() {
                 <Route
                   path="dao-tao/lop-hoc/:idLopHoc"
                   element={<LopHocOne />}
+                />
+                <Route
+                  path="dao-tao/lop-hoc/:idLopHoc/:idClassSubject"
+                  element={<NhapDiem />}
                 />
               </Route>
               <Route

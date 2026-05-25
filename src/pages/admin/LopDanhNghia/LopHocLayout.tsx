@@ -1,10 +1,13 @@
 import { Outlet } from "react-router-dom";
 import { LopHocProvider } from "./LopHocProvider";
+import { LopHocOneProvider } from "./LopHocOne/LopHocOneProvider";
 
 const LopHocLayout = () => {
   return (
     <LopHocProvider>
-      <Outlet />
+      <LopHocOneProvider>
+        <Outlet />
+      </LopHocOneProvider>
     </LopHocProvider>
   );
 };
