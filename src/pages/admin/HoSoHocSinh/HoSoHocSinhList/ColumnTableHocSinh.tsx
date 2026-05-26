@@ -13,7 +13,7 @@ export const studentColumns: ColumnDef<HocSinhDto>[] = [
 
       return (
         <div className="flex flex-col gap-0.5 group">
-          <span className="font-bold text-slate-800 tracking-tight group-hover:text-blue-600 transition-colors">
+          <span className="font-bold text-slate-800 tracking-tight">
             {String(code)}
           </span>
 
@@ -60,7 +60,8 @@ export const studentColumns: ColumnDef<HocSinhDto>[] = [
     },
   },
   {
-    accessorKey: "classId",
+    accessorKey: "class.classCode",
+    header: "Lớp học",
   },
   {
     accessorKey: "batch.batchCode",

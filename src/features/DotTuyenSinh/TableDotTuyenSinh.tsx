@@ -10,11 +10,14 @@ import {
   type DotTuyenSinhDto,
 } from "./DotTuyenSinhProvider";
 import { useNavigate } from "react-router-dom";
-import { Trash2 } from "lucide-react";
+import { Eye, Trash2 } from "lucide-react";
+import ButtonAction from "../../components/ui/ButtonAction";
 
 const AdmissionTable = ({ data }: { data: DotTuyenSinhDto[] }) => {
   const { deleteDotTuyenSinh, isDeletingDotTuyenSinh } =
     useDotTuyenSinhContext();
+  const navigate = useNavigate();
+
   const columns = useMemo<ColumnDef<DotTuyenSinhDto>[]>(
     () => [
       {
@@ -25,11 +28,6 @@ const AdmissionTable = ({ data }: { data: DotTuyenSinhDto[] }) => {
             #{info.getValue<number>()}
           </span>
         ),
-      },
-      {
-        id: "heDaoTao",
-        header: "Hệ đào tạo",
-        cell: () => <span className="italic text-gray-400">Chưa xác định</span>,
       },
       {
         accessorKey: "name",
@@ -94,30 +92,40 @@ const AdmissionTable = ({ data }: { data: DotTuyenSinhDto[] }) => {
         cell: (info) => {
           const id = info.row.original.id;
           return (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                deleteDotTuyenSinh(
-                  { params: { path: { id } } },
-                  {
-                    onSuccess: () => {
-                      alert("Xóa đợt tuyển sinh thành công!");
+            <div className="flex items-center gap-2">
+              <ButtonAction
+                variant="outline"
+                size="sm"
+                icon={<Trash2 className="w-4 h-4 hover:text-red-500" />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteDotTuyenSinh(
+                    { params: { path: { id } } },
+                    {
+                      onSuccess: () => {
+                        alert("Xóa đợt tuyển sinh thành công!");
+                      },
                     },
-                  },
-                );
-              }}
-              disabled={isDeletingDotTuyenSinh}
-            >
-              <Trash2 className="w-4 h-4 text-gray-400 hover:text-red-500 transition-colors" />
-            </button>
+                  );
+                }}
+                loading={isDeletingDotTuyenSinh}
+              />
+              <ButtonAction
+                title="Xem chi tiết"
+                size="sm"
+                variant="outline"
+                icon={<Eye className="w-4 h-4" />}
+                onClick={() => {
+                  navigate(`/admin/tuyen-sinh/dot-tuyen-sinh/${id}`);
+                }}
+              />
+            </div>
           );
         },
       },
     ],
     [],
   );
-
-  const navigate = useNavigate();
 
   const table = useReactTable({
     data,
@@ -154,11 +162,6 @@ const AdmissionTable = ({ data }: { data: DotTuyenSinhDto[] }) => {
               <tr
                 key={row.id}
                 className="hover:bg-blue-50/30 transition-colors duration-200"
-                onClick={() => {
-                  navigate(
-                    `/admin/tuyen-sinh/dot-tuyen-sinh/${row.original.id}`,
-                  );
-                }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td

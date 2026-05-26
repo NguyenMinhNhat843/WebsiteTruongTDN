@@ -23,7 +23,6 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
 
     // state
     const [openFormCreate, setOpenFormCreate] = useState<boolean>(false);
-    // const [selectedId, setSelectedId] = useState<number | null>(null); // xem chi tiết đợt tuyển sinh nào, null nếu không xem chi tiết nào
 
     // get dot tuyen sinh
     const { data: admissions, isLoading: isLoadingAdmissions } = $api.useQuery(
@@ -44,7 +43,9 @@ export const [DotTuyenSinhProvider, useDotTuyenSinhContext] =
         },
       });
 
-    // post dot tuyen sinh
+    /**
+     * Tạo đợt tuyển sinh mới
+     */
     const { mutate: createDotTuyenSinh, isPending: isCreatingDotTuyenSinh } =
       $api.useMutation("post", "/admissions", {
         onSuccess: () => {

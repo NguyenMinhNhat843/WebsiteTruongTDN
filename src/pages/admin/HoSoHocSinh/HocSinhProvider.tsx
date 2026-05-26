@@ -15,6 +15,7 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
     const queryClient = useQueryClient();
     const [isOpenModalImport, setIsOpenModalImport] = useState(false);
     const { maSinhVien } = useParams(); // Lấy id từ URL nếu có - dùng cho load trang chi tiết học sinh
+    const [isOpenModalCreate, setIsOpenModalCreate] = useState(false);
 
     /**
      * Lấy danh sách học sinh
@@ -62,7 +63,11 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
      * Thêm học sinh
      */
     const { mutate: createStudent, isPending: isCreatingStudent } =
-      $api.useMutation("post", "/students");
+      $api.useMutation("post", "/students", {
+        onSuccess: () => {
+          refetchStudents();
+        },
+      });
 
     /**
      * Import dữ liệu học sinh
@@ -71,6 +76,10 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       $api.useMutation("post", "/students/bulk", {
         onSuccess: () => {
           refetchStudents();
+        },
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        onError: (error: any) => {
+          alert(error.message || "Có lỗi xảy ra khi import dữ liệu học sinh");
         },
       });
 
@@ -82,7 +91,6 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       mutate: searchBatches,
       isPending: isSearchingBatches,
     } = $api.useMutation("get", "/batches");
-    console.log("Danh sách khóa học:", khoaHocList);
 
     return {
       students: students || [],
@@ -104,6 +112,8 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       navigate,
       isOpenModalImport,
       setIsOpenModalImport,
+      isOpenModalCreate,
+      setIsOpenModalCreate,
     };
   },
 );

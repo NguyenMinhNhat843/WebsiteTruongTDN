@@ -1,4 +1,5 @@
 import { Edit3, Eye, Trash2 } from "lucide-react";
+import ButtonAction from "../../../../../components/ui/ButtonAction";
 
 interface RowActionsProps {
   onView: () => void;
@@ -13,27 +14,24 @@ const RowActions: React.FC<RowActionsProps> = ({
 }) => {
   return (
     <div className="relative flex items-center gap-1 justify-end">
-      <button
+      <ButtonAction
         onClick={onView}
         title="Xem hồ sơ"
-        className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-all"
-      >
-        <Eye size={14} />
-      </button>
-      <button
+        icon={<Eye size={14} />}
+        variant="outline"
+      />
+      <ButtonAction
         onClick={onEdit}
         title="Chỉnh sửa"
-        className="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-all"
-      >
-        <Edit3 size={14} />
-      </button>
-      <button
+        icon={<Edit3 size={14} />}
+        variant="outline"
+      />
+      <ButtonAction
         onClick={onDelete}
         title="Xóa"
-        className="p-1.5 rounded-lg text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all"
-      >
-        <Trash2 size={14} />
-      </button>
+        icon={<Trash2 size={14} />}
+        variant="outline"
+      />
     </div>
   );
 };
