@@ -9,14 +9,15 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { RefreshCw, Save, Loader2, FileSpreadsheet } from "lucide-react";
+import { RefreshCw, Save, Loader2 } from "lucide-react";
 import Breadcrumb from "../../../../../components/ui/Breadcrum";
 import { useLopHocContext } from "../../LopHocProvider";
 import ButtonAction from "../../../../../components/ui/ButtonAction";
 import ButtonExport from "../../../../../components/ui/ButtonExport";
+import { calculateGrades, getStickyClass, handleKeyDown } from "./helper";
 
 // Định nghĩa kiểu dữ liệu chuẩn cho hàng trong bảng
-interface GradeRow {
+export interface GradeRow {
   stt: number;
   studentId: number;
   tenHs: string;
@@ -39,62 +40,6 @@ interface GradeRow {
 
 const columnHelper = createColumnHelper<GradeRow>();
 
-// --- HÀM TỰ ĐỘNG TÍNH TOÁN ĐIỂM THEO HỆ SỐ ---
-const calculateGrades = (
-  row: Partial<GradeRow>,
-): Pick<GradeRow, "diemTB" | "diemTongKet1" | "diemTongKet2"> => {
-  let totalScore = 0;
-  let totalWeight = 0;
-
-  // 1. Tính điểm thường xuyên (Hệ số 1)
-  const txFields: (keyof GradeRow)[] = ["kttx1", "kttx2", "kttx3"];
-  txFields.forEach((field) => {
-    const val = row[field];
-    if (typeof val === "number" && !isNaN(val)) {
-      totalScore += val * 1;
-      totalWeight += 1;
-    }
-  });
-
-  // 2. Tính điểm định kỳ (Hệ số 2)
-  const dkFields: (keyof GradeRow)[] = ["ktdk1", "ktdk2", "ktdk3", "ktdk4"];
-  dkFields.forEach((field) => {
-    const val = row[field];
-    if (typeof val === "number" && !isNaN(val)) {
-      totalScore += val * 2;
-      totalWeight += 2;
-    }
-  });
-
-  // Tính Điểm Trung Bình (TB)
-  const diemTB =
-    totalWeight > 0 ? Math.round((totalScore / totalWeight) * 10) / 10 : null;
-
-  // 3. Tính điểm tổng kết 1 (TB * 0.4 + Giữa kỳ/Kiểm tra 1 * 0.6)
-  let diemTongKet1: number | null = null;
-  if (
-    diemTB !== null &&
-    typeof row.diemKiemTra1 === "number" &&
-    !isNaN(row.diemKiemTra1)
-  ) {
-    diemTongKet1 =
-      Math.round((diemTB * 0.4 + row.diemKiemTra1 * 0.6) * 10) / 10;
-  }
-
-  // 4. Tính điểm tổng kết 2 (TB * 0.4 + Cuối kỳ/Kiểm tra 2 * 0.6)
-  let diemTongKet2: number | null = null;
-  if (
-    diemTB !== null &&
-    typeof row.diemKiemTra2 === "number" &&
-    !isNaN(row.diemKiemTra2)
-  ) {
-    diemTongKet2 =
-      Math.round((diemTB * 0.4 + row.diemKiemTra2 * 0.6) * 10) / 10;
-  }
-
-  return { diemTB, diemTongKet1, diemTongKet2 };
-};
-
 const NhapDiem = () => {
   const {
     classSubject,
@@ -102,6 +47,10 @@ const NhapDiem = () => {
     refetchClassSubject,
     saveGradeTable,
     isPendingSaveGradeTable,
+    exportExcel,
+    isExportingExcel,
+    createGradeTable,
+    isCreatingGradeTable,
   } = useLopHocOneContext();
   const { LopHocDetail } = useLopHocContext();
 
@@ -120,7 +69,7 @@ const NhapDiem = () => {
             maHs: regis.student?.studentCode ?? "N/A",
             ngaySinh: regis.student?.dob
               ? new Date(regis.student.dob).toLocaleDateString("vi-VN")
-              : "N/A",
+              : "-",
             kttx1: regis.kttx1 ?? null,
             kttx2: regis.kttx2 ?? null,
             kttx3: regis.kttx3 ?? null,
@@ -170,6 +119,27 @@ const NhapDiem = () => {
 
         return { ...updatedRow, ...calculated };
       }),
+    );
+  };
+
+  const renderInputCell = (
+    rowIndex: number,
+    columnId: keyof GradeRow,
+    value: number | null,
+  ) => {
+    return (
+      <input
+        type="number"
+        value={value ?? ""}
+        min={0}
+        max={10}
+        onChange={(e) => handleCellChange(rowIndex, columnId, e.target.value)}
+        className="w-full h-full min-h-[38px] px-2 text-center font-medium text-slate-800 
+        bg-transparent border-0 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 
+        focus:bg-blue-50/30 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none 
+        [&::-webkit-inner-spin-button]:appearance-none"
+        placeholder="-"
+      />
     );
   };
 
@@ -232,7 +202,7 @@ const NhapDiem = () => {
       columnHelper.accessor("diemTB", {
         header: "Điểm TB",
         cell: (info) => (
-          <span className="font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md block text-center min-w-[45px]">
+          <span className="font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md block text-center min-w-11.25">
             {info.getValue() !== null ? info.getValue()?.toFixed(1) : "-"}
           </span>
         ),
@@ -264,7 +234,10 @@ const NhapDiem = () => {
           columnHelper.accessor("diemTongKet1", {
             header: "Lần 1",
             cell: (info) => (
-              <span className="font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md block text-center min-w-[45px]">
+              <span
+                className="font-bold text-emerald-600 bg-emerald-50 px-2 py-1 
+              rounded-md block text-center min-w-11.25"
+              >
                 {info.getValue() !== null ? info.getValue()?.toFixed(1) : "-"}
               </span>
             ),
@@ -272,7 +245,10 @@ const NhapDiem = () => {
           columnHelper.accessor("diemTongKet2", {
             header: "Lần 2",
             cell: (info) => (
-              <span className="font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-md block text-center min-w-[45px]">
+              <span
+                className="font-bold text-amber-600 bg-amber-50 px-2 py-1 
+              rounded-md block text-center min-w-11.25"
+              >
                 {info.getValue() !== null ? info.getValue()?.toFixed(1) : "-"}
               </span>
             ),
@@ -289,7 +265,8 @@ const NhapDiem = () => {
             onChange={(e) =>
               handleCellChange(info.row.index, "ghiChu", e.target.value)
             }
-            className="w-[130px] px-2 py-1 text-xs border border-slate-200 rounded focus:outline-none focus:border-blue-500 bg-transparent"
+            className="w-32.5 px-2 py-1 text-xs border border-slate-200 rounded 
+            focus:outline-none focus:border-blue-500 bg-transparent"
             placeholder="Thêm ghi chú..."
           />
         ),
@@ -297,29 +274,6 @@ const NhapDiem = () => {
     ],
     [],
   );
-
-  // Render Component Input dành cho điểm số
-  const renderInputCell = (
-    rowIndex: number,
-    columnId: keyof GradeRow,
-    value: number | null,
-  ) => {
-    return (
-      <input
-        type="number"
-        value={value ?? ""}
-        min={0}
-        max={10}
-        step={0.1}
-        onChange={(e) => handleCellChange(rowIndex, columnId, e.target.value)}
-        className="w-full h-full min-h-[38px] px-2 text-center font-medium text-slate-800 
-        bg-transparent border-0 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 
-        focus:bg-blue-50/30 transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none 
-        [&::-webkit-inner-spin-button]:appearance-none"
-        placeholder="-"
-      />
-    );
-  };
 
   const table = useReactTable({
     data: tableData,
@@ -362,25 +316,34 @@ const NhapDiem = () => {
     );
   };
 
-  // Cập nhật lại logic Sticky khi có nhiều tầng Header nhóm
-  const getStickyClass = (
-    headerId: string,
-    groupIndex: number,
-    placeholderId?: string,
-  ) => {
-    const targetId = placeholderId || headerId;
-    const isFirstRow = groupIndex === 0;
+  if (
+    !isClassSubjectLoading &&
+    (!classSubject?.registrations || classSubject.registrations.length === 0)
+  ) {
+    return (
+      <div
+        className="flex flex-col items-center justify-center p-8 bg-white border 
+      border-slate-200 rounded-xl shadow-sm max-w-md mx-auto my-6 text-center"
+      >
+        <p className="text-slate-500 text-sm mb-4">
+          Lớp học phần này chưa có bảng điểm.
+        </p>
 
-    if (targetId === "stt") {
-      return `sticky left-0 ${isFirstRow ? "z-40" : "z-30"} bg-slate-100 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] w-[60px] min-w-[60px]`;
-    }
-    if (targetId === "tenHs") {
-      return `sticky left-[60px] ${isFirstRow ? "z-40" : "z-30"} bg-slate-100 shadow-[4px_0_8px_-3px_rgba(0,0,0,0.15)] min-w-[180px] max-w-[240px]`;
-    }
-
-    // Các cột thường không dính, nhưng tiêu đề nhóm ở hàng 1 cần đè lên body khi cuộn dọc
-    return isFirstRow ? "z-20" : "z-10";
-  };
+        <ButtonAction
+          label="Tạo bảng điểm để nhập"
+          onClick={() =>
+            createGradeTable({
+              params: {
+                path: { classSubjectId: classSubject!.id! },
+                query: { classId: LopHocDetail!.id! },
+              },
+            })
+          }
+          loading={isCreatingGradeTable}
+        />
+      </div>
+    );
+  }
 
   const getStickyCellClass = (columnId: string) => {
     if (columnId === "stt") {
@@ -432,7 +395,19 @@ const NhapDiem = () => {
             onClick={() => refetchClassSubject()}
             variant="outline"
           />
-          <ButtonExport />
+          <ButtonExport
+            onClick={() =>
+              exportExcel({
+                parseAs: "blob",
+                params: {
+                  path: {
+                    id: classSubject!.id!,
+                  },
+                },
+              })
+            }
+            isPending={isExportingExcel}
+          />
           <ButtonAction
             icon={<Save className="w-4 h-4" />}
             label="Lưu bảng điểm"
@@ -490,38 +465,31 @@ const NhapDiem = () => {
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-slate-100">
-              {table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="group hover:bg-slate-50/50 transition-colors"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <td
-                        key={cell.id}
-                        className={`align-middle text-center whitespace-nowrap border-r border-slate-100 last:border-0 transition-colors duration-150 ${getStickyCellClass(
-                          cell.column.id,
-                        )}`}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={columns.length}
-                    className="text-center py-12 text-slate-400 font-medium bg-slate-50/20"
-                  >
-                    Không tìm thấy danh sách học sinh tham gia học phần này.
-                  </td>
+            <tbody
+              className="divide-y divide-slate-100"
+              onKeyDown={(e) => handleKeyDown(e, table)}
+            >
+              {/* Giữ nguyên logic map rows cũ của bạn... */}
+              {table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="group hover:bg-slate-50/50 transition-colors"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      data-row-index={row.index}
+                      data-col-index={cell.column.id}
+                      className={`align-middle text-center whitespace-nowrap border-r border-slate-100 last:border-0 transition-colors duration-150 ${getStickyCellClass(cell.column.id)}`}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </td>
+                  ))}
                 </tr>
-              )}
+              ))}
             </tbody>
           </table>
         </div>

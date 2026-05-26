@@ -32,12 +32,12 @@ export const [MonHocProvider, useMonHocContext] = createContextProvider(() => {
     {
       params: {
         path: {
-          id: monHocIdSelected!, // Lấy ID môn học được chọn để lấy chi tiết
+          id: monHocIdSelected!,
         },
       },
     },
     {
-      enabled: !!monHocIdSelected, // Chỉ chạy query khi có ID môn học được chọn
+      enabled: !!monHocIdSelected,
     },
   );
 
@@ -87,9 +87,6 @@ export const [MonHocProvider, useMonHocContext] = createContextProvider(() => {
     },
   });
 
-  // Lấy danh mục các cột điểm
-  const { data: diemComponents } = $api.useQuery("get", "/grade-components");
-
   return {
     monHocs,
     isMonHocsLoading,
@@ -100,7 +97,6 @@ export const [MonHocProvider, useMonHocContext] = createContextProvider(() => {
     deleteMonHoc,
     isDeleteMonHocPending,
     isDeleteMonHocError,
-    diemComponents,
     updateMonHoc,
     isUpdateMonHocPending,
     isUpdateMonHocError,

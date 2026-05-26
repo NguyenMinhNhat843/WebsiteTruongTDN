@@ -28,12 +28,6 @@ const navItems: NavItem[] = [
         roles: ["ADMIN", "TEACHER"],
       },
       {
-        id: "quan-ly-lop-hoc-phan",
-        label: "Lớp học phần",
-        href: "/admin/dao-tao/lop-hoc-phan",
-        roles: ["ADMIN", "TEACHER"],
-      },
-      {
         id: "lop-hoc",
         label: "Lớp học",
         href: "/admin/dao-tao/lop-hoc",
@@ -48,12 +42,6 @@ const navItems: NavItem[] = [
         id: "mon-hoc",
         label: "Môn học",
         href: "/admin/mon-hoc",
-        roles: ["ADMIN", "TEACHER"],
-      },
-      {
-        id: "diem-thanh-phan",
-        label: "Điểm thành phần",
-        href: "/admin/diem-thanh-phan",
         roles: ["ADMIN", "TEACHER"],
       },
       {

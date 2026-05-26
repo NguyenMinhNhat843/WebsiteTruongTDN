@@ -59,12 +59,7 @@ import QuanLyDotHocPhi from "./features/HocPhi/QuanLyDotHocPhi";
 import PhanLop from "./pages/admin/PhanLop/PhanLop";
 import PhanLopLayout from "./pages/admin/PhanLop/PhanLopLayout";
 import NhanVienLayout from "./pages/admin/QuanLyNhanVien/NhanVienLayout";
-import LopHocPhanLayout from "./pages/admin/LopHocVaKhoaHoc/LopHocPhan/LopHocPhanLayout";
-import LopHocPhanList from "./pages/admin/LopHocVaKhoaHoc/LopHocPhan/LopHocPhanList";
-import LopHocPhanOne from "./pages/admin/LopHocVaKhoaHoc/LopHocPhanOne/LopHocPhanOne";
-import GradeComponentLayout from "./pages/admin/DiemThanhPhan/GradeComponentLayout";
 import { AppProvider } from "./AppProvider";
-import GradeComponentList from "./pages/admin/DiemThanhPhan/GradeComponentList";
 import LopHocList from "./pages/admin/LopDanhNghia/LopHocList";
 import LopHocLayout from "./pages/admin/LopDanhNghia/LopHocLayout";
 import LopHocOne from "./pages/admin/LopDanhNghia/LopHocOne/LopHocOne";
@@ -158,16 +153,6 @@ function App() {
                 path="dao-tao/tao-chuong-trinh-khung"
                 element={<TaoChuongTrinhKhung />}
               />
-              <Route element={<LopHocPhanLayout />}>
-                <Route
-                  path="dao-tao/lop-hoc-phan"
-                  element={<LopHocPhanList />}
-                />
-                <Route
-                  path="dao-tao/lop-hoc-phan/:id"
-                  element={<LopHocPhanOne />}
-                />
-              </Route>
               <Route element={<LopHocLayout />}>
                 <Route path="dao-tao/lop-hoc" element={<LopHocList />} />
                 <Route
@@ -183,11 +168,6 @@ function App() {
                 path="dao-tao/thoi-khoa-bieu"
                 element={<TimetablePage />}
               />
-            </Route>
-
-            {/* Quản lý điểm */}
-            <Route element={<GradeComponentLayout />}>
-              <Route path="diem-thanh-phan" element={<GradeComponentList />} />
             </Route>
 
             <Route element={<PhanLopLayout />}>

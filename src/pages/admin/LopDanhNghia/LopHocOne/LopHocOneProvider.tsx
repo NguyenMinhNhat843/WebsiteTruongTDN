@@ -4,6 +4,7 @@ import { $api } from "../../../../api/client";
 import { useParams } from "react-router-dom";
 import { useAppContext } from "../../../../AppProvider";
 import type { components } from "../../../../api/v1";
+import { downloadFromBlob } from "../../../../util/download";
 
 export type ClassSubjectGrade =
   components["schemas"]["CourseOfferRegisResponseDto"];
@@ -87,7 +88,7 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
     } = $api.useMutation("patch", "/course-offers/{id}");
 
     /**
-     * Lấy bảng điểm của clssSubject
+     * Lấy bảng điểm của classSubject
      */
     const {
       data: classSubject,
@@ -114,6 +115,26 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
     const { mutate: saveGradeTable, isPending: isPendingSaveGradeTable } =
       $api.useMutation("patch", "/course-registrations/save-grades");
 
+    /**
+     * Export excel
+     */
+    const { mutate: exportExcel, isPending: isExportingExcel } =
+      $api.useMutation("get", "/course-offers/{id}/export-excel", {
+        onSuccess: (blob) => {
+          downloadFromBlob(blob as never, "ádajsdkasjd", ".xlsx");
+        },
+      });
+
+    /**
+     * Tạo bảng điểm để nhập
+     */
+    const { mutate: createGradeTable, isPending: isCreatingGradeTable } =
+      $api.useMutation("post", "/course-registrations/{classSubjectId}", {
+        onSuccess: () => {
+          refetchClassSubject();
+        },
+      });
+
     return {
       selectedSemesterId,
       setselectedSemesterId,
@@ -131,6 +152,10 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       refetchClassSubject,
       saveGradeTable,
       isPendingSaveGradeTable,
+      exportExcel,
+      isExportingExcel,
+      createGradeTable,
+      isCreatingGradeTable,
     };
   },
 );

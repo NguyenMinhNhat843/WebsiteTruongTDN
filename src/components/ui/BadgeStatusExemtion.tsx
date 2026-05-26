@@ -1,9 +1,37 @@
-import type { EnumExemptionStatus } from "../../type/enum";
-import { StyleMapEnumExemptionStatus } from "../StyleMapEnum/StyleMapEnum";
+import { CheckCircle, Clock, XCircle } from "lucide-react";
 
 interface BadgeStatusExemtionProps {
   status: EnumExemptionStatus;
 }
+
+export const EnumExemptionStatus = {
+  PENDING: "pending",
+  APPROVED: "approved",
+  REJECTED: "rejected",
+} as const;
+export type EnumExemptionStatus =
+  (typeof EnumExemptionStatus)[keyof typeof EnumExemptionStatus];
+
+const StyleMapEnumExemptionStatus = {
+  [EnumExemptionStatus.PENDING]: {
+    label: "Đang chờ duyệt",
+    bgColor: "bg-yellow-100",
+    textColor: "text-yellow-800",
+    Icon: Clock,
+  },
+  [EnumExemptionStatus.APPROVED]: {
+    label: "Đã duyệt",
+    bgColor: "bg-green-100",
+    textColor: "text-green-800",
+    Icon: CheckCircle,
+  },
+  [EnumExemptionStatus.REJECTED]: {
+    label: "Bị từ chối",
+    bgColor: "bg-red-100",
+    textColor: "text-red-800",
+    Icon: XCircle,
+  },
+};
 
 const BadgeStatusExemtion = ({ status }: BadgeStatusExemtionProps) => {
   const { Icon, bgColor, label, textColor } =
