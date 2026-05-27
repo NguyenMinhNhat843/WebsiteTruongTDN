@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import CreateLopHoc from "./CreateLopHoc";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import { useLopHocContext } from "./LopHocProvider";
+import SearchClassSection from "./components/SearchClassSection";
 
 const LopHocList = () => {
   const {
@@ -14,24 +15,6 @@ const LopHocList = () => {
     setIsOpenModalCreate,
   } = useLopHocContext();
   const navigate = useNavigate();
-
-  // --- TRẠNG THÁI LOADING UI (SKELETON) ---
-  if (isLoadingLopHocList) {
-    return (
-      <div className="p-6 max-w-7xl mx-auto space-y-6 animate-pulse">
-        <div className="flex justify-between items-center">
-          <div className="h-8 bg-slate-200 rounded-lg w-1/4" />
-          <div className="h-10 bg-slate-200 rounded-xl w-32" />
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {[1, 2, 3].map((i) => (
-            <div key={i} className="h-28 bg-slate-100 rounded-2xl" />
-          ))}
-        </div>
-        <div className="h-96 bg-slate-100 rounded-2xl border border-slate-200" />
-      </div>
-    );
-  }
 
   // Thống kê nhanh số liệu lớp học
   const totalClasses = LopHocList?.length || 0;
@@ -111,8 +94,17 @@ const LopHocList = () => {
           </div>
         </div>
 
-        {/* MAIN DATA TABLE SECTION */}
-        <TableLopHocList />
+        <SearchClassSection />
+
+        {isLoadingLopHocList ? (
+          <div className="h-96 bg-slate-100 rounded-2xl border border-slate-200 animate-pulse flex items-center justify-center">
+            <span className="text-sm text-slate-400 font-medium">
+              Đang cập nhật danh sách lớp...
+            </span>
+          </div>
+        ) : (
+          <TableLopHocList />
+        )}
       </div>
 
       <CreateLopHoc

@@ -1202,10 +1202,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /**
-         * Tự động tạo lớp học phần cho một lớp hành chính
-         * @description Dựa trên danh sách môn học của lớp hành chính và học kỳ, hệ thống sẽ tự động tạo các lớp học phần tương ứng.
-         */
+        /** Tự động tạo lớp học phần cho một lớp hành chính */
         post: operations["CourseOfferController_generateSectionsForClass"];
         delete?: never;
         options?: never;
@@ -4852,6 +4849,10 @@ export interface operations {
                 classCode?: string;
                 /** @description ID ngành học */
                 majorId?: number;
+                /** @description ID khóa đào tạo (batchId) */
+                batchId?: number;
+                search?: string;
+                formTeacherId?: number;
             };
             header?: never;
             path?: never;

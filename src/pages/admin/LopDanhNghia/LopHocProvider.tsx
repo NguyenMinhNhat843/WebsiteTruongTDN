@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { components } from "../../../api/v1";
+import type { components, paths } from "../../../api/v1";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { $api } from "../../../api/client";
 import { useParams } from "react-router-dom";
@@ -10,6 +10,7 @@ export type LopHocResponseDto = components["schemas"]["ClassResponseDto"];
 export type CreateLopHocDto = components["schemas"]["CreateClassDto"];
 export type CurriculumSubjectResponseDto =
   components["schemas"]["CurriculumSubjectResponseDto"];
+export type SearchClassDto = paths["/classes"]["get"]["parameters"]["query"];
 
 export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
   const [isOpenModalCreate, setIsOpenModalCreate] = useState(false);
@@ -25,13 +26,28 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
   const queryClient = useQueryClient();
 
   /**
+   * Filter search Lớp học
+   */
+  const [filterClass, setFilterClass] = useState<SearchClassDto>({
+    batchId: undefined,
+    majorId: undefined,
+    classCode: undefined,
+    formTeacherId: undefined,
+    search: undefined,
+  });
+
+  /**
    * Lấy danh sách lớp học
    */
   const {
     data: LopHocList,
     isLoading: isLoadingLopHocList,
     refetch: refetchLopHocList,
-  } = $api.useQuery("get", "/classes");
+  } = $api.useQuery("get", "/classes", {
+    params: {
+      query: filterClass,
+    },
+  });
 
   /**
    * Lấy lớp học theo id
@@ -169,6 +185,8 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     setSemesterIdSelected,
     subjectsData,
     isLoadingSubjectData,
+    filterClass,
+    setFilterClass,
 
     //state
     isOpenModalCreate,
