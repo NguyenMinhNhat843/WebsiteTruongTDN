@@ -4,6 +4,7 @@ import { createContextProvider } from "../../../util/createContextProvider";
 import { $api } from "../../../api/client";
 import { useParams } from "react-router-dom";
 import { useAppContext } from "../../../AppProvider";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type LopHocResponseDto = components["schemas"]["ClassResponseDto"];
 export type CreateLopHocDto = components["schemas"]["CreateClassDto"];
@@ -21,6 +22,7 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
   const { idLopHoc } = useParams();
   const idLopHocNumber = Number(idLopHoc);
   const { currentSemester } = useAppContext();
+  const queryClient = useQueryClient();
 
   /**
    * Lấy danh sách lớp học
@@ -111,10 +113,16 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
    * Sinh lớp học phần theo học kỳ
    */
   const { mutate: generateLopHocPhan, isPending: isGeneratingLopHocPhan } =
-    $api.useMutation("post", "/course-offers/gen-classSubject-grades");
+    $api.useMutation("post", "/course-offers/gen-classSubject-grades", {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["get", "/course-offers"],
+        });
+      },
+    });
 
   /**
-   * Xem trước danh sách lớp học phần cần sinh
+   * Xem trước danh sách classSubject cần sinh
    */
   const { data: subjectsData, isLoading: isLoadingSubjectData } = $api.useQuery(
     "get",

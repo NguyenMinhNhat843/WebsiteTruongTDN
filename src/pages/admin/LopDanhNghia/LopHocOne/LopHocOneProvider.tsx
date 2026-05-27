@@ -45,7 +45,7 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
     );
 
     /**
-     * Lấy danh sách ClassSubject
+     * Lấy danh sách ClassSubject theo semester đã chọn
      */
     const {
       data: classSubjects,

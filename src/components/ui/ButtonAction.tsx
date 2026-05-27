@@ -5,7 +5,7 @@ import { twMerge } from "tailwind-merge";
 export interface ButtonActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   icon?: React.ReactNode;
   size?: "sm" | "md" | "lg";
-  variant?: "primary" | "secondary" | "outline" | "danger"; // Thêm variant mới ở đây
+  variant?: "primary" | "secondary" | "outline" | "danger" | "export";
   loading?: boolean;
   label?: string;
   withText?: boolean;
@@ -46,6 +46,8 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
         "bg-white hover:bg-slate-50 text-slate-700 border border-slate-300",
       danger:
         "bg-red-600 hover:bg-red-700 text-white shadow-sm border border-transparent",
+      export:
+        "bg-green-600 hover:bg-green-700 text-white shadow-sm border border-transparent",
     };
 
     const hasText = Boolean(children || label);

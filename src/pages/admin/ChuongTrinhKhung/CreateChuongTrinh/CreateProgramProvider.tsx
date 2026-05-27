@@ -15,6 +15,7 @@ export const [TaoChuongTrinhKhungProvider, useTaoChuongTrinhKhungContext] =
       formState: { errors },
       watch,
       control,
+      setValue,
     } = useForm<CreateProgramDto>({
       defaultValues: {
         isActive: true,
@@ -87,6 +88,8 @@ export const [TaoChuongTrinhKhungProvider, useTaoChuongTrinhKhungContext] =
       handleAddSubject,
       handleRemove,
       allSubjects,
+      watch,
+      setValue,
 
       monhocs,
       isLoadingMonHoc,

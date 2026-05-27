@@ -8,21 +8,33 @@ import {
 } from "lucide-react";
 import { useAppContext } from "../../../AppProvider";
 import ButtonAction from "../../../components/ui/ButtonAction";
+import SelectSearchInput from "../../../components/ui/Form/SelectInput";
 
-interface ModalSinhLopHocPhanProps {
+interface ModalCreateClassSubjectProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const ModalSinhLopHocPhan = ({ isOpen, onClose }: ModalSinhLopHocPhanProps) => {
+const ModalCreateClassSubject = ({
+  isOpen,
+  onClose,
+}: ModalCreateClassSubjectProps) => {
   const { currentSemester } = useAppContext();
   const {
     generateLopHocPhan,
     isGeneratingLopHocPhan,
     idLopHocNumber,
-    subjectsData, // Dữ liệu dạng mảng object preview mới của bạn
+    subjectsData,
     isLoadingSubjectData,
+    semesterIdSelected,
+    setSemesterIdSelected,
   } = useLopHocContext();
+
+  const { hocKysData, isHocKysLoading } = useAppContext();
+  const hocKyOptions = hocKysData.map((hocKy) => ({
+    value: hocKy.id,
+    label: hocKy.name,
+  }));
 
   if (!isOpen) return null;
 
@@ -33,7 +45,7 @@ const ModalSinhLopHocPhan = ({ isOpen, onClose }: ModalSinhLopHocPhanProps) => {
       {
         params: {
           query: {
-            semesterId: currentSemester.id,
+            semesterId: semesterIdSelected || currentSemester.id,
             classId: idLopHocNumber,
           },
         },
@@ -65,7 +77,11 @@ const ModalSinhLopHocPhan = ({ isOpen, onClose }: ModalSinhLopHocPhanProps) => {
       />
 
       {/* Nội dung Modal chính */}
-      <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-xl border border-slate-100 flex flex-col max-h-[85vh] transform transition-all overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div
+        className="relative w-full max-w-2xl bg-white rounded-2xl shadow-xl border 
+      border-slate-100 flex flex-col max-h-[85vh] transform transition-all overflow-hidden 
+      animate-in fade-in zoom-in-95 duration-200"
+      >
         {/* Header của Modal */}
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div>
@@ -80,7 +96,8 @@ const ModalSinhLopHocPhan = ({ isOpen, onClose }: ModalSinhLopHocPhanProps) => {
           <button
             disabled={isGeneratingLopHocPhan}
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-50"
+            className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100 
+            transition-colors disabled:opacity-50"
           >
             ✕
           </button>
@@ -93,9 +110,23 @@ const ModalSinhLopHocPhan = ({ isOpen, onClose }: ModalSinhLopHocPhanProps) => {
             <span className="text-sm font-medium text-blue-800">
               Học kỳ áp dụng:
             </span>
-            <span className="text-sm font-bold text-blue-600 bg-white px-3 py-1 rounded-lg border border-blue-200/60 shadow-xs">
+            {/* <span
+              className="text-sm font-bold text-blue-600 bg-white px-3 py-1 rounded-lg 
+            border border-blue-200/60 shadow-xs"
+            >
               {currentSemester?.name || "Chưa chọn học kỳ"}
-            </span>
+            </span> */}
+            <SelectSearchInput
+              options={hocKyOptions}
+              value={semesterIdSelected ?? ""}
+              onChange={(e) => {
+                const val = e.target.value;
+                setSemesterIdSelected(val !== "" ? Number(val) : null);
+              }}
+              isLoading={isHocKysLoading}
+              className="w-48"
+              error={undefined}
+            />
           </div>
 
           {/* Tiêu đề danh sách môn */}
@@ -122,7 +153,10 @@ const ModalSinhLopHocPhan = ({ isOpen, onClose }: ModalSinhLopHocPhanProps) => {
               ))}
             </div>
           ) : !subjectsData || subjectsData.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-8 px-4 text-center border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50">
+            <div
+              className="flex flex-col items-center justify-center py-8 px-4 text-center 
+            border-2 border-dashed border-slate-200 rounded-xl bg-slate-50/50"
+            >
               <AlertCircle size={32} className="text-amber-500 mb-2" />
               <p className="text-sm font-semibold text-slate-700">
                 Không tìm thấy môn học nào
@@ -133,15 +167,19 @@ const ModalSinhLopHocPhan = ({ isOpen, onClose }: ModalSinhLopHocPhanProps) => {
               </p>
             </div>
           ) : (
-            <div className="border border-slate-200/80 rounded-xl overflow-hidden shadow-2xs divide-y divide-slate-100 max-h-[340px] overflow-y-auto">
+            <div
+              className="border border-slate-200/80 rounded-xl overflow-hidden 
+            shadow-2xs divide-y divide-slate-100 max-h-85 overflow-y-auto"
+            >
               {subjectsData.map((item) => (
                 <div
                   key={item.subjectId}
-                  className={`flex flex-col md:flex-row md:items-center justify-between p-3.5 gap-2 transition-colors ${
-                    item.isExisted
-                      ? "bg-slate-50/60 opacity-75"
-                      : "bg-white hover:bg-slate-50/40"
-                  }`}
+                  className={`flex flex-col md:flex-row md:items-center justify-between 
+                    p-3.5 gap-2 transition-colors ${
+                      item.isExisted
+                        ? "bg-slate-50/60 opacity-75"
+                        : "bg-white hover:bg-slate-50/40"
+                    }`}
                 >
                   {/* Cột trái: Tên môn & Cấu trúc lớp học phần sẽ sinh */}
                   <div className="flex flex-col gap-1 flex-1">
@@ -153,32 +191,30 @@ const ModalSinhLopHocPhan = ({ isOpen, onClose }: ModalSinhLopHocPhanProps) => {
                         {item.subjectCode}
                       </span>
                     </div>
-
-                    <div className="flex flex-col gap-0.5 mt-1 bg-slate-50/80 p-2 rounded-lg border border-slate-100 text-xs">
-                      <div className="text-slate-600 font-medium">
-                        <span className="text-slate-400">Tên HP:</span>{" "}
-                        {item.expectedCourseName}
-                      </div>
-                      <div className="text-slate-500 font-mono text-[11px] mt-0.5">
-                        <span className="text-slate-400">Mã HP:</span>{" "}
-                        {item.expectedCourseCode}
-                      </div>
-                    </div>
                   </div>
 
                   {/* Cột phải: Trạng thái Tín chỉ & Check trùng lớp */}
-                  <div className="flex items-center md:flex-col justify-between md:justify-center items-end gap-2 min-w-[120px]">
-                    <div className="text-xs font-bold text-slate-600 bg-white px-2 py-1 rounded-md border border-slate-200 shadow-3xs">
+                  <div className="flex md:flex-col justify-between md:justify-center items-end gap-2 min-w-30">
+                    <div
+                      className="text-xs font-bold text-slate-600 bg-white px-2 py-1 rounded-md border 
+                    border-slate-200 shadow-3xs"
+                    >
                       {item.credits} Tín chỉ
                     </div>
 
                     {item.isExisted ? (
-                      <span className="flex items-center gap-1 text-[11px] font-bold text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full select-none">
+                      <span
+                        className="flex items-center gap-1 text-[11px] font-bold 
+                      text-amber-600 bg-amber-50 border border-amber-100 px-2 py-0.5 rounded-full select-none"
+                      >
                         <AlertTriangle size={12} />
                         Đã có (Bỏ qua)
                       </span>
                     ) : (
-                      <span className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full select-none">
+                      <span
+                        className="flex items-center gap-1 text-[11px] font-bold text-emerald-600 
+                      bg-emerald-50 border border-emerald-100 px-2 py-0.5 rounded-full select-none"
+                      >
                         <CheckCircle2 size={12} />
                         Hợp lệ
                       </span>
@@ -224,4 +260,4 @@ const ModalSinhLopHocPhan = ({ isOpen, onClose }: ModalSinhLopHocPhanProps) => {
   );
 };
 
-export default ModalSinhLopHocPhan;
+export default ModalCreateClassSubject;

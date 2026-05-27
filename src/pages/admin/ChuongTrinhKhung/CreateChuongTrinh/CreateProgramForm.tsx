@@ -1,3 +1,4 @@
+import { useEffect } from "react"; // Thêm useEffect
 import { Save } from "lucide-react";
 import {
   useTaoChuongTrinhKhungContext,
@@ -7,9 +8,57 @@ import ButtonAction from "../../../../components/ui/ButtonAction";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import Input from "../../../../components/ui/Form/Input";
 
+// Hàm helper để chuyển đổi Tên ngành thành chữ viết tắt không dấu (Ví dụ: Tin học ứng dụng -> THUD)
+const getShortName = (str: string): string => {
+  if (!str) return "";
+  return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .split(" ")
+    .map((word) => word.charAt(0))
+    .join("")
+    .toUpperCase();
+};
+
 const CreateProgramForm = () => {
-  const { majors, register, handleSubmit, reset, errors, createCurriculum } =
-    useTaoChuongTrinhKhungContext();
+  const {
+    majors,
+    register,
+    handleSubmit,
+    reset,
+    errors,
+    createCurriculum,
+    watch,
+    setValue,
+  } = useTaoChuongTrinhKhungContext();
+
+  const selectedMajorId = watch("majorId");
+  const currentVersion = watch("version");
+
+  useEffect(() => {
+    if (selectedMajorId && currentVersion) {
+      const currentMajor = majors?.find(
+        (m) => m.id === Number(selectedMajorId),
+      );
+
+      if (currentMajor) {
+        // 1. Sinh mã viết tắt (Ví dụ: THUD) + Năm (Ví dụ: 2025) -> THUD2025
+        const shortMajorName = getShortName(currentMajor.majorName);
+        const autoCode = `${shortMajorName}${currentVersion}`;
+        setValue("curriculumCode", autoCode, { shouldValidate: true });
+
+        // 2. Sinh tên chương trình mặc định (Ví dụ: Chương trình khung ngành Tin học ứng dụng - Năm 2025)
+        const autoName = `${currentMajor.majorName} - ${currentVersion}`;
+        setValue("curriculumName", autoName, { shouldValidate: true });
+      }
+    } else {
+      // Nếu một trong hai trường bị xóa sạch, xóa code/name
+      setValue("curriculumCode", "");
+      setValue("curriculumName", "");
+    }
+  }, [selectedMajorId, currentVersion, majors, setValue]);
 
   const onSubmit = (data: CreateProgramDto) => {
     createCurriculum(
@@ -25,7 +74,6 @@ const CreateProgramForm = () => {
     );
   };
 
-  // Ánh xạ danh sách ngành học majors sang định dạng Options mà component SelectOption yêu cầu
   const majorOptions =
     majors?.map((m) => ({
       value: m.id,
@@ -39,15 +87,19 @@ const CreateProgramForm = () => {
         onSubmit={handleSubmit(onSubmit)}
         className="space-y-5"
       >
+        {/* Chọn ngành học đưa lên đầu để thuận tiện flow nhập liệu */}
+        <SelectOption
+          label="Ngành học"
+          options={majorOptions}
+          error={errors.majorId?.message}
+          {...register("majorId", {
+            required: "Vui lòng chọn ngành học",
+            valueAsNumber: true,
+          })}
+        />
+
         {/* Mã chương trình & Năm áp dụng (Chia 2 cột) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Input
-            label="Mã chương trình khung"
-            placeholder="VD: CTK-2024"
-            require={true}
-            error={errors.curriculumCode?.message}
-            {...register("curriculumCode", { required: "Vui lòng nhập mã" })} //
-          />
           <Input
             label="Năm"
             type="number"
@@ -59,24 +111,25 @@ const CreateProgramForm = () => {
               valueAsNumber: true,
             })}
           />
+
+          <Input
+            label="Mã chương trình khung (Tự động sinh)"
+            placeholder="Sẽ tự động sinh... VD: THUD2025"
+            require={true}
+            error={errors.curriculumCode?.message}
+            {...register("curriculumCode", { required: "Vui lòng nhập mã" })}
+          />
         </div>
 
         {/* Tên chương trình */}
         <Input
           label="Tên chương trình học"
-          placeholder="VD: Công nghệ thông tin định hướng ứng dụng"
+          placeholder="Sẽ tự động điền dựa trên ngành và năm..."
           require={true}
           error={errors.curriculumName?.message}
           {...register("curriculumName", {
             required: "Vui lòng nhập tên chương trình học",
           })}
-        />
-
-        <SelectOption
-          label="Ngành học"
-          options={majorOptions}
-          error={errors.majorId?.message}
-          {...register("majorId", { valueAsNumber: true })}
         />
 
         <div className="flex justify-end pt-2">
@@ -93,4 +146,4 @@ const CreateProgramForm = () => {
   );
 };
 
-export default CreateProgramForm; //
+export default CreateProgramForm;

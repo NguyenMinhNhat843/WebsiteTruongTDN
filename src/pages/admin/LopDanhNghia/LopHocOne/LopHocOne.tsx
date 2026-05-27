@@ -11,14 +11,16 @@ import {
   ArrowLeft,
   Calendar,
   Layers,
+  FileText,
 } from "lucide-react";
 import ModelThemHocSinh from "../ModelThemHocSinh";
 import { useNavigate } from "react-router-dom";
-import ModalSinhLopHocPhan from "../ModalSinhLopHocPhan";
+import ModalSinhLopHocPhan from "../ModalCreateClassSubject";
 import TableDanhSachHocSinh from "./TabHocSinh";
 import Tabs from "../../../../components/ui/Tabs";
 import TabMonHoc from "./TabMonHoc";
-import TabChuongTrinhHoc from "./TabChuongTrinhHoc";
+import Breadcrumb from "../../../../components/ui/Breadcrum";
+import ButtonAction from "../../../../components/ui/ButtonAction";
 
 const LopHocOne = () => {
   return <Inner />;
@@ -36,9 +38,7 @@ const Inner = () => {
     setIsOpenModalSinhLopHocPhan,
   } = useLopHocContext();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<
-    "hoc-sinh" | "mon-hoc" | "chuong-trinh-hoc"
-  >("mon-hoc");
+  const [activeTab, setActiveTab] = useState<"hoc-sinh" | "mon-hoc">("mon-hoc");
 
   // 1. Chuẩn hóa dữ liệu thông tin cơ bản
   const dataHienThi = useMemo(
@@ -67,19 +67,30 @@ const Inner = () => {
 
   return (
     <div className="mx-auto p-6 space-y-8">
-      {/* --- PHẦN 1: THÔNG TIN CƠ BẢN (INFO CARDS) --- */}
-      <div className="space-y-4">
-        {/* Nút Quay về đặt độc lập phía trên Card để tạo khoảng thoáng */}
+      <div className="flex justify-between items-center">
+        <Breadcrumb
+          items={[
+            {
+              label: "Danh sách lớp học",
+              link: "/admin/dao-tao/lop-hoc",
+            },
+            {
+              label: `Lớp ${LopHocDetail?.className}`,
+            },
+          ]}
+        />
         <button
           onClick={() => {
-            navigate(-1);
+            navigate("/admin/dao-tao/lop-hoc");
           }}
           className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-800 transition-colors group py-1"
         >
           <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
           <span>Quay về danh sách</span>
         </button>
+      </div>
 
+      <div className="space-y-4">
         <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
           {/* Phần tiêu đề chính */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4 mb-6">
@@ -98,29 +109,29 @@ const Inner = () => {
               </div>
             </div>
 
-            {/* Cụm nút hành động ở góc phải trên */}
             <div className="flex items-center gap-2 self-start sm:self-center w-full sm:w-auto">
-              {/* Nút "Sinh lớp học phần" mới thêm */}
-              <button
+              <ButtonAction
+                label="Đồng bộ chương trình khung"
+                variant="outline"
+                icon={<Layers className="h-4 w-4 text-gray-500" />}
                 onClick={() => {
                   setIsOpenModalSinhLopHocPhan(true);
                 }}
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-white border border-gray-200 hover:bg-gray-50 text-gray-700 font-medium text-sm px-4 py-2.5 rounded-xl shadow-sm transition-all active:scale-[0.98]"
-              >
-                <Layers className="h-4 w-4 text-gray-500" />
-                <span>Sinh lớp học phần</span>
-              </button>
+              />
 
-              {/* Nút "Thêm học sinh" */}
-              <button
+              <ButtonAction
+                label="Thêm học sinh"
                 onClick={() => {
                   setIsOpenModalAddStudent(true);
                 }}
-                className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2.5 rounded-xl shadow-sm shadow-blue-100 transition-all active:scale-[0.98]"
-              >
-                <Plus className="h-4 w-4" />
-                <span>Thêm học sinh</span>
-              </button>
+                icon={<Plus className="h-4 w-4" />}
+              />
+
+              <ButtonAction
+                variant="export"
+                label="Xuất bảng điểm học kỳ"
+                icon={<FileText className="h-4 w-4" />}
+              />
             </div>
           </div>
 
@@ -194,7 +205,6 @@ const Inner = () => {
         tabs={[
           { value: "mon-hoc", label: "Môn học" },
           { value: "hoc-sinh", label: "Học sinh" },
-          { value: "chuong-trinh-hoc", label: "Chương trình học" },
         ]}
         activeTab={activeTab}
         onChange={setActiveTab}
@@ -203,9 +213,7 @@ const Inner = () => {
         <TableDanhSachHocSinh />
       ) : activeTab === "mon-hoc" ? (
         <TabMonHoc />
-      ) : (
-        <TabChuongTrinhHoc />
-      )}
+      ) : null}
 
       <ModelThemHocSinh
         isOpen={isOpenModalAddStudent}
