@@ -93,20 +93,10 @@ export const handleKeyDown = (
       nextRowIdx = Math.min(rows.length - 1, currentRowIdx + 1);
       break;
     case "ArrowLeft":
-      // Nếu con trỏ chuột trong input đang ở đầu văn bản thì mới cho phép nhảy sang trái (giống Excel)
-      if (target.selectionStart === 0) {
-        nextColIdx = Math.max(0, currentColIdx - 1);
-      } else {
-        return; // Đang gõ và con trỏ ở giữa chữ, không chuyển ô
-      }
+      nextColIdx = Math.max(0, currentColIdx - 1);
       break;
     case "ArrowRight":
-      // Nếu con trỏ chuột trong input đang ở cuối văn bản thì mới cho phép nhảy sang phải
-      if (target.selectionStart === target.value.length) {
-        nextColIdx = Math.min(visibleColIds.length - 1, currentColIdx + 1);
-      } else {
-        return; // Đang gõ và con trỏ ở giữa chữ, không chuyển ô
-      }
+      nextColIdx = Math.min(visibleColIds.length - 1, currentColIdx + 1);
       break;
     default:
       return;

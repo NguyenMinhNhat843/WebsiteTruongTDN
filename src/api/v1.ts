@@ -1213,16 +1213,16 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-offers/{id}/export-excel": {
+    "/course-offers/export-excel": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: operations["CourseOfferController_exportExcel"];
+        get?: never;
         put?: never;
-        post?: never;
+        post: operations["CourseOfferController_exportExcel"];
         delete?: never;
         options?: never;
         head?: never;
@@ -3456,6 +3456,7 @@ export interface components {
             ktdk2?: number;
             ktdk3?: number;
             ktdk4?: number;
+            rating?: string;
             diemKiemTra1?: number;
             diemKiemTra2?: number;
             diemTB?: number;
@@ -3582,6 +3583,10 @@ export interface components {
             /** @description Danh sách các đơn đăng ký của sinh viên vào lớp học phần này */
             registrations?: components["schemas"]["CourseOfferRegisResponseDto"][] | null;
         };
+        ExportGradeTableDto: {
+            classSubjectIds: number[];
+            haveTongKetSheet?: boolean;
+        };
         UpdateCourseRegistrationDto: {
             id?: number;
             kttx1?: number;
@@ -3591,6 +3596,7 @@ export interface components {
             ktdk2?: number;
             ktdk3?: number;
             ktdk4?: number;
+            rating?: string;
             diemKiemTra1?: number;
             diemKiemTra2?: number;
             diemTB?: number;
@@ -6288,14 +6294,16 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                id: number;
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExportGradeTableDto"];
+            };
+        };
         responses: {
-            200: {
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };

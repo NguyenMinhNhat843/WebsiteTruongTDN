@@ -15,6 +15,7 @@ import { useLopHocContext } from "../../LopHocProvider";
 import ButtonAction from "../../../../../components/ui/ButtonAction";
 import ButtonExport from "../../../../../components/ui/ButtonExport";
 import { calculateGrades, getStickyClass, handleKeyDown } from "./helper";
+import { downloadFromBlob } from "../../../../../util/download";
 
 // Định nghĩa kiểu dữ liệu chuẩn cho hàng trong bảng
 export interface GradeRow {
@@ -396,16 +397,25 @@ const NhapDiem = () => {
             variant="outline"
           />
           <ButtonExport
-            onClick={() =>
-              exportExcel({
-                parseAs: "blob",
-                params: {
-                  path: {
-                    id: classSubject!.id!,
+            onClick={() => {
+              return exportExcel(
+                {
+                  parseAs: "blob",
+                  body: {
+                    classSubjectIds: [classSubject!.id!],
                   },
                 },
-              })
-            }
+                {
+                  onSuccess: (blob) => {
+                    downloadFromBlob(
+                      blob as never,
+                      `${LopHocDetail?.className} - ${classSubject?.subject?.subjectName}`,
+                      ".xlsx",
+                    );
+                  },
+                },
+              );
+            }}
             isPending={isExportingExcel}
           />
           <ButtonAction

@@ -4,7 +4,6 @@ import { $api } from "../../../../api/client";
 import { useParams } from "react-router-dom";
 import { useAppContext } from "../../../../AppProvider";
 import type { components } from "../../../../api/v1";
-import { downloadFromBlob } from "../../../../util/download";
 
 export type ClassSubjectGrade =
   components["schemas"]["CourseOfferRegisResponseDto"];
@@ -119,11 +118,7 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
      * Export excel
      */
     const { mutate: exportExcel, isPending: isExportingExcel } =
-      $api.useMutation("get", "/course-offers/{id}/export-excel", {
-        onSuccess: (blob) => {
-          downloadFromBlob(blob as never, "ádajsdkasjd", ".xlsx");
-        },
-      });
+      $api.useMutation("post", "/course-offers/export-excel");
 
     /**
      * Tạo bảng điểm để nhập

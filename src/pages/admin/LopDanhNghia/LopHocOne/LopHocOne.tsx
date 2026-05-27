@@ -21,6 +21,9 @@ import Tabs from "../../../../components/ui/Tabs";
 import TabMonHoc from "./TabMonHoc";
 import Breadcrumb from "../../../../components/ui/Breadcrum";
 import ButtonAction from "../../../../components/ui/ButtonAction";
+import { useLopHocOneContext } from "./LopHocOneProvider";
+import { downloadFromBlob } from "../../../../util/download";
+import { useAppContext } from "../../../../AppProvider";
 
 const LopHocOne = () => {
   return <Inner />;
@@ -37,8 +40,12 @@ const Inner = () => {
     isOpenModalSinhLopHocPhan,
     setIsOpenModalSinhLopHocPhan,
   } = useLopHocContext();
+  const { hocKysData } = useAppContext();
+  const { exportExcel, isExportingExcel, classSubjects, selectedSemesterId } =
+    useLopHocOneContext();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"hoc-sinh" | "mon-hoc">("mon-hoc");
+  const hocKySelected = hocKysData?.find((hk) => hk.id === selectedSemesterId);
 
   // 1. Chuẩn hóa dữ liệu thông tin cơ bản
   const dataHienThi = useMemo(
@@ -131,6 +138,28 @@ const Inner = () => {
                 variant="export"
                 label="Xuất bảng điểm học kỳ"
                 icon={<FileText className="h-4 w-4" />}
+                loading={isExportingExcel}
+                onClick={() => {
+                  return exportExcel(
+                    {
+                      parseAs: "blob",
+                      body: {
+                        classSubjectIds:
+                          classSubjects?.map((cs) => cs.id) || [],
+                        haveTongKetSheet: true,
+                      },
+                    },
+                    {
+                      onSuccess: (blob) => {
+                        downloadFromBlob(
+                          blob as never,
+                          `${LopHocDetail?.className} - ${hocKySelected?.name} - BangDiem.xlsx`,
+                          ".xlsx",
+                        );
+                      },
+                    },
+                  );
+                }}
               />
             </div>
           </div>
