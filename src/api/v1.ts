@@ -545,7 +545,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lấy danh sách tất cả lớp học */
         get: operations["ClassController_findAll"];
         put?: never;
         /** Tạo mới lớp học */
@@ -1594,6 +1593,7 @@ export interface components {
              * @example 5
              */
             curriculumCount?: number;
+            departmentId?: Record<string, never>;
         };
         TeacherSubjectResponseDto: {
             /**
@@ -2587,8 +2587,9 @@ export interface components {
              * @example 15
              */
             practiceHours: number;
-            /** @example Học về Java hoặc C++ */
-            description?: string;
+            description?: string | null;
+            testHours?: number | null;
+            departmentId?: number | null;
         };
         UpdateSubjectDto: {
             /**
@@ -2613,8 +2614,9 @@ export interface components {
              * @example 15
              */
             practiceHours: number;
-            /** @example Học về Java hoặc C++ */
-            description?: string;
+            description?: string | null;
+            testHours?: number | null;
+            departmentId?: number | null;
         };
         CreateRoomDto: {
             /**

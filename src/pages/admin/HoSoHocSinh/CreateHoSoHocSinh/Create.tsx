@@ -52,7 +52,7 @@ const CreateStudentModal: React.FC<CreateStudentModalProps> = ({
       guardianCCCD: "",
       guardianYearOfBirth: undefined,
       guardianJob: "",
-      status: "approved",
+      status: "studying",
       batchId: batchIdselected,
     },
   });
@@ -62,6 +62,11 @@ const CreateStudentModal: React.FC<CreateStudentModalProps> = ({
   const handleFormSubmit = async (data: createStudentDto) => {
     try {
       // Định dạng lại cấu trúc dữ liệu thích hợp trước khi gửi lên API Backend
+      if (!batchIdselected) {
+        alert("Vui lòng chọn khóa đào tạo cho học sinh!");
+        return;
+      }
+
       const payload = {
         ...data,
         batchId: batchIdselected,
@@ -77,8 +82,6 @@ const CreateStudentModal: React.FC<CreateStudentModalProps> = ({
           ? Number(data.guardianYearOfBirth)
           : null,
       };
-
-      console.log(payload);
 
       if (onSubmitSuccess) {
         await onSubmitSuccess(payload, () => {

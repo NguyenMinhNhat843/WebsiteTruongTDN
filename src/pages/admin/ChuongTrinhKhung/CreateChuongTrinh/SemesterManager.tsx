@@ -8,6 +8,7 @@ import {
 import type { MonHocResponse } from "../../../../features/MonHoc/MonHocProvider";
 import { useTaoChuongTrinhKhungContext } from "./CreateProgramProvider";
 import { Trash, PlusCircle, BookOpen, AlertCircle } from "lucide-react";
+import SelectSearchInput from "../../../../components/ui/Form/SelectInput";
 
 interface SemesterManagerProps {
   title?: string;
@@ -94,7 +95,6 @@ const SemesterManager = ({ title, semesterNumber }: SemesterManagerProps) => {
     [handleRemove],
   );
 
-  // 2. Khởi tạo Table instance
   const table = useReactTable({
     data: subjectsInSemester,
     columns,
@@ -102,9 +102,7 @@ const SemesterManager = ({ title, semesterNumber }: SemesterManagerProps) => {
   });
 
   return (
-    // Layout w-full rộng rãi đồng bộ với form tạo thông tin chung
     <div className="w-full bg-white rounded-xl border border-slate-200/80 shadow-sm p-6 mt-6">
-      {/* Header khu vực Học kỳ: Gồm Tiêu đề bên trái và Bộ thêm môn bên phải */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between pb-5 border-b border-slate-100 gap-4 mb-5">
         <div className="flex items-center gap-2.5">
           <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
@@ -118,21 +116,20 @@ const SemesterManager = ({ title, semesterNumber }: SemesterManagerProps) => {
         {/* Cụm Thêm môn học - Chuyển sang khung nhập to rõ, dễ đọc */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 min-w-[320px] lg:min-w-[450px]">
           <div className="relative flex-1">
-            <select
-              value={selectedSubjectId ?? ""}
+            <SelectSearchInput
+              value={selectedSubjectId ? selectedSubjectId.toString() : ""}
               onChange={(e) => {
-                const value = e.target.value;
-                setSelectedSubjectId(value ? Number(value) : null);
+                const val = e.target.value;
+                setSelectedSubjectId(val ? Number(val) : null);
               }}
-              className="w-full pl-3 pr-10 py-2 text-base border border-slate-200 rounded-xl bg-slate-50/50 focus:bg-white focus:ring-4 focus:ring-blue-500/10 focus:border-blue-500 outline-none transition-all appearance-none cursor-pointer text-slate-700"
-            >
-              <option value="">-- Chọn môn học để thêm vào kỳ --</option>
-              {monhocs?.map((s) => (
-                <option key={s.id} value={s.id}>
-                  {s.subjectName} ({s.credits} tín chỉ)
-                </option>
-              ))}
-            </select>
+              options={[
+                { value: "", label: "--- Chọn môn học ---" },
+                ...(monhocs?.map((s) => ({
+                  value: s.id.toString(),
+                  label: `${s.subjectName} (${s.credits} tín chỉ)`,
+                })) || []),
+              ]}
+            />
             <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
               <svg
                 className="w-4 h-4"

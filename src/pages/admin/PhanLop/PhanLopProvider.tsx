@@ -16,11 +16,12 @@ export const [PhanLopProvider, usePhanLopContext] = createContextProvider(
       "get",
       "/batches",
     );
+    const allBatch = batches?.filter((b) => b.majorId === selectedMajorId);
     const latestBatch = useMemo(() => {
       if (!selectedMajorId || !batches) return null;
       return batches
         .filter((b) => b.majorId === selectedMajorId)
-        .sort((a, b) => b.id - a.id)[0];
+        .sort((a, b) => (b?.id || 0) - (a?.id || 0))[0];
     }, [selectedMajorId, batches]);
 
     // get danh sách học sinh đủ điều kiện phân lớp
@@ -63,6 +64,7 @@ export const [PhanLopProvider, usePhanLopContext] = createContextProvider(
       isPendingbatches,
       phanLop,
       isPendingPhanLop,
+      allBatch,
 
       // state
       selectedMajorId,

@@ -61,6 +61,10 @@ const DanhSachHoSoHocSinh = () => {
                   onSuccess();
                   alert("Tạo hồ sơ học sinh thành công!");
                 },
+                /* eslint-disable @typescript-eslint/no-explicit-any */
+                onError: (error: any) => {
+                  alert(error.message || "Tạo hồ sơ học sinh thất bại!");
+                },
               },
             );
           }}

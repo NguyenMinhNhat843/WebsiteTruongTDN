@@ -3,7 +3,7 @@ import PageShell from "../../components/ui/PageShell";
 import { MonHocProvider, useMonHocContext } from "./MonHocProvider";
 import MonHocTable from "./TableMonHoc";
 import CreateMonHocModal from "./CreateMonHoc";
-import UpdateMonHoc from "./UpdatemonHoc";
+import UpdateMonHoc from "./UpdateMonHoc";
 
 const MonHocIndex = () => {
   return (
@@ -94,6 +94,10 @@ const Inner = () => {
               onSuccess: () => {
                 reset();
                 setIsOpenModalCreateMonHoc(false);
+              },
+              /* eslint-disable @typescript-eslint/no-explicit-any */
+              onError: (err: any) => {
+                alert(err.message || "Tạo môn học thất bại!");
               },
             },
           );
