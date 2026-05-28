@@ -177,9 +177,15 @@ const navItems: NavItem[] = [
     children: [
       {
         id: "quan-ly-nguoi-dung",
-        label: "Cán bộ & Nhân viên",
+        label: "Cán bộ & Nhân viênssss",
         icon: "👥",
         href: "/admin/users",
+      },
+      {
+        id: "quan-ly-tai-khoan",
+        label: "Quản lý tài khoản",
+        icon: "🔐",
+        href: "/admin/account",
       },
       {
         id: "phan-cong-giang-day",

@@ -66,6 +66,7 @@ import LopHocOne from "./pages/admin/LopDanhNghia/LopHocOne/LopHocOne";
 import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne";
 import NhanVienOne from "./pages/admin/QuanLyNhanVien/NhanVienOne/NhanVienOne";
 import NhapDiem from "./pages/admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiem";
+import QuanLyTaiKhoan from "./pages/admin/QuanLyAccount";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -241,6 +242,7 @@ function App() {
                 path="phan-cong-giang-day"
                 element={<PhanCongGiangDay />}
               />
+              <Route path="account" element={<QuanLyTaiKhoan />} />
               <Route path="users" element={<QuanLyNhanVien />} />
               <Route path="users/:staffCode" element={<NhanVienOne />} />
             </Route>

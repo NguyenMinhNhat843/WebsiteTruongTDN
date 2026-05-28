@@ -1,40 +1,45 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  USER_ROLE,
-  type UserRole,
-} from "../../features/users/types/User.types";
-// import { SelectOption } from "../../components/ui/Form/SelectOption";
+import { $api } from "../../api/client";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("abc@gmail.com");
-  const [password, setPassword] = useState("123456789");
-  const [testRole, setTestRole] = useState<UserRole>(USER_ROLE.ADMIN);
-  const [isLoading, setIsLoading] = useState(false);
+  const [username, setUsername] = useState("admin");
+  const [password, setPassword] = useState("admin");
+
+  /**
+   * api login
+   */
+  const { mutate: login, isPending: isPendingLogin } = $api.useMutation(
+    "post",
+    "/auth/login",
+  );
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
 
-    // Giả lập logic gọi API
-    console.log("Logging in with:", { email, password });
-
-    setTimeout(() => {
-      setIsLoading(false);
-      // Logic điều hướng dựa trên Role sẽ ở đây
-      if (testRole === USER_ROLE.ADMIN) {
-        navigate("/admin/home");
-      } else if (testRole === USER_ROLE.TEACHER) {
-        navigate("/teacher/home");
-      } else if (testRole === USER_ROLE.STUDENT) {
-        navigate("/student/dashboard");
-      }
-      localStorage.setItem(
-        "user",
-        JSON.stringify({ email, role: testRole, name: `${testRole} User` }),
-      );
-    }, 1500);
+    login(
+      {
+        body: {
+          username,
+          password,
+        },
+      },
+      {
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        onSuccess: (data: any) => {
+          localStorage.setItem("access_token", data?.access_token);
+          localStorage.setItem("user", JSON.stringify(data?.user));
+          navigate("/admin/home");
+        },
+        onError: (error: any) => {
+          alert(
+            "Đăng nhập thất bại: " +
+              (error?.response?.data?.message || JSON.stringify(error)),
+          );
+        },
+      },
+    );
   };
 
   return (
@@ -72,15 +77,15 @@ const LoginPage = () => {
         <form onSubmit={handleLogin} className="p-8 space-y-6">
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-2">
-              Email / Mã số
+              Username
             </label>
             <input
-              type="email"
+              type="text"
               required
               className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all outline-none"
-              placeholder="name@school.edu.vn"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Tên đăng nhập"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
 
@@ -103,25 +108,13 @@ const LoginPage = () => {
             />
           </div>
 
-          {/* Select giả lập để test Role nhanh */}
-          {/* <SelectOption
-            label="Đăng nhập với tư cách (Dành cho Test)"
-            options={[
-              { value: USER_ROLE.ADMIN, label: "Admin" },
-              { value: USER_ROLE.TEACHER, label: "Giảng viên" },
-              { value: USER_ROLE.STUDENT, label: "Sinh viên" },
-            ]}
-            value={testRole}
-            onChange={(e) => setTestRole(e.target.value as UserRole)}
-          /> */}
-
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isPendingLogin}
             className={`w-full py-3 rounded-xl font-bold text-white shadow-lg transition-all 
-              ${isLoading ? "bg-indigo-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]"}`}
+              ${isPendingLogin ? "bg-indigo-400 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700 active:scale-[0.98]"}`}
           >
-            {isLoading ? "Đang xác thực..." : "Đăng Nhập"}
+            {isPendingLogin ? "Đang xác thực..." : "Đăng Nhập"}
           </button>
         </form>
       </div>

@@ -268,6 +268,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Đăng ký tài khoản mới */
+        post: operations["AuthController_register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/auth/login": {
         parameters: {
             query?: never;
@@ -1147,7 +1164,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lấy danh sách lớp học phần */
+        /** Lấy danh sách ClassSubject */
         get: operations["CourseOfferController_getAll"];
         put?: never;
         post?: never;
@@ -1203,6 +1220,23 @@ export interface paths {
         put?: never;
         /** Tự động tạo lớp học phần cho một lớp hành chính */
         post: operations["CourseOfferController_generateSectionsForClass"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/course-offers/assign-teacher": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Phân công giáo viên giảng dạy cho từng lớp */
+        post: operations["CourseOfferController_assignTeacher"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2032,11 +2066,33 @@ export interface components {
             teacherId?: number;
             subjectId?: number;
         };
+        RegisterDto: {
+            /** @example newuser */
+            username: string;
+            password: string;
+            /** @enum {string} */
+            role: "admin" | "teacher" | "student" | "staff";
+        };
         LoginDto: {
             /** @example admin */
             username: string;
             /** @example 123456 */
             password: string;
+        };
+        AccountResponseDto: {
+            role: string;
+            id: number;
+            /** Format: date-time */
+            createdAt: string;
+            deletedAt: Record<string, never>;
+            isActive: boolean;
+            lastLoginAt: Record<string, never>;
+            passwordHash: string;
+            staffId: Record<string, never>;
+            studentId: Record<string, never>;
+            /** Format: date-time */
+            updatedAt: string;
+            username: string;
         };
         CreateDepartmentDto: {
             /**
@@ -3372,11 +3428,7 @@ export interface components {
              * @example 2026-06-01T00:00:00.000Z
              */
             registrationStart?: string | null;
-            /**
-             * @description ID của giáo viên giảng dạy
-             * @example 12
-             */
-            teacherId?: Record<string, never> | null;
+            teacherId: number;
             /**
              * @description ID của học kỳ
              * @example 3
@@ -3445,6 +3497,21 @@ export interface components {
              * @example false
              */
             isExisted: boolean;
+        };
+        SearchCourseOfferDto: {
+            /** @description ID của lớp hành chính (Lớp danh nghĩa) */
+            classId?: number;
+            /** @description ID của ngành học */
+            majorId?: number;
+            /** @description ID của học kỳ */
+            semesterId?: number;
+            /** @description ID của giảng viên phụ trách */
+            teacherId?: number;
+            /**
+             * @description Trạng thái lớp học phần (planned, open, closed, cancelled)
+             * @enum {string}
+             */
+            status?: "planned" | "open" | "closed" | "cancelled";
         };
         CourseOfferRegisResponseDto: {
             id: number;
@@ -4174,6 +4241,27 @@ export interface operations {
             };
         };
     };
+    AuthController_register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     AuthController_login: {
         parameters: {
             query?: never;
@@ -4197,7 +4285,9 @@ export interface operations {
     };
     AuthController_getAllAccount: {
         parameters: {
-            query?: never;
+            query?: {
+                role?: "admin" | "teacher" | "student" | "staff";
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -4208,7 +4298,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["AccountResponseDto"][];
+                };
             };
         };
     };
@@ -6286,6 +6378,27 @@ export interface operations {
         requestBody?: never;
         responses: {
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CourseOfferController_assignTeacher: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SearchCourseOfferDto"];
+            };
+        };
+        responses: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
