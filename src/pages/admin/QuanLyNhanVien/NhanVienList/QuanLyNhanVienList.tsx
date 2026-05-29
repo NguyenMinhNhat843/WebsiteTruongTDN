@@ -5,14 +5,7 @@ import {
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
-import {
-  Calendar,
-  Briefcase,
-  Hash,
-  Building2,
-  MoreHorizontal,
-  User,
-} from "lucide-react";
+import { Calendar, Briefcase, Hash, Building2, User, Eye } from "lucide-react";
 import {
   useQuanLyNguoiDungContext,
   type StaffDto,
@@ -20,6 +13,7 @@ import {
 import PageShell from "../../../../components/ui/PageShell";
 import CreateNhanVien from "./CreateNhanVien";
 import { useNavigate } from "react-router-dom";
+import ButtonAction from "../../../../components/ui/ButtonAction";
 
 const columnHelper = createColumnHelper<StaffDto>();
 
@@ -42,15 +36,7 @@ const QuanLyNhanVienList = () => {
       }),
       columnHelper.accessor("fullName", {
         header: "Họ và tên",
-        cell: (info) => (
-          <span
-            onClick={() =>
-              navigate(`/admin/users/${info.row.original.staffCode}`)
-            }
-          >
-            {info.getValue()}
-          </span>
-        ),
+        cell: (info) => <span>{info.getValue()}</span>,
       }),
       columnHelper.accessor("staffCode", {
         header: "Mã NV",
@@ -124,10 +110,17 @@ const QuanLyNhanVienList = () => {
       }),
       columnHelper.display({
         id: "actions",
-        cell: () => (
-          <button className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400 hover:text-slate-600">
-            <MoreHorizontal size={18} />
-          </button>
+        cell: (info) => (
+          <div>
+            <ButtonAction
+              variant="outline"
+              title="Xem chi tiết"
+              icon={<Eye size={16} className="hover:text-blue-600" />}
+              onClick={() =>
+                navigate(`/admin/users/${info.row.original.staffCode}`)
+              }
+            />
+          </div>
         ),
       }),
     ],
