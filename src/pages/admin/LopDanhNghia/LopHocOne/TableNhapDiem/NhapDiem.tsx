@@ -386,7 +386,7 @@ const NhapDiem = () => {
             Bảng Nhập Điểm
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Quản lý, theo dõi và cập nhật điểm số trực tiếp của lớp học
+            {"Môn học: " + (classSubject?.subject?.subjectName || "N/A")}
           </p>
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">

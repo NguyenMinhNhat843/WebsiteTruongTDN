@@ -1,12 +1,8 @@
-import {
-  useGetGradeComponents,
-  useGetMonHocDetail,
-  useUpdateMonHoc,
-} from "./monHocHooks";
+import { useGetMonHocDetail, useUpdateMonHoc } from "./monHocHooks";
 import { X, Check, BookOpen, Layers } from "lucide-react";
 import { useForm } from "react-hook-form";
 import type { UpdateMonHocDto } from "./MonHocProvider";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 interface UpdateMonHocModalProps {
   idSelected: number | null;
@@ -17,14 +13,6 @@ const UpdateMonHoc = ({ idSelected, onClose }: UpdateMonHocModalProps) => {
   const { isPending, updateMonHoc } = useUpdateMonHoc();
   const { monHocDetail, isMonHocDetailLoading } =
     useGetMonHocDetail(idSelected);
-  const { diemComponents } = useGetGradeComponents();
-
-  // Khởi tạo Map danh mục để hỗ trợ tìm kiếm nhanh tên đầu điểm theo ID
-  const diemComponentsMap = useMemo(() => {
-    return Object.fromEntries(
-      diemComponents?.map((component) => [component.id, component]) ?? [],
-    );
-  }, [diemComponents]);
 
   const {
     register,
@@ -52,7 +40,7 @@ const UpdateMonHoc = ({ idSelected, onClose }: UpdateMonHocModalProps) => {
         description: monHocDetail.description || "",
       });
     }
-  }, [idSelected, monHocDetail, diemComponentsMap, reset]);
+  }, [idSelected, monHocDetail, reset]);
 
   // Submit cập nhật dữ liệu
   const handleInternalSubmit = (data: UpdateMonHocDto) => {

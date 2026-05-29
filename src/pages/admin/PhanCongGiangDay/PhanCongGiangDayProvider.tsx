@@ -17,14 +17,29 @@ export const [PhanCongGiangDayProvider, usePhanCongGiangDayContext] =
     /**
      * Lấy danh sách tất cả classSubject theo học kỳ
      */
-    const { data: classSubjects, isLoading: isLoadingClassSubjects } =
-      $api.useQuery("get", "/course-offers", {
-        params: {
-          query: {
-            ...filterClassSubject,
-          },
+    const {
+      data: classSubjects,
+      isLoading: isLoadingClassSubjects,
+      refetch: refetchClassSubjects,
+    } = $api.useQuery("get", "/course-offers", {
+      params: {
+        query: {
+          ...filterClassSubject,
         },
-      });
+      },
+    });
+
+    /**
+     * Sinh toàn bộ ClassSubject cho học kỳ này
+     */
+    const {
+      mutate: generateClassSubject,
+      isPending: isPendingGenerateClassSubject,
+    } = $api.useMutation("post", "/course-offers/gen-classSubject", {
+      onSuccess: () => {
+        refetchClassSubjects();
+      },
+    });
 
     /**
      * Phân công giáo viên
@@ -37,6 +52,9 @@ export const [PhanCongGiangDayProvider, usePhanCongGiangDayContext] =
       isLoadingClassSubjects,
       assignTeacher,
       isPendingAssignTeacher,
+      generateClassSubject,
+      isPendingGenerateClassSubject,
+      refetchClassSubjects,
 
       // state
       filterClassSubject,

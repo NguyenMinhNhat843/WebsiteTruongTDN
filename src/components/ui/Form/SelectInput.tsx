@@ -39,9 +39,10 @@ const SelectSearchInput = React.forwardRef<
   ) => {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
-
-    // Thêm state để theo dõi index của option đang được "focus" bằng bàn phím
     const [focusedIndex, setFocusedIndex] = useState(-1);
+
+    // Cờ hiệu để chặn việc tự động mở lại khi vừa click chọn xong
+    const isSelectingRef = useRef(false);
 
     const [localValue, setLocalValue] = useState<string | number | undefined>(
       Array.isArray(value) ? value[0] : (value as string | number | undefined),
@@ -56,8 +57,7 @@ const SelectSearchInput = React.forwardRef<
 
     const containerRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
-
-    // Ref để cuộn danh sách tự động theo phím mũi tên
+    const searchInputRef = useRef<HTMLInputElement>(null);
     const optionsContainerRef = useRef<HTMLDivElement>(null);
 
     useImperativeHandle(ref, () => inputRef.current!);
@@ -78,14 +78,10 @@ const SelectSearchInput = React.forwardRef<
         document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // Lọc options dựa trên từ khóa search
     const filteredOptions = options.filter((option) =>
       option.label.toLowerCase().includes(searchTerm.toLowerCase()),
     );
 
-    // Reset focusedIndex mỗi khi đóng/mở hoặc thay đổi từ khóa tìm kiếm
-
-    // Tự động cuộn phần tử được hover/focus bằng bàn phím vào vùng nhìn thấy (Scroll Into View)
     useEffect(() => {
       if (focusedIndex >= 0 && optionsContainerRef.current) {
         const container = optionsContainerRef.current;
@@ -106,13 +102,16 @@ const SelectSearchInput = React.forwardRef<
       }
     }, [focusedIndex]);
 
-    // Lấy label của option đang được chọn
     const selectedOption = options.find((opt) => opt.value === selectedValue);
 
     const handleSelectOption = (option: SelectOptionType) => {
+      isSelectingRef.current = true; // Bật cờ chặn tự động mở
       setLocalValue(option.value);
       setIsOpen(false);
       setSearchTerm("");
+
+      // Tập trung lại vào ô input để người dùng có thể Tab tiếp tục sang ô khác
+      searchInputRef.current?.focus();
 
       if (onChange) {
         onChange({
@@ -122,6 +121,11 @@ const SelectSearchInput = React.forwardRef<
           },
         });
       }
+
+      // Tắt cờ sau khi luồng focus đã ổn định
+      setTimeout(() => {
+        isSelectingRef.current = false;
+      }, 100);
     };
 
     const handleClearSelection = (e: React.MouseEvent) => {
@@ -137,10 +141,14 @@ const SelectSearchInput = React.forwardRef<
       }
     };
 
-    // Xử lý sự kiện bàn phím khi đang tương tác tại ô nhập dữ liệu
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (!isOpen) {
-        if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter") {
+        if (
+          e.key === "ArrowDown" ||
+          e.key === "ArrowUp" ||
+          e.key === "Enter" ||
+          e.key === " "
+        ) {
           e.preventDefault();
           setIsOpen(true);
         }
@@ -166,11 +174,18 @@ const SelectSearchInput = React.forwardRef<
           e.preventDefault();
           if (focusedIndex >= 0 && focusedIndex < filteredOptions.length) {
             handleSelectOption(filteredOptions[focusedIndex]);
+          } else if (filteredOptions.length > 0 && focusedIndex === -1) {
+            handleSelectOption(filteredOptions[0]);
           }
           break;
 
         case "Escape":
           e.preventDefault();
+          setIsOpen(false);
+          setSearchTerm("");
+          break;
+
+        case "Tab":
           setIsOpen(false);
           setSearchTerm("");
           break;
@@ -188,14 +203,11 @@ const SelectSearchInput = React.forwardRef<
           className,
         )}
       >
-        {/* Label */}
         {label && (
           <label className="text-sm font-medium text-slate-700">{label}</label>
         )}
 
-        {/* Khung chứa Input hiển thị chính */}
         <div className="relative">
-          {/* Input ẩn phục vụ cho React Hook Form lấy data */}
           <input
             type="hidden"
             name={name}
@@ -204,51 +216,64 @@ const SelectSearchInput = React.forwardRef<
             {...props}
           />
 
-          {/* Hộp Select tích hợp ô Search trực tiếp */}
           <div
             onClick={() => {
-              if (!isOpen) setIsOpen(true);
+              if (!isOpen) {
+                setIsOpen(true);
+                searchInputRef.current?.focus();
+              }
             }}
             className={cn(
-              "w-full flex items-center justify-between px-3 py-2 text-sm bg-white border rounded-lg transition-all duration-200 select-none border-slate-200 hover:border-slate-300",
+              "w-full flex items-center justify-between px-3 py-2 text-sm bg-white border rounded-lg transition-all duration-200 select-none border-slate-200 hover:border-slate-300 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-500/20",
               isOpen ? "border-blue-500 ring-2 ring-blue-500/20" : "",
               error
-                ? "border-red-500 ring-2 ring-red-500/10 hover:border-red-500"
+                ? "border-red-500 ring-2 ring-red-500/10 hover:border-red-500 focus-within:border-red-500 focus-within:ring-red-500/10"
                 : "",
             )}
           >
-            {isOpen ? (
-              /* TRẠNG THÁI MỞ: Biến thành ô Input để Search trực tiếp tại đây */
-              <div className="flex items-center gap-2 flex-1 mr-2">
-                <Search className="w-4 h-4 text-slate-400 shrink-0" />
-                <input
-                  type="text"
-                  placeholder={
-                    selectedOption ? selectedOption.label : placeholder
-                  }
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    setFocusedIndex(-1);
-                  }}
-                  onKeyDown={handleKeyDown} // Gắn bộ lắng nghe sự kiện phím tại đây
-                  className="w-full bg-transparent focus:outline-none text-slate-900 placeholder:text-slate-400 text-sm"
-                  autoFocus
-                />
-              </div>
-            ) : (
-              /* TRẠNG THÁI ĐÓNG: Hiển thị Label hoặc Placeholder bình thường */
-              <span
-                className={cn(
-                  "truncate text-slate-900",
-                  !selectedOption && "text-slate-400",
-                )}
-              >
-                {selectedOption ? selectedOption.label : placeholder}
-              </span>
-            )}
+            <div className="flex items-center gap-2 flex-1 mr-2 relative min-w-0 min-h-[20px]">
+              {isOpen && <Search className="w-4 h-4 text-slate-400 shrink-0" />}
 
-            {/* Các nút chức năng (Xóa lựa chọn và Mũi tên Dropdown) */}
+              <input
+                ref={searchInputRef}
+                type="text"
+                placeholder={
+                  isOpen
+                    ? selectedOption
+                      ? selectedOption.label
+                      : placeholder
+                    : ""
+                }
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  setFocusedIndex(-1);
+                }}
+                onKeyDown={handleKeyDown}
+                onFocus={() => {
+                  // Chỉ tự động mở nếu không phải hành động vừa click chọn xong
+                  if (!isSelectingRef.current) {
+                    setIsOpen(true);
+                  }
+                }}
+                className={cn(
+                  "w-full bg-transparent focus:outline-none text-slate-900 placeholder:text-slate-400 text-sm",
+                  !isOpen ? "absolute inset-0 opacity-0 cursor-pointer" : "",
+                )}
+              />
+
+              {!isOpen && (
+                <span
+                  className={cn(
+                    "truncate text-slate-900 pointer-events-none pr-4",
+                    !selectedOption && "text-slate-400",
+                  )}
+                >
+                  {selectedOption ? selectedOption.label : placeholder}
+                </span>
+              )}
+            </div>
+
             <div className="flex items-center gap-1 text-slate-400 shrink-0">
               {selectedValue && !isOpen && (
                 <X
@@ -280,26 +305,28 @@ const SelectSearchInput = React.forwardRef<
           </div>
         </div>
 
-        {/* Dropdown Menu (Chỉ còn chứa danh sách Options kết quả) */}
         {isOpen && (
           <div
             className="absolute left-0 right-0 z-50 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg max-h-48 flex flex-col overflow-hidden"
             style={{ top: "100%" }}
           >
             <div
-              ref={optionsContainerRef} // Gắn ref để tính toán điểm cuộn (scroll)
+              ref={optionsContainerRef}
               className="overflow-y-auto flex-1 py-1 divide-y divide-slate-50"
             >
               {filteredOptions.length > 0 ? (
                 filteredOptions.map((option, index) => {
                   const isSelected = option.value === selectedValue;
-                  const isFocused = index === focusedIndex; // Kiểm tra xem index này có đang được chọn bằng bàn phím không
+                  const isFocused = index === focusedIndex;
 
                   return (
                     <div
                       key={option.value}
-                      onClick={() => handleSelectOption(option)}
-                      onMouseEnter={() => setFocusedIndex(index)} // Rê chuột vào đâu thì đồng bộ tiêu điểm bàn phím vào đó
+                      onClick={(e) => {
+                        e.stopPropagation(); // Ngăn chặn nổi bọt sự kiện lên thẻ cha onClick
+                        handleSelectOption(option);
+                      }}
+                      onMouseEnter={() => setFocusedIndex(index)}
                       className={cn(
                         "px-4 py-2 text-sm cursor-pointer transition-colors flex items-center justify-between text-slate-700",
                         isFocused
@@ -321,7 +348,6 @@ const SelectSearchInput = React.forwardRef<
           </div>
         )}
 
-        {/* Hiển thị thông báo lỗi */}
         {error && (
           <span className="text-xs text-red-500 font-medium">{error}</span>
         )}

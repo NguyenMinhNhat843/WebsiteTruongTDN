@@ -6,7 +6,8 @@ import {
   flexRender,
   type ColumnDef,
 } from "@tanstack/react-table";
-import { Loader2 } from "lucide-react";
+import { Loader2, Trash2 } from "lucide-react";
+import ButtonAction from "../../../../components/ui/ButtonAction";
 
 const TableDanhSachHocSinh = () => {
   const { studentsInLopHoc, isLoadingStudentsInLopHoc, isLoadingLopHocDetail } =
@@ -53,6 +54,19 @@ const TableDanhSachHocSinh = () => {
       {
         header: "Ngày sinh",
         accessorKey: "dob",
+      },
+      {
+        id: "actions",
+        header: "hành động",
+        cell: () => {
+          return (
+            <ButtonAction
+              title="Xóa học sinh khỏi lớp học"
+              variant="outline"
+              icon={<Trash2 className="h-4 w-4 hover:text-red-500" />}
+            />
+          );
+        },
       },
     ],
     [],

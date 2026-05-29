@@ -1209,6 +1209,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/course-offers/gen-classSubject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tự động tạo lớp học phần cho toàn bộ lớp hành chính */
+        post: operations["CourseOfferController_generateClassSubject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/course-offers/gen-classSubject-grades": {
         parameters: {
             query?: never;
@@ -2465,6 +2482,14 @@ export interface components {
              */
             endDate: string;
             /**
+             * @description Số tuần học chính thức trong học kỳ (không bắt buộc)
+             * @example 18
+             */
+            teachingWeeks?: number;
+            schoolYear?: string;
+            /** @enum {string} */
+            status?: "CLOSE" | "ACTIVE" | "UPCOMING" | "DRAFT";
+            /**
              * @description Đánh dấu là học kỳ hiện tại
              * @default false
              * @example false
@@ -2539,6 +2564,14 @@ export interface components {
              * @example 2027-01-15
              */
             endDate?: string;
+            /**
+             * @description Số tuần học chính thức trong học kỳ (không bắt buộc)
+             * @example 18
+             */
+            teachingWeeks?: number;
+            schoolYear?: string;
+            /** @enum {string} */
+            status?: "CLOSE" | "ACTIVE" | "UPCOMING" | "DRAFT";
             /**
              * @description Đánh dấu là học kỳ hiện tại
              * @default false
@@ -6362,6 +6395,25 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ResponsePreviewGenerateSectionForClass"][];
                 };
+            };
+        };
+    };
+    CourseOfferController_generateClassSubject: {
+        parameters: {
+            query: {
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

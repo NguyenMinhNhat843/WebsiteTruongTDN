@@ -110,12 +110,6 @@ const ModalCreateClassSubject = ({
             <span className="text-sm font-medium text-blue-800">
               Học kỳ áp dụng:
             </span>
-            {/* <span
-              className="text-sm font-bold text-blue-600 bg-white px-3 py-1 rounded-lg 
-            border border-blue-200/60 shadow-xs"
-            >
-              {currentSemester?.name || "Chưa chọn học kỳ"}
-            </span> */}
             <SelectSearchInput
               options={hocKyOptions}
               value={semesterIdSelected ?? ""}

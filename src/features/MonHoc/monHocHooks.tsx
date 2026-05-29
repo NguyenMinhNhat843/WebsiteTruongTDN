@@ -57,12 +57,3 @@ export const useUpdateMonHoc = () => {
     updateMonHocError,
   };
 };
-
-export const useGetGradeComponents = () => {
-  // Lấy danh mục các cột điểm
-  const { data: diemComponents } = $api.useQuery("get", "/grade-components");
-
-  return {
-    diemComponents,
-  };
-};

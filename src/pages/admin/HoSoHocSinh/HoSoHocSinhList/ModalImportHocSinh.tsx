@@ -34,7 +34,6 @@ const ImportStudentModal = ({ isOpen, onClose }: ImportStudentModalProps) => {
     label: khoa.batchCode,
     value: khoa.id,
   }));
-  console.log("Danh sách khóa học sau khi chọn ngành:", KhoaHocOptions);
 
   const TEMPLATE_FILE_URL = "/FileTemplates/dsHocSinhTHUD.xlsx";
 
@@ -48,7 +47,7 @@ const ImportStudentModal = ({ isOpen, onClose }: ImportStudentModalProps) => {
       const year = dateVal.getFullYear();
       const month = String(dateVal.getMonth() + 1).padStart(2, "0");
       const day = String(dateVal.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}T00:00:00.000Z`;
+      return `${year}-${month}-${day}T00:00:00.000`;
     }
 
     if (typeof dateVal === "string" && dateVal.trim() !== "") {
@@ -57,7 +56,7 @@ const ImportStudentModal = ({ isOpen, onClose }: ImportStudentModalProps) => {
         const year = parsedDate.getFullYear();
         const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
         const day = String(parsedDate.getDate()).padStart(2, "0");
-        return `${year}-${month}-${day}T00:00:00.000Z`;
+        return `${year}-${month}-${day}T00:00:00.000`;
       }
     }
 

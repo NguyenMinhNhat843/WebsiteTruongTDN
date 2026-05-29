@@ -1,4 +1,4 @@
-import type { UserRole } from "../../features/users/types/User.types";
+import type { UserRole } from "../../api/enum/UserEnum";
 
 export interface NavItem {
   id: string;

@@ -40,6 +40,8 @@ const Inner = () => {
     setFilterClassSubject,
     assignTeacher,
     isPendingAssignTeacher,
+    generateClassSubject,
+    isPendingGenerateClassSubject,
   } = usePhanCongGiangDayContext();
 
   const { hocKysData, isHocKysLoading, isMajorsLoading, majors } =
@@ -170,36 +172,76 @@ const Inner = () => {
       sub="Quản lý và điều phối giáo viên hướng dẫn cho các lớp học phần"
       icon={Layers}
       renderRight={
-        <ButtonAction
-          variant="outline"
-          label="Phân công giảng dạy"
-          icon={<UserCheck size={16} />}
-          loading={isPendingAssignTeacher}
-          onClick={() => {
-            assignTeacher(
-              {
-                body: {
-                  ...filterClassSubject,
+        <div className="flex items-center gap-3">
+          <ButtonAction
+            variant="outline"
+            label="Phân công giảng dạy"
+            icon={<UserCheck size={16} />}
+            loading={isPendingAssignTeacher}
+            onClick={() => {
+              assignTeacher(
+                {
+                  body: {
+                    ...filterClassSubject,
+                  },
                 },
-              },
-              {
-                onSuccess: () => {
-                  alert("Phân công giảng dạy thành công!");
+                {
+                  onSuccess: () => {
+                    alert("Phân công giảng dạy thành công!");
+                  },
+                  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                  onError: (err: any) => {
+                    alert(
+                      "Có lỗi xảy ra khi phân công giảng dạy: " +
+                        (err?.response?.data?.message ||
+                          err.message ||
+                          JSON.stringify(err) ||
+                          "Unknown error"),
+                    );
+                  },
                 },
-                /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-                onError: (err: any) => {
-                  alert(
-                    "Có lỗi xảy ra khi phân công giảng dạy: " +
-                      (err?.response?.data?.message ||
-                        err.message ||
-                        JSON.stringify(err) ||
-                        "Unknown error"),
-                  );
+              );
+            }}
+          />
+          <ButtonAction
+            label="Sinh dữ liệu môn học cho học kỳ"
+            variant="outline"
+            icon={<Calendar size={16} />}
+            loading={isPendingGenerateClassSubject}
+            onClick={() => {
+              if (!filterClassSubject || !filterClassSubject.semesterId) {
+                alert(
+                  "Vui lòng chọn học kỳ trước khi sinh dữ liệu lớp học phần!",
+                );
+                return;
+              }
+              generateClassSubject(
+                {
+                  params: {
+                    query: {
+                      semesterId: filterClassSubject!.semesterId!,
+                    },
+                  },
                 },
-              },
-            );
-          }}
-        />
+                {
+                  onSuccess: () => {
+                    alert("Sinh dữ liệu lớp học phần thành công!");
+                  },
+                  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                  onError: (err: any) => {
+                    alert(
+                      "Có lỗi xảy ra khi sinh dữ liệu lớp học phần: " +
+                        (err?.response?.data?.message ||
+                          err.message ||
+                          JSON.stringify(err) ||
+                          "Unknown error"),
+                    );
+                  },
+                },
+              );
+            }}
+          />
+        </div>
       }
     >
       {/* Khu vực Bộ lọc (Filters) */}

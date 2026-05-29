@@ -6,26 +6,26 @@ const navItems: NavItem[] = [
     label: "Home",
     icon: "⬡",
     href: "/admin/home",
-    roles: ["ADMIN", "TEACHER", "STUDENT"], // Ai cũng thấy
+    roles: ["admin", "teacher", "student"],
   },
   // --- NHÓM ĐÀO TẠO & HỌC TẬP ---
   {
     id: "quan-ly-dao-tao",
     label: "Quản lý Đào tạo",
     icon: "📚",
-    roles: ["ADMIN", "TEACHER"],
+    roles: ["admin", "teacher"],
     children: [
       {
         id: "chuong-trinh-khung",
         label: "Chương trình khung",
         href: "/admin/dao-tao/chuong-trinh-khung",
-        roles: ["ADMIN"], // Chỉ admin mới được xem chương trình khung
+        roles: ["admin"],
       },
       {
         id: "tao-chuong-trinh-khung",
         label: "Tạo chương trình khung",
         href: "/admin/dao-tao/tao-chuong-trinh-khung",
-        roles: ["ADMIN", "TEACHER"],
+        roles: ["admin", "teacher"],
       },
       {
         id: "lop-hoc",
@@ -36,43 +36,43 @@ const navItems: NavItem[] = [
         id: "khoa",
         label: "Khoa",
         href: "/admin/dao-tao/khoa",
-        roles: ["ADMIN", "TEACHER"],
+        roles: ["admin", "teacher"],
       },
       {
         id: "mon-hoc",
         label: "Môn học",
         href: "/admin/mon-hoc",
-        roles: ["ADMIN", "TEACHER"],
+        roles: ["admin", "teacher"],
       },
       {
         id: "khoa-dao-tao",
         label: "Khóa đào tạo",
         href: "/admin/khoa-dao-tao",
-        roles: ["ADMIN", "TEACHER"],
+        roles: ["admin", "teacher"],
       },
       {
         id: "nganh",
         label: "Ngành học",
         href: "/admin/nganh-hoc",
-        roles: ["ADMIN", "TEACHER"],
+        roles: ["admin", "teacher"],
       },
       {
         id: "hoc-ky",
         label: "Học kỳ",
         href: "/admin/hoc-ky",
-        roles: ["ADMIN", "TEACHER"],
+        roles: ["admin", "teacher"],
       },
       {
         id: "tieu-chuan-tuyen-sinh",
         label: "Tiêu chuẩn tuyển sinh",
         href: "/admin/tieu-chuan-tuyen-sinh",
-        roles: ["ADMIN", "TEACHER"],
+        roles: ["admin", "teacher"],
       },
       {
         id: "thoi-khoa-bieu",
         label: "Thời khóa biểu",
         href: "/admin/dao-tao/thoi-khoa-bieu",
-        roles: ["ADMIN", "TEACHER"],
+        roles: ["admin", "teacher"],
       },
     ],
   },

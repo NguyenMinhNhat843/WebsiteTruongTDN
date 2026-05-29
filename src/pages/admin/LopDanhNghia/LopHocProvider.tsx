@@ -155,8 +155,7 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     {
       enabled:
         Boolean(LopHocDetail) &&
-        Boolean(currentSemester) &&
-        Boolean(currentSemester?.id),
+        (Boolean(currentSemester) || Boolean(currentSemester?.id)),
     },
   );
 

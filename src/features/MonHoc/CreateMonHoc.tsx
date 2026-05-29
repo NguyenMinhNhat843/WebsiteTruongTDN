@@ -160,7 +160,6 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
               <Controller
                 name="departmentId"
                 control={control}
-                rules={{ required: "Vui lòng chọn khoa hoặc bộ môn quản lý" }}
                 render={({ field: { onChange, value, name, ref } }) => (
                   <SelectSearchInput
                     ref={ref}
