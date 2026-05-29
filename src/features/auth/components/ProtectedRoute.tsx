@@ -12,8 +12,9 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   // Giả sử lấy thông tin user từ localStorage hoặc AuthContext
   const userStr = localStorage.getItem("user");
   const user = userStr ? JSON.parse(userStr) : null;
+  const access_token = localStorage.getItem("access_token");
 
-  if (!user) {
+  if (!user || !access_token) {
     return <Navigate to="/admin/login" state={{ from: location }} replace />;
   }
 
