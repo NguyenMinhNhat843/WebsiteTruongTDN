@@ -67,6 +67,7 @@ import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinh
 import NhanVienOne from "./pages/admin/QuanLyNhanVien/NhanVienOne/NhanVienOne";
 import NhapDiem from "./pages/admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiem";
 import QuanLyTaiKhoan from "./pages/admin/QuanLyAccount";
+import TienDoDaoTao from "./pages/admin/TienDoGiangDay";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -160,11 +161,15 @@ function App() {
                   path="dao-tao/lop-hoc/:idLopHoc"
                   element={<LopHocOne />}
                 />
-                <Route
-                  path="dao-tao/lop-hoc/:idLopHoc/:idClassSubject"
-                  element={<NhapDiem />}
-                />
               </Route>
+              <Route
+                path="dao-tao/lop-hoc/:idLopHoc/:idClassSubject"
+                element={<NhapDiem />}
+              />
+              <Route
+                path="dao-tao/tien-do-dao-tao"
+                element={<TienDoDaoTao />}
+              />
               <Route
                 path="dao-tao/thoi-khoa-bieu"
                 element={<TimetablePage />}

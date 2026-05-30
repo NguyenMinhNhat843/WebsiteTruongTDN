@@ -411,6 +411,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/batches/{id}/subjects": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách môn học của một khóa đào tạo theo học kỳ */
+        get: operations["BatchController_getBatchSubjectsBySemester"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/batches/{id}": {
         parameters: {
             query?: never;
@@ -1120,6 +1137,23 @@ export interface paths {
         head?: never;
         /** Cập nhật thiết lập giá tín chỉ */
         patch: operations["CreditPriceController_update"];
+        trace?: never;
+    };
+    "/schedule/generate-schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tạo lịch học cho 1 lớp, 1 học kỳ */
+        post: operations["ScheduleController_generateScheduleForAClass"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/posts": {
@@ -2232,6 +2266,29 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
         };
+        CurriculumSubjectResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example 1 */
+            curriculumId: number;
+            /** @example 1 */
+            subjectId: number;
+            /** @example 1 */
+            semesterNumber: number;
+            /** @example true */
+            isMandatory: boolean;
+            /** @example 5 */
+            minGrade: number;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /** @description Thông tin chi tiết môn học */
+            subject?: components["schemas"]["SubjectResponseDto"];
+            /** @description Thông tin chương trình khung */
+            curriculum?: Record<string, never>;
+        };
         UpdateBatchDto: {
             /**
              * @description Mã khóa học viết tắt
@@ -2345,29 +2402,6 @@ export interface components {
             isActive: boolean;
             /** @description Danh sách các môn học thuộc chương trình khung */
             curriculumSubjects: components["schemas"]["CreateCurriculumSubjectDto"][];
-        };
-        CurriculumSubjectResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example 1 */
-            curriculumId: number;
-            /** @example 1 */
-            subjectId: number;
-            /** @example 1 */
-            semesterNumber: number;
-            /** @example true */
-            isMandatory: boolean;
-            /** @example 5 */
-            minGrade: number;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /** @description Thông tin chi tiết môn học */
-            subject?: components["schemas"]["SubjectResponseDto"];
-            /** @description Thông tin chương trình khung */
-            curriculum?: Record<string, never>;
         };
         CurriculumResponseDto: {
             /** @example 1 */
@@ -3315,6 +3349,15 @@ export interface components {
              */
             price?: number;
         };
+        CreateStudyScheduleDto: {
+            classSubjectId: number;
+            /** @enum {string} */
+            dayOfWeek: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+            endPeriod: number;
+            roomId: number | null;
+            shift: string;
+            startPeriod: number;
+        };
         CreatePostDto: {
             /**
              * @description Tiêu đề của bài viết
@@ -3498,11 +3541,6 @@ export interface components {
              * @example 15
              */
             teacherId?: number;
-            /**
-             * @description Sĩ số tối đa
-             * @example 50
-             */
-            maxStudents?: number;
         };
         ResponsePreviewGenerateSectionForClass: {
             /**
@@ -3540,11 +3578,6 @@ export interface components {
             semesterId?: number;
             /** @description ID của giảng viên phụ trách */
             teacherId?: number;
-            /**
-             * @description Trạng thái lớp học phần (planned, open, closed, cancelled)
-             * @enum {string}
-             */
-            status?: "planned" | "open" | "closed" | "cancelled";
         };
         CourseOfferRegisResponseDto: {
             id: number;
@@ -4608,6 +4641,29 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    BatchController_getBatchSubjectsBySemester: {
+        parameters: {
+            query: {
+                semesterId: number;
+            };
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CurriculumSubjectResponseDto"][];
+                };
             };
         };
     };
@@ -6218,6 +6274,28 @@ export interface operations {
             };
         };
     };
+    ScheduleController_generateScheduleForAClass: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateStudyScheduleDto"][];
+            };
+        };
+        responses: {
+            /** @description Tạo tiến độ đào tạo thành công */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     PostController_findAll: {
         parameters: {
             query?: {
@@ -6310,8 +6388,6 @@ export interface operations {
                 semesterId?: number;
                 /** @description ID của giảng viên phụ trách */
                 teacherId?: number;
-                /** @description Trạng thái lớp học phần (planned, open, closed, cancelled) */
-                status?: "planned" | "open" | "closed" | "cancelled";
             };
             header?: never;
             path?: never;
