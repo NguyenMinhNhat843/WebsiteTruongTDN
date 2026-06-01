@@ -26,16 +26,17 @@ import PageShell from "../../../../components/ui/PageShell";
 import { GridIcon } from "lucide-react";
 import { EditableCell } from "./components/EditTableCell";
 import { SpinnerLoading } from "../../../../components/ui/SpinnerLoading";
+import { toast } from "sonner";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const TableTienDoDaoTao = () => {
   const {
-    setSemesterId,
+    // setSemesterId,
     semesterId,
     classes,
     isLoadingClasses,
     classId,
-    setClassId,
+    // setClassId,
     classSubjects,
     createStudySchedule,
     isCreatingStudySchedule,
@@ -44,6 +45,9 @@ const TableTienDoDaoTao = () => {
     teachers,
     isLoadingTeachers,
     isLoadingClassSubjects,
+    searchParams,
+    setSearchParams,
+    assignTeacher,
   } = useTienDoDaoTaoContext();
   const { hocKysData, isHocKysLoading } = useAppContext();
   const hocKysSelected = hocKysData?.find((hk) => hk.id === semesterId);
@@ -86,10 +90,10 @@ const TableTienDoDaoTao = () => {
       const thu = convertEnumDayOfWeekToString(dayOfWeek) || "";
 
       const rowData: any = {
-        id: mon.id || index,
+        id: mon.id,
         stt: index + 1,
         tenMonHoc: mon.subject?.subjectName || "",
-        giaoVienGiangDay: "",
+        giaoVienGiangDay: mon.teacherId || "",
         phongHoc: "",
         tongGio: tongGio,
         thu,
@@ -109,7 +113,7 @@ const TableTienDoDaoTao = () => {
     });
 
     setData(initialData);
-  }, [classSubjects, weeksList]);
+  }, [classSubjects, weeksList, studySchedule]);
 
   // Hàm cập nhật cell khi user blur ra ngoài
   const updateCellData = (rowIndex: number, columnId: string, value: any) => {
@@ -142,17 +146,40 @@ const TableTienDoDaoTao = () => {
       {
         accessorKey: "giaoVienGiangDay",
         header: "Giáo Viên Giảng Dạy",
-        size: 200,
-        cell: ({ getValue, row: { index }, column: { id } }) => {
+        size: 250,
+        cell: ({ getValue, row, column: { id } }) => {
           const currentValue = getValue();
-
           return (
             <div>
               <SelectSearchInput
                 value={currentValue as string}
                 onChange={(e) => {
                   const val = e.target.value;
-                  updateCellData(index, id, val);
+                  updateCellData(row.index, id, val);
+                  assignTeacher(
+                    {
+                      params: {
+                        path: {
+                          id: row.original.id,
+                        },
+                      },
+                      body: {
+                        teacherId: val || null,
+                      },
+                    },
+                    {
+                      onSuccess: () => {
+                        toast.success("Bổ nhiệm giáo viên thành công!");
+                      },
+                      onError: (error: any) => {
+                        toast.error(
+                          "Lỗi: ",
+                          error?.response?.data?.message ||
+                            "Bổ nhiệm giáo viên thất bại",
+                        );
+                      },
+                    },
+                  );
                 }}
                 placeholder="Chọn giáo viên"
                 disabled={isLoadingTeachers}
@@ -202,7 +229,7 @@ const TableTienDoDaoTao = () => {
       {
         accessorKey: "thu",
         header: "Thứ",
-        size: 100,
+        size: 70,
         cell: ({ getValue, row: { index }, column: { id } }) => (
           <EditableCell
             className="w-16 text-center"
@@ -216,7 +243,7 @@ const TableTienDoDaoTao = () => {
       {
         accessorKey: "tiet",
         header: "Tiết",
-        size: 100,
+        size: 70,
         cell: ({ getValue, row: { index }, column: { id } }) => (
           <EditableCell
             className="w-full text-center"
@@ -232,15 +259,14 @@ const TableTienDoDaoTao = () => {
     const weekColumns: ColumnDef<TienDoDaoTaoRow>[] = weeksList.map(
       (week, idx) => ({
         accessorKey: `tuan_${idx + 1}`,
-        size: 110,
+        size: 100,
         header: () => (
           <div className="flex flex-col items-center justify-center leading-tight">
             <span className="font-semibold text-gray-800">
               {week.weekNumber}
             </span>
             <span className="text-[10px] text-gray-400 font-normal mt-0.5">
-              ({formatDateToString(week.start).slice(0, 5)} -{" "}
-              {formatDateToString(week.end).slice(0, 5)})
+              {formatDateToString(week.start).slice(0, 5)}
             </span>
           </div>
         ),
@@ -334,7 +360,16 @@ const TableTienDoDaoTao = () => {
             <SelectOption
               label="Học kỳ"
               value={semesterId ?? ""}
-              onChange={(e) => setSemesterId(Number(e.target.value))}
+              onChange={(e) => {
+                const value = e.target.value;
+                // setSemesterId(Number(value));
+                if (value) {
+                  searchParams.set("semesterId", value);
+                } else {
+                  searchParams.delete("semesterId");
+                }
+                setSearchParams(searchParams);
+              }}
               disabled={isHocKysLoading}
               options={[
                 { label: "Chọn học kỳ", value: "" },
@@ -349,7 +384,16 @@ const TableTienDoDaoTao = () => {
             <SelectOption
               label="Lớp học"
               value={classId ?? ""}
-              onChange={(e) => setClassId(Number(e.target.value))}
+              onChange={(e) => {
+                const value = e.target.value;
+                // setClassId(Number(e.target.value));
+                if (value) {
+                  searchParams.set("classId", value);
+                } else {
+                  searchParams.delete("classId");
+                }
+                setSearchParams(searchParams);
+              }}
               disabled={isLoadingClasses}
               options={[
                 { label: "Chọn lớp học", value: "" },

@@ -35,7 +35,6 @@ const Inner = () => {
     setSemesterId,
     setClassId,
     studySchedule,
-    isLoadingStudySchedule,
   } = useThoiKhoaBieuContext();
   console.log(studySchedule);
   const semester = hocKysData?.find((hk) => hk.id === semesterId);
