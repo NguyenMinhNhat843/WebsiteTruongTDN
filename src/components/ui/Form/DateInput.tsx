@@ -24,7 +24,7 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
     ref,
   ) => {
     return (
-      <div className={clsx("w-full space-y-1.5", containerClassName)}>
+      <div className={clsx("w-full", containerClassName)}>
         {/* Label */}
         {label && (
           <label
@@ -57,7 +57,6 @@ const DateInput = forwardRef<HTMLInputElement, DateInputProps>(
                 text-sm outline-none
                 cursor-pointer
                 
-                /* Ma thuật ở đây: Phủ kín vùng click */
                 relative
                 [&::-webkit-calendar-picker-indicator]:absolute
                 [&::-webkit-calendar-picker-indicator]:inset-0

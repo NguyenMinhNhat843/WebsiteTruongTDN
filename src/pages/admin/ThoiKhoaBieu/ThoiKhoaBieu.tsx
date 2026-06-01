@@ -14,6 +14,9 @@ import {
   useThoiKhoaBieuContext,
 } from "./ThoiKhoaBieuProvider";
 import { SelectOption } from "../../../components/ui/Form/SelectOption";
+import { getWeeksInRange } from "../TienDoGiangDay/tableTienDoDaoTao/helpers";
+import ButtonAction from "../../../components/ui/ButtonAction";
+import DateInput from "../../../components/ui/Form/DateInput";
 
 const ThoiKhoaBieu = () => {
   return (
@@ -31,13 +34,26 @@ const Inner = () => {
     hocKysData,
     setSemesterId,
     setClassId,
+    studySchedule,
+    isLoadingStudySchedule,
   } = useThoiKhoaBieuContext();
+  console.log(studySchedule);
   const semester = hocKysData?.find((hk) => hk.id === semesterId);
+  const year = semester?.year;
   const startDate = semester ? new Date(semester.startDate) : null;
+  const endDate = semester ? new Date(semester.endDate) : null;
+  const weeks = getWeeksInRange(
+    startDate ? new Date(startDate) : new Date(),
+    endDate ? new Date(endDate) : new Date(),
+  );
 
-  // State quản lý tuần đang chọn (mặc định tuần 1)
   const [currentWeek, setCurrentWeek] = useState<number>(1);
-  const totalWeeks = 18; // Định nghĩa số tuần mặc định của một học kỳ
+  const dateValue = new Date(weeks[currentWeek - 1].start);
+  const month = String(
+    dateValue.getDate() ? dateValue.getMonth() + 1 : 1,
+  ).padStart(2, "0");
+  const day = String(dateValue.getDate()).padStart(2, "0");
+  const fullDateString = `${year}-${month}-${day}`;
 
   // Mảng danh sách các Thứ trong tuần
   const daysOfWeek = [
@@ -81,7 +97,7 @@ const Inner = () => {
   };
 
   const handleNextWeek = () => {
-    if (currentWeek < totalWeeks) setCurrentWeek((prev) => prev + 1);
+    if (currentWeek < weeks.length) setCurrentWeek((prev) => prev + 1);
   };
 
   return (
@@ -96,12 +112,16 @@ const Inner = () => {
           <div className="w-full sm:w-64 space-y-1.5">
             <SelectOption
               label="Chọn học kỳ để xem thời khóa biểu"
-              options={
-                hocKysData?.map((hocKy) => ({
+              options={[
+                {
+                  value: "",
+                  label: "Chọn học kỳ để xem",
+                },
+                ...(hocKysData?.map((hocKy) => ({
                   value: hocKy.id,
                   label: hocKy.name,
-                })) || []
-              }
+                })) || []),
+              ]}
               value={semesterId || undefined}
               onChange={(e) => setSemesterId(Number(e.target.value))}
             />
@@ -110,50 +130,46 @@ const Inner = () => {
           <div className="w-full sm:w-64 space-y-1.5">
             <SelectOption
               label="Chọn lớp học để xem thời khóa biểu"
-              options={
-                lopHocsData?.map((lopHoc) => ({
+              options={[
+                {
+                  value: "",
+                  label: "Chọn lớp học để xem",
+                },
+                ...(lopHocsData?.map((lopHoc) => ({
                   value: lopHoc.id,
                   label: lopHoc.className,
-                })) || []
-              }
+                })) || []),
+              ]}
               value={classId || undefined}
               onChange={(e) => setClassId(Number(e.target.value))}
             />
           </div>
 
           {/* Bộ chọn nhanh Tuần nằm trong thanh Filter */}
-          <div className="w-full sm:w-auto sm:ml-auto flex flex-col space-y-1.5">
-            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-              Chọn nhanh tuần
-            </label>
+          <div className="w-full sm:w-auto sm:ml-auto flex gap-6 items-center">
+            <DateInput value={fullDateString} />
             <div className="flex items-center gap-2">
-              <button
+              <ButtonAction
+                icon={<ChevronLeft size={18} />}
                 onClick={handlePrevWeek}
                 disabled={currentWeek === 1}
-                className="p-2 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200 transition-all"
-              >
-                <ChevronLeft size={18} />
-              </button>
+              />
 
-              <select
+              <SelectOption
+                options={Array.from({ length: weeks.length }).map((_, i) => ({
+                  value: i + 1,
+                  label: `Tuần ${i + 1}`,
+                }))}
+                containerClassName="w-32"
                 value={currentWeek}
                 onChange={(e) => setCurrentWeek(Number(e.target.value))}
-                className="px-4 py-2 bg-white text-sm font-semibold text-slate-700 rounded-xl border border-slate-200 outline-none focus:border-blue-500 transition-all text-center min-w-[120px]"
-              >
-                {Array.from({ length: totalWeeks }).map((_, i) => (
-                  <option key={i + 1} value={i + 1}>
-                    Tuần {i + 1}
-                  </option>
-                ))}
-              </select>
+              />
 
-              <button
+              <ButtonAction
+                icon={<ChevronRight size={18} />}
                 onClick={handleNextWeek}
-                disabled={currentWeek === totalWeeks}
-                className="p-2 bg-slate-100 hover:bg-slate-200 disabled:opacity-40 disabled:hover:bg-slate-100 text-slate-700 rounded-xl border border-slate-200 transition-all"
-              >
-                <ChevronRight size={18} />
-              </button>
+                disabled={currentWeek === weeks.length}
+              />
             </div>
           </div>
         </div>
@@ -169,13 +185,10 @@ const Inner = () => {
                 <span className="text-blue-600">Tuần {currentWeek}</span>
               </span>
             </div>
-            <span className="text-xs bg-blue-50 text-blue-700 px-2.5 py-1 rounded-md font-medium">
-              Layout chuẩn Học đường
-            </span>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse table-fixed min-w-[800px]">
+            <table className="w-full border-collapse table-fixed min-w-200">
               {/* Tiêu đề Cột ngang (Thứ 2 -> CN) */}
               <thead>
                 <tr className="bg-slate-50/50 border-b border-slate-200">
@@ -198,6 +211,11 @@ const Inner = () => {
               <tbody className="divide-y divide-slate-200">
                 {shifts.map((shift) => {
                   const ShiftIcon = shift.icon;
+                  const dbShiftMap: Record<string, string> = {
+                    SANG: "S",
+                    CHIEU: "C",
+                    TOI: "T",
+                  };
                   return (
                     <tr
                       key={shift.key}
@@ -222,20 +240,78 @@ const Inner = () => {
                         </div>
                       </td>
 
-                      {/* Các ô tương ứng với từng Thứ (Hiện tại chưa đổ dữ liệu rác) */}
-                      {daysOfWeek.map((day) => (
-                        <td
-                          key={`${shift.key}-${day.key}`}
-                          className="p-3 border-r border-slate-200 last:border-r-0 align-top min-h-[120px] transition-all group-hover:bg-slate-50/10"
-                        >
-                          {/* Khung trống thiết kế sẵn hiệu ứng hover nhẹ nét đứt để sau này render Card lịch học */}
-                          <div className="w-full h-24 rounded-xl border border-dashed border-slate-100 bg-slate-50/30 flex items-center justify-center group-hover:border-slate-200 group-hover:bg-white transition-all">
-                            <span className="text-[11px] text-slate-300 font-medium select-none italic">
-                              Trống
-                            </span>
-                          </div>
-                        </td>
-                      ))}
+                      {daysOfWeek.map((day) => {
+                        const cellSchedule = studySchedule?.find(
+                          (item) =>
+                            item.weekNumber === currentWeek &&
+                            item.dayOfWeek === day.key &&
+                            item.shift === dbShiftMap[shift.key],
+                        );
+
+                        return (
+                          <td
+                            key={`${shift.key}-${day.key}`}
+                            className="border-r p-1 border-slate-200 last:border-r-0 align-top 
+                            min-h-[120px] transition-all group-hover:bg-slate-50/10"
+                          >
+                            {cellSchedule ? (
+                              <div
+                                className="rounded-lg bg-slate-100 w-full p-2.5  
+                               flex flex-col gap-2 text-left group/card 
+                              hover:border-slate-300 hover:shadow transition-all"
+                              >
+                                <p
+                                  className="text-[13px] font-semibold text-slate-900 
+                                leading-snug break-words whitespace-normal"
+                                >
+                                  {cellSchedule.classSubject?.subject
+                                    ?.subjectName ||
+                                    `Môn học #${cellSchedule.classSubjectId}`}
+                                </p>
+
+                                <div className="flex flex-col gap-1 text-[11px] text-slate-500 font-medium">
+                                  <div className="flex items-center gap-1.5 flex-wrap">
+                                    <span className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-bold whitespace-nowrap">
+                                      Tiết {cellSchedule.startPeriod} -{" "}
+                                      {cellSchedule.endPeriod}
+                                    </span>
+                                    <span className="text-slate-400 whitespace-nowrap">
+                                      ({cellSchedule.countPeriod} tiết)
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-start gap-1 mt-0.5">
+                                    <span className="text-slate-400 shrink-0">
+                                      GV:
+                                    </span>
+                                    <span className="text-slate-700 font-semibold break-words whitespace-normal">
+                                      {cellSchedule.classSubject?.teacher
+                                        ?.fullName || "Chưa phân công"}
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-slate-400 shrink-0">
+                                      Phòng:
+                                    </span>
+                                    <span
+                                      className={`px-1.5 py-0.2 rounded text-[10px] font-bold break-words whitespace-normal ${
+                                        cellSchedule.roomId
+                                          ? "bg-blue-50 text-blue-700 border border-blue-100"
+                                          : "text-slate-400 italic font-normal"
+                                      }`}
+                                    >
+                                      {cellSchedule.roomId || "Chưa có"}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+                            ) : (
+                              <div></div>
+                            )}
+                          </td>
+                        );
+                      })}
                     </tr>
                   );
                 })}
