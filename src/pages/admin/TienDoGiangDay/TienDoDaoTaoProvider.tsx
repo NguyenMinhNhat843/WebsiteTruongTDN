@@ -29,6 +29,9 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
       "/classes",
     );
 
+    /**
+     * Lấy danh sách dữ liệu các môn
+     */
     const { data: classSubjects, isLoading: isLoadingClassSubjects } =
       $api.useQuery(
         "get",

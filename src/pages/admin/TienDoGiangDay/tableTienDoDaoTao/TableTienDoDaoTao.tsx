@@ -12,57 +12,22 @@ import {
   type DayOfWeek,
 } from "../TienDoDaoTaoProvider";
 import type { TienDoDaoTaoRow } from "./columnType";
-import { useMemo, useState, useEffect, type ComponentProps } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { formatDateToString } from "../../../../util/formatDate";
 import ButtonAction from "../../../../components/ui/ButtonAction";
-import { convertEnumDayOfWeekToString, mapEnumDayOfWeek } from "./helpers";
+import {
+  calculateStudyDate,
+  convertEnumDayOfWeekToString,
+  getWeeksInRange,
+  mapEnumDayOfWeek,
+} from "./helpers";
 import SelectSearchInput from "../../../../components/ui/Form/SelectInput";
+import PageShell from "../../../../components/ui/PageShell";
+import { GridIcon } from "lucide-react";
+import { EditableCell } from "./components/EditTableCell";
+import { SpinnerLoading } from "../../../../components/ui/SpinnerLoading";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-interface EditableCellProps extends Omit<ComponentProps<"input">, "onChange"> {
-  initialValue: any;
-  rowIndex: number;
-  columnId: string;
-  updateCellData: (rowIndex: number, columnId: string, value: any) => void;
-}
-
-const EditableCell = ({
-  initialValue,
-  rowIndex,
-  columnId,
-  updateCellData,
-  className,
-  type = "text",
-  ...props
-}: EditableCellProps) => {
-  const [value, setValue] = useState(initialValue);
-
-  useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
-
-  // Chỉ khi người dùng click ra ngoài (onBlur) mới đẩy data lên state tổng của cha
-  const handleBlur = () => {
-    let finalValue = value;
-    if (type === "number") {
-      finalValue = value === "" ? "" : Number(value);
-    }
-    updateCellData(rowIndex, columnId, finalValue);
-  };
-
-  return (
-    <input
-      {...props}
-      type={type}
-      className={`w-full bg-transparent px-1 py-0.5 border border-transparent hover:border-gray-300 
-        focus:border-blue-500 focus:bg-white rounded outline-none ${className}`}
-      value={value ?? ""}
-      onChange={(e) => setValue(e.target.value)}
-      onBlur={handleBlur}
-    />
-  );
-};
-
 const TableTienDoDaoTao = () => {
   const {
     setSemesterId,
@@ -78,6 +43,7 @@ const TableTienDoDaoTao = () => {
     isLoadingStudySchedule,
     teachers,
     isLoadingTeachers,
+    isLoadingClassSubjects,
   } = useTienDoDaoTaoContext();
   const { hocKysData, isHocKysLoading } = useAppContext();
   const hocKysSelected = hocKysData?.find((hk) => hk.id === semesterId);
@@ -88,33 +54,10 @@ const TableTienDoDaoTao = () => {
   const [data, setData] = useState<any[]>([]);
 
   const weeksList = useMemo(() => {
-    if (!startDateSemester || !endDateSemester) return [];
-    const weeks = [];
-    let currentStart = new Date(startDateSemester);
-    const finalEnd = new Date(endDateSemester);
-
-    if (currentStart > finalEnd) return [];
-
-    let weekIndex = 1;
-    while (currentStart <= finalEnd) {
-      let currentEnd = new Date(currentStart);
-      currentEnd.setDate(currentStart.getDate() + 6);
-
-      if (currentEnd > finalEnd) {
-        currentEnd = new Date(finalEnd);
-      }
-
-      weeks.push({
-        weekNumber: `Tuần ${weekIndex}`,
-        start: currentStart.toISOString(),
-        end: currentEnd.toISOString(),
-      });
-
-      currentStart = new Date(currentEnd);
-      currentStart.setDate(currentStart.getDate() + 1);
-      weekIndex++;
-    }
-    return weeks;
+    return getWeeksInRange(
+      startDateSemester ? new Date(startDateSemester) : new Date(),
+      endDateSemester ? new Date(endDateSemester) : new Date(),
+    );
   }, [startDateSemester, endDateSemester]);
 
   // Đồng bộ dữ liệu gốc từ API vào State
@@ -333,7 +276,7 @@ const TableTienDoDaoTao = () => {
       const thu = mapEnumDayOfWeek(row.thu) as DayOfWeek;
 
       return weeksList
-        .map((_, idx) => {
+        .map((week, idx) => {
           const weekIndex = idx + 1;
           const cellValue = row[`tuan_${weekIndex}`];
 
@@ -353,6 +296,11 @@ const TableTienDoDaoTao = () => {
             endPeriod: endPeriod,
             weekNumber: weekIndex,
             countPeriod: Number(cellValue) || 0,
+            studyDate: calculateStudyDate(
+              new Date(week.start),
+              new Date(week.end),
+              thu as DayOfWeek,
+            ),
           };
         })
         .filter(Boolean) as CreateScheduleDto[];
@@ -375,124 +323,136 @@ const TableTienDoDaoTao = () => {
   };
 
   return (
-    <div className="space-y-4 p-4 bg-white rounded-lg shadow-sm">
-      <div className="flex gap-4">
-        <div className="w-1/2">
-          <SelectOption
-            label="Học kỳ"
-            value={semesterId ?? ""}
-            onChange={(e) => setSemesterId(Number(e.target.value))}
-            disabled={isHocKysLoading}
-            options={[
-              { label: "Chọn học kỳ", value: "" },
-              ...(hocKysData?.map((hocKy) => ({
-                label: hocKy.name,
-                value: hocKy.id,
-              })) || []),
-            ]}
-          />
+    <PageShell
+      title="Tiến độ đào tạo"
+      sub="Quản lý tiến độ giảng dạy theo tuần của từng môn học"
+      icon={GridIcon}
+    >
+      <div className="space-y-4 p-4 bg-white rounded-lg shadow-sm">
+        <div className="flex gap-4">
+          <div className="w-1/2">
+            <SelectOption
+              label="Học kỳ"
+              value={semesterId ?? ""}
+              onChange={(e) => setSemesterId(Number(e.target.value))}
+              disabled={isHocKysLoading}
+              options={[
+                { label: "Chọn học kỳ", value: "" },
+                ...(hocKysData?.map((hocKy) => ({
+                  label: hocKy.name,
+                  value: hocKy.id,
+                })) || []),
+              ]}
+            />
+          </div>
+          <div className="w-1/2">
+            <SelectOption
+              label="Lớp học"
+              value={classId ?? ""}
+              onChange={(e) => setClassId(Number(e.target.value))}
+              disabled={isLoadingClasses}
+              options={[
+                { label: "Chọn lớp học", value: "" },
+                ...(classes?.map((cls) => ({
+                  label: cls.className,
+                  value: cls.id!,
+                })) || []),
+              ]}
+            />
+          </div>
         </div>
-        <div className="w-1/2">
-          <SelectOption
-            label="Lớp học"
-            value={classId ?? ""}
-            onChange={(e) => setClassId(Number(e.target.value))}
-            disabled={isLoadingClasses}
-            options={[
-              { label: "Chọn lớp học", value: "" },
-              ...(classes?.map((cls) => ({
-                label: cls.className,
-                value: cls.id!,
-              })) || []),
-            ]}
-          />
-        </div>
-      </div>
 
-      <div className="w-full overflow-x-auto border border-gray-200 rounded-lg shadow-inner">
-        <table
-          className="border-collapse text-left table-fixed min-w-full"
-          style={{ width: table.getTotalSize() }}
-        >
-          <thead>
-            {table.getHeaderGroups().map((headerGroup) => {
-              return (
-                <tr
-                  key={headerGroup.id}
-                  className="bg-gray-50 border-b border-gray-200"
-                >
-                  {headerGroup.headers.map((header, index) => {
-                    const isSticky = index === 0 || index === 1;
+        {isLoadingStudySchedule || isLoadingClassSubjects ? (
+          <SpinnerLoading />
+        ) : (
+          <div className="w-full overflow-x-auto custom-scrollbar border border-gray-200 rounded-lg shadow-inner">
+            <table
+              className="border-collapse text-left table-fixed min-w-full"
+              style={{ width: table.getTotalSize() }}
+            >
+              <thead>
+                {table.getHeaderGroups().map((headerGroup) => {
+                  return (
+                    <tr
+                      key={headerGroup.id}
+                      className="bg-gray-50 border-b border-gray-200"
+                    >
+                      {headerGroup.headers.map((header, index) => {
+                        const isSticky = index === 0 || index === 1;
 
-                    return (
-                      <th
-                        key={header.id}
-                        style={{
-                          width: header.getSize(),
-                          position: isSticky ? "sticky" : undefined,
-                          left: isSticky ? header.column.getStart() : undefined,
-                        }}
-                        className={`px-3 py-2.5 font-bold border-r border-gray-200 
+                        return (
+                          <th
+                            key={header.id}
+                            style={{
+                              width: header.getSize(),
+                              position: isSticky ? "sticky" : undefined,
+                              left: isSticky
+                                ? header.column.getStart()
+                                : undefined,
+                            }}
+                            className={`px-3 py-2.5 font-bold border-r border-gray-200 
                                   uppercase tracking-wider text-xs text-center
                                   ${isSticky ? "z-10 bg-gray-50" : ""}`}
-                      >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </th>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="hover:bg-gray-50/70 transition-colors"
-              >
-                {row.getVisibleCells().map((cell, cellIndex) => {
-                  const isWeekColumn = cell.column.id.startsWith("tuan_");
-                  const isSticky = cellIndex === 0 || cellIndex === 1;
-                  return (
-                    <td
-                      key={cell.id}
-                      style={{
-                        width: cell.column.getSize(),
-                        position: isSticky ? "sticky" : undefined,
-                        left: isSticky ? cell.column.getStart() : undefined,
-                      }}
-                      className={`px-3 py-2 border-r border-gray-100 text-[12px]
+                          >
+                            {header.isPlaceholder
+                              ? null
+                              : flexRender(
+                                  header.column.columnDef.header,
+                                  header.getContext(),
+                                )}
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {table.getRowModel().rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="hover:bg-gray-50/70 transition-colors"
+                  >
+                    {row.getVisibleCells().map((cell, cellIndex) => {
+                      const isWeekColumn = cell.column.id.startsWith("tuan_");
+                      const isSticky = cellIndex === 0 || cellIndex === 1;
+                      return (
+                        <td
+                          key={cell.id}
+                          style={{
+                            width: cell.column.getSize(),
+                            position: isSticky ? "sticky" : undefined,
+                            left: isSticky ? cell.column.getStart() : undefined,
+                          }}
+                          className={`px-3 py-2 border-r border-gray-100 text-[12px]
                           ${isWeekColumn ? "text-center whitespace-nowrap" : ""}
                           ${isSticky ? "z-10 bg-white group-hover:bg-gray-50" : ""}
                           `}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
-      <div className="flex justify-end pt-2">
-        <ButtonAction
-          variant="outline"
-          loading={isCreatingStudySchedule}
-          label="Tạo tiến độ tự động"
-          onClick={handleSubmit}
-        />
+        <div className="flex justify-end pt-2">
+          <ButtonAction
+            variant="outline"
+            loading={isCreatingStudySchedule}
+            label="Tạo tiến độ tự động"
+            onClick={handleSubmit}
+          />
+        </div>
       </div>
-    </div>
+    </PageShell>
   );
 };
 

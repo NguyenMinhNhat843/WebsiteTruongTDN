@@ -3451,6 +3451,8 @@ export interface components {
             shift: string;
             startPeriod: number;
             countPeriod: number | null;
+            /** Format: date-time */
+            studyDate?: string | null;
             classSubject?: components["schemas"]["CourseOfferDto"];
         };
         CreateStudyScheduleDto: {
@@ -3463,6 +3465,8 @@ export interface components {
             shift: string;
             startPeriod: number;
             countPeriod: number | null;
+            /** Format: date-time */
+            studyDate?: string | null;
         };
         CreatePostDto: {
             /**
@@ -6311,6 +6315,8 @@ export interface operations {
             query?: {
                 classId?: number;
                 semesterId?: number;
+                weekNumber?: number;
+                startDate?: string;
             };
             header?: never;
             path?: never;
