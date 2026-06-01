@@ -45,6 +45,7 @@ const CreateNhanVien = ({ isOpen, onClose }: CreateNhanVienProps) => {
     try {
       const payload = {
         ...data,
+        departmentId: Number(data.departmentId),
         gender:
           data.gender === undefined
             ? undefined

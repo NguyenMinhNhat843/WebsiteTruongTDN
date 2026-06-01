@@ -39,13 +39,17 @@ const ModalCreateClassSubject = ({
   if (!isOpen) return null;
 
   const handleGenLopHocPhan = () => {
-    if (!currentSemester?.id) return;
+    const targetSemesterId = semesterIdSelected || currentSemester?.id;
+    if (!targetSemesterId) {
+      alert("Vui lòng chọn hoặc xác định học kỳ hiện tại!");
+      return;
+    }
 
     generateLopHocPhan(
       {
         params: {
           query: {
-            semesterId: semesterIdSelected || currentSemester.id,
+            semesterId: targetSemesterId,
             classId: idLopHocNumber,
           },
         },
@@ -53,12 +57,12 @@ const ModalCreateClassSubject = ({
       {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onSuccess: (res: any) => {
-          alert(res.message || "Sinh lớp học phần thành công!");
+          alert(res.message || "Sinh dữ liệu môn học thành công!");
           onClose();
         },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onError: (error: any) => {
-          alert(error.message || "Đã có lỗi xảy ra khi sinh lớp học phần.");
+          alert(error.message || "Đã có lỗi xảy ra khi sinh dữ liệu môn học.");
         },
       },
     );
@@ -86,7 +90,7 @@ const ModalCreateClassSubject = ({
         <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div>
             <h3 className="text-lg font-bold text-slate-800">
-              Xem Trước & Sinh Lớp Học Phần
+              Sinh Dữ liệu môn học theo chương trình khung đào tạo
             </h3>
             <p className="text-xs text-slate-500 mt-0.5">
               Kiểm tra danh sách các lớp học phần dự kiến trước khi lưu vào hệ
@@ -235,7 +239,7 @@ const ModalCreateClassSubject = ({
             label={
               NewCoursesToCreateCount === 0
                 ? "Không có lớp mới"
-                : "Bắt đầu sinh lớp"
+                : "Sinh dữ liệu"
             }
             icon={<Cpu size={16} />}
             loading={isGeneratingLopHocPhan}

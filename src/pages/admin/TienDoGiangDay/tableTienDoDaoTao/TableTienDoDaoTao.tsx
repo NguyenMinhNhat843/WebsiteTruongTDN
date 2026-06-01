@@ -9,11 +9,14 @@ import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import {
   useTienDoDaoTaoContext,
   type CreateScheduleDto,
+  type DayOfWeek,
 } from "../TienDoDaoTaoProvider";
 import type { TienDoDaoTaoRow } from "./columnType";
 import { useMemo, useState, useEffect, type ComponentProps } from "react";
 import { formatDateToString } from "../../../../util/formatDate";
 import ButtonAction from "../../../../components/ui/ButtonAction";
+import { convertEnumDayOfWeekToString, mapEnumDayOfWeek } from "./helpers";
+import SelectSearchInput from "../../../../components/ui/Form/SelectInput";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 interface EditableCellProps extends Omit<ComponentProps<"input">, "onChange"> {
@@ -51,7 +54,8 @@ const EditableCell = ({
     <input
       {...props}
       type={type}
-      className={`w-full bg-transparent px-1 py-0.5 border border-transparent hover:border-gray-300 focus:border-blue-500 focus:bg-white rounded outline-none transition-all ${className}`}
+      className={`w-full bg-transparent px-1 py-0.5 border border-transparent hover:border-gray-300 
+        focus:border-blue-500 focus:bg-white rounded outline-none ${className}`}
       value={value ?? ""}
       onChange={(e) => setValue(e.target.value)}
       onBlur={handleBlur}
@@ -70,6 +74,10 @@ const TableTienDoDaoTao = () => {
     classSubjects,
     createStudySchedule,
     isCreatingStudySchedule,
+    studySchedule,
+    isLoadingStudySchedule,
+    teachers,
+    isLoadingTeachers,
   } = useTienDoDaoTaoContext();
   const { hocKysData, isHocKysLoading } = useAppContext();
   const hocKysSelected = hocKysData?.find((hk) => hk.id === semesterId);
@@ -79,7 +87,6 @@ const TableTienDoDaoTao = () => {
   // Quản lý dữ liệu bảng
   const [data, setData] = useState<any[]>([]);
 
-  // Giả định dữ liệu weeksList từ hàm sinh tuần của bạn
   const weeksList = useMemo(() => {
     if (!startDateSemester || !endDateSemester) return [];
     const weeks = [];
@@ -123,6 +130,18 @@ const TableTienDoDaoTao = () => {
         (mon?.subject?.practiceHours || 0) +
         (mon?.subject?.testHours || 0);
 
+      // Load data từ API lên
+      const scheduleOfRow = studySchedule?.filter(
+        (schedule) => schedule.classSubjectId === mon.id,
+      );
+      const { shift, startPeriod, endPeriod, dayOfWeek } =
+        scheduleOfRow?.[0] || {};
+      const tiet =
+        shift && startPeriod && endPeriod
+          ? `${shift}${startPeriod}-${endPeriod}`
+          : "";
+      const thu = convertEnumDayOfWeekToString(dayOfWeek) || "";
+
       const rowData: any = {
         id: mon.id || index,
         stt: index + 1,
@@ -130,12 +149,17 @@ const TableTienDoDaoTao = () => {
         giaoVienGiangDay: "",
         phongHoc: "",
         tongGio: tongGio,
-        thu: "",
-        tiet: "",
+        thu,
+        tiet,
       };
 
       weeksList.forEach((_, idx) => {
-        rowData[`tuan_${idx + 1}`] = "";
+        const scheduleForWeek = scheduleOfRow?.find(
+          (sch) => sch.weekNumber === idx + 1,
+        );
+        rowData[`tuan_${idx + 1}`] = scheduleForWeek
+          ? scheduleForWeek.countPeriod
+          : "";
       });
 
       return rowData;
@@ -165,26 +189,49 @@ const TableTienDoDaoTao = () => {
       {
         accessorKey: "stt",
         header: "STT",
+        size: 50,
       },
       {
         accessorKey: "tenMonHoc",
+        size: 200,
         header: "Tên Môn Học",
       },
       {
         accessorKey: "giaoVienGiangDay",
         header: "Giáo Viên Giảng Dạy",
-        cell: ({ getValue, row: { index }, column: { id } }) => (
-          <EditableCell
-            initialValue={getValue()}
-            rowIndex={index}
-            columnId={id}
-            updateCellData={updateCellData}
-          />
-        ),
+        size: 200,
+        cell: ({ getValue, row: { index }, column: { id } }) => {
+          const currentValue = getValue();
+
+          return (
+            <div>
+              <SelectSearchInput
+                value={currentValue as string}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  updateCellData(index, id, val);
+                }}
+                placeholder="Chọn giáo viên"
+                disabled={isLoadingTeachers}
+                options={[
+                  {
+                    value: "",
+                    label: "",
+                  },
+                  ...(teachers?.map((teacher) => ({
+                    value: teacher.id!,
+                    label: teacher.fullName,
+                  })) || []),
+                ]}
+              />
+            </div>
+          );
+        },
       },
       {
         accessorKey: "phongHoc",
         header: "Phòng Học",
+        size: 70,
         cell: ({ getValue, row: { index }, column: { id } }) => (
           <EditableCell
             initialValue={getValue()}
@@ -197,6 +244,7 @@ const TableTienDoDaoTao = () => {
       {
         accessorKey: "tongGio",
         header: "Tổng Giờ",
+        size: 100,
         cell: ({ getValue, row: { index }, column: { id } }) => (
           <EditableCell
             type="number"
@@ -211,6 +259,7 @@ const TableTienDoDaoTao = () => {
       {
         accessorKey: "thu",
         header: "Thứ",
+        size: 100,
         cell: ({ getValue, row: { index }, column: { id } }) => (
           <EditableCell
             className="w-16 text-center"
@@ -224,9 +273,10 @@ const TableTienDoDaoTao = () => {
       {
         accessorKey: "tiet",
         header: "Tiết",
+        size: 100,
         cell: ({ getValue, row: { index }, column: { id } }) => (
           <EditableCell
-            className="w-24 text-center"
+            className="w-full text-center"
             initialValue={getValue()}
             rowIndex={index}
             columnId={id}
@@ -239,6 +289,7 @@ const TableTienDoDaoTao = () => {
     const weekColumns: ColumnDef<TienDoDaoTaoRow>[] = weeksList.map(
       (week, idx) => ({
         accessorKey: `tuan_${idx + 1}`,
+        size: 110,
         header: () => (
           <div className="flex flex-col items-center justify-center leading-tight">
             <span className="font-semibold text-gray-800">
@@ -264,7 +315,7 @@ const TableTienDoDaoTao = () => {
     );
 
     return [...baseColumns, ...weekColumns];
-  }, [weeksList]); // Chỉ chạy lại định nghĩa cột khi weeksList đổi, hàm updateCellData qua tham chiếu cha không đổi
+  }, [weeksList]);
 
   const table = useReactTable({
     data: data,
@@ -273,25 +324,40 @@ const TableTienDoDaoTao = () => {
   });
 
   const handleSubmit = () => {
-    console.log(data);
-    // Xử lý data
-    const dataSubmit: CreateScheduleDto[] = (data || []).map((row) => {
+    const dataSubmit: CreateScheduleDto[] = (data || []).flatMap((row) => {
       const tietString = row.tiet || "";
       const match = tietString.match(/^([A-Za-z])(\d+)-(\d+)$/);
       const shift = match ? match[1] : "";
       const startPeriod = match ? Number(match[2]) : 0;
       const endPeriod = match ? Number(match[3]) : 0;
+      const thu = mapEnumDayOfWeek(row.thu) as DayOfWeek;
 
-      return {
-        classSubjectId: row.id,
-        dayOfWeek: "MONDAY",
-        shift: shift,
-        roomId: null,
-        startPeriod: startPeriod,
-        endPeriod: endPeriod,
-      };
+      return weeksList
+        .map((_, idx) => {
+          const weekIndex = idx + 1;
+          const cellValue = row[`tuan_${weekIndex}`];
+
+          if (
+            !cellValue ||
+            (typeof cellValue === "string" && cellValue.trim() === "")
+          ) {
+            return null;
+          }
+
+          return {
+            classSubjectId: row.id,
+            dayOfWeek: thu as DayOfWeek,
+            shift: shift,
+            roomId: null,
+            startPeriod: startPeriod,
+            endPeriod: endPeriod,
+            weekNumber: weekIndex,
+            countPeriod: Number(cellValue) || 0,
+          };
+        })
+        .filter(Boolean) as CreateScheduleDto[];
     });
-
+    // Gửi dữ liệu lên API
     createStudySchedule(
       {
         body: dataSubmit,
@@ -344,33 +410,44 @@ const TableTienDoDaoTao = () => {
       </div>
 
       <div className="w-full overflow-x-auto border border-gray-200 rounded-lg shadow-inner">
-        <table className="w-full border-collapse text-left table-auto">
+        <table
+          className="border-collapse text-left table-fixed min-w-full"
+          style={{ width: table.getTotalSize() }}
+        >
           <thead>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <tr
-                key={headerGroup.id}
-                className="bg-gray-50 border-b border-gray-200"
-              >
-                {headerGroup.headers.map((header) => {
-                  const isWeekColumn = header.id.startsWith("tuan_");
-                  return (
-                    <th
-                      key={header.id}
-                      className={`px-3 py-2.5 text-gray-600 font-medium border-r border-gray-200 uppercase tracking-wider
-                      ${isWeekColumn ? "text-center whitespace-normal min-w-[130px]" : "whitespace-nowrap text-xs text-[11px]"}
-                      font-bold`}
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </th>
-                  );
-                })}
-              </tr>
-            ))}
+            {table.getHeaderGroups().map((headerGroup) => {
+              return (
+                <tr
+                  key={headerGroup.id}
+                  className="bg-gray-50 border-b border-gray-200"
+                >
+                  {headerGroup.headers.map((header, index) => {
+                    const isSticky = index === 0 || index === 1;
+
+                    return (
+                      <th
+                        key={header.id}
+                        style={{
+                          width: header.getSize(),
+                          position: isSticky ? "sticky" : undefined,
+                          left: isSticky ? header.column.getStart() : undefined,
+                        }}
+                        className={`px-3 py-2.5 font-bold border-r border-gray-200 
+                                  uppercase tracking-wider text-xs text-center
+                                  ${isSticky ? "z-10 bg-gray-50" : ""}`}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </th>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </thead>
           <tbody className="divide-y divide-gray-100">
             {table.getRowModel().rows.map((row) => (
@@ -378,13 +455,21 @@ const TableTienDoDaoTao = () => {
                 key={row.id}
                 className="hover:bg-gray-50/70 transition-colors"
               >
-                {row.getVisibleCells().map((cell) => {
+                {row.getVisibleCells().map((cell, cellIndex) => {
                   const isWeekColumn = cell.column.id.startsWith("tuan_");
+                  const isSticky = cellIndex === 0 || cellIndex === 1;
                   return (
                     <td
                       key={cell.id}
-                      className={`px-3 py-2 text-gray-700 border-r border-gray-100 text-[12px] whitespace-nowrap
-                      ${isWeekColumn ? "text-center" : ""}`}
+                      style={{
+                        width: cell.column.getSize(),
+                        position: isSticky ? "sticky" : undefined,
+                        left: isSticky ? cell.column.getStart() : undefined,
+                      }}
+                      className={`px-3 py-2 border-r border-gray-100 text-[12px]
+                          ${isWeekColumn ? "text-center whitespace-nowrap" : ""}
+                          ${isSticky ? "z-10 bg-white group-hover:bg-gray-50" : ""}
+                          `}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

@@ -5,6 +5,8 @@ import type { components } from "../../../api/v1";
 
 export type CreateScheduleDto = components["schemas"]["CreateStudyScheduleDto"];
 export type DayOfWeek = CreateScheduleDto["dayOfWeek"];
+export type StudyScheduleResponseDto =
+  components["schemas"]["StudyScheduleResponseDto"];
 
 export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
   createContextProvider(() => {
@@ -50,6 +52,41 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
     const { mutate: createStudySchedule, isPending: isCreatingStudySchedule } =
       $api.useMutation("post", "/schedule/generate-schedule");
 
+    /**
+     * Load tiến độ đào tạo
+     */
+    const { data: studySchedule, isLoading: isLoadingStudySchedule } =
+      $api.useQuery(
+        "get",
+        "/schedule",
+        {
+          params: {
+            query: {
+              semesterId: semesterId!,
+              classId: classId!,
+            },
+          },
+        },
+        {
+          enabled: !!semesterId && !!classId,
+        },
+      );
+
+    /**
+     * Load danh sách Giáo viên
+     */
+    const { data: teachers, isLoading: isLoadingTeachers } = $api.useQuery(
+      "get",
+      "/staffs",
+      {
+        params: {
+          query: {
+            employeeRole: "TEACHER",
+          },
+        },
+      },
+    );
+
     return {
       giaoViens,
       isLoadingGiaoViens,
@@ -59,6 +96,10 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
       isLoadingClassSubjects,
       createStudySchedule,
       isCreatingStudySchedule,
+      studySchedule,
+      isLoadingStudySchedule,
+      teachers,
+      isLoadingTeachers,
 
       //state
       semesterId,

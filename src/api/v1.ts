@@ -1139,6 +1139,23 @@ export interface paths {
         patch: operations["CreditPriceController_update"];
         trace?: never;
     };
+    "/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load study schedule của 1 lớp trong 1 kỳ */
+        get: operations["ScheduleController_loadStudySchedule"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/schedule/generate-schedule": {
         parameters: {
             query?: never;
@@ -3349,14 +3366,103 @@ export interface components {
              */
             price?: number;
         };
-        CreateStudyScheduleDto: {
+        CourseOfferDto: {
+            /** @example 1 */
+            id: number;
+            /**
+             * @description Mã lớp học phần
+             * @example OOP-2026-HK1-01
+             */
+            courseCode: string;
+            /** @example Lập trình hướng đối tượng - Nhóm 01 */
+            courseName?: Record<string, never>;
+            /** @example 40 */
+            maxStudents: number;
+            /** @example 0 */
+            currentStudents: number;
+            /**
+             * @default planned
+             * @enum {string}
+             */
+            status: "planned" | "open" | "closed" | "cancelled";
+            /**
+             * Format: date-time
+             * @example 2026-09-01
+             */
+            startDate?: string;
+            /**
+             * Format: date-time
+             * @example 2026-12-31
+             */
+            endDate?: string;
+            /**
+             * @description ID của lớp học
+             * @example 101
+             */
+            classId?: Record<string, never> | null;
+            /**
+             * Format: date-time
+             * @description Thời gian tạo bản ghi
+             * @example 2026-05-23T06:50:00.000Z
+             */
+            createdAt: string;
+            /**
+             * Format: date-time
+             * @description Thời gian cập nhật bản ghi gần nhất
+             * @example 2026-05-23T07:15:00.000Z
+             */
+            updatedAt: string;
+            /**
+             * Format: date-time
+             * @description Thời gian kết thúc đăng ký
+             * @example 2026-06-30T23:59:59.000Z
+             */
+            registrationEnd?: string | null;
+            /**
+             * Format: date-time
+             * @description Thời gian bắt đầu mở đăng ký
+             * @example 2026-06-01T00:00:00.000Z
+             */
+            registrationStart?: string | null;
+            teacherId: number;
+            /**
+             * @description ID của học kỳ
+             * @example 3
+             */
+            semesterId: number;
+            /**
+             * @description ID của môn học
+             * @example 45
+             */
+            subjectId: number;
+            teacher: components["schemas"]["StaffResponseDto"];
+            subject: components["schemas"]["SubjectResponseDto"];
+            baseClass?: components["schemas"]["ClassResponseDto"];
+            semester: components["schemas"]["SemesterResponseDto"];
+        };
+        StudyScheduleResponseDto: {
+            id: number;
             classSubjectId: number;
             /** @enum {string} */
             dayOfWeek: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+            weekNumber: number;
             endPeriod: number;
             roomId: number | null;
             shift: string;
             startPeriod: number;
+            countPeriod: number | null;
+            classSubject?: components["schemas"]["CourseOfferDto"];
+        };
+        CreateStudyScheduleDto: {
+            classSubjectId: number;
+            /** @enum {string} */
+            dayOfWeek: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+            weekNumber: number;
+            endPeriod: number;
+            roomId: number | null;
+            shift: string;
+            startPeriod: number;
+            countPeriod: number | null;
         };
         CreatePostDto: {
             /**
@@ -3445,80 +3551,6 @@ export interface components {
              * @example 1
              */
             authorId?: number;
-        };
-        CourseOfferDto: {
-            /** @example 1 */
-            id: number;
-            /**
-             * @description Mã lớp học phần
-             * @example OOP-2026-HK1-01
-             */
-            courseCode: string;
-            /** @example Lập trình hướng đối tượng - Nhóm 01 */
-            courseName?: Record<string, never>;
-            /** @example 40 */
-            maxStudents: number;
-            /** @example 0 */
-            currentStudents: number;
-            /**
-             * @default planned
-             * @enum {string}
-             */
-            status: "planned" | "open" | "closed" | "cancelled";
-            /**
-             * Format: date-time
-             * @example 2026-09-01
-             */
-            startDate?: string;
-            /**
-             * Format: date-time
-             * @example 2026-12-31
-             */
-            endDate?: string;
-            /**
-             * @description ID của lớp học
-             * @example 101
-             */
-            classId?: Record<string, never> | null;
-            /**
-             * Format: date-time
-             * @description Thời gian tạo bản ghi
-             * @example 2026-05-23T06:50:00.000Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Thời gian cập nhật bản ghi gần nhất
-             * @example 2026-05-23T07:15:00.000Z
-             */
-            updatedAt: string;
-            /**
-             * Format: date-time
-             * @description Thời gian kết thúc đăng ký
-             * @example 2026-06-30T23:59:59.000Z
-             */
-            registrationEnd?: string | null;
-            /**
-             * Format: date-time
-             * @description Thời gian bắt đầu mở đăng ký
-             * @example 2026-06-01T00:00:00.000Z
-             */
-            registrationStart?: string | null;
-            teacherId: number;
-            /**
-             * @description ID của học kỳ
-             * @example 3
-             */
-            semesterId: number;
-            /**
-             * @description ID của môn học
-             * @example 45
-             */
-            subjectId: number;
-            teacher: components["schemas"]["StaffResponseDto"];
-            subject: components["schemas"]["SubjectResponseDto"];
-            baseClass?: components["schemas"]["ClassResponseDto"];
-            semester: components["schemas"]["SemesterResponseDto"];
         };
         updateClassSubjectDto: {
             /**
@@ -6271,6 +6303,28 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    ScheduleController_loadStudySchedule: {
+        parameters: {
+            query?: {
+                classId?: number;
+                semesterId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudyScheduleResponseDto"][];
+                };
             };
         };
     };

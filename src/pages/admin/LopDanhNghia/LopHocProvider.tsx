@@ -126,7 +126,7 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
   } = $api.useMutation("get", "/students/search-by-code");
 
   /**
-   * Sinh lớp học phần theo học kỳ
+   * Sinh dữ liệu classSubject theo học kỳ
    */
   const { mutate: generateLopHocPhan, isPending: isGeneratingLopHocPhan } =
     $api.useMutation("post", "/course-offers/gen-classSubject-grades", {
@@ -155,7 +155,7 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     {
       enabled:
         Boolean(LopHocDetail) &&
-        (Boolean(currentSemester) || Boolean(currentSemester?.id)),
+        (Boolean(semesterIdSelected) || Boolean(currentSemester?.id)),
     },
   );
 
