@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { $api } from "../../../api/client";
 import { createContextProvider } from "../../../util/createContextProvider";
 import type { components } from "../../../api/v1";
@@ -11,8 +10,6 @@ export type StudyScheduleResponseDto =
 
 export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
   createContextProvider(() => {
-    // const [semesterId, setSemesterId] = useState<number | null>();
-    // const [classId, setClassId] = useState<number | null>();
     const [searchParams, setSearchParams] = useSearchParams();
     const semesterIdParams = searchParams.get("semesterId");
     const classIdParam = searchParams.get("classId");
