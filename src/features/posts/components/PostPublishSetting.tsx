@@ -10,7 +10,7 @@ const PostPublishSetting = () => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
       <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">
-        ⚙️ Cài đặt đăng bài
+        ⚙️ Cài đặt đăng bài (Chưa hỗ trợ)
       </label>
 
       <div className="flex items-center justify-between py-3 border-b border-slate-100">

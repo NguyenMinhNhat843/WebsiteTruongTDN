@@ -11,6 +11,7 @@ import {
   Pen,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getCategoryBadge, getStatusBadge } from "./helpers";
 
 const PostList = () => {
   return (
@@ -23,24 +24,6 @@ const PostList = () => {
 const Inner = () => {
   const { posts, total, isLoadingPosts } = usePostListContext();
   const navigate = useNavigate();
-
-  // Định nghĩa màu sắc cho từng trạng thái bài viết
-  const getStatusBadge = (status: string) => {
-    const colors: Record<string, string> = {
-      PUBLISHED: "bg-green-50 text-green-700 border-green-200",
-      DRAFT: "bg-gray-50 text-gray-600 border-gray-200",
-      PENDING: "bg-yellow-50 text-yellow-700 border-yellow-200",
-      ARCHIVED: "bg-red-50 text-red-700 border-red-200",
-    };
-
-    return (
-      <span
-        className={`px-2 py-0.5 text-xs font-medium rounded-full border ${colors[status] || colors.DRAFT}`}
-      >
-        {status}
-      </span>
-    );
-  };
 
   return (
     <PageShell
@@ -95,10 +78,8 @@ const Inner = () => {
                   {/* Phần chứa Tag, Trạng thái & Tiêu đề */}
                   <div className="p-4 pb-0">
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="px-2 py-1 text-xs font-semibold rounded bg-gray-100 text-gray-800">
-                        {post.type}
-                      </span>
                       {getStatusBadge(post.status)}
+                      {getCategoryBadge(post.type)}
                     </div>
 
                     {/* Tiêu đề bài viết */}

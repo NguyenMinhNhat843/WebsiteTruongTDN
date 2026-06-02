@@ -8,15 +8,14 @@ import PageShell from "../../../../components/ui/PageShell";
 import { Eye, Newspaper, Save, Send, X } from "lucide-react";
 import {
   CreatePostProvider,
+  POST_STATUSES,
   useCreatePostContext,
   type CreatePostDto,
-  type PostCategoryType,
   type PostResponseDto,
-  type PostStatus,
 } from "./CreatePostProvider";
 import { useRef } from "react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
-import PostAudiencePicker from "./components/PostAudiencePicker";
+import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 
 interface CreatePostProps {
   defaultValues?: PostResponseDto;
@@ -50,8 +49,8 @@ const Inner = () => {
     const formData = new FormData();
     formData.append("title", data.title || "");
     formData.append("content", htmlData);
-    formData.append("status", "DRAFT" as PostStatus);
-    formData.append("type", "NEWS" as PostCategoryType);
+    formData.append("status", data.status || "DRAFT");
+    formData.append("type", data.type || "NEWS");
     formData.append("authorId", String(1));
 
     if (data.coverImage) {
@@ -137,6 +136,12 @@ const Inner = () => {
             <Eye className="w-5 h-5" />
           </button>
 
+          <SelectOption
+            {...register("status")}
+            options={POST_STATUSES}
+            containerClassName="w-36"
+          />
+
           <ButtonAction
             title={defaultValue ? "Cập nhật" : "Đăng bài"}
             icon={<Send className="w-4 h-4" />}
@@ -202,8 +207,6 @@ const Inner = () => {
           {/* ── Sidebar ── */}
           <div className="flex flex-col gap-6">
             <PostCategoryPicker />
-
-            <PostAudiencePicker />
 
             <PostPublishSetting />
 
