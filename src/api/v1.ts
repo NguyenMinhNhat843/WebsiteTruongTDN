@@ -1208,6 +1208,22 @@ export interface paths {
         patch: operations["PostController_update"];
         trace?: never;
     };
+    "/fileStore/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["FileStoreController_uploadFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/course-offers": {
         parameters: {
             query?: never;
@@ -3469,92 +3485,52 @@ export interface components {
             studyDate?: string | null;
         };
         CreatePostDto: {
-            /**
-             * @description Tiêu đề của bài viết
-             * @example Thông báo tuyển sinh năm học 2026
-             */
-            title: string;
-            /**
-             * @description Đường dẫn định danh (Slug), nếu để trống sẽ tự tạo theo title
-             * @example thong-bao-tuyen-sinh-2026
-             */
-            slug?: string;
-            /**
-             * @description URL ảnh bìa bài viết
-             * @example https://example.com/images/cover.jpg
-             */
-            coverImage?: string;
-            /**
-             * @description Nội dung bài viết (có thể chứa mã HTML)
-             * @example <h1>Nội dung bài viết...</h1>
-             */
-            content: string;
-            /**
-             * @description Phân loại bài viết
-             * @default NEWS
-             * @enum {string}
-             */
-            type: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
-            /**
-             * @description Trạng thái bài viết
-             * @default DRAFT
-             * @enum {string}
-             */
-            status: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
-            /**
-             * @description Thời điểm hẹn giờ đăng bài (ISO 8601)
-             * @example 2026-05-01T08:00:00Z
-             */
-            publishedAt?: string;
-            /**
-             * @description ID của người tạo bài viết
-             * @example 1
-             */
             authorId: number;
+            content: string;
+            /** Format: date-time */
+            publishedAt?: string;
+            slug?: string;
+            /** @enum {string} */
+            status: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
+            title: string;
+            /** @enum {string} */
+            type: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
+            /** Format: binary */
+            coverImage?: string;
+        };
+        PostResponseDto: {
+            id?: number;
+            authorId: number;
+            content: string;
+            /** Format: binary */
+            coverImage?: string;
+            /** Format: date-time */
+            publishedAt?: string;
+            slug?: string;
+            /** @enum {string} */
+            status: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
+            title: string;
+            /** @enum {string} */
+            type: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
+            viewCount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         UpdatePostDto: {
-            /**
-             * @description Tiêu đề của bài viết
-             * @example Thông báo tuyển sinh năm học 2026
-             */
-            title?: string;
-            /**
-             * @description Đường dẫn định danh (Slug), nếu để trống sẽ tự tạo theo title
-             * @example thong-bao-tuyen-sinh-2026
-             */
-            slug?: string;
-            /**
-             * @description URL ảnh bìa bài viết
-             * @example https://example.com/images/cover.jpg
-             */
-            coverImage?: string;
-            /**
-             * @description Nội dung bài viết (có thể chứa mã HTML)
-             * @example <h1>Nội dung bài viết...</h1>
-             */
-            content?: string;
-            /**
-             * @description Phân loại bài viết
-             * @default NEWS
-             * @enum {string}
-             */
-            type: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
-            /**
-             * @description Trạng thái bài viết
-             * @default DRAFT
-             * @enum {string}
-             */
-            status: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
-            /**
-             * @description Thời điểm hẹn giờ đăng bài (ISO 8601)
-             * @example 2026-05-01T08:00:00Z
-             */
-            publishedAt?: string;
-            /**
-             * @description ID của người tạo bài viết
-             * @example 1
-             */
             authorId?: number;
+            content?: string;
+            /** Format: date-time */
+            publishedAt?: string;
+            slug?: string;
+            /** @enum {string} */
+            status?: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
+            title?: string;
+            /** @enum {string} */
+            type?: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
+            /** Format: binary */
+            coverImage?: string;
         };
         updateClassSubjectDto: {
             /**
@@ -6386,23 +6362,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreatePostDto"];
+                "multipart/form-data": components["schemas"]["CreatePostDto"];
             };
         };
         responses: {
-            /** @description Bài viết đã được tạo thành công. */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
-            };
-            /** @description Slug hoặc tiêu đề đã tồn tại. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
+                content: {
+                    "application/json": components["schemas"]["PostResponseDto"];
                 };
-                content?: never;
             };
         };
     };
@@ -6430,6 +6400,23 @@ export interface operations {
             };
             /** @description Không tìm thấy bài viết. */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FileStoreController_uploadFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

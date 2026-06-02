@@ -1,20 +1,68 @@
-import ContentEditor from "../../../components/ui/ContentEditor";
+import ContentEditor, {
+  type ContentEditorRef,
+} from "../../../components/ui/ContentEditor";
 import PostAudiencePicker from "./components/PostAudiencePicker";
 import PostCategoryPicker from "../../../features/posts/components/PostCategoryPicker";
-import PostCoverImage from "../../../features/posts/components/PostCoverImage";
+import PostCoverImage from "./components/PostCoverImage";
 import PostPublishSetting from "../../../features/posts/components/PostPublishSetting";
-import SuccessSubmitScreen from "../../../features/posts/components/SuccessSubmitScreen";
-import { usePostForm } from "../../../features/posts/hooks/usePostForm";
 import PageShell from "../../../components/ui/PageShell";
 import { Eye, Newspaper, Save, Send, X } from "lucide-react";
+import {
+  CreatePostProvider,
+  useCreatePostContext,
+  type CreatePostDto,
+  type PostCategoryType,
+  type PostStatus,
+} from "./CreatePostProvider";
+import { useRef } from "react";
+import ButtonAction from "../../../components/ui/ButtonAction";
 
-export default function CreatePost() {
-  const { values, submitted, errors, handleTitleChange, handleSubmit } =
-    usePostForm();
+const CreatePost = () => {
+  return (
+    <CreatePostProvider>
+      <Inner />
+    </CreatePostProvider>
+  );
+};
 
-  if (submitted) {
-    return <SuccessSubmitScreen />;
-  }
+const Inner = () => {
+  const { register, handleSubmit, createPost, isCreatingPost } =
+    useCreatePostContext();
+  const editorRef = useRef<ContentEditorRef>(null);
+
+  const onSubmit = (data: CreatePostDto) => {
+    const htmlData = editorRef?.current?.getHTML() || "";
+
+    const formData = new FormData();
+    formData.append("title", data.title || "");
+    formData.append("content", htmlData);
+    formData.append("status", "DRAFT" as PostStatus);
+    formData.append("type", "NEWS" as PostCategoryType);
+    formData.append("authorId", String(1));
+
+    if (data.coverImage) {
+      formData.append("coverImage", data.coverImage[0]);
+    }
+
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}:`, value);
+    }
+
+    createPost(
+      {
+        /* eslint-disable @typescript-eslint/no-explicit-any */
+        body: formData as any,
+      },
+      {
+        onSuccess: () => {
+          alert("Đăng bài thành công");
+        },
+        onError: (error) => {
+          alert("Failed to create post: " + JSON.stringify(error));
+        },
+      },
+    );
+  };
 
   return (
     <PageShell
@@ -56,17 +104,21 @@ export default function CreatePost() {
           </button>
 
           {/* NÚT ĐĂNG BÀI: Giữ nguyên label để tạo điểm nhấn (Call to Action) */}
-          <button
+
+          <ButtonAction
+            title="Đăng bài viết"
+            icon={<Send className="w-4 h-4" />}
             type="submit"
-            className="ml-1 flex items-center gap-2 px-6 py-2.5 bg-linear-to-r from-indigo-600 to-violet-700 text-white rounded-xl hover:from-indigo-700 hover:to-violet-800 transition-all shadow-md hover:shadow-indigo-200/50 font-bold text-sm"
-          >
-            <Send className="w-4 h-4" />
-            Đăng bài viết
-          </button>
+            form="create-post-form"
+            loading={isCreatingPost}
+          />
         </div>
       }
     >
-      <form onSubmit={handleSubmit}>
+      <form
+        id="create-post-form"
+        onSubmit={handleSubmit((data) => onSubmit(data))}
+      >
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* ── Left column ── */}
           <div className="lg:col-span-2 flex flex-col gap-6">
@@ -77,20 +129,16 @@ export default function CreatePost() {
               </label>
               <input
                 type="text"
-                value={values.title}
-                onChange={handleTitleChange}
+                {...register("title", {
+                  required: "Tiêu đề không được để trống",
+                })}
                 placeholder="Nhập tiêu đề hấp dẫn cho bài viết..."
                 className="w-full text-2xl font-black text-slate-800 placeholder-slate-300 border-none outline-none leading-snug bg-transparent"
               />
-              {errors.title && (
-                <p className="text-red-500 text-xs mt-2 flex items-center gap-1">
-                  ⚠️ {errors.title}
-                </p>
-              )}
             </div>
 
             <PostCoverImage />
-            <ContentEditor />
+            <ContentEditor ref={editorRef} />
           </div>
 
           {/* ── Sidebar ── */}
@@ -115,4 +163,6 @@ export default function CreatePost() {
       </form>
     </PageShell>
   );
-}
+};
+
+export default CreatePost;
