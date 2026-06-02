@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom";
-import { usePostListContext } from "../../hooks/usePostList";
 
 const PostListHeader = () => {
-  const { stats } = usePostListContext();
   return (
     <div className="border-b border-slate-200 bg-white px-8 py-6">
       <div className="mx-auto max-w-7xl">
@@ -30,19 +28,19 @@ const PostListHeader = () => {
           {[
             {
               label: "Tổng bài viết",
-              value: stats.total,
+              value: 10,
               color: "text-slate-700",
               dot: "bg-slate-400",
             },
             {
               label: "Đã duyệt",
-              value: stats.approved,
+              value: 5,
               color: "text-emerald-700",
               dot: "bg-emerald-500",
             },
             {
               label: "Chờ duyệt",
-              value: stats.pending,
+              value: 5,
               color: "text-amber-700",
               dot: "bg-amber-500",
             },

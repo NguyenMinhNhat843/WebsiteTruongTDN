@@ -3517,6 +3517,14 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            author: components["schemas"]["StaffResponseDto"];
+        };
+        PaginationMetaDto: {
+            total: number;
+        };
+        PostResponseDtoPagination: {
+            data: components["schemas"]["PostResponseDto"][];
+            meta: components["schemas"]["PaginationMetaDto"];
         };
         UpdatePostDto: {
             authorId?: number;
@@ -6335,9 +6343,12 @@ export interface operations {
     PostController_findAll: {
         parameters: {
             query?: {
-                page?: string;
-                limit?: string;
                 status?: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
+                title?: string;
+                type?: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
+                createdAt?: string;
+                limit?: number;
+                page?: number;
             };
             header?: never;
             path?: never;
@@ -6349,7 +6360,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["PostResponseDtoPagination"];
+                };
             };
         };
     };

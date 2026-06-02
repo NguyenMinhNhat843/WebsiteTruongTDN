@@ -1,6 +1,6 @@
-import { StyleMapEnumAudience } from "../../../../components/StyleMapEnum/StyleMapEnum";
-import { AUDIENCES } from "../../../../features/posts/constants/post.constants";
-import { usePostForm } from "../../../../features/posts/hooks/usePostForm";
+import { StyleMapEnumAudience } from "../../../../../components/StyleMapEnum/StyleMapEnum";
+import { AUDIENCES } from "../../../../../features/posts/constants/post.constants";
+import { usePostForm } from "../../../../../features/posts/hooks/usePostForm";
 
 const PostAudiencePicker = () => {
   const { values, errors, handleAudienceToggle } = usePostForm();

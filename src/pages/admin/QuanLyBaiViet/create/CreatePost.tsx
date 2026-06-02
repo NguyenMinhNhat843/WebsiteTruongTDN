@@ -1,11 +1,10 @@
 import ContentEditor, {
   type ContentEditorRef,
-} from "../../../components/ui/ContentEditor";
-import PostAudiencePicker from "./components/PostAudiencePicker";
-import PostCategoryPicker from "../../../features/posts/components/PostCategoryPicker";
+} from "../../../../components/ui/ContentEditor";
+import PostCategoryPicker from "../../../../features/posts/components/PostCategoryPicker";
 import PostCoverImage from "./components/PostCoverImage";
-import PostPublishSetting from "../../../features/posts/components/PostPublishSetting";
-import PageShell from "../../../components/ui/PageShell";
+import PostPublishSetting from "../../../../features/posts/components/PostPublishSetting";
+import PageShell from "../../../../components/ui/PageShell";
 import { Eye, Newspaper, Save, Send, X } from "lucide-react";
 import {
   CreatePostProvider,
@@ -15,7 +14,8 @@ import {
   type PostStatus,
 } from "./CreatePostProvider";
 import { useRef } from "react";
-import ButtonAction from "../../../components/ui/ButtonAction";
+import ButtonAction from "../../../../components/ui/ButtonAction";
+import PostAudiencePicker from "./components/PostAudiencePicker";
 
 const CreatePost = () => {
   return (
@@ -57,7 +57,7 @@ const Inner = () => {
         onSuccess: () => {
           alert("Đăng bài thành công");
         },
-        onError: (error) => {
+        onError: (error: any) => {
           alert("Failed to create post: " + JSON.stringify(error));
         },
       },
