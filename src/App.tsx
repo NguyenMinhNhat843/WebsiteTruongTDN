@@ -68,6 +68,7 @@ import NhanVienOne from "./pages/admin/QuanLyNhanVien/NhanVienOne/NhanVienOne";
 import NhapDiem from "./pages/admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiem";
 import QuanLyTaiKhoan from "./pages/admin/QuanLyAccount";
 import TienDoDaoTao from "./pages/admin/TienDoGiangDay";
+import UpdatePost from "./pages/admin/QuanLyBaiViet/create/UpdatePost";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -133,6 +134,10 @@ function App() {
               <Route
                 path="truyen-thong-bao-chi/tao-bai-viet"
                 element={<CreatePost />}
+              />
+              <Route
+                path="truyen-thong-bao-chi/:id/edit"
+                element={<UpdatePost />}
               />
               <Route
                 path="truyen-thong-bao-chi/bai-viet"

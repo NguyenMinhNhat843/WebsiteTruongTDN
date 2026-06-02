@@ -2,10 +2,32 @@ import { useCreatePostContext } from "../CreatePostProvider";
 
 const PostCoverImage = () => {
   const { register, watch, setValue } = useCreatePostContext();
-  const coverImageFiles = watch("coverImage") as FileList | undefined;
-  const file = coverImageFiles?.[0];
-  const coverPreview = file ? URL.createObjectURL(file) : null;
+
+  const coverImageValue = watch("coverImage");
+
+  let coverPreview: string | null = null;
+
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  if (coverImageValue) {
+    if (
+      (coverImageValue as any) instanceof FileList &&
+      coverImageValue.length > 0
+    ) {
+      // Trường hợp 1: Người dùng vừa chọn file mới từ máy tính
+      coverPreview = URL.createObjectURL((coverImageValue as any)[0]);
+    } else if (
+      typeof coverImageValue === "string" &&
+      coverImageValue.trim() !== ""
+    ) {
+      // Trường hợp 2: Dữ liệu mặc định từ Backend truyền sang đang là dạng string URL
+      coverPreview = coverImageValue;
+    }
+  }
+  console.log("Current coverImage value:", coverImageValue);
+  console.log("Derived coverPreview URL:", coverPreview);
+
   const handleRemoveCoverImage = () => {
+    // Khi xóa, set về undefined (hoặc "" chuỗi rỗng tùy thuộc backend của bạn nhận gì)
     setValue("coverImage", undefined);
   };
 

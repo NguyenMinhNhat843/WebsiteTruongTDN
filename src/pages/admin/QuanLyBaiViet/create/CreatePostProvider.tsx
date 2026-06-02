@@ -7,15 +7,37 @@ export type CreatePostDto = components["schemas"]["CreatePostDto"];
 export type PostResponseDto = components["schemas"]["PostResponseDto"];
 export type PostCategoryType = PostResponseDto["type"];
 export type PostStatus = PostResponseDto["status"];
+export interface PostCategoryOption {
+  value: PostCategoryType;
+  label: string;
+  icon: string;
+}
+
+export const POST_CATEGORIES: PostCategoryOption[] = [
+  { value: "NEWS", label: "Tin tức", icon: "📰" },
+  { value: "EVENT", label: "Sự kiện", icon: "📅" },
+  { value: "ACHIEVEMENT", label: "Thành tích", icon: "🏆" },
+  { value: "ADMISSION", label: "Tuyển sinh", icon: "🎓" },
+  { value: "INTERNAL", label: "Tin nội bộ", icon: "👥" },
+  { value: "POLICY", label: "Chính sách", icon: "📜" },
+];
 
 export const [CreatePostProvider, useCreatePostContext] = createContextProvider(
-  () => {
+  (props: { defaultValues?: PostResponseDto }) => {
     /**
      * Create Post
      */
     const { mutate: createPost, isPending: isCreatingPost } = $api.useMutation(
       "post",
       "/posts",
+    );
+
+    /**
+     * Chỉnh sửa
+     */
+    const { mutate: updatePost, isPending: isUpdatingPost } = $api.useMutation(
+      "patch",
+      "/posts/{id}",
     );
 
     /**
@@ -30,6 +52,7 @@ export const [CreatePostProvider, useCreatePostContext] = createContextProvider(
     /**
      * Form Create
      */
+    const defaultValue = props.defaultValues;
     const {
       register,
       handleSubmit,
@@ -37,7 +60,7 @@ export const [CreatePostProvider, useCreatePostContext] = createContextProvider(
       setValue,
       formState: { errors },
     } = useForm<CreatePostDto>({
-      defaultValues: {
+      defaultValues: defaultValue ?? {
         content: "",
         title: "",
       },
@@ -49,6 +72,9 @@ export const [CreatePostProvider, useCreatePostContext] = createContextProvider(
       uploadImage,
       isUploadingImage,
       uploadImageData,
+      defaultValue,
+      updatePost,
+      isUpdatingPost,
 
       watch,
       setValue,

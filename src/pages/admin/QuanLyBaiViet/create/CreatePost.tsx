@@ -1,7 +1,7 @@
 import ContentEditor, {
   type ContentEditorRef,
 } from "../../../../components/ui/ContentEditor";
-import PostCategoryPicker from "../../../../features/posts/components/PostCategoryPicker";
+import PostCategoryPicker from "./components/PostCategoryPicker";
 import PostCoverImage from "./components/PostCoverImage";
 import PostPublishSetting from "../../../../features/posts/components/PostPublishSetting";
 import PageShell from "../../../../components/ui/PageShell";
@@ -11,15 +11,20 @@ import {
   useCreatePostContext,
   type CreatePostDto,
   type PostCategoryType,
+  type PostResponseDto,
   type PostStatus,
 } from "./CreatePostProvider";
 import { useRef } from "react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import PostAudiencePicker from "./components/PostAudiencePicker";
 
-const CreatePost = () => {
+interface CreatePostProps {
+  defaultValues?: PostResponseDto;
+}
+
+const CreatePost = ({ defaultValues }: CreatePostProps) => {
   return (
-    <CreatePostProvider>
+    <CreatePostProvider defaultValues={defaultValues}>
       <Inner />
     </CreatePostProvider>
   );
@@ -33,6 +38,9 @@ const Inner = () => {
     isCreatingPost,
     uploadImage,
     uploadImageData,
+    defaultValue,
+    updatePost,
+    isUpdatingPost,
   } = useCreatePostContext();
   const editorRef = useRef<ContentEditorRef>(null);
 
@@ -47,37 +55,59 @@ const Inner = () => {
     formData.append("authorId", String(1));
 
     if (data.coverImage) {
-      formData.append("coverImage", data.coverImage[0]);
+      const imgValue = data.coverImage as unknown;
+
+      if (imgValue instanceof FileList && imgValue.length > 0) {
+        formData.append("coverImage", imgValue[0]);
+      } else if (imgValue instanceof File) {
+        formData.append("coverImage", imgValue);
+      }
     }
 
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}:`, value);
+    /* eslint-disable @typescript-eslint/no-explicit-any */
+    if (defaultValue) {
+      updatePost(
+        {
+          body: formData as any,
+          params: {
+            path: {
+              id: defaultValue.id!,
+            },
+          },
+        },
+        {
+          onSuccess: () => {
+            alert("Cập nhật thành công");
+          },
+          onError: (error: any) => {
+            alert("Failed to create post: " + JSON.stringify(error));
+          },
+        },
+      );
+    } else {
+      createPost(
+        {
+          body: formData as any,
+        },
+        {
+          onSuccess: () => {
+            alert("Đăng bài thành công");
+          },
+          onError: (error: any) => {
+            alert("Failed to create post: " + JSON.stringify(error));
+          },
+        },
+      );
     }
-
-    createPost(
-      {
-        /* eslint-disable @typescript-eslint/no-explicit-any */
-        body: formData as any,
-      },
-      {
-        onSuccess: () => {
-          alert("Đăng bài thành công");
-        },
-        onError: (error: any) => {
-          alert("Failed to create post: " + JSON.stringify(error));
-        },
-      },
-    );
   };
 
   return (
     <PageShell
-      title="Tạo bài viết mới"
+      title={`${defaultValue ? "Chỉnh sửa" : "Tạo mới"} bài viết`}
       sub="Chia sẻ những thông tin hữu ích về trường học đến cộng đồng"
       icon={Newspaper}
       renderRight={
         <div className="flex items-center gap-2">
-          {/* NÚT HỦY: Chỉ icon */}
           <button
             type="button"
             title="Hủy bỏ"
@@ -88,7 +118,6 @@ const Inner = () => {
             <X className="w-5 h-5" />
           </button>
 
-          {/* NÚT LƯU NHÁP: Chỉ icon */}
           <button
             type="button"
             title="Lưu nháp"
@@ -98,7 +127,6 @@ const Inner = () => {
             <Save className="w-5 h-5" />
           </button>
 
-          {/* NÚT XEM TRƯỚC: Chỉ icon */}
           <button
             type="button"
             title="Xem trước"
@@ -109,22 +137,22 @@ const Inner = () => {
             <Eye className="w-5 h-5" />
           </button>
 
-          {/* NÚT ĐĂNG BÀI: Giữ nguyên label để tạo điểm nhấn (Call to Action) */}
-
           <ButtonAction
-            title="Đăng bài viết"
+            title={defaultValue ? "Cập nhật" : "Đăng bài"}
             icon={<Send className="w-4 h-4" />}
             type="submit"
             form="create-post-form"
-            loading={isCreatingPost}
+            loading={isCreatingPost || isUpdatingPost}
           />
         </div>
       }
     >
       <form
         id="create-post-form"
-        onSubmit={handleSubmit((data) => onSubmit(data))}
-      >
+        /* eslint-disable-next-line react-hooks/refs */
+        onSubmit={handleSubmit(onSubmit)}
+      />
+      <div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* ── Left column ── */}
           <div className="lg:col-span-2 flex flex-col gap-6">
@@ -146,6 +174,7 @@ const Inner = () => {
             <PostCoverImage />
             <ContentEditor
               ref={editorRef}
+              value={defaultValue?.content || ""}
               onPasteImage={async (file) => {
                 const formData = new FormData();
                 formData.append("file", file);
@@ -189,7 +218,7 @@ const Inner = () => {
             </div>
           </div>
         </div>
-      </form>
+      </div>
     </PageShell>
   );
 };

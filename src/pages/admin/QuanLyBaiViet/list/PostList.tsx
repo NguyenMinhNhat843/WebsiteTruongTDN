@@ -8,7 +8,9 @@ import {
   Calendar,
   User,
   ImageIcon,
+  Pen,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const PostList = () => {
   return (
@@ -20,6 +22,7 @@ const PostList = () => {
 
 const Inner = () => {
   const { posts, total, isLoadingPosts } = usePostListContext();
+  const navigate = useNavigate();
 
   // Định nghĩa màu sắc cho từng trạng thái bài viết
   const getStatusBadge = (status: string) => {
@@ -136,11 +139,23 @@ const Inner = () => {
                       <span className="text-xs font-medium text-gray-600 bg-gray-50 px-2 py-1 rounded">
                         {post.viewCount.toLocaleString()} lượt xem
                       </span>
-                      <ButtonAction
-                        title="Xem chi tiết"
-                        icon={<Eye size={16} />}
-                        variant="outline"
-                      />
+                      <div className="flex gap-2">
+                        <ButtonAction
+                          title="Xem chi tiết"
+                          icon={<Eye size={16} />}
+                          variant="outline"
+                        />
+                        <ButtonAction
+                          title="Chỉnh sửa"
+                          icon={<Pen size={16} />}
+                          variant="outline"
+                          onClick={() =>
+                            navigate(
+                              `/admin/truyen-thong-bao-chi/${post.id}/edit`,
+                            )
+                          }
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>

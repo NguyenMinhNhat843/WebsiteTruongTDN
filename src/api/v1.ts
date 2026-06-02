@@ -1173,6 +1173,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/posts/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thống kê bài viết */
+        get: operations["PostController_getStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/posts": {
         parameters: {
             query?: never;
@@ -1191,23 +1208,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/posts/stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy thống kê bài viết */
-        get: operations["PostController_getStats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/posts/{id}": {
         parameters: {
             query?: never;
@@ -1215,7 +1215,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Lấy thông tin bài viết theo ID */
+        get: operations["PostController_findOne"];
         put?: never;
         post?: never;
         delete?: never;
@@ -6362,6 +6363,24 @@ export interface operations {
             };
         };
     };
+    PostController_getStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Thống kê bài viết. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     PostController_findAll: {
         parameters: {
             query?: {
@@ -6411,17 +6430,27 @@ export interface operations {
             };
         };
     };
-    PostController_getStats: {
+    PostController_findOne: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                id: number;
+            };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Thống kê bài viết. */
             200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostResponseDto"];
+                };
+            };
+            /** @description Không tìm thấy bài viết. */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6440,7 +6469,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdatePostDto"];
+                "multipart/form-data": components["schemas"]["UpdatePostDto"];
             };
         };
         responses: {

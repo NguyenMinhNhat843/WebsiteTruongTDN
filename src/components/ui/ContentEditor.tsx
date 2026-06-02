@@ -1,6 +1,5 @@
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Image from "@tiptap/extension-image";
 import { TextStyle } from "@tiptap/extension-text-style";
@@ -117,7 +116,7 @@ const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
         }),
         TextStyle,
         FontSize,
-        Underline,
+        // Underline,
         TextAlign.configure({ types: ["paragraph", "heading"] }),
         Image.configure({ inline: false, allowBase64: true }),
       ],
