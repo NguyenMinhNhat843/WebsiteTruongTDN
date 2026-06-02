@@ -96,7 +96,7 @@ export interface ContentEditorRef {
 
 export interface ContentEditorProps {
   value?: string;
-  onPasteImage?: (file: File) => Promise<string>;
+  onPasteImage?: (file: File, onUploadSuccess: (url: string) => void) => void;
 }
 
 const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
@@ -138,35 +138,56 @@ const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
               const file = item.getAsFile();
               if (!file) continue;
 
-              // Nếu có truyền prop onPasteImage, tiến hành gọi API upload
-              if (onPasteImage) {
-                onPasteImage(file)
-                  .then((url) => {
-                    // Nhận URL trả về từ server thành công -> chèn vào Editor
-                    view.dispatch(
-                      view.state.tr.replaceSelectionWith(
-                        view.state.schema.nodes.image.create({ src: url }),
-                      ),
-                    );
-                  })
-                  .catch((err) => {
-                    console.error("Upload ảnh thất bại:", err);
-                    alert("Không thể upload ảnh, vui lòng thử lại!");
+              // 1. Tạo một mã định danh ngẫu nhiên, duy nhất cho bức ảnh này
+              const uploadId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+              // 2. Chuyển ảnh thành Base64 ngay lập tức để hiển thị lập tức lên UI
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                const base64Src = e.target?.result as string;
+
+                // Chèn ảnh tạm thời (Base64) vào vị trí con trỏ chuột trong Editor
+                // Gắn thêm thuộc tính uploadId để lát nữa tìm lại đúng thẻ ảnh này
+                view.dispatch(
+                  view.state.tr.replaceSelectionWith(
+                    view.state.schema.nodes.image.create({
+                      src: base64Src,
+                      // Tiptap hỗ trợ truyền các thuộc tính tùy biến thông qua HTML attributes nếu cấu hình
+                      // Hoặc ta lưu tạm vào alt/title nếu extension Image mặc định không cấu hình nhận attribute lạ.
+                      // Ở đây dùng thuộc tính 'alt' làm nơi lưu tạm ID cho an toàn và tiện lợi nhất.
+                      alt: uploadId,
+                    }),
+                  ),
+                );
+
+                // 3. Nếu có prop xử lý upload ngầm lên server
+                if (onPasteImage) {
+                  onPasteImage(file, (realUrl) => {
+                    // Callback này sẽ chạy KHI VÀ CHỈ KHI api thành công
+                    // Tiến hành duyệt qua toàn bộ nội dung tài liệu (document) của Editor để tìm thẻ ảnh có alt khớp với uploadId
+                    view.state.doc.descendants((node, pos) => {
+                      if (
+                        node.type.name === "image" &&
+                        node.attrs.alt === uploadId
+                      ) {
+                        // Đã tìm thấy! Thực hiện cập nhật thay thế src Base64 bằng URL Cloudinary thật
+                        const transaction = view.state.tr.setNodeAttribute(
+                          pos,
+                          "src",
+                          realUrl,
+                        );
+                        // Xóa bỏ luôn cái ID tạm trong alt để ảnh sạch sẽ
+                        transaction.setNodeAttribute(pos, "alt", "post image");
+                        view.dispatch(transaction);
+                        return false; // Dừng vòng lặp tìm kiếm
+                      }
+                    });
                   });
-              } else {
-                // Fallback về Base64 nếu không cấu hình prop upload
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                  const src = e.target?.result as string;
-                  view.dispatch(
-                    view.state.tr.replaceSelectionWith(
-                      view.state.schema.nodes.image.create({ src }),
-                    ),
-                  );
-                };
-                reader.readAsDataURL(file);
-              }
-              return true;
+                }
+              };
+
+              reader.readAsDataURL(file);
+              return true; // Báo cho Tiptap biết sự kiện dán ảnh đã được xử lý xong lập tức
             }
           }
           return false;

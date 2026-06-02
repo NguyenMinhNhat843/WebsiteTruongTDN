@@ -37,10 +37,10 @@ const Inner = () => {
     createPost,
     isCreatingPost,
     uploadImage,
-    uploadImageData,
     defaultValue,
     updatePost,
     isUpdatingPost,
+    isUploadingImage,
   } = useCreatePostContext();
   const editorRef = useRef<ContentEditorRef>(null);
 
@@ -142,7 +142,7 @@ const Inner = () => {
             icon={<Send className="w-4 h-4" />}
             type="submit"
             form="create-post-form"
-            loading={isCreatingPost || isUpdatingPost}
+            loading={isCreatingPost || isUpdatingPost || isUploadingImage}
           />
         </div>
       }
@@ -175,26 +175,26 @@ const Inner = () => {
             <ContentEditor
               ref={editorRef}
               value={defaultValue?.content || ""}
-              onPasteImage={async (file) => {
+              onPasteImage={async (file, onUploadSuccess: any) => {
                 const formData = new FormData();
                 formData.append("file", file);
 
-                await uploadImage(
+                // Gọi API ngầm dưới nền, KHÔNG dùng await để chặn luồng chạy nữa
+                uploadImage(
+                  { body: formData },
                   {
-                    body: formData,
-                  },
-                  {
-                    onSuccess: () => {
-                      return uploadImageData?.imageUrl || "";
+                    onSuccess: (data: any) => {
+                      const uploadedUrl = data?.imageUrl || "";
+                      if (uploadedUrl) {
+                        // Khi có URL thật từ server, kích hoạt callback báo cho Editor biết
+                        onUploadSuccess(uploadedUrl);
+                      }
                     },
                     onError: (error: any) => {
-                      alert("Failed to upload image: " + JSON.stringify(error));
-                      return "";
+                      alert("Tải ảnh lên thất bại: " + JSON.stringify(error));
                     },
                   },
                 );
-
-                return uploadImageData?.imageUrl || "";
               }}
             />
           </div>
