@@ -97,10 +97,11 @@ export interface ContentEditorRef {
 
 export interface ContentEditorProps {
   value?: string;
+  onPasteImage?: (file: File) => Promise<string>;
 }
 
 const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
-  (props, ref) => {
+  ({ value, onPasteImage }, ref) => {
     const [charCount, setCharCount] = useState(0);
     const [fontSize, setFontSize] = useState("16");
 
@@ -120,7 +121,7 @@ const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
         TextAlign.configure({ types: ["paragraph", "heading"] }),
         Image.configure({ inline: false, allowBase64: true }),
       ],
-      content: "",
+      content: value || "",
       editorProps: {
         attributes: {
           class:
@@ -132,20 +133,40 @@ const ContentEditor = forwardRef<ContentEditorRef, ContentEditorProps>(
         handlePaste(view, event) {
           const items = event.clipboardData?.items;
           if (!items) return false;
+
           for (const item of Array.from(items)) {
             if (item.type.startsWith("image/")) {
               const file = item.getAsFile();
               if (!file) continue;
-              const reader = new FileReader();
-              reader.onload = (e) => {
-                const src = e.target?.result as string;
-                view.dispatch(
-                  view.state.tr.replaceSelectionWith(
-                    view.state.schema.nodes.image.create({ src }),
-                  ),
-                );
-              };
-              reader.readAsDataURL(file);
+
+              // Nếu có truyền prop onPasteImage, tiến hành gọi API upload
+              if (onPasteImage) {
+                onPasteImage(file)
+                  .then((url) => {
+                    // Nhận URL trả về từ server thành công -> chèn vào Editor
+                    view.dispatch(
+                      view.state.tr.replaceSelectionWith(
+                        view.state.schema.nodes.image.create({ src: url }),
+                      ),
+                    );
+                  })
+                  .catch((err) => {
+                    console.error("Upload ảnh thất bại:", err);
+                    alert("Không thể upload ảnh, vui lòng thử lại!");
+                  });
+              } else {
+                // Fallback về Base64 nếu không cấu hình prop upload
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  const src = e.target?.result as string;
+                  view.dispatch(
+                    view.state.tr.replaceSelectionWith(
+                      view.state.schema.nodes.image.create({ src }),
+                    ),
+                  );
+                };
+                reader.readAsDataURL(file);
+              }
               return true;
             }
           }

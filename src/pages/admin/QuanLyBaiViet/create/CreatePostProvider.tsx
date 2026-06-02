@@ -21,8 +21,11 @@ export const [CreatePostProvider, useCreatePostContext] = createContextProvider(
     /**
      * Upload hình ảnh
      */
-    const { mutate: uploadImage, isPending: isUploadingImage } =
-      $api.useMutation("post", "/fileStore/upload");
+    const {
+      data: uploadImageData,
+      mutate: uploadImage,
+      isPending: isUploadingImage,
+    } = $api.useMutation("post", "/fileStore/upload");
 
     /**
      * Form Create
@@ -45,6 +48,7 @@ export const [CreatePostProvider, useCreatePostContext] = createContextProvider(
       isCreatingPost,
       uploadImage,
       isUploadingImage,
+      uploadImageData,
 
       watch,
       setValue,

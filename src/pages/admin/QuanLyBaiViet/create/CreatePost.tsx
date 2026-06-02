@@ -26,8 +26,14 @@ const CreatePost = () => {
 };
 
 const Inner = () => {
-  const { register, handleSubmit, createPost, isCreatingPost } =
-    useCreatePostContext();
+  const {
+    register,
+    handleSubmit,
+    createPost,
+    isCreatingPost,
+    uploadImage,
+    uploadImageData,
+  } = useCreatePostContext();
   const editorRef = useRef<ContentEditorRef>(null);
 
   const onSubmit = (data: CreatePostDto) => {
@@ -138,7 +144,30 @@ const Inner = () => {
             </div>
 
             <PostCoverImage />
-            <ContentEditor ref={editorRef} />
+            <ContentEditor
+              ref={editorRef}
+              onPasteImage={async (file) => {
+                const formData = new FormData();
+                formData.append("file", file);
+
+                await uploadImage(
+                  {
+                    body: formData,
+                  },
+                  {
+                    onSuccess: () => {
+                      return uploadImageData?.imageUrl || "";
+                    },
+                    onError: (error: any) => {
+                      alert("Failed to upload image: " + JSON.stringify(error));
+                      return "";
+                    },
+                  },
+                );
+
+                return uploadImageData?.imageUrl || "";
+              }}
+            />
           </div>
 
           {/* ── Sidebar ── */}

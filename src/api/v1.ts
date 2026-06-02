@@ -1191,6 +1191,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/posts/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thống kê bài viết */
+        get: operations["PostController_getStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/posts/{id}": {
         parameters: {
             query?: never;
@@ -3539,6 +3556,11 @@ export interface components {
             type?: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
             /** Format: binary */
             coverImage?: string;
+        };
+        FireStoreResponse: {
+            id: string;
+            imageUrl: string;
+            publicId: string;
         };
         updateClassSubjectDto: {
             /**
@@ -6389,6 +6411,24 @@ export interface operations {
             };
         };
     };
+    PostController_getStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Thống kê bài viết. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     PostController_update: {
         parameters: {
             query?: never;
@@ -6427,13 +6467,22 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file?: string;
+                };
+            };
+        };
         responses: {
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["FireStoreResponse"];
+                };
             };
         };
     };
