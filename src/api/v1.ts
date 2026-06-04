@@ -160,6 +160,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/staffs/{teacherId}/dashboardstats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StaffController_getTeacherDashboardStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/teacher-subjects": {
         parameters: {
             query?: never;
@@ -2168,6 +2184,15 @@ export interface components {
             updatedAt?: string;
             isActive?: boolean;
         };
+        TeacherDashboardStatsResponseDto: {
+            id: number;
+            name?: string;
+            role?: string;
+            maGiaoVien?: string;
+            department?: string;
+            totalClasses: number;
+            totalSubjects: number;
+        };
         CreateTeacherSubjectDto: {
             teacherId: number;
             subjectId: number;
@@ -2188,6 +2213,8 @@ export interface components {
         RegisterDto: {
             /** @example newuser */
             username: string;
+            studentId?: number;
+            staffId?: number;
             password: string;
             /** @enum {string} */
             role: "admin" | "teacher" | "student" | "staff";
@@ -4115,6 +4142,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StaffResponseDto"];
+                };
+            };
+        };
+    };
+    StaffController_getTeacherDashboardStats: {
+        parameters: {
+            query: {
+                semesterId: number;
+            };
+            header?: never;
+            path: {
+                teacherId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeacherDashboardStatsResponseDto"];
                 };
             };
         };

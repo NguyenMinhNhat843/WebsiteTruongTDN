@@ -30,7 +30,14 @@ const LoginPage = () => {
         onSuccess: (data: any) => {
           setAccessToken(data?.access_token);
           localStorage.setItem("user", JSON.stringify(data?.user));
-          navigate("/admin/home");
+          if (data?.user?.role === "admin") {
+            navigate("/admin/home");
+            return;
+          } else if (data?.user?.role === "teacher") {
+            navigate("/teacher/home");
+            return;
+          }
+          return;
         },
         onError: (error: any) => {
           console.log("Login error:", error);

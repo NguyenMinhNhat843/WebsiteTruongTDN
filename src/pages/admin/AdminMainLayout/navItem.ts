@@ -103,11 +103,6 @@ const navItems: NavItem[] = [
         label: "Xét tốt nghiệp",
         href: "/admin/hoc-sinh/tot-nghiep",
       },
-      // {
-      //   id: "dot-xet-tot-nghiep",
-      //   label: "Đợt xét tốt nghiệp",
-      //   href: "/admin/hoc-sinh/dot-xet-tot-nghiep",
-      // },
     ],
   },
   // --- NHÓM TUYỂN SINH ---
@@ -139,6 +134,7 @@ const navItems: NavItem[] = [
     id: "tai-chinh",
     label: "Tài chính & Học phí",
     icon: "💳",
+    roles: ["admin"],
     children: [
       {
         id: "thu-hoc-phi",
@@ -180,6 +176,7 @@ const navItems: NavItem[] = [
     id: "quan-tri-nhan-su",
     label: "Quản trị nhân sự",
     icon: "👔",
+    roles: ["admin"],
     children: [
       {
         id: "quan-ly-nguoi-dung",
@@ -201,31 +198,23 @@ const navItems: NavItem[] = [
       },
     ],
   },
-  // {
-  //   id: "quan-ly-co-so-vat-chat",
-  //   label: "Quản lý cơ sở vật chất",
-  //   icon: "🏢",
-  // },
-  // --- HỆ THỐNG ---
   {
     id: "he-thong",
     label: "Cài đặt hệ thống",
     icon: "⚙",
+    roles: ["admin"],
     children: [
-      // {
-      //   id: "cau-hinh-chung",
-      //   label: "Cấu hình chung",
-      //   href: "/admin/settings/general",
-      // },
       {
         id: "phan-quyen",
         label: "Phân quyền (Roles)",
         href: "/admin/cai-dat/phan-quyen",
+        roles: ["admin"],
       },
       {
         id: "nhat-ky-hoat-dong",
         label: "Nhật ký hệ thống",
         href: "/admin/nhat-ky-he-thong",
+        roles: ["admin"],
       },
     ],
   },

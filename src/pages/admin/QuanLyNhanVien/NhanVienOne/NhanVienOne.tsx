@@ -4,6 +4,8 @@ import { formatDate } from "../../../../util/formatDate";
 import { useQuanLyNguoiDungContext } from "../QuanLyNguoiDungContext";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import ModalMonHocGiangDay from "./ModalThemMonHoc";
+import RegisterModal from "../../../../features/auth/RegisterForm";
+import { useState } from "react";
 
 const NhanVienOne = () => {
   const {
@@ -14,7 +16,7 @@ const NhanVienOne = () => {
     isOpenModalMonHoc,
     setIsOpenModalMonHoc,
   } = useQuanLyNguoiDungContext();
-  console.log("asdjasdlkjasdl", isOpenModalMonHoc);
+  const [isOpenRegisterModal, setIsOpenRegisterModal] = useState(false);
 
   if (isLoadingStaffDetail)
     return (
@@ -211,9 +213,18 @@ const NhanVienOne = () => {
 
           {/* TÀI KHOẢN LIÊN KẾT */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-            <h2 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3 mb-4">
-              Tài khoản liên kết
-            </h2>
+            {/* Phần Header & Nút bấm được căn thẳng hàng và đẩy về 2 phía */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+              <h2 className="text-lg font-bold text-slate-800">
+                Tài khoản liên kết
+              </h2>
+              <ButtonAction
+                label="Tạo tài khoản"
+                onClick={() => setIsOpenRegisterModal(true)}
+              />
+            </div>
+
+            {/* Phần nội dung chi tiết phía dưới */}
             {user ? (
               <div className="space-y-4">
                 <div>
@@ -237,7 +248,11 @@ const NhanVienOne = () => {
                     Trạng thái
                   </span>
                   <span
-                    className={`inline-flex px-2 py-0.5 text-xs font-bold rounded ${user.isActive ? "bg-emerald-50 text-emerald-600" : "bg-amber-50 text-amber-600"}`}
+                    className={`inline-flex px-2 py-0.5 text-xs font-bold rounded ${
+                      user.isActive
+                        ? "bg-emerald-50 text-emerald-600"
+                        : "bg-amber-50 text-amber-600"
+                    }`}
                   >
                     {user.isActive ? "Hoạt động" : "Đang khóa"}
                   </span>
@@ -272,6 +287,12 @@ const NhanVienOne = () => {
         }}
         isOpen={isOpenModalMonHoc}
         setIsOpen={setIsOpenModalMonHoc}
+      />
+
+      <RegisterModal
+        isOpen={isOpenRegisterModal}
+        onClose={() => setIsOpenRegisterModal(false)}
+        staffId={id}
       />
     </div>
   );
