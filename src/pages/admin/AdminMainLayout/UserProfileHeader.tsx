@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { USER_ROLE, type User } from "../../../features/users/types/User.types";
+import { USER_ROLE } from "../../../features/users/types/User.types";
 import { Bell, Globe, LogOut, GraduationCap } from "lucide-react";
 import { useAppContext } from "../../../AppProvider";
 import ButtonAction from "../../../components/ui/ButtonAction";
@@ -15,9 +15,10 @@ const UserProfileHeader = () => {
     (currentSemester?.isCurrent ? " (Học kỳ hiện tại)" : "");
 
   // Lấy dữ liệu và ép kiểu an toàn
-  const getUserData = (): User | null => {
+  const getUserData = () => {
     try {
       const data = localStorage.getItem("user");
+      console.log("dât: ", data);
       return data ? JSON.parse(data) : null;
     } catch (error) {
       console.error("Lỗi parse user data:", error);
@@ -26,6 +27,7 @@ const UserProfileHeader = () => {
   };
 
   const user = getUserData();
+  console.log("user: ", user);
 
   /**
    * logout

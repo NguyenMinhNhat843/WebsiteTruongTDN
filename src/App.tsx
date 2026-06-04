@@ -65,10 +65,11 @@ import LopHocLayout from "./pages/admin/LopDanhNghia/LopHocLayout";
 import LopHocOne from "./pages/admin/LopDanhNghia/LopHocOne/LopHocOne";
 import HoSoHocSinhOne from "./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne";
 import NhanVienOne from "./pages/admin/QuanLyNhanVien/NhanVienOne/NhanVienOne";
-import NhapDiem from "./pages/admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiem";
 import QuanLyTaiKhoan from "./pages/admin/QuanLyAccount";
 import TienDoDaoTao from "./pages/admin/TienDoGiangDay";
 import UpdatePost from "./pages/admin/QuanLyBaiViet/create/UpdatePost";
+import NhapDiemPage from "./pages/admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiemPage";
+import BangDiem from "./pages/MembersDashboard/NhapDiem/BangDiem";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -166,11 +167,11 @@ function App() {
                   path="dao-tao/lop-hoc/:idLopHoc"
                   element={<LopHocOne />}
                 />
+                <Route
+                  path="dao-tao/lop-hoc/:idLopHoc/:idClassSubject"
+                  element={<NhapDiemPage />}
+                />
               </Route>
-              <Route
-                path="dao-tao/lop-hoc/:idLopHoc/:idClassSubject"
-                element={<NhapDiem />}
-              />
               <Route
                 path="dao-tao/tien-do-dao-tao"
                 element={<TienDoDaoTao />}
@@ -263,9 +264,17 @@ function App() {
           </Route>
 
           {/* ========================= Giáo viên ============================= */}
-          <Route path="/teacher/*" element={<MemberLayout />}>
+          <Route
+            path="/teacher/*"
+            element={
+              <ProtectedRoute>
+                <MemberLayout />
+              </ProtectedRoute>
+            }
+          >
             <Route path="home" element={<MemberDashboard />} />
             <Route path="lop-hoc" element={<LopHocGiangDay />} />
+            <Route path="nhap-diem" element={<BangDiem />} />
             <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
             <Route path="de-cuong-giang-day" element={<MonHocGiangDay />} />
           </Route>

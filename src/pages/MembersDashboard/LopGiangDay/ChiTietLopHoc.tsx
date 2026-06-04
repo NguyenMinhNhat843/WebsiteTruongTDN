@@ -203,7 +203,6 @@ const ChiTietLopHoc = ({
                 withText={true}
                 // Màu xanh lá (Emerald) thường dùng cho các tác vụ Import/Export/Excel
                 className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2"
-                onClick={() => console.log("Import Excel")}
               />
               <ButtonAction
                 label="Chỉnh sửa điểm"
@@ -223,7 +222,6 @@ const ChiTietLopHoc = ({
               className="bg-amber-500 hover:bg-amber-600 text-white rounded-xl px-4 py-2"
               onClick={() => {
                 setIsEditing(false);
-                console.log("Dữ liệu đã lưu:", students);
               }}
             />
           )}

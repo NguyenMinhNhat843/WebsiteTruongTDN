@@ -1,8 +1,5 @@
 import { useMemo, useState, useEffect } from "react";
-import {
-  useLopHocOneContext,
-  type ClassSubjectGrade,
-} from "../LopHocOneProvider";
+import { type ClassSubjectGrade } from "../LopHocOneProvider";
 import {
   createColumnHelper,
   flexRender,
@@ -11,11 +8,12 @@ import {
 } from "@tanstack/react-table";
 import { RefreshCw, Save, Loader2 } from "lucide-react";
 import Breadcrumb from "../../../../../components/ui/Breadcrum";
-import { useLopHocContext } from "../../LopHocProvider";
+import { type LopHocResponseDto } from "../../LopHocProvider";
 import ButtonAction from "../../../../../components/ui/ButtonAction";
 import ButtonExport from "../../../../../components/ui/ButtonExport";
 import { calculateGrades, getStickyClass, handleKeyDown } from "./helper";
 import { downloadFromBlob } from "../../../../../util/download";
+import { NhapDiemProvider, useNhapDiemContext } from "./NhapDiemProvider";
 
 // Định nghĩa kiểu dữ liệu chuẩn cho hàng trong bảng
 export interface GradeRow {
@@ -41,19 +39,30 @@ export interface GradeRow {
 
 const columnHelper = createColumnHelper<GradeRow>();
 
-const NhapDiem = () => {
+interface NhapDiemProps {
+  classSubjectId: number;
+  lopHocDetail: LopHocResponseDto;
+}
+
+const NhapDiem = ({ classSubjectId, lopHocDetail }: NhapDiemProps) => {
+  return (
+    <NhapDiemProvider props={{ classSubjectId, lopHocDetail }}>
+      <Inner />
+    </NhapDiemProvider>
+  );
+};
+
+const Inner = () => {
   const {
+    exportExcel,
+    isExportingExcel,
+    isPendingSaveGradeTable,
+    saveGradeTable,
     classSubject,
     isClassSubjectLoading,
     refetchClassSubject,
-    saveGradeTable,
-    isPendingSaveGradeTable,
-    exportExcel,
-    isExportingExcel,
-    createGradeTable,
-    isCreatingGradeTable,
-  } = useLopHocOneContext();
-  const { LopHocDetail } = useLopHocContext();
+    lopHocDetail,
+  } = useNhapDiemContext();
 
   // State quản lý danh sách điểm cục bộ
   const [tableData, setTableData] = useState<GradeRow[]>([]);
@@ -317,35 +326,6 @@ const NhapDiem = () => {
     );
   };
 
-  if (
-    !isClassSubjectLoading &&
-    (!classSubject?.registrations || classSubject.registrations.length === 0)
-  ) {
-    return (
-      <div
-        className="flex flex-col items-center justify-center p-8 bg-white border 
-      border-slate-200 rounded-xl shadow-sm max-w-md mx-auto my-6 text-center"
-      >
-        <p className="text-slate-500 text-sm mb-4">
-          Lớp học phần này chưa có bảng điểm.
-        </p>
-
-        <ButtonAction
-          label="Tạo bảng điểm để nhập"
-          onClick={() =>
-            createGradeTable({
-              params: {
-                path: { classSubjectId: classSubject!.id! },
-                query: { classId: LopHocDetail!.id! },
-              },
-            })
-          }
-          loading={isCreatingGradeTable}
-        />
-      </div>
-    );
-  }
-
   const getStickyCellClass = (columnId: string) => {
     if (columnId === "stt") {
       return "sticky left-0 z-10 bg-white group-hover:bg-slate-50/90 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] text-center";
@@ -373,8 +353,8 @@ const NhapDiem = () => {
         items={[
           { label: "Danh sách lớp học", link: `/admin/dao-tao/lop-hoc` },
           {
-            label: `${LopHocDetail?.className || "Lớp học"}`,
-            link: `/admin/dao-tao/lop-hoc/${LopHocDetail?.id}`,
+            label: `${lopHocDetail?.className || "Lớp học"}`,
+            link: `/admin/dao-tao/lop-hoc/${lopHocDetail?.id}`,
           },
           { label: "Nhập điểm" },
         ]}
@@ -409,7 +389,7 @@ const NhapDiem = () => {
                   onSuccess: (blob) => {
                     downloadFromBlob(
                       blob as never,
-                      `${LopHocDetail?.className} - ${classSubject?.subject?.subjectName}`,
+                      `${lopHocDetail?.className} - ${classSubject?.subject?.subjectName}`,
                       ".xlsx",
                     );
                   },

@@ -126,6 +126,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/staffs/{teacherId}/dashboardstats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StaffController_getTeacherDashboardStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/staffs/{id}": {
         parameters: {
             query?: never;
@@ -152,22 +168,6 @@ export interface paths {
         };
         /** Lấy thông tin chi tiết nhân viên kèm thông tin tài khoản (nếu có) */
         get: operations["StaffController_getDetail"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/staffs/{teacherId}/dashboardstats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["StaffController_getTeacherDashboardStats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2148,6 +2148,15 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
         };
+        TeacherDashboardStatsResponseDto: {
+            id: number;
+            name?: string;
+            role?: string;
+            maGiaoVien?: string;
+            department?: string;
+            totalClasses: number;
+            totalSubjects: number;
+        };
         UpdateStaffDto: {
             id?: number;
             /** @example Nguyễn Văn C */
@@ -2183,15 +2192,6 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
             isActive?: boolean;
-        };
-        TeacherDashboardStatsResponseDto: {
-            id: number;
-            name?: string;
-            role?: string;
-            maGiaoVien?: string;
-            department?: string;
-            totalClasses: number;
-            totalSubjects: number;
         };
         CreateTeacherSubjectDto: {
             teacherId: number;
@@ -3445,78 +3445,15 @@ export interface components {
             price?: number;
         };
         CourseOfferDto: {
-            /** @example 1 */
             id: number;
-            /**
-             * @description Mã lớp học phần
-             * @example OOP-2026-HK1-01
-             */
-            courseCode: string;
-            /** @example Lập trình hướng đối tượng - Nhóm 01 */
-            courseName?: Record<string, never>;
-            /** @example 40 */
-            maxStudents: number;
-            /** @example 0 */
-            currentStudents: number;
-            /**
-             * @default planned
-             * @enum {string}
-             */
-            status: "planned" | "open" | "closed" | "cancelled";
-            /**
-             * Format: date-time
-             * @example 2026-09-01
-             */
-            startDate?: string;
-            /**
-             * Format: date-time
-             * @example 2026-12-31
-             */
-            endDate?: string;
-            /**
-             * @description ID của lớp học
-             * @example 101
-             */
-            classId?: Record<string, never> | null;
-            /**
-             * Format: date-time
-             * @description Thời gian tạo bản ghi
-             * @example 2026-05-23T06:50:00.000Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Thời gian cập nhật bản ghi gần nhất
-             * @example 2026-05-23T07:15:00.000Z
-             */
-            updatedAt: string;
-            /**
-             * Format: date-time
-             * @description Thời gian kết thúc đăng ký
-             * @example 2026-06-30T23:59:59.000Z
-             */
-            registrationEnd?: string | null;
-            /**
-             * Format: date-time
-             * @description Thời gian bắt đầu mở đăng ký
-             * @example 2026-06-01T00:00:00.000Z
-             */
-            registrationStart?: string | null;
-            teacherId: number;
-            /**
-             * @description ID của học kỳ
-             * @example 3
-             */
+            teacherId: number | null;
+            classId: number | null;
             semesterId: number;
-            /**
-             * @description ID của môn học
-             * @example 45
-             */
             subjectId: number;
-            teacher: components["schemas"]["StaffResponseDto"];
-            subject: components["schemas"]["SubjectResponseDto"];
-            baseClass?: components["schemas"]["ClassResponseDto"];
-            semester: components["schemas"]["SemesterResponseDto"];
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         StudyScheduleResponseDto: {
             id: number;
@@ -3607,6 +3544,21 @@ export interface components {
             imageUrl: string;
             publicId: string;
         };
+        ClassSubjectResponseDto: {
+            id: number;
+            teacherId: number | null;
+            classId: number | null;
+            semesterId: number;
+            subjectId: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            baseClass?: components["schemas"]["ClassResponseDto"];
+            teacher?: components["schemas"]["StaffResponseDto"];
+            semester?: components["schemas"]["SemesterResponseDto"];
+            subject?: components["schemas"]["SubjectResponseDto"];
+        };
         updateClassSubjectDto: {
             /**
              * @description ID học kỳ muốn mở lớp
@@ -3630,30 +3582,10 @@ export interface components {
             teacherId?: number;
         };
         ResponsePreviewGenerateSectionForClass: {
-            /**
-             * @description ID của môn học trong hệ thống
-             * @example 12
-             */
             subjectId: number;
-            /**
-             * @description Mã viết tắt của môn học
-             * @example CO1023
-             */
             subjectCode: string;
-            /**
-             * @description Tên đầy đủ của môn học
-             * @example Cấu trúc dữ liệu và giải thuật
-             */
             subjectName: string;
-            /**
-             * @description Số tín chỉ của môn học
-             * @example 3
-             */
             credits: number;
-            /**
-             * @description Trạng thái lớp học phần này đã tồn tại trong hệ thống hay chưa
-             * @example false
-             */
             isExisted: boolean;
         };
         SearchCourseOfferDto: {
@@ -4102,6 +4034,29 @@ export interface operations {
             };
         };
     };
+    StaffController_getTeacherDashboardStats: {
+        parameters: {
+            query: {
+                semesterId: number;
+            };
+            header?: never;
+            path: {
+                teacherId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeacherDashboardStatsResponseDto"];
+                };
+            };
+        };
+    };
     StaffController_update: {
         parameters: {
             query?: never;
@@ -4142,29 +4097,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StaffResponseDto"];
-                };
-            };
-        };
-    };
-    StaffController_getTeacherDashboardStats: {
-        parameters: {
-            query: {
-                semesterId: number;
-            };
-            header?: never;
-            path: {
-                teacherId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TeacherDashboardStatsResponseDto"];
                 };
             };
         };
@@ -6615,7 +6547,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CourseOfferDto"][];
+                    "application/json": components["schemas"]["ClassSubjectResponseDto"][];
                 };
             };
         };

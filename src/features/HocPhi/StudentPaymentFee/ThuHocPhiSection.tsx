@@ -44,7 +44,6 @@ export const ThuHocPhiPage = () => {
             placeholder="Nhập mã sinh viên (VD: SV2026...)"
             value={studentCode}
             onChange={(e) => {
-              console.log("Mã sinh viên nhập vào:", e.target.value);
               return setStudentCode(e.target.value);
             }}
             onKeyDown={(e) => e.key === "Enter" && handleSearch()}

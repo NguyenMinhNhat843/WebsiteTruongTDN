@@ -1,18 +1,47 @@
-import { useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { $api } from "../../../api/client";
+import { useSearchParams } from "react-router-dom";
+import { useAppContext } from "../../../AppProvider";
 
 export const [LopGiangDayProvider, useLopGiangDayContext] =
   createContextProvider(() => {
-    // Khi chọn 1 class sẽ mở modal thông tin chi tiết
-    const [classSelected, setClassSelected] = useState<any | null>(null);
-    const [openModalLichSu, setOpenModalLichSu] = useState<any | null>(null);
+    const { currentSemester, hocKysData, currentUser, profile } =
+      useAppContext();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const semesterId = searchParams.get("semesterId") || undefined;
+    const semesterIdNumber = semesterId ? Number(semesterId) : undefined;
+    const classId = searchParams.get("classId") || undefined;
+    const classIdNumber = classId ? Number(classId) : undefined;
+
+    /**
+     * Load danh sách môn học giảng dạy của giáo viên này trong 1 kỳ
+     */
+    const { data: classList, isLoading } = $api.useQuery(
+      "get",
+      "/course-offers",
+      {
+        params: {
+          query: {
+            teacherId: profile?.id,
+            semesterId: semesterIdNumber,
+          },
+        },
+      },
+      {
+        enabled: !!semesterIdNumber || !!profile?.id,
+      },
+    );
 
     return {
-      classSelected,
-      setClassSelected,
-      openModalLichSu,
-      setOpenModalLichSu,
+      classList: classList || [],
+      isLoading,
+      semesterIdNumber,
+      searchParams,
+      setSearchParams,
+      currentSemester,
+      hocKysData,
+      currentUser,
+      profile,
+      classIdNumber,
     };
   });

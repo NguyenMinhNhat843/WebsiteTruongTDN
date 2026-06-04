@@ -1,24 +1,19 @@
-import { useState } from "react";
-import {
-  BookOpen,
-  Users,
-  DoorOpen,
-  Clock,
-  Eye,
-  LayoutGrid,
-} from "lucide-react";
+import { useMemo } from "react";
+import { BookOpen, Users, DoorOpen, Eye, LayoutGrid } from "lucide-react";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import PageShell from "../../../components/ui/PageShell";
 import { SelectOption } from "../../../components/ui/Form/SelectOption";
-import ReusableTable, { type Column } from "../../../components/ui/Table";
-import ChiTietLopHoc from "./ChiTietLopHoc";
 import {
   LopGiangDayProvider,
   useLopGiangDayContext,
 } from "./LopGiangDayProvider";
-import ModalLichSu from "./LichSuThaoTac";
-
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useNavigate } from "react-router-dom";
 
 const LopHocGiangDay = () => {
   return (
@@ -27,145 +22,243 @@ const LopHocGiangDay = () => {
     </LopGiangDayProvider>
   );
 };
+
 const Inner = () => {
   const {
-    classSelected,
-    setClassSelected,
-    openModalLichSu,
-    setOpenModalLichSu,
+    hocKysData,
+    classList,
+    isLoading,
+    setSearchParams,
+    semesterIdNumber,
   } = useLopGiangDayContext();
-  const [selectedSemester, setSelectedSemester] = useState("HK1-2026");
+  const navigate = useNavigate();
 
-  //Danh sách học kỳ cho bộ lọc
-  const semesterOptions = [
-    { value: "HK1-2026", label: "Học kỳ 1 - 2026" },
-    { value: "HK2-2026", label: "Học kỳ 2 - 2026" },
-    { value: "HK1-2025", label: "Học kỳ 1 - 2025" },
-    { value: "HK2-2025", label: "Học kỳ 2 - 2025" },
-  ];
+  const hocKyOptions =
+    hocKysData?.map((hk) => ({
+      value: hk.id,
+      label: `${hk.name}`,
+    })) || [];
 
-  //Dữ liệu mẫu lớp học
-  const MOCK_CLASSES = [
-    {
-      id: "KTDN20A",
-      className: "Kế toán doanh nghiệp",
-      classCode: "KTDN20A",
-      room: "Phòng A.201",
-      schedule: "Tiết 4 - 6",
-      studentCount: 35,
-    },
-    {
-      id: "GDCT20A",
-      className: "Giáo dục chính trị",
-      classCode: "KTDN20A",
-      room: "Phòng B.105",
-      schedule: "Tiết 1 - 3",
-      studentCount: 42,
-    },
-  ];
+  const columnHelper = createColumnHelper<(typeof classList)[0]>();
 
-  //Định nghĩa các cột cho Table
-  const columns: Column<any>[] = [
-    {
-      key: "className",
-      label: "Lớp học phần",
-      className: "w-1/3",
-      render: (item: any) => (
-        <div className="flex flex-col">
-          <span className="font-bold text-slate-700">{item.className}</span>
-          <span className="text-xs text-slate-400">{item.classCode}</span>
-        </div>
-      ),
-    },
-    {
-      key: "location",
-      label: "Phòng / Tiết",
-      render: (item: any) => (
-        <div className="space-y-1">
-          <div className="flex items-center text-sm text-slate-600">
-            <DoorOpen size={14} className="mr-1.5 text-blue-500" />
-            {item.room}
-          </div>
-          <div className="flex items-center text-sm text-slate-500">
-            <Clock size={14} className="mr-1.5 text-orange-500" />
-            {item.schedule}
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: "students",
-      label: "Sĩ số",
-      render: (item: any) => (
-        <div className="flex items-center font-medium text-slate-700">
-          <Users size={16} className="mr-2 text-slate-400" />
-          {item.studentCount} học sinh
-        </div>
-      ),
-    },
-    {
-      key: "actions",
-      label: "Thao tác",
-      className: "text-right",
-      width: "150px",
-      render: (item: any) => (
-        <div className="flex gap-2 justify-end">
-          {/* Nút Chi Tiết: Tông màu xanh dương, nhẹ nhàng */}
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor("classId", {
+        header: "ID lớp",
+        cell: (info) => (
+          <span className="font-mono text-gray-500 font-medium">
+            {info.getValue()}
+          </span>
+        ),
+      }),
+      columnHelper.accessor("baseClass.className", {
+        header: "Tên lớp",
+        cell: (info) => {
+          return (
+            <span className="font-semibold text-gray-900">
+              {info.getValue()}
+            </span>
+          );
+        },
+      }),
+      columnHelper.accessor("baseClass.classCode", {
+        header: "Mã lớp",
+        cell: (info) => (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 border border-gray-200">
+            {info.getValue()}
+          </span>
+        ),
+      }),
+      columnHelper.accessor("subject.subjectName", {
+        header: "Tên môn học",
+        cell: (info) => (
+          <span className="font-medium text-gray-700">{info.getValue()}</span>
+        ),
+      }),
+      columnHelper.accessor("subject.subjectCode", {
+        header: "Mã môn học",
+        cell: (info) => (
+          <span className="font-mono text-sm text-gray-600">
+            {info.getValue()}
+          </span>
+        ),
+      }),
+      columnHelper.accessor("baseClass.currentSize", {
+        header: "Số lượng sinh viên",
+        cell: (info) => (
+          <span className="inline-flex items-center gap-1.5 font-medium text-gray-900">
+            <Users className="w-4 h-4 text-gray-400" />
+            {info.getValue() || 0}
+          </span>
+        ),
+      }),
+      columnHelper.display({
+        id: "actions",
+        header: "Thao tác",
+        cell: (info) => (
           <ButtonAction
-            title="Chi tiết"
-            icon={<Eye size={16} />}
-            className="bg-blue-50 text-blue-600 border-blue-200 hover:bg-blue-600 hover:text-white hover:border-blue-600"
-            onClick={(item) => setClassSelected(item)}
+            variant="outline"
+            size="sm"
+            label="Nhập điểm"
+            onClick={() => {
+              navigate(
+                `/teacher/nhap-diem?classSubjectId=${info.row.original.id}&classId=${info.row.original.classId}`,
+              );
+            }}
+            icon={<Eye className="w-4 h-4" />}
+            className="flex items-center gap-1.5 text-blue-600 border-blue-200 hover:bg-blue-50 transition-colors"
           />
+        ),
+      }),
+    ],
+    [columnHelper],
+  );
 
-          {/* Nút Lịch sử: Tông màu xám trung tính hoặc Slate */}
-          <ButtonAction
-            title="Lịch sử"
-            icon={<Clock size={16} />}
-            className="bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-600 hover:text-white hover:border-slate-600"
-            onClick={() => setOpenModalLichSu(item)}
-          />
-        </div>
-      ),
-    },
-  ];
+  const table = useReactTable({
+    data: classList || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
+  // Tính toán nhanh số liệu tổng quan (Stats) hiển thị phía trên bảng cho sinh động
+  const totalClasses = classList?.length || 0;
+  const totalStudents =
+    classList?.reduce(
+      (acc, curr) => acc + (curr?.baseClass?.currentSize || 0),
+      0,
+    ) || 0;
 
   return (
     <PageShell
-      title="Danh sách lớp giảng dạy"
-      sub="Quản lý các lớp học và học phần được phân công trong học kỳ."
-      icon={BookOpen}
+      title="Lớp Học Giảng Dạy"
+      sub="Quản lý danh sách các lớp học và môn học được phân công giảng dạy."
+      icon={LayoutGrid}
       renderRight={
-        <div className="w-64">
-          <SelectOption
-            options={semesterOptions}
-            value={selectedSemester}
-            onChange={(e) => setSelectedSemester(e.target.value)}
-            icon={<LayoutGrid size={18} />}
-            className="bg-white"
-          />
-        </div>
+        <SelectOption
+          containerClassName="w-48"
+          value={semesterIdNumber}
+          onChange={(e) => {
+            setSearchParams({
+              semesterId: e.target.value,
+            });
+          }}
+          options={hocKyOptions}
+        />
       }
     >
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-        <ReusableTable
-          data={MOCK_CLASSES}
-          columns={columns}
-          rowKey="id"
-          emptyMessage="Không có lớp học nào trong học kỳ này."
-          className="w-full"
-        />
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div className="p-3 bg-blue-50 rounded-lg text-blue-600">
+              <DoorOpen className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">
+                Tổng số lớp dạy
+              </p>
+              <p className="text-2xl font-bold text-gray-900">
+                {isLoading ? "---" : totalClasses}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4">
+            <div className="p-3 bg-emerald-50 rounded-lg text-emerald-600">
+              <BookOpen className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">
+                Môn học phụ trách
+              </p>
+              <p className="text-2xl font-bold text-gray-900">
+                {isLoading
+                  ? "---"
+                  : new Set(classList?.map((c) => c?.subject?.subjectCode))
+                      .size}
+              </p>
+            </div>
+          </div>
+
+          <div className="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center gap-4 sm:col-span-2 lg:col-span-1">
+            <div className="p-3 bg-amber-50 rounded-lg text-amber-600">
+              <Users className="w-6 h-6" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-500">
+                Tổng số học sinh
+              </p>
+              <p className="text-2xl font-bold text-gray-900">
+                {isLoading ? "---" : totalStudents}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Khu vực hiển thị Bảng dữ liệu */}
+        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center p-12 text-gray-500 space-y-3">
+              <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+              <p className="text-sm font-medium">
+                Đang tải dữ liệu giảng dạy...
+              </p>
+            </div>
+          ) : !classList || classList.length === 0 ? (
+            <div className="text-center p-12 text-gray-500 font-medium">
+              Không tìm thấy lớp học nào trong học kỳ này.
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  {table.getHeaderGroups().map((headerGroup) => (
+                    <tr
+                      key={headerGroup.id}
+                      className="bg-gray-50/70 border-b border-gray-200"
+                    >
+                      {headerGroup.headers.map((header) => (
+                        <th
+                          key={header.id}
+                          className="p-4 text-xs font-semibold text-gray-500 uppercase tracking-wider"
+                        >
+                          {header.isPlaceholder
+                            ? null
+                            : typeof header.column.columnDef.header ===
+                                "function"
+                              ? header.column.columnDef.header(
+                                  header.getContext(),
+                                )
+                              : header.column.columnDef.header}
+                        </th>
+                      ))}
+                    </tr>
+                  ))}
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {table.getRowModel().rows.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="hover:bg-gray-50/50 transition-colors duration-200"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          className="p-4 text-sm text-gray-600 align-middle"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
-      <ChiTietLopHoc
-        isOpen={!!classSelected}
-        onClose={() => setClassSelected(null)}
-        selectedClass={classSelected}
-      />
-      <ModalLichSu
-        isOpen={!!openModalLichSu}
-        onClose={() => setOpenModalLichSu(null)}
-        selectedClass={openModalLichSu}
-      />
     </PageShell>
   );
 };

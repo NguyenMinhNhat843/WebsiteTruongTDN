@@ -14,9 +14,8 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
     const [selectedSemesterId, setselectedSemesterId] = useState<number | null>(
       currentSemester ? currentSemester.id : null,
     );
-    const { idLopHoc, idClassSubject } = useParams();
+    const { idLopHoc } = useParams();
     const idLopHocNumber = Number(idLopHoc);
-    const idClassSubjectNumber = Number(idClassSubject);
 
     useEffect(() => {
       if (currentSemester) {
@@ -86,50 +85,6 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       isPending: isPendingUpdateClassSubject,
     } = $api.useMutation("patch", "/course-offers/{id}");
 
-    /**
-     * Lấy bảng điểm của classSubject
-     */
-    const {
-      data: classSubject,
-      isLoading: isClassSubjectLoading,
-      refetch: refetchClassSubject,
-    } = $api.useQuery(
-      "get",
-      "/course-offers/{id}",
-      {
-        params: {
-          path: {
-            id: idClassSubjectNumber!,
-          },
-        },
-      },
-      {
-        enabled: !!idClassSubjectNumber,
-      },
-    );
-
-    /**
-     * Lưu bảng điểm
-     */
-    const { mutate: saveGradeTable, isPending: isPendingSaveGradeTable } =
-      $api.useMutation("patch", "/course-registrations/save-grades");
-
-    /**
-     * Export excel
-     */
-    const { mutate: exportExcel, isPending: isExportingExcel } =
-      $api.useMutation("post", "/course-offers/export-excel");
-
-    /**
-     * Tạo bảng điểm để nhập
-     */
-    const { mutate: createGradeTable, isPending: isCreatingGradeTable } =
-      $api.useMutation("post", "/course-registrations/{classSubjectId}", {
-        onSuccess: () => {
-          refetchClassSubject();
-        },
-      });
-
     return {
       selectedSemesterId,
       setselectedSemesterId,
@@ -142,15 +97,6 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       updateClassSubject,
       isPendingUpdateClassSubject,
       refetchClassSubjects,
-      classSubject,
-      isClassSubjectLoading,
-      refetchClassSubject,
-      saveGradeTable,
-      isPendingSaveGradeTable,
-      exportExcel,
-      isExportingExcel,
-      createGradeTable,
-      isCreatingGradeTable,
     };
   },
 );
