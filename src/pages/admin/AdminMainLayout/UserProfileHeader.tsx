@@ -3,6 +3,7 @@ import { USER_ROLE, type User } from "../../../features/users/types/User.types";
 import { Bell, Globe, LogOut, GraduationCap } from "lucide-react";
 import { useAppContext } from "../../../AppProvider";
 import ButtonAction from "../../../components/ui/ButtonAction";
+import { $api } from "../../../api/client";
 
 const UserProfileHeader = () => {
   const navigate = useNavigate();
@@ -26,10 +27,28 @@ const UserProfileHeader = () => {
 
   const user = getUserData();
 
+  /**
+   * logout
+   */
+  const { mutate: logout } = $api.useMutation("post", "/auth/logout");
+
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("access_token");
-    navigate("/admin/login");
+    logout(
+      {},
+      {
+        onSuccess: () => {
+          localStorage.removeItem("user");
+          navigate("/admin/login");
+        },
+        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+        onError: (error: any) => {
+          alert(
+            "Đăng xuất thất bại: " +
+              (error?.response?.data?.message || JSON.stringify(error)),
+          );
+        },
+      },
+    );
   };
 
   if (!user) return null;

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { $api } from "../../api/client";
+import { $api, setAccessToken } from "../../api/client";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -28,11 +28,12 @@ const LoginPage = () => {
       {
         /* eslint-disable @typescript-eslint/no-explicit-any */
         onSuccess: (data: any) => {
-          localStorage.setItem("access_token", data?.access_token);
+          setAccessToken(data?.access_token);
           localStorage.setItem("user", JSON.stringify(data?.user));
           navigate("/admin/home");
         },
         onError: (error: any) => {
+          console.log("Login error:", error);
           alert(
             "Đăng nhập thất bại: " +
               (error?.response?.data?.message || JSON.stringify(error)),
