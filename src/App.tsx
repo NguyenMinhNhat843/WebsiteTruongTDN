@@ -21,7 +21,6 @@ import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import Dashboard from "./pages/admin/Dashboard/Home";
 import QuanLyNhanVien from "./pages/admin/QuanLyNhanVien/NhanVienList/QuanLyNhanVienList";
 import ChuongTrinhKhung from "./pages/admin/ChuongTrinhKhung/ChuongTrinhKhungIndex";
-import TimetablePage from "./pages/admin/ThoiKhoaBieu/ThoiKhoaBieu";
 import PhanQuyenNguoiDung from "./pages/admin/CaiDatHeThong/PhanQuyenNguoiDung/PhanQuyenNguoiDung";
 import DanhSachHoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoHocSinhList";
 import DotTuyenSinhList from "./pages/admin/TuyenSinh/IndexTuyenSinh";
@@ -70,6 +69,7 @@ import TienDoDaoTao from "./pages/admin/TienDoGiangDay";
 import UpdatePost from "./pages/admin/QuanLyBaiViet/create/UpdatePost";
 import NhapDiemPage from "./pages/admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiemPage";
 import BangDiem from "./pages/MembersDashboard/NhapDiem/BangDiem";
+import ThoiKhoaBieuWrapper from "./pages/admin/ThoiKhoaBieu/ThoiKhoaBieuWrapper";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -178,7 +178,7 @@ function App() {
               />
               <Route
                 path="dao-tao/thoi-khoa-bieu"
-                element={<TimetablePage />}
+                element={<ThoiKhoaBieuWrapper />}
               />
             </Route>
 

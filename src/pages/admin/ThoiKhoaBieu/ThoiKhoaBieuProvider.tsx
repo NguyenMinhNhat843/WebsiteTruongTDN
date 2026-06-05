@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { $api } from "../../../api/client";
 import { createContextProvider } from "../../../util/createContextProvider";
+import type { components } from "../../../api/v1";
+
+export type ScheduleItemDto = components["schemas"]["StudyScheduleResponseDto"];
+export type SemesterDto = components["schemas"]["SemesterResponseDto"];
 
 export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
   createContextProvider(() => {

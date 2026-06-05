@@ -3444,7 +3444,7 @@ export interface components {
              */
             price?: number;
         };
-        CourseOfferDto: {
+        ClassSubjectResponseDto: {
             id: number;
             teacherId: number | null;
             classId: number | null;
@@ -3454,6 +3454,10 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            baseClass?: components["schemas"]["ClassResponseDto"];
+            teacher?: components["schemas"]["StaffResponseDto"];
+            semester?: components["schemas"]["SemesterResponseDto"];
+            subject?: components["schemas"]["SubjectResponseDto"];
         };
         StudyScheduleResponseDto: {
             id: number;
@@ -3468,7 +3472,7 @@ export interface components {
             countPeriod: number | null;
             /** Format: date-time */
             studyDate?: string | null;
-            classSubject?: components["schemas"]["CourseOfferDto"];
+            classSubject?: components["schemas"]["ClassSubjectResponseDto"];
         };
         CreateStudyScheduleDto: {
             classSubjectId: number;
@@ -3544,21 +3548,6 @@ export interface components {
             imageUrl: string;
             publicId: string;
         };
-        ClassSubjectResponseDto: {
-            id: number;
-            teacherId: number | null;
-            classId: number | null;
-            semesterId: number;
-            subjectId: number;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            baseClass?: components["schemas"]["ClassResponseDto"];
-            teacher?: components["schemas"]["StaffResponseDto"];
-            semester?: components["schemas"]["SemesterResponseDto"];
-            subject?: components["schemas"]["SubjectResponseDto"];
-        };
         updateClassSubjectDto: {
             /**
              * @description ID học kỳ muốn mở lớp
@@ -3580,6 +3569,17 @@ export interface components {
              * @example 15
              */
             teacherId?: number;
+        };
+        CourseOfferDto: {
+            id: number;
+            teacherId: number | null;
+            classId: number | null;
+            semesterId: number;
+            subjectId: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         ResponsePreviewGenerateSectionForClass: {
             subjectId: number;
@@ -6330,6 +6330,7 @@ export interface operations {
         parameters: {
             query?: {
                 classId?: number;
+                teacherId?: number;
                 semesterId?: number;
                 weekNumber?: number;
                 startDate?: string;
