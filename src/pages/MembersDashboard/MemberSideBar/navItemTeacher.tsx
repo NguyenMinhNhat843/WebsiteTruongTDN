@@ -19,10 +19,4 @@ export const navItemTeacher: NavItem[] = [
     icon: "📅",
     href: "/teacher/thoi-khoa-bieu",
   },
-  {
-    id: "decuonggiangday",
-    label: "Đề cương giảng dạy",
-    icon: "📚",
-    href: "/teacher/de-cuong-giang-day",
-  },
 ];

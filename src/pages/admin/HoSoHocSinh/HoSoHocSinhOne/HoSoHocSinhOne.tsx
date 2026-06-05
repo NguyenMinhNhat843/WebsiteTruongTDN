@@ -1,7 +1,27 @@
 import Breadcrumb from "../../../../components/ui/Breadcrum";
 import { useHocSinhContext, type StatusHocSinhEnum } from "../HocSinhProvider";
+import { StudentDocuments } from "./HoSoFile";
+import {
+  HoSoHocSinhOneProvider,
+  useHoSoHocSinhOneContext,
+} from "./HoSoHocSinhOneProvider";
 
 const HoSoHocSinhOne = () => {
+  return (
+    <HoSoHocSinhOneProvider>
+      <Inner />
+    </HoSoHocSinhOneProvider>
+  );
+};
+
+const Inner = () => {
+  const {
+    hoSoNhapHocItems,
+    isLoadingHoSoNhapHoc,
+    hoSoHocSinh,
+    isLoadingHoSoHocSinh,
+    dataHoSoHocSinh,
+  } = useHoSoHocSinhOneContext();
   const { studentDetail, isGettingStudentDetail } = useHocSinhContext();
 
   // Trạng thái Loading
@@ -240,6 +260,8 @@ const HoSoHocSinhOne = () => {
                 />
               </div>
             </div>
+
+            <StudentDocuments documents={dataHoSoHocSinh} />
           </div>
 
           {/* CỘT PHẢI: THÔNG TIN GIA ĐÌNH & NGƯỜI GIÁM HỘ (Chiếm 1/3 trên màn hình lớn) */}

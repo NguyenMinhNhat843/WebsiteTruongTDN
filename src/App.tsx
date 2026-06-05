@@ -40,7 +40,6 @@ import MemberLayout from "./pages/MembersDashboard/MemberSideBar/MemberLayout";
 import MemberDashboard from "./pages/MembersDashboard/Home";
 import LopHocGiangDay from "./pages/MembersDashboard/LopGiangDay/LopGiangDay";
 import ThoiKhoaBieu from "./pages/MembersDashboard/ThoiKhoaBieu/ThoiKhoaBieu";
-import MonHocGiangDay from "./pages/MembersDashboard/DeCuongGiangDay/MonHocGiangDay";
 import StudentDashboard from "./pages/StudentDashboard/Dashboard/Dashboard";
 import StudentLayout from "./pages/StudentDashboard/StudentLayout";
 import StudentLopHocPhan from "./pages/StudentDashboard/LopHocPhan/LopHocPhan";
@@ -276,7 +275,6 @@ function App() {
             <Route path="lop-hoc" element={<LopHocGiangDay />} />
             <Route path="nhap-diem" element={<BangDiem />} />
             <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
-            <Route path="de-cuong-giang-day" element={<MonHocGiangDay />} />
           </Route>
 
           {/* ========================= Sinh viên ============================= */}

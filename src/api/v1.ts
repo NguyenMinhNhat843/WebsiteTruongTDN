@@ -1479,6 +1479,113 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/document-configs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả cấu hình tài liệu */
+        get: operations["DocumentConfigController_findAll"];
+        put?: never;
+        /** Tạo mới cấu hình tài liệu */
+        post: operations["DocumentConfigController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-configs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết cấu hình tài liệu theo ID */
+        get: operations["DocumentConfigController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-config-items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả cấu hình mục tài liệu */
+        get: operations["DocumentConfigItemController_findAll"];
+        put?: never;
+        /** Tạo mới cấu hình mục tài liệu */
+        post: operations["DocumentConfigItemController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-config-items/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết cấu hình mục tài liệu theo ID */
+        get: operations["DocumentConfigItemController_findOne"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/student-documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả tài liệu sinh viên */
+        get: operations["StudentDocumentController_findAll"];
+        put?: never;
+        /** Tạo mới tài liệu sinh viên */
+        post: operations["StudentDocumentController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/student-documents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết tài liệu sinh viên theo ID */
+        get: operations["StudentDocumentController_findOne"];
+        /** Cập nhật tài liệu sinh viên theo ID */
+        put: operations["StudentDocumentController_update"];
+        post?: never;
+        /** Xóa tài liệu sinh viên theo ID */
+        delete: operations["StudentDocumentController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3778,6 +3885,65 @@ export interface components {
         SaveGradesDto: {
             classSubjectId: number;
             grades?: components["schemas"]["UpdateCourseRegistrationDto"][];
+        };
+        CreateDocumentConfigDto: {
+            name: string;
+        };
+        DocumentConfigResponseDto: {
+            id: number;
+            name: string;
+        };
+        DocumentConfigItemDto: {
+            id: number;
+            documentConfigId: number;
+            name: string;
+            required: boolean | null;
+            sortOrder: number | null;
+        };
+        DocumentConfigWithItemsResponseDto: {
+            id: number;
+            name: string;
+            items: components["schemas"]["DocumentConfigItemDto"][];
+        };
+        CreateDocumentConfigItemDto: {
+            documentConfigId: number;
+            name: string;
+            required: boolean | null;
+            sortOrder: number | null;
+        };
+        DocumentConfigItemResponseDto: {
+            id: number;
+            documentConfigId: number;
+            name: string;
+            required: boolean | null;
+            sortOrder: number | null;
+            documentConfig: components["schemas"]["DocumentConfigResponseDto"];
+        };
+        CreateStudentDocumentDto: {
+            documentConfigItemId: number;
+            fileName: string;
+            fileSize: number;
+            fileUrl: string;
+            studentId: number;
+        };
+        StudentDocumentResponseDto: {
+            id: number;
+            documentConfigItemId: number;
+            fileName: string;
+            fileSize: number;
+            fileUrl: string;
+            studentId: number;
+            /** Format: date-time */
+            uploadedAt: string;
+            student?: components["schemas"]["StudentResponseDto"];
+            documentConfigItem?: components["schemas"]["DocumentConfigItemResponseDto"];
+        };
+        UpdateStudentDocumentDto: {
+            documentConfigItemId?: number;
+            fileName?: string;
+            fileSize?: number;
+            fileUrl?: string;
+            studentId?: number;
         };
     };
     responses: never;
@@ -6796,6 +6962,271 @@ export interface operations {
         };
         responses: {
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DocumentConfigController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentConfigResponseDto"][];
+                };
+            };
+        };
+    };
+    DocumentConfigController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDocumentConfigDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentConfigResponseDto"];
+                };
+            };
+        };
+    };
+    DocumentConfigController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentConfigWithItemsResponseDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DocumentConfigItemController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentConfigItemResponseDto"][];
+                };
+            };
+        };
+    };
+    DocumentConfigItemController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDocumentConfigItemDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentConfigItemResponseDto"];
+                };
+            };
+        };
+    };
+    DocumentConfigItemController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentConfigItemResponseDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StudentDocumentController_findAll: {
+        parameters: {
+            query?: {
+                studentId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentDocumentResponseDto"][];
+                };
+            };
+        };
+    };
+    StudentDocumentController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateStudentDocumentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentDocumentResponseDto"];
+                };
+            };
+        };
+    };
+    StudentDocumentController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentDocumentResponseDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StudentDocumentController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateStudentDocumentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentDocumentResponseDto"];
+                };
+            };
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StudentDocumentController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -18,7 +18,6 @@ const UserProfileHeader = () => {
   const getUserData = () => {
     try {
       const data = localStorage.getItem("user");
-      console.log("dât: ", data);
       return data ? JSON.parse(data) : null;
     } catch (error) {
       console.error("Lỗi parse user data:", error);
