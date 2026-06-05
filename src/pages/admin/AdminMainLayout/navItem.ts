@@ -94,6 +94,11 @@ const navItems: NavItem[] = [
         href: "/admin/hoc-sinh/ho-so",
       },
       {
+        id: "ho-so-hoc-sinh/create",
+        label: "Tạo hồ sơ học sinh",
+        href: "/admin/hoc-sinh/ho-so/create",
+      },
+      {
         id: "phan-lop",
         label: "Phân lớp",
         href: "/admin/hoc-sinh/phan-lop",

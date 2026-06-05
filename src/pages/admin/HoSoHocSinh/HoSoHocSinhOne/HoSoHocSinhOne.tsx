@@ -15,13 +15,7 @@ const HoSoHocSinhOne = () => {
 };
 
 const Inner = () => {
-  const {
-    hoSoNhapHocItems,
-    isLoadingHoSoNhapHoc,
-    hoSoHocSinh,
-    isLoadingHoSoHocSinh,
-    dataHoSoHocSinh,
-  } = useHoSoHocSinhOneContext();
+  const { dataHoSoHocSinh } = useHoSoHocSinhOneContext();
   const { studentDetail, isGettingStudentDetail } = useHocSinhContext();
 
   // Trạng thái Loading

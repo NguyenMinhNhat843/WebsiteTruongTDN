@@ -5,17 +5,11 @@ import { GraduationCap } from "lucide-react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import { useHocSinhContext } from "../HocSinhProvider";
 import ImportStudentModal from "./ModalImportHocSinh";
-import CreateStudentModal from "../CreateHoSoHocSinh/Create";
+import { useNavigate } from "react-router-dom";
 
 const DanhSachHoSoHocSinh = () => {
-  const {
-    isOpenModalImport,
-    setIsOpenModalImport,
-    isOpenModalCreate,
-    setIsOpenModalCreate,
-    createStudent,
-    isCreatingStudent,
-  } = useHocSinhContext();
+  const { isOpenModalImport, setIsOpenModalImport } = useHocSinhContext();
+  const navigate = useNavigate();
   return (
     <PageShell
       title="Hồ sơ học sinh"
@@ -25,7 +19,7 @@ const DanhSachHoSoHocSinh = () => {
         <div>
           <ButtonAction
             label="Thêm học sinh"
-            onClick={() => setIsOpenModalCreate(true)}
+            onClick={() => navigate("/admin/hoc-sinh/ho-so/create")}
           />
           <ButtonAction
             label="Import dữ liệu"
@@ -45,29 +39,6 @@ const DanhSachHoSoHocSinh = () => {
         <ImportStudentModal
           isOpen={isOpenModalImport}
           onClose={() => setIsOpenModalImport(false)}
-        />
-
-        <CreateStudentModal
-          isOpen={isOpenModalCreate}
-          onClose={() => setIsOpenModalCreate(false)}
-          submitting={isCreatingStudent}
-          onSubmitSuccess={(data, onSuccess) => {
-            createStudent(
-              {
-                body: data,
-              },
-              {
-                onSuccess: () => {
-                  onSuccess();
-                  alert("Tạo hồ sơ học sinh thành công!");
-                },
-                /* eslint-disable @typescript-eslint/no-explicit-any */
-                onError: (error: any) => {
-                  alert(error.message || "Tạo hồ sơ học sinh thất bại!");
-                },
-              },
-            );
-          }}
         />
       </div>
     </PageShell>

@@ -1,27 +1,25 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { X, User, Users, GraduationCap } from "lucide-react";
+import { User, Users, GraduationCap } from "lucide-react";
 import Input from "../../../../components/ui/Form/Input";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import type { createStudentDto } from "../HocSinhProvider";
 import SelectBatch from "../../../../components/ui/SelectBatch";
+import { CreateProvider, useCreateContext } from "./CreateProvider";
+import DocumentFile from "./DocumentFile";
 
-interface CreateStudentModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSubmitSuccess?: (data: createStudentDto, onSuccess: () => void) => void;
-  submitting?: boolean;
-}
+const CreateStudent = () => {
+  return (
+    <CreateProvider>
+      <Inner />
+    </CreateProvider>
+  );
+};
 
-const CreateStudentModal: React.FC<CreateStudentModalProps> = ({
-  isOpen,
-  onClose,
-  onSubmitSuccess,
-  submitting,
-}) => {
+const Inner = () => {
+  const { createStudent, isCreatingStudent } = useCreateContext();
   const [batchIdselected, setBatchIdSelected] = useState<number | null>(null);
-  console.log(batchIdselected);
   const {
     register,
     handleSubmit,
@@ -57,8 +55,6 @@ const CreateStudentModal: React.FC<CreateStudentModalProps> = ({
     },
   });
 
-  if (!isOpen) return null;
-
   const handleFormSubmit = async (data: createStudentDto) => {
     try {
       // Định dạng lại cấu trúc dữ liệu thích hợp trước khi gửi lên API Backend
@@ -83,12 +79,21 @@ const CreateStudentModal: React.FC<CreateStudentModalProps> = ({
           : null,
       };
 
-      if (onSubmitSuccess) {
-        await onSubmitSuccess(payload, () => {
-          reset();
-          onClose();
-        });
-      }
+      await createStudent(
+        {
+          body: payload,
+        },
+        {
+          onSuccess: () => {
+            alert("Tạo hồ sơ học sinh thành công!");
+            reset();
+          },
+          /* eslint-disable @typescript-eslint/no-explicit-any */
+          onError: (error: any) => {
+            alert(error.message || "Tạo hồ sơ học sinh thất bại!");
+          },
+        },
+      );
     } catch (error) {
       console.error("Xảy ra lỗi khi gửi dữ liệu:", error);
     }
@@ -110,23 +115,13 @@ const CreateStudentModal: React.FC<CreateStudentModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4">
-      <div className="bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-xl shadow-xl flex flex-col">
+    <div className="flex items-center justify-center p-4">
+      <div className="bg-white w-full overflow-y-auto rounded-xl shadow-xl flex flex-col">
         {/* Header thành phần mượt mà */}
         <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center z-10">
           <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
             Thêm Hồ Sơ Học Sinh Mới
           </h2>
-          <ButtonAction
-            variant="secondary"
-            size="sm"
-            icon={<X className="w-4 h-4 text-slate-500" />}
-            onClick={() => {
-              reset();
-              onClose();
-            }}
-            className="rounded-full"
-          />
         </div>
 
         {/* Form Body chính */}
@@ -336,6 +331,8 @@ const CreateStudentModal: React.FC<CreateStudentModalProps> = ({
             </div>
           </div>
 
+          <DocumentFile />
+
           {/* Sticky Footer cố định để tiện thao tác */}
           <div className="sticky bottom-0 bg-white border-t border-slate-100 pt-4 flex justify-end gap-3 z-10">
             <ButtonAction
@@ -344,13 +341,12 @@ const CreateStudentModal: React.FC<CreateStudentModalProps> = ({
               label="Hủy bỏ"
               onClick={() => {
                 reset();
-                onClose();
               }}
             />
             <ButtonAction
               type="submit"
               variant="primary"
-              loading={isSubmitting || submitting}
+              loading={isSubmitting || isCreatingStudent}
               label="Lưu hồ sơ học sinh"
             />
           </div>
@@ -360,4 +356,4 @@ const CreateStudentModal: React.FC<CreateStudentModalProps> = ({
   );
 };
 
-export default CreateStudentModal;
+export default CreateStudent;

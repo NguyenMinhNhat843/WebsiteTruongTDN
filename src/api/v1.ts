@@ -1567,6 +1567,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/student-documents/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tạo nhiều tài liệu sinh viên cùng lúc */
+        post: operations["StudentDocumentController_createMany"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/student-documents/{id}": {
         parameters: {
             query?: never;
@@ -3937,6 +3954,10 @@ export interface components {
             uploadedAt: string;
             student?: components["schemas"]["StudentResponseDto"];
             documentConfigItem?: components["schemas"]["DocumentConfigItemResponseDto"];
+        };
+        CreateManyStudentDocumentDto: {
+            studentId: number;
+            documentConfigItemIds: number[];
         };
         UpdateStudentDocumentDto: {
             documentConfigItemId?: number;
@@ -7148,6 +7169,27 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StudentDocumentResponseDto"];
                 };
+            };
+        };
+    };
+    StudentDocumentController_createMany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["CreateManyStudentDocumentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

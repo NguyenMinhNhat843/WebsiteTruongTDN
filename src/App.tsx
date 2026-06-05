@@ -69,6 +69,7 @@ import UpdatePost from "./pages/admin/QuanLyBaiViet/create/UpdatePost";
 import NhapDiemPage from "./pages/admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiemPage";
 import BangDiem from "./pages/MembersDashboard/NhapDiem/BangDiem";
 import ThoiKhoaBieuWrapper from "./pages/admin/ThoiKhoaBieu/ThoiKhoaBieuWrapper";
+import CreateStudent from "./pages/admin/HoSoHocSinh/CreateHoSoHocSinh/Create";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -208,6 +209,7 @@ function App() {
             {/* Công tác học sinh */}
             <Route element={<HocSinhLayout />}>
               <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
+              <Route path="hoc-sinh/ho-so/create" element={<CreateStudent />} />
               <Route
                 path="hoc-sinh/ho-so/:maSinhVien"
                 element={<HoSoHocSinhOne />}
