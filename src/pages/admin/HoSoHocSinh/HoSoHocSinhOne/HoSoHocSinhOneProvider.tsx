@@ -36,7 +36,7 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
         {
           params: {
             query: {
-              studentId: 1,
+              studentId: studentDetail?.id,
             },
           },
         },
@@ -48,7 +48,6 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
     /**
      * Xử lý data hiển thị hồ sơ học sinh
      */
-
     const hoSoMap = new Map(
       hoSoHocSinh?.map((hs) => [hs.documentConfigItemId, hs]) || [],
     );
@@ -58,11 +57,20 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
         const fileData = hoSoMap.get(item.id);
 
         return {
+          documentConfigItemId: item.id,
           name: item.name,
           data: fileData || null,
           isUploaded: !!fileData,
         };
       }) || [];
+
+    /**
+     * Upload File hố sơ học sinh
+     */
+    const {
+      mutate: createStudentDocument,
+      isPending: isCreatingStudentDocument,
+    } = $api.useMutation("post", "/student-documents");
 
     return {
       hoSoNhapHoc: configHoSoNhapHoc,
@@ -71,5 +79,7 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
       hoSoHocSinh,
       isLoadingHoSoHocSinh,
       dataHoSoHocSinh,
+      createStudentDocument,
+      isCreatingStudentDocument,
     };
   });

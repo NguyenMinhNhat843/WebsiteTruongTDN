@@ -15,7 +15,7 @@ const HoSoHocSinhOne = () => {
 };
 
 const Inner = () => {
-  const { dataHoSoHocSinh } = useHoSoHocSinhOneContext();
+  const { dataHoSoHocSinh, createStudentDocument } = useHoSoHocSinhOneContext();
   const { studentDetail, isGettingStudentDetail } = useHocSinhContext();
 
   // Trạng thái Loading
@@ -255,7 +255,22 @@ const Inner = () => {
               </div>
             </div>
 
-            <StudentDocuments documents={dataHoSoHocSinh} />
+            <StudentDocuments
+              documents={dataHoSoHocSinh}
+              onUploadFile={(documentConfigItemId, file) => {
+                const formData = new FormData();
+                formData.append("studentId", String(studentDetail.id));
+                formData.append(
+                  "documentConfigItemId",
+                  String(documentConfigItemId),
+                );
+                formData.append("file", file);
+                /* eslint-disable @typescript-eslint/no-explicit-any */
+                createStudentDocument({
+                  body: formData as any,
+                });
+              }}
+            />
           </div>
 
           {/* CỘT PHẢI: THÔNG TIN GIA ĐÌNH & NGƯỜI GIÁM HỘ (Chiếm 1/3 trên màn hình lớn) */}

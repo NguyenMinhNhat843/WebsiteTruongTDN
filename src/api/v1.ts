@@ -3938,9 +3938,6 @@ export interface components {
         };
         CreateStudentDocumentDto: {
             documentConfigItemId: number;
-            fileName: string;
-            fileSize: number;
-            fileUrl: string;
             studentId: number;
         };
         StudentDocumentResponseDto: {
@@ -3961,9 +3958,6 @@ export interface components {
         };
         UpdateStudentDocumentDto: {
             documentConfigItemId?: number;
-            fileName?: string;
-            fileSize?: number;
-            fileUrl?: string;
             studentId?: number;
         };
     };
@@ -7158,7 +7152,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateStudentDocumentDto"];
+                "multipart/form-data": components["schemas"]["CreateStudentDocumentDto"];
             };
         };
         responses: {

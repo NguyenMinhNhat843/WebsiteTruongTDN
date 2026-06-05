@@ -10,6 +10,7 @@ interface DocumentFile {
 }
 
 interface StudentDocItem {
+  documentConfigItemId: number;
   name: string;
   data: DocumentFile | null;
   isUploaded: boolean;
@@ -17,7 +18,7 @@ interface StudentDocItem {
 
 interface StudentDocumentsProps {
   documents: StudentDocItem[];
-  onUploadFile?: (documentName: string, file: File) => Promise<void>; // Callback xử lý upload phía API
+  onUploadFile?: (documentConfigItemId: number, file: File) => void; // Callback xử lý upload phía API
 }
 
 export const StudentDocuments: React.FC<StudentDocumentsProps> = ({
@@ -36,7 +37,7 @@ export const StudentDocuments: React.FC<StudentDocumentsProps> = ({
     if (e.target.files && e.target.files.length > 0 && selectedDoc) {
       const file = e.target.files[0];
       if (onUploadFile) {
-        await onUploadFile(selectedDoc.name, file);
+        onUploadFile(selectedDoc.documentConfigItemId, file);
       }
       setIsModalOpen(false);
     }
@@ -53,7 +54,7 @@ export const StudentDocuments: React.FC<StudentDocumentsProps> = ({
     ) {
       const file = e.dataTransfer.files[0];
       if (onUploadFile) {
-        await onUploadFile(selectedDoc.name, file);
+        onUploadFile(selectedDoc.documentConfigItemId, file);
       }
       setIsModalOpen(false);
     }
