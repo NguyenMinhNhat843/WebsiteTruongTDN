@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import NhapDiem from "../../admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiem";
 import { $api } from "../../../api/client";
+import Breadcrumb from "../../../components/ui/Breadcrum";
 
 const BangDiem = () => {
   const [searchParams] = useSearchParams();
@@ -11,14 +12,8 @@ const BangDiem = () => {
 
   const classId = searchParams.get("classId");
   const classIdNumber = classId ? Number(classId) : undefined;
-  console.log(
-    "classSubjectIdNumber: ",
-    classSubjectIdNumber,
-    "classIdNumber: ",
-    classIdNumber,
-  );
 
-  const { data: LopHocDetail, isLoading: isLoadingLopHocDetail } =
+  const { data: lopHocDetail, isLoading: isLoadingLopHocDetail } =
     $api.useQuery(
       "get",
       `/classes/{id}`,
@@ -42,10 +37,9 @@ const BangDiem = () => {
       </div>
     );
   }
-  console.log("sadlkjasd: ", classSubjectIdNumber, LopHocDetail);
 
   // 2. TRẠNG THÁI LỖI: Sau khi hết loading mà vẫn thiếu thông tin quan trọng trên URL hoặc API thất bại
-  if (!classSubjectIdNumber || !LopHocDetail) {
+  if (!classSubjectIdNumber || !lopHocDetail) {
     return (
       <div className="p-4 text-red-500 font-medium">
         Không tìm thấy thông tin lớp học hoặc URL không hợp lệ.
@@ -56,9 +50,20 @@ const BangDiem = () => {
   // 3. TRẠNG THÁI THÀNH CÔNG: Đã có đủ dữ liệu sạch, tự tin truyền vào component con
   return (
     <div>
+      <div className="my-3 ms-6">
+        <Breadcrumb
+          items={[
+            {
+              label: `${lopHocDetail?.className || "Lớp học"}`,
+              link: `/teacher/lop-hoc`,
+            },
+            { label: "Nhập điểm" },
+          ]}
+        />
+      </div>
       <NhapDiem
         classSubjectId={classSubjectIdNumber}
-        lopHocDetail={LopHocDetail}
+        lopHocDetail={lopHocDetail}
       />
     </div>
   );

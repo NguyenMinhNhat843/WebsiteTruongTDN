@@ -28,9 +28,11 @@ export const [LopGiangDayProvider, useLopGiangDayContext] =
         },
       },
       {
-        enabled: !!semesterIdNumber || !!profile?.id,
+        enabled: !!semesterIdNumber && !!profile?.id,
       },
     );
+    console.log("semesterIdNumber: ", semesterIdNumber);
+    console.log("profile: ", profile);
 
     return {
       classList: classList || [],

@@ -7,7 +7,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { RefreshCw, Save, Loader2 } from "lucide-react";
-import Breadcrumb from "../../../../../components/ui/Breadcrum";
 import { type LopHocResponseDto } from "../../LopHocProvider";
 import ButtonAction from "../../../../../components/ui/ButtonAction";
 import ButtonExport from "../../../../../components/ui/ButtonExport";
@@ -349,17 +348,6 @@ const Inner = () => {
 
   return (
     <div className="p-6 bg-slate-50 min-h-screen rounded-xl">
-      <Breadcrumb
-        items={[
-          { label: "Danh sách lớp học", link: `/admin/dao-tao/lop-hoc` },
-          {
-            label: `${lopHocDetail?.className || "Lớp học"}`,
-            link: `/admin/dao-tao/lop-hoc/${lopHocDetail?.id}`,
-          },
-          { label: "Nhập điểm" },
-        ]}
-      />
-
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pt-2">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">

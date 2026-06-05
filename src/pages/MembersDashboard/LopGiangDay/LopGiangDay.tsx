@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { BookOpen, Users, DoorOpen, Eye, LayoutGrid } from "lucide-react";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import PageShell from "../../../components/ui/PageShell";
@@ -30,8 +30,21 @@ const Inner = () => {
     isLoading,
     setSearchParams,
     semesterIdNumber,
+    currentSemester,
   } = useLopGiangDayContext();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    // tự động redirect tới semesterId hiện tại nếu URL chưa có semesterId
+    if (!semesterIdNumber && hocKysData) {
+      const currentHocKy = hocKysData.find(
+        (hk) => hk.id === currentSemester?.id,
+      );
+      if (currentHocKy) {
+        setSearchParams({ semesterId: String(currentHocKy.id) });
+      }
+    }
+  }, []);
 
   const hocKyOptions =
     hocKysData?.map((hk) => ({
@@ -119,6 +132,7 @@ const Inner = () => {
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+  console.log("classList: ", classList);
 
   // Tính toán nhanh số liệu tổng quan (Stats) hiển thị phía trên bảng cho sinh động
   const totalClasses = classList?.length || 0;
