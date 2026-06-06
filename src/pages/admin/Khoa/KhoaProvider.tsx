@@ -10,6 +10,9 @@ export const [KhoaProvider, useKhoaContext] = createContextProvider(() => {
   const [openModalCreateKhoa, setOpenModalCreateKhoa] = useState(false);
   const queryClient = useQueryClient();
 
+  /**
+   * Lấy danh sách khoa
+   */
   const {
     data: departments,
     isLoading: isLoadingDepartment,

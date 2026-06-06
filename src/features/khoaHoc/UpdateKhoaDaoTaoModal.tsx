@@ -44,7 +44,7 @@ export const UpdateBatchModal = ({
   if (!isOpen || !data) return null;
 
   const onSubmit = (formData: UpdateBatchInput) => {
-    onSave(data.id, formData);
+    onSave(data.id!, formData);
   };
 
   return (

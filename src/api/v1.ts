@@ -39,6 +39,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/students/{id}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Duyệt hồ sơ và cấp tài khoản đăng nhập */
+        post: operations["approveStudent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/students/{id}": {
         parameters: {
             query?: never;
@@ -55,23 +72,6 @@ export interface paths {
         head?: never;
         /** Cập nhật thông tin hồ sơ sinh viên */
         patch: operations["updateStudent"];
-        trace?: never;
-    };
-    "/students/{id}/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Duyệt hồ sơ và cấp tài khoản đăng nhập */
-        post: operations["approveStudent"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
         trace?: never;
     };
     "/students/search-by-code": {
@@ -2014,6 +2014,18 @@ export interface components {
             /** @description Thông tin khóa học (batch) */
             batch?: components["schemas"]["BatchResponseDto"];
         };
+        DocumentProgressDto: {
+            /**
+             * @description Số lượng hồ sơ học sinh hiện đã nộp
+             * @example 3
+             */
+            current: number;
+            /**
+             * @description Tổng số lượng hồ sơ cần có theo cấu hình
+             * @example 5
+             */
+            total: number;
+        };
         StudentResponseDto: {
             /**
              * @description ID tự tăng của học sinh (Nếu tạo mới có thể bỏ qua hoặc truyền 0 tùy logic backend)
@@ -2123,6 +2135,8 @@ export interface components {
             status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
             batch?: components["schemas"]["BatchResponseDto"] | null;
             class?: components["schemas"]["ClassResponseDto"] | null;
+            /** @description Thông tin tiến độ nộp hồ sơ của học sinh */
+            documentProgress: components["schemas"]["DocumentProgressDto"];
         };
         /** @enum {string} */
         StudentStatus: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
@@ -4065,6 +4079,27 @@ export interface operations {
             };
         };
     };
+    approveStudent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentResponseDto"];
+                };
+            };
+        };
+    };
     deleteStudent: {
         parameters: {
             query?: never;
@@ -4099,27 +4134,6 @@ export interface operations {
                 "application/json": components["schemas"]["UpdateStudentDto"];
             };
         };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StudentResponseDto"];
-                };
-            };
-        };
-    };
-    approveStudent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
         responses: {
             200: {
                 headers: {

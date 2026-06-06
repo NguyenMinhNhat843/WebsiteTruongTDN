@@ -13,7 +13,7 @@ export const LoadingWrapper: React.FC<LoadingWrapperProps> = ({
   message,
 }) => {
   return (
-    <div className="relative w-full h-full min-h-[200px]">
+    <div className="relative w-full h-full min-h-50">
       {children}
 
       {isLoading && (

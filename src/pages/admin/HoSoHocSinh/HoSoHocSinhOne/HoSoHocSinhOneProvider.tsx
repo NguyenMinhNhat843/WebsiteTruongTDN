@@ -1,3 +1,4 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { $api } from "../../../../api/client";
 import type { components } from "../../../../api/v1";
 import { createContextProvider } from "../../../../util/createContextProvider";
@@ -5,9 +6,9 @@ import { useHocSinhContext } from "../HocSinhProvider";
 
 export type StudentDocumentResponseDto =
   components["schemas"]["StudentDocumentResponseDto"];
-
 export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
   createContextProvider(() => {
+    const queryClient = useQueryClient();
     const { studentDetail, isGettingStudentDetail } = useHocSinhContext();
     /**
      * Load cấu hình hồ sơ nhập học
@@ -70,7 +71,6 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
           isUploaded: filesData.length > 0,
         };
       }) || [];
-    console.log("dataHoSoHocSinh: ", dataHoSoHocSinh);
 
     /**
      * Upload File hố sơ học sinh
@@ -78,7 +78,13 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
     const {
       mutate: createStudentDocument,
       isPending: isCreatingStudentDocument,
-    } = $api.useMutation("post", "/student-documents");
+    } = $api.useMutation("post", "/student-documents", {
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ["get", "/student-documents"],
+        });
+      },
+    });
 
     return {
       hoSoNhapHoc: configHoSoNhapHoc,

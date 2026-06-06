@@ -7,8 +7,9 @@ import {
   X,
   Plus,
   Loader2,
-} from "lucide-react"; // Thêm Loader2 để làm icon loading
+} from "lucide-react";
 import { useHoSoHocSinhOneContext } from "./HoSoHocSinhOneProvider";
+import { toast } from "sonner";
 
 interface DocumentFile {
   id: number;
@@ -43,7 +44,6 @@ export const StudentDocuments: React.FC<StudentDocumentsProps> = ({
 
   // Xử lý khi chọn file từ máy tính
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // Chặn nếu đang upload
     if (isCreatingStudentDocument) return;
 
     if (e.target.files && e.target.files.length > 0 && selectedDoc) {
@@ -56,9 +56,19 @@ export const StudentDocuments: React.FC<StudentDocumentsProps> = ({
       );
       formData.append("file", file);
       /* eslint-disable @typescript-eslint/no-explicit-any */
-      createStudentDocument({
-        body: formData as any,
-      });
+      createStudentDocument(
+        {
+          body: formData as any,
+        },
+        {
+          onSuccess: () => {
+            setIsModalOpen(false);
+          },
+          onError: () => {
+            toast.error("Có lỗi xảy ra khi tải tệp lên. Vui lòng thử lại.");
+          },
+        },
+      );
     }
   };
 
@@ -67,7 +77,6 @@ export const StudentDocuments: React.FC<StudentDocumentsProps> = ({
     e.preventDefault();
     setIsDragging(false);
 
-    // Chặn nếu đang upload
     if (isCreatingStudentDocument) return;
 
     if (
@@ -84,9 +93,19 @@ export const StudentDocuments: React.FC<StudentDocumentsProps> = ({
       );
       formData.append("file", file);
       /* eslint-disable @typescript-eslint/no-explicit-any */
-      createStudentDocument({
-        body: formData as any,
-      });
+      createStudentDocument(
+        {
+          body: formData as any,
+        },
+        {
+          onSuccess: () => {
+            setIsModalOpen(false);
+          },
+          onError: () => {
+            toast.error("Có lỗi xảy ra khi tải tệp lên. Vui lòng thử lại.");
+          },
+        },
+      );
     }
   };
 
