@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
-  flexRender,
   getCoreRowModel,
   useReactTable,
+  type RowData,
 } from "@tanstack/react-table";
 import { useAppContext } from "../../../../AppProvider";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
@@ -13,7 +14,9 @@ import {
 import { useMemo, useState, useEffect } from "react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import {
+  calculateRowTotal,
   calculateStudyDate,
+  calculateSubjectTotal,
   convertEnumDayOfWeekToString,
   getWeeksInRange,
   mapEnumDayOfWeek,
@@ -22,8 +25,16 @@ import PageShell from "../../../../components/ui/PageShell";
 import { GridIcon } from "lucide-react";
 import { SpinnerLoading } from "../../../../components/ui/SpinnerLoading";
 import { getTienDoDaoTaoColumns } from "./columnTable";
+import { StickyTanStackTable } from "../../../../components/ui/StickyTanstackTable";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
+// Mở rộng kiểu TableMeta của TanStack Table để không bị báo lỗi TypeScript
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends RowData> {
+    calculateRowTotal?: (row: TData) => number;
+    calculateSubjectTotal?: (classSubjectId: number) => number;
+  }
+}
+
 const TableTienDoDaoTao = () => {
   const {
     semesterId,
@@ -42,12 +53,12 @@ const TableTienDoDaoTao = () => {
     setSearchParams,
     assignTeacher,
   } = useTienDoDaoTaoContext();
+
   const { hocKysData, isHocKysLoading } = useAppContext();
   const hocKysSelected = hocKysData?.find((hk) => hk.id === semesterId);
   const startDateSemester = hocKysSelected?.startDate;
   const endDateSemester = hocKysSelected?.endDate;
 
-  // Quản lý dữ liệu bảng
   const [data, setData] = useState<any[]>([]);
 
   const weeksList = useMemo(() => {
@@ -57,58 +68,94 @@ const TableTienDoDaoTao = () => {
     );
   }, [startDateSemester, endDateSemester]);
 
-  // Đồng bộ dữ liệu gốc từ API vào State
+  // Đồng bộ dữ liệu gốc từ API và bung phẳng danh sách lịch học
   useEffect(() => {
     if (!classSubjects) {
       setData([]);
       return;
     }
 
-    const initialData = classSubjects.map((mon, index) => {
-      const tongGio =
+    const flattenedData: any[] = [];
+    let globalIndex = 1;
+
+    classSubjects.forEach((mon) => {
+      const tongGioMonHoc =
         (mon.subject?.theoryHours || 0) +
         (mon?.subject?.practiceHours || 0) +
         (mon?.subject?.testHours || 0);
 
-      // Load data từ API lên
-      const scheduleOfRow = studySchedule?.filter(
-        (schedule) => schedule.classSubjectId === mon.id,
-      );
-      const { shift, startPeriod, endPeriod, dayOfWeek } =
-        scheduleOfRow?.[0] || {};
-      const tiet =
-        shift && startPeriod && endPeriod
-          ? `${shift}${startPeriod}-${endPeriod}`
-          : "";
-      const thu = convertEnumDayOfWeekToString(dayOfWeek) || "";
+      const schedulesOfSubject =
+        studySchedule?.filter(
+          (schedule) => schedule.classSubjectId === mon.id,
+        ) || [];
 
-      const rowData: any = {
-        id: mon.id,
-        stt: index + 1,
-        tenMonHoc: mon.subject?.subjectName || "",
-        giaoVienGiangDay: mon.teacherId || "",
-        phongHoc: "",
-        tongGio: tongGio,
-        thu,
-        tiet,
-      };
-
-      weeksList.forEach((_, idx) => {
-        const scheduleForWeek = scheduleOfRow?.find(
-          (sch) => sch.weekNumber === idx + 1,
-        );
-        rowData[`tuan_${idx + 1}`] = scheduleForWeek
-          ? scheduleForWeek.countPeriod
-          : "";
+      const sessionsMap: Record<string, typeof schedulesOfSubject> = {};
+      schedulesOfSubject.forEach((sch) => {
+        const sessionKey = `${sch.dayOfWeek}_${sch.shift}${sch.startPeriod}-${sch.endPeriod}_${sch.roomId || "none"}`;
+        if (!sessionsMap[sessionKey]) {
+          sessionsMap[sessionKey] = [];
+        }
+        sessionsMap[sessionKey].push(sch);
       });
 
-      return rowData;
+      const sessions = Object.values(sessionsMap);
+
+      if (sessions.length === 0) {
+        const rowData: any = {
+          id: `${mon.id}_default_${Date.now()}`,
+          classSubjectId: mon.id,
+          isSubRow: false,
+          stt: globalIndex++,
+          tenMonHoc: mon.subject?.subjectName || "",
+          giaoVienGiangDay: mon.teacherId || "",
+          phongHoc: "",
+          tongGioMonHoc,
+          thu: "",
+          tiet: "",
+        };
+        weeksList.forEach((_, idx) => {
+          rowData[`tuan_${idx + 1}`] = "";
+        });
+        flattenedData.push(rowData);
+      } else {
+        sessions.forEach((sessionSchedules, sIdx) => {
+          const firstSch = sessionSchedules[0];
+          const tiet =
+            firstSch.shift && firstSch.startPeriod && firstSch.endPeriod
+              ? `${firstSch.shift}${firstSch.startPeriod}-${firstSch.endPeriod}`
+              : "";
+          const thu = convertEnumDayOfWeekToString(firstSch.dayOfWeek) || "";
+
+          const rowData: any = {
+            id: `${mon.id}_session_${sIdx}_${Date.now()}`,
+            classSubjectId: mon.id,
+            isSubRow: sIdx > 0,
+            stt: sIdx === 0 ? globalIndex++ : undefined,
+            tenMonHoc: mon.subject?.subjectName || "",
+            giaoVienGiangDay: mon.teacherId || "",
+            phongHoc: firstSch.roomId || "",
+            tongGioMonHoc,
+            thu,
+            tiet,
+          };
+
+          weeksList.forEach((_, idx) => {
+            const scheduleForWeek = sessionSchedules.find(
+              (sch) => sch.weekNumber === idx + 1,
+            );
+            rowData[`tuan_${idx + 1}`] = scheduleForWeek
+              ? scheduleForWeek.countPeriod
+              : "";
+          });
+
+          flattenedData.push(rowData);
+        });
+      }
     });
 
-    setData(initialData);
+    setData(flattenedData);
   }, [classSubjects, weeksList, studySchedule]);
 
-  // Hàm cập nhật cell khi user blur ra ngoài
   const updateCellData = (rowIndex: number, columnId: string, value: any) => {
     setData((old) =>
       old.map((row, index) => {
@@ -123,6 +170,36 @@ const TableTienDoDaoTao = () => {
     );
   };
 
+  const addSessionRow = (rowIndex: number) => {
+    setData((old) => {
+      const targetRow = old[rowIndex];
+      const newRow: any = {
+        id: `${targetRow.classSubjectId}_add_${Date.now()}`,
+        classSubjectId: targetRow.classSubjectId,
+        isSubRow: true,
+        stt: undefined,
+        tenMonHoc: targetRow.tenMonHoc,
+        giaoVienGiangDay: targetRow.giaoVienGiangDay,
+        phongHoc: "",
+        tongGioMonHoc: targetRow.tongGioMonHoc,
+        thu: "",
+        tiet: "",
+      };
+      weeksList.forEach((_, idx) => {
+        newRow[`tuan_${idx + 1}`] = "";
+      });
+
+      const updated = [...old];
+      updated.splice(rowIndex + 1, 0, newRow);
+      return updated;
+    });
+  };
+
+  const removeSessionRow = (rowIndex: number) => {
+    setData((old) => old.filter((_, index) => index !== rowIndex));
+  };
+
+  // TUYỆT ĐỐI KHÔNG TRUYỀN `data` VÀO ĐÂY -> Cột không bị re-create giúp Tab hoạt động mượt mà
   const columns = useMemo(() => {
     return getTienDoDaoTaoColumns({
       teachers: teachers || [],
@@ -130,16 +207,55 @@ const TableTienDoDaoTao = () => {
       assignTeacher,
       updateCellData,
       weeksList,
+      addSessionRow,
+      removeSessionRow,
     });
   }, [teachers, isLoadingTeachers, weeksList]);
 
+  // Đưa logic tính toán vào `meta` để các ô đọc giá trị realtime mà không phá vỡ cấu trúc DOM cột
   const table = useReactTable({
     data: data,
     columns: columns,
     getCoreRowModel: getCoreRowModel(),
+    meta: {
+      calculateRowTotal: (row: any) => calculateRowTotal(row, weeksList.length),
+      calculateSubjectTotal: (id: number) =>
+        calculateSubjectTotal(data, id, weeksList.length),
+    },
   });
 
   const handleSubmit = () => {
+    const groupedBySubject: Record<number, any[]> = {};
+    data.forEach((row) => {
+      if (!groupedBySubject[row.classSubjectId]) {
+        groupedBySubject[row.classSubjectId] = [];
+      }
+      groupedBySubject[row.classSubjectId].push(row);
+    });
+
+    // for (const subjectId in groupedBySubject) {
+    //   const rows = groupedBySubject[subjectId];
+    //   const targetSubjectName = rows[0]?.tenMonHoc || "Môn học";
+    //   const expectedTotalHours = rows[0]?.tongGioMonHoc || 0;
+
+    //   let actualTotalHours = 0;
+    //   rows.forEach((row) => {
+    //     weeksList.forEach((_, idx) => {
+    //       const cellValue = row[`tuan_${idx + 1}`];
+    //       if (cellValue && !isNaN(Number(cellValue))) {
+    //         actualTotalHours += Number(cellValue);
+    //       }
+    //     });
+    //   });
+
+    //   if (actualTotalHours !== expectedTotalHours) {
+    //     alert(
+    //       `Lỗi phân bổ số tiết môn [${targetSubjectName}]:\nTổng số tiết gán qua các tuần hiện tại là ${actualTotalHours} tiết, nhưng tổng số tiết quy định bắt buộc phải bằng ${expectedTotalHours} tiết.\nVui lòng chỉnh sửa lại chính xác trước khi lưu!`,
+    //     );
+    //     return;
+    //   }
+    // }
+
     const dataSubmit: CreateScheduleDto[] = (data || []).flatMap((row) => {
       const tietString = row.tiet || "";
       const match = tietString.match(/^([A-Za-z])(\d+)-(\d+)$/);
@@ -161,10 +277,10 @@ const TableTienDoDaoTao = () => {
           }
 
           return {
-            classSubjectId: row.id,
+            classSubjectId: row.classSubjectId,
             dayOfWeek: thu as DayOfWeek,
             shift: shift,
-            roomId: null,
+            roomId: row.phongHoc || null,
             startPeriod: startPeriod,
             endPeriod: endPeriod,
             weekNumber: weekIndex,
@@ -178,11 +294,9 @@ const TableTienDoDaoTao = () => {
         })
         .filter(Boolean) as CreateScheduleDto[];
     });
-    // Gửi dữ liệu lên API
+
     createStudySchedule(
-      {
-        body: dataSubmit,
-      },
+      { body: dataSubmit },
       {
         onSuccess: () => {
           alert("Đã lưu thông tin tiến độ thành công!");
@@ -202,6 +316,7 @@ const TableTienDoDaoTao = () => {
       icon={GridIcon}
     >
       <div className="space-y-4 p-4 bg-white rounded-lg shadow-sm">
+        {/* Phần select học kỳ và lớp học giữ nguyên */}
         <div className="flex gap-4">
           <div className="w-1/2">
             <SelectOption
@@ -209,7 +324,6 @@ const TableTienDoDaoTao = () => {
               value={semesterId ?? ""}
               onChange={(e) => {
                 const value = e.target.value;
-                // setSemesterId(Number(value));
                 if (value) {
                   searchParams.set("semesterId", value);
                 } else {
@@ -233,7 +347,6 @@ const TableTienDoDaoTao = () => {
               value={classId ?? ""}
               onChange={(e) => {
                 const value = e.target.value;
-                // setClassId(Number(e.target.value));
                 if (value) {
                   searchParams.set("classId", value);
                 } else {
@@ -256,89 +369,14 @@ const TableTienDoDaoTao = () => {
         {isLoadingStudySchedule || isLoadingClassSubjects ? (
           <SpinnerLoading />
         ) : (
-          <div className="w-full overflow-x-auto custom-scrollbar border border-gray-200 rounded-lg shadow-inner">
-            <table
-              className="border-collapse text-left table-fixed min-w-full"
-              style={{ width: table.getTotalSize() }}
-            >
-              <thead>
-                {table.getHeaderGroups().map((headerGroup) => {
-                  return (
-                    <tr
-                      key={headerGroup.id}
-                      className="bg-gray-50 border-b border-gray-200"
-                    >
-                      {headerGroup.headers.map((header, index) => {
-                        const isSticky = index === 0 || index === 1;
-
-                        return (
-                          <th
-                            key={header.id}
-                            style={{
-                              width: header.getSize(),
-                              position: isSticky ? "sticky" : undefined,
-                              left: isSticky
-                                ? header.column.getStart()
-                                : undefined,
-                            }}
-                            className={`px-3 py-2.5 font-bold border-r border-gray-200 
-                                  uppercase tracking-wider text-xs text-center
-                                  ${isSticky ? "z-10 bg-gray-50" : ""}`}
-                          >
-                            {header.isPlaceholder
-                              ? null
-                              : flexRender(
-                                  header.column.columnDef.header,
-                                  header.getContext(),
-                                )}
-                          </th>
-                        );
-                      })}
-                    </tr>
-                  );
-                })}
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {table.getRowModel().rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="hover:bg-gray-50/70 transition-colors"
-                  >
-                    {row.getVisibleCells().map((cell, cellIndex) => {
-                      const isWeekColumn = cell.column.id.startsWith("tuan_");
-                      const isSticky = cellIndex === 0 || cellIndex === 1;
-                      return (
-                        <td
-                          key={cell.id}
-                          style={{
-                            width: cell.column.getSize(),
-                            position: isSticky ? "sticky" : undefined,
-                            left: isSticky ? cell.column.getStart() : undefined,
-                          }}
-                          className={`px-3 py-2 border-r border-gray-100 text-[12px]
-                          ${isWeekColumn ? "text-center whitespace-nowrap" : ""}
-                          ${isSticky ? "z-10 bg-white group-hover:bg-gray-50" : ""}
-                          `}
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext(),
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <StickyTanStackTable table={table} stickyColumnCount={3} />
         )}
 
         <div className="flex justify-end pt-2">
           <ButtonAction
             variant="outline"
             loading={isCreatingStudySchedule}
-            label="Tạo tiến độ tự động"
+            label="Lưu tiến độ đào tạo"
             onClick={handleSubmit}
           />
         </div>

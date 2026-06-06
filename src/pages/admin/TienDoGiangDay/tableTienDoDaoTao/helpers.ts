@@ -1,4 +1,5 @@
 import type { DayOfWeek } from "../TienDoDaoTaoProvider";
+import type { TienDoDaoTaoRow } from "./columnType";
 
 export const mapEnumDayOfWeek = (thu: string) => {
   switch (thu) {
@@ -109,4 +110,36 @@ export const calculateStudyDate = (
   }
 
   return targetDate.toLocaleDateString("fr-CA");
+};
+
+// Tính tổng giờ của 1 buổi học của 1 môn
+// Dùng trong TotalHoursCell.tsx
+export const calculateRowTotal = (
+  row: TienDoDaoTaoRow,
+  weeksCount: number,
+): number => {
+  let total = 0;
+  for (let idx = 0; idx < weeksCount; idx++) {
+    const cellValue = row[`tuan_${idx + 1}`];
+    if (cellValue && !isNaN(Number(cellValue))) {
+      total += Number(cellValue);
+    }
+  }
+  return total;
+};
+
+// TÍnh tổng giờ của cả môn học (cộng tất cả các buổi học) để so sánh với tongGioMonHoc
+// Dùng trong TotalHoursCell.tsx
+export const calculateSubjectTotal = (
+  data: TienDoDaoTaoRow[],
+  classSubjectId: number,
+  weeksCount: number,
+): number => {
+  let total = 0;
+  data.forEach((row) => {
+    if (row.classSubjectId === classSubjectId) {
+      total += calculateRowTotal(row, weeksCount);
+    }
+  });
+  return total;
 };
