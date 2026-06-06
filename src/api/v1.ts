@@ -4013,6 +4013,8 @@ export interface operations {
                 fromDate?: string;
                 /** @description Lọc theo ngày nhập học đến (YYYY-MM-DD) */
                 toDate?: string;
+                majorId?: number;
+                batchId?: number;
                 sortBy?: string;
                 /** @description Tìm kiếm theo mã sinh viên */
                 studentCode?: string;

@@ -32,7 +32,6 @@ const TableHoSoHocSinh = () => {
               onView={() => {
                 navigate(`/admin/hoc-sinh/ho-so/${row.original.studentCode}`);
               }}
-              onEdit={() => console.log("✏️ Sửa:", row.original)}
               onDelete={() => {
                 deleteStudent(
                   {

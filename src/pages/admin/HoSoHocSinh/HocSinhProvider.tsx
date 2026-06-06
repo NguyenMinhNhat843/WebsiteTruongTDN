@@ -2,12 +2,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { $api } from "../../../api/client";
-import type { components } from "../../../api/v1";
+import type { components, paths } from "../../../api/v1";
 import { useState } from "react";
 
 export type HocSinhDto = components["schemas"]["StudentResponseDto"];
 export type StatusHocSinhEnum = HocSinhDto["status"];
 export type createStudentDto = components["schemas"]["CreateStudentDto"];
+export type SearchStudentDto = paths["/students"]["get"]["parameters"]["query"];
 
 export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
   () => {
@@ -16,6 +17,7 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
     const [isOpenModalImport, setIsOpenModalImport] = useState(false);
     const { maSinhVien } = useParams(); // Lấy id từ URL nếu có - dùng cho load trang chi tiết học sinh
     const [isOpenModalCreate, setIsOpenModalCreate] = useState(false);
+    const [filters, setFilters] = useState<SearchStudentDto>({});
 
     /**
      * Lấy danh sách học sinh
@@ -24,7 +26,13 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       data: students,
       isLoading: isLoadingStudents,
       refetch: refetchStudents,
-    } = $api.useQuery("get", "/students");
+    } = $api.useQuery("get", "/students", {
+      params: {
+        query: {
+          ...filters,
+        },
+      },
+    });
     // thống kê đơn giản
     const dataAnalyst = {
       total: students?.length || 0,
@@ -92,6 +100,11 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       isPending: isSearchingBatches,
     } = $api.useMutation("get", "/batches");
 
+    /**
+     * Lấy major
+     */
+    const { data: majorList } = $api.useQuery("get", "/majors");
+
     return {
       students: students || [],
       deleteStudent,
@@ -108,12 +121,15 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       isSearchingBatches,
       studentDetail,
       isGettingStudentDetail,
+      majorList,
 
       navigate,
       isOpenModalImport,
       setIsOpenModalImport,
       isOpenModalCreate,
       setIsOpenModalCreate,
+      filters: filters || {},
+      setFilters,
     };
   },
 );

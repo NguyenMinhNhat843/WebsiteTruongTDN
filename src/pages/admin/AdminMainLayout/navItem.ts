@@ -122,11 +122,6 @@ const navItems: NavItem[] = [
         label: "Đợt tuyển sinh",
         href: "/admin/tuyen-sinh/dot-tuyen-sinh",
       },
-      {
-        id: "thong-ke-tuyen-sinh",
-        label: "Thống kê nguồn",
-        href: "/admin/tuyen-sinh/thong-ke",
-      },
     ],
   },
   // --- NHÓM TÀI CHÍNH ---

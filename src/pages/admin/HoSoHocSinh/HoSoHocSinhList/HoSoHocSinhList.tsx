@@ -6,6 +6,7 @@ import ButtonAction from "../../../../components/ui/ButtonAction";
 import { useHocSinhContext } from "../HocSinhProvider";
 import ImportStudentModal from "./ModalImportHocSinh";
 import { useNavigate } from "react-router-dom";
+import Filters from "./components/Filters";
 
 const DanhSachHoSoHocSinh = () => {
   const { isOpenModalImport, setIsOpenModalImport } = useHocSinhContext();
@@ -33,6 +34,8 @@ const DanhSachHoSoHocSinh = () => {
       <div className="space-y-5">
         {/* ── Stats ── */}
         <StatOverview />
+
+        <Filters />
 
         <TableHoSoHocSinh />
 

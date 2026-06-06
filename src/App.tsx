@@ -26,7 +26,6 @@ import DanhSachHoSoHocSinh from "./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoH
 import DotTuyenSinhList from "./pages/admin/TuyenSinh/IndexTuyenSinh";
 import TuyenSinh from "./pages/admin/TuyenSinh/LayoutTuyenSinh";
 import XetTotNghiep from "./pages/admin/XetTotNghiep/XetTotNghiep";
-import NguonTuyenSinh from "./pages/admin/NguonTuyenSinh/NguonTuyenSinh";
 import ExemptionManagement from "./pages/admin/MienGiamHocPhi/MienGiamHocPhi";
 import MediaLibrary from "./pages/admin/QuanLyMedia/QuanLyMedia";
 import QuanLyXetTotNghiep from "./pages/admin/QuanLyVanBang/QuanLyVanBang";
@@ -230,7 +229,6 @@ function App() {
             <Route path="tuyen-sinh" element={<TuyenSinh />}>
               <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
               <Route path="dot-tuyen-sinh/:id" element={<AdmissionDetail />} />
-              <Route path="thong-ke" element={<NguonTuyenSinh />} />
             </Route>
 
             {/* Tài chính */}
