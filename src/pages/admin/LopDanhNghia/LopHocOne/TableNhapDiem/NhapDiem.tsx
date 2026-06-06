@@ -390,7 +390,7 @@ const Inner = () => {
             icon={<Save className="w-4 h-4" />}
             label="Lưu bảng điểm"
             onClick={handleSaveGrades}
-            disabled={isPendingSaveGradeTable}
+            loading={isPendingSaveGradeTable}
           />
         </div>
       </div>
