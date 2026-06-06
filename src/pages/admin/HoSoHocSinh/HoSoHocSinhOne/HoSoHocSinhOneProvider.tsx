@@ -48,21 +48,29 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
     /**
      * Xử lý data hiển thị hồ sơ học sinh
      */
-    const hoSoMap = new Map(
-      hoSoHocSinh?.map((hs) => [hs.documentConfigItemId, hs]) || [],
-    );
+    const hoSoMap = new Map<number, typeof hoSoHocSinh>();
+
+    hoSoHocSinh?.forEach((hs) => {
+      if (!hs.documentConfigItemId) return;
+
+      if (!hoSoMap.has(hs.documentConfigItemId)) {
+        hoSoMap.set(hs.documentConfigItemId, []);
+      }
+      hoSoMap.get(hs.documentConfigItemId)?.push(hs);
+    });
 
     const dataHoSoHocSinh =
       configHoSoNhapHoc?.items?.map((item) => {
-        const fileData = hoSoMap.get(item.id);
+        const filesData = hoSoMap.get(item.id) || [];
 
         return {
           documentConfigItemId: item.id,
           name: item.name,
-          data: fileData || null,
-          isUploaded: !!fileData,
+          data: filesData,
+          isUploaded: filesData.length > 0,
         };
       }) || [];
+    console.log("dataHoSoHocSinh: ", dataHoSoHocSinh);
 
     /**
      * Upload File hố sơ học sinh
@@ -81,5 +89,6 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
       dataHoSoHocSinh,
       createStudentDocument,
       isCreatingStudentDocument,
+      studentDetail,
     };
   });

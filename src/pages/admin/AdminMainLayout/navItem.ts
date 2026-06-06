@@ -123,11 +123,6 @@ const navItems: NavItem[] = [
         href: "/admin/tuyen-sinh/dot-tuyen-sinh",
       },
       {
-        id: "tiep-nhan-ho-so",
-        label: "Tiếp nhận hồ sơ",
-        href: "/admin/tuyen-sinh/ho-so-moi",
-      },
-      {
         id: "thong-ke-tuyen-sinh",
         label: "Thống kê nguồn",
         href: "/admin/tuyen-sinh/thong-ke",

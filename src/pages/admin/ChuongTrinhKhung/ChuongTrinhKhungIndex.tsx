@@ -3,7 +3,6 @@ import {
   ChuongTrinhKhungProvider,
   useChuongTrinhKhungContext,
 } from "./ChuongTrinhKhungProvider";
-import Filters from "./ChươngTrinhKhungList/Filters";
 import ChuongTrinhKhungList from "./ChươngTrinhKhungList/ChuongTrinhKhungList";
 import PageShell from "../../../components/ui/PageShell";
 import ChuongTrinhKhungOne from "./ChuongTrinhKhungOne/ChuongTrinhKhungOne";
@@ -48,9 +47,6 @@ function Inner() {
       <div className="min-h-screen bg-[#f8fafc]">
         {/* Đổi nền sang slate-50 sáng sủa hơn */}
         <div className="space-y-6">
-          {/* Bộ lọc */}
-          <Filters />
-
           {/* Cấu trúc Master / Detail */}
           <div className="flex gap-6 items-start">
             {/* Cột danh sách (Trái) */}

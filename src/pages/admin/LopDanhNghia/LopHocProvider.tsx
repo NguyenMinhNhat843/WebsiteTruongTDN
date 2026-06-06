@@ -159,6 +159,9 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     },
   );
 
+  const { mutate: exportStudentGrade, isPending: isExportingStudentGrade } =
+    $api.useMutation("get", "/course-offers/student/{id}/export-excel");
+
   return {
     LopHocList,
     isLoadingLopHocList,
@@ -186,6 +189,8 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     isLoadingSubjectData,
     filterClass,
     setFilterClass,
+    exportStudentGrade,
+    isExportingStudentGrade,
 
     //state
     isOpenModalCreate,

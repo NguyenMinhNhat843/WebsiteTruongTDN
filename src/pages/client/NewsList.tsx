@@ -10,7 +10,7 @@ const NewsList = () => {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
-  const ITEMS_PER_PAGE = 5; // 5 cột x 1 hàng
+  const ITEMS_PER_PAGE = 5;
 
   const fetchPosts = async (
     currentPage: number,

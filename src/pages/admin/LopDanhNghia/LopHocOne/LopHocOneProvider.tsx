@@ -85,6 +85,15 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       isPending: isPendingUpdateClassSubject,
     } = $api.useMutation("patch", "/course-offers/{id}");
 
+    /**
+     * Export excel
+     */
+    const { mutate: exportExcel, isPending: isExportingExcel } =
+      $api.useMutation("post", "/course-offers/export-excel");
+
+    const { mutate: exportStudentGrade, isPending: isExportingStudentGrade } =
+      $api.useMutation("get", "/course-offers/student/{id}/export-excel");
+
     return {
       selectedSemesterId,
       setselectedSemesterId,
@@ -97,6 +106,10 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       updateClassSubject,
       isPendingUpdateClassSubject,
       refetchClassSubjects,
+      exportExcel,
+      isExportingExcel,
+      exportStudentGrade,
+      isExportingStudentGrade,
     };
   },
 );

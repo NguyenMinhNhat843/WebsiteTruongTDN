@@ -6,6 +6,7 @@ import CreateLopHoc from "./CreateLopHoc";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import { useLopHocContext } from "./LopHocProvider";
 import SearchClassSection from "./components/SearchClassSection";
+import { LoadingWrapper } from "../../../components/ui/LoadingWrapper";
 
 const LopHocList = () => {
   const {
@@ -96,15 +97,12 @@ const LopHocList = () => {
 
         <SearchClassSection />
 
-        {isLoadingLopHocList ? (
-          <div className="h-96 bg-slate-100 rounded-2xl border border-slate-200 animate-pulse flex items-center justify-center">
-            <span className="text-sm text-slate-400 font-medium">
-              Đang cập nhật danh sách lớp...
-            </span>
-          </div>
-        ) : (
+        <LoadingWrapper
+          isLoading={isLoadingLopHocList}
+          message="Đang tải danh sách lớp học..."
+        >
           <TableLopHocList />
-        )}
+        </LoadingWrapper>
       </div>
 
       <CreateLopHoc

@@ -15,7 +15,7 @@ const TabMonHoc = () => {
     isGiaoViensLoading,
     dataGiaoViens,
     updateClassSubject,
-    isPendingUpdateClassSubject, // Sử dụng biến update từ context
+    isPendingUpdateClassSubject,
     refetchClassSubjects,
   } = useLopHocOneContext();
 
@@ -199,7 +199,6 @@ const TabMonHoc = () => {
                           Đang tải...
                         </div>
                       ) : isThisRowUpdating ? (
-                        /* ĐANG UPDATE: Hiển thị trạng thái xoay riêng biệt cho đúng hàng này */
                         <div
                           className="inline-flex items-center gap-2 text-blue-600 text-xs 
                         bg-blue-50/50 px-2.5 py-1.5 rounded-xl border border-blue-100 font-medium"
@@ -211,11 +210,10 @@ const TabMonHoc = () => {
                           Đang lưu...
                         </div>
                       ) : (
-                        /* TRẠNG THÁI BÌNH THƯỜNG */
                         <div className="relative max-w-55">
                           <select
                             value={item.giaoVienId || ""}
-                            disabled={isPendingUpdateClassSubject} // Khóa tất cả select trong lúc đang xử lý bất kì hàng nào
+                            disabled={isPendingUpdateClassSubject}
                             onChange={(e) => {
                               const val = e.target.value;
                               phanGiaoVienGiangDay(

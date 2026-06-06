@@ -7,7 +7,6 @@ import ButtonAction from "../../../../components/ui/ButtonAction";
 import type { createStudentDto } from "../HocSinhProvider";
 import SelectBatch from "../../../../components/ui/SelectBatch";
 import { CreateProvider, useCreateContext } from "./CreateProvider";
-import DocumentFile from "./DocumentFile";
 
 const CreateStudent = () => {
   return (
@@ -330,8 +329,6 @@ const Inner = () => {
               />
             </div>
           </div>
-
-          <DocumentFile />
 
           {/* Sticky Footer cố định để tiện thao tác */}
           <div className="sticky bottom-0 bg-white border-t border-slate-100 pt-4 flex justify-end gap-3 z-10">

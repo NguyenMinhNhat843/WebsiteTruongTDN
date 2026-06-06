@@ -1282,8 +1282,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lấy danh sách ClassSubject */
-        get: operations["CourseOfferController_getAll"];
+        /** Lấy danh sách Môn học trong lớp học */
+        get: operations["ClassSubjectController_getAll"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1299,15 +1299,15 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lấy chi tiết lớp học phần */
-        get: operations["CourseOfferController_getDetail"];
+        /** Lấy chi tiết môn học trong lớp học */
+        get: operations["ClassSubjectController_getDetail"];
         put?: never;
         post?: never;
         delete?: never;
         options?: never;
         head?: never;
-        /** Cập nhật thông tin lớp học phần */
-        patch: operations["CourseOfferController_updateClassSubject"];
+        /** Cập nhật môn học trong lớp học */
+        patch: operations["ClassSubjectController_updateClassSubject"];
         trace?: never;
     };
     "/course-offers/previewpreviewGenerateSectionForClass": {
@@ -1318,7 +1318,7 @@ export interface paths {
             cookie?: never;
         };
         /** Xem trước danh sách lớp học phần tự động */
-        get: operations["CourseOfferController_previewGenerateSectionForClass"];
+        get: operations["ClassSubjectController_previewGenerateSectionForClass"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1336,8 +1336,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Tự động tạo lớp học phần cho toàn bộ lớp hành chính */
-        post: operations["CourseOfferController_generateClassSubject"];
+        /** Tự động tạo classSubject cho toàn bộ lớp học */
+        post: operations["ClassSubjectController_generateClassSubject"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1353,8 +1353,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Tự động tạo lớp học phần cho một lớp hành chính */
-        post: operations["CourseOfferController_generateSectionsForClass"];
+        /** Tự động tạo classSubject cho một lớp hành chính */
+        post: operations["ClassSubjectController_generateSectionsForClass"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1371,7 +1371,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** Phân công giáo viên giảng dạy cho từng lớp */
-        post: operations["CourseOfferController_assignTeacher"];
+        post: operations["ClassSubjectController_assignTeacher"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1387,7 +1387,23 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["CourseOfferController_exportExcel"];
+        post: operations["ClassSubjectController_exportExcel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/course-offers/student/{id}/export-excel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ClassSubjectController_exportExcelGradeForOneStudent"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -3712,7 +3728,7 @@ export interface components {
             credits: number;
             isExisted: boolean;
         };
-        SearchCourseOfferDto: {
+        SearchClassSubjectDto: {
             /** @description ID của lớp hành chính (Lớp danh nghĩa) */
             classId?: number;
             /** @description ID của ngành học */
@@ -6706,7 +6722,7 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_getAll: {
+    ClassSubjectController_getAll: {
         parameters: {
             query?: {
                 /** @description ID của lớp hành chính (Lớp danh nghĩa) */
@@ -6734,7 +6750,7 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_getDetail: {
+    ClassSubjectController_getDetail: {
         parameters: {
             query?: never;
             header?: never;
@@ -6755,7 +6771,7 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_updateClassSubject: {
+    ClassSubjectController_updateClassSubject: {
         parameters: {
             query?: never;
             header?: never;
@@ -6780,7 +6796,7 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_previewGenerateSectionForClass: {
+    ClassSubjectController_previewGenerateSectionForClass: {
         parameters: {
             query: {
                 classId: number;
@@ -6803,7 +6819,7 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_generateClassSubject: {
+    ClassSubjectController_generateClassSubject: {
         parameters: {
             query: {
                 semesterId: number;
@@ -6822,7 +6838,7 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_generateSectionsForClass: {
+    ClassSubjectController_generateSectionsForClass: {
         parameters: {
             query: {
                 classId: number;
@@ -6842,7 +6858,7 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_assignTeacher: {
+    ClassSubjectController_assignTeacher: {
         parameters: {
             query?: never;
             header?: never;
@@ -6851,7 +6867,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["SearchCourseOfferDto"];
+                "application/json": components["schemas"]["SearchClassSubjectDto"];
             };
         };
         responses: {
@@ -6863,7 +6879,7 @@ export interface operations {
             };
         };
     };
-    CourseOfferController_exportExcel: {
+    ClassSubjectController_exportExcel: {
         parameters: {
             query?: never;
             header?: never;
@@ -6877,6 +6893,25 @@ export interface operations {
         };
         responses: {
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ClassSubjectController_exportExcelGradeForOneStudent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

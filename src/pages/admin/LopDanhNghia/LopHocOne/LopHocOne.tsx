@@ -6,7 +6,6 @@ import {
   GraduationCap,
   BookOpen,
   Users,
-  Loader2,
   Plus,
   ArrowLeft,
   Calendar,
@@ -24,6 +23,7 @@ import ButtonAction from "../../../../components/ui/ButtonAction";
 import { useLopHocOneContext } from "./LopHocOneProvider";
 import { downloadFromBlob } from "../../../../util/download";
 import { useAppContext } from "../../../../AppProvider";
+import { LoadingWrapper } from "../../../../components/ui/LoadingWrapper";
 
 const LopHocOne = () => {
   return <Inner />;
@@ -62,16 +62,6 @@ const Inner = () => {
     [LopHocDetail, studentsInLopHoc],
   );
 
-  // Trạng thái Loading toàn trang
-  if (isLoadingLopHocDetail || isLoadingStudentsInLopHoc) {
-    return (
-      <div className="flex h-64 items-center justify-center gap-2 text-gray-500">
-        <Loader2 className="h-6 w-6 animate-spin text-blue-600" />
-        <span>Đang tải dữ liệu lớp học...</span>
-      </div>
-    );
-  }
-
   return (
     <div className="mx-auto p-6 space-y-8">
       <div className="flex justify-between items-center">
@@ -97,162 +87,166 @@ const Inner = () => {
         </button>
       </div>
 
-      <div className="space-y-4">
-        <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-          {/* Phần tiêu đề chính */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4 mb-6">
-            {/* Cụm thông tin bên trái */}
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl shrink-0">
-                <GraduationCap className="h-6 w-6" />
+      <LoadingWrapper
+        isLoading={isLoadingLopHocDetail || isLoadingStudentsInLopHoc}
+      >
+        <div className="space-y-4">
+          <div className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
+            {/* Phần tiêu đề chính */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-100 pb-4 mb-6">
+              {/* Cụm thông tin bên trái */}
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl shrink-0">
+                  <GraduationCap className="h-6 w-6" />
+                </div>
+                <div>
+                  <h1 className="text-xl font-bold text-gray-900">
+                    {dataHienThi.tenLop}
+                  </h1>
+                  <p className="text-sm text-gray-500">
+                    Mã lớp: {dataHienThi.maLop}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">
-                  {dataHienThi.tenLop}
-                </h1>
-                <p className="text-sm text-gray-500">
-                  Mã lớp: {dataHienThi.maLop}
-                </p>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-2 self-start sm:self-center w-full sm:w-auto">
-              <ButtonAction
-                label="Đồng bộ chương trình khung"
-                variant="outline"
-                icon={<Layers className="h-4 w-4 text-gray-500" />}
-                onClick={() => {
-                  setIsOpenModalSinhLopHocPhan(true);
-                }}
-              />
+              <div className="flex items-center gap-2 self-start sm:self-center w-full sm:w-auto">
+                <ButtonAction
+                  label="Đồng bộ chương trình khung"
+                  variant="outline"
+                  icon={<Layers className="h-4 w-4 text-gray-500" />}
+                  onClick={() => {
+                    setIsOpenModalSinhLopHocPhan(true);
+                  }}
+                />
 
-              <ButtonAction
-                label="Thêm học sinh"
-                onClick={() => {
-                  setIsOpenModalAddStudent(true);
-                }}
-                icon={<Plus className="h-4 w-4" />}
-              />
+                <ButtonAction
+                  label="Thêm học sinh"
+                  onClick={() => {
+                    setIsOpenModalAddStudent(true);
+                  }}
+                  icon={<Plus className="h-4 w-4" />}
+                />
 
-              <ButtonAction
-                variant="export"
-                label="Xuất bảng điểm học kỳ"
-                icon={<FileText className="h-4 w-4" />}
-                loading={isExportingExcel}
-                onClick={() => {
-                  return exportExcel(
-                    {
-                      parseAs: "blob",
-                      body: {
-                        classSubjectIds:
-                          classSubjects?.map((cs) => cs.id) || [],
-                        haveTongKetSheet: true,
+                <ButtonAction
+                  variant="export"
+                  label="Xuất bảng điểm học kỳ"
+                  icon={<FileText className="h-4 w-4" />}
+                  loading={isExportingExcel}
+                  onClick={() => {
+                    return exportExcel(
+                      {
+                        parseAs: "blob",
+                        body: {
+                          classSubjectIds:
+                            classSubjects?.map((cs) => cs.id) || [],
+                          haveTongKetSheet: true,
+                        },
                       },
-                    },
-                    {
-                      onSuccess: (blob) => {
-                        downloadFromBlob(
-                          blob as never,
-                          `${LopHocDetail?.className} - ${hocKySelected?.name} - BangDiem.xlsx`,
-                          ".xlsx",
-                        );
+                      {
+                        onSuccess: (blob) => {
+                          downloadFromBlob(
+                            blob as never,
+                            `${LopHocDetail?.className} - ${hocKySelected?.name} - BangDiem.xlsx`,
+                            ".xlsx",
+                          );
+                        },
                       },
-                    },
-                  );
-                }}
-              />
-            </div>
-          </div>
-
-          {/* Phần grid thông tin bên dưới giữ nguyên */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {/* 1. Ngành học */}
-            <div className="flex items-start gap-3 col-span-2 md:col-span-1">
-              <BookOpen className="h-5 w-5 text-gray-400 mt-0.5" />
-              <div>
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
-                  Ngành học
-                </p>
-                <p className="text-sm font-semibold text-gray-700 mt-0.5">
-                  {dataHienThi.nganhHoc}
-                </p>
+                    );
+                  }}
+                />
               </div>
             </div>
 
-            {/* 2. Giáo viên chủ nhiệm */}
-            <div className="flex items-start gap-3 col-span-2 md:col-span-1">
-              <User className="h-5 w-5 text-gray-400 mt-0.5" />
-              <div>
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
-                  Giáo viên chủ nhiệm
-                </p>
-                <p className="text-sm font-semibold text-gray-700 mt-0.5">
-                  {dataHienThi.giaoVien}
-                </p>
+            {/* Phần grid thông tin bên dưới giữ nguyên */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {/* 1. Ngành học */}
+              <div className="flex items-start gap-3 col-span-2 md:col-span-1">
+                <BookOpen className="h-5 w-5 text-gray-400 mt-0.5" />
+                <div>
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                    Ngành học
+                  </p>
+                  <p className="text-sm font-semibold text-gray-700 mt-0.5">
+                    {dataHienThi.nganhHoc}
+                  </p>
+                </div>
               </div>
-            </div>
 
-            {/* 3. Sĩ số lớp */}
-            <div className="flex items-start gap-3">
-              <Users className="h-5 w-5 text-gray-400 mt-0.5" />
-              <div>
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
-                  Sĩ số lớp
-                </p>
-                <p className="text-sm font-semibold text-gray-700 mt-0.5">
-                  <span className="text-blue-600 font-bold">
-                    {dataHienThi.siSo} / {dataHienThi.maxStudent}
-                  </span>{" "}
-                  học sinh
-                </p>
+              {/* 2. Giáo viên chủ nhiệm */}
+              <div className="flex items-start gap-3 col-span-2 md:col-span-1">
+                <User className="h-5 w-5 text-gray-400 mt-0.5" />
+                <div>
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                    Giáo viên chủ nhiệm
+                  </p>
+                  <p className="text-sm font-semibold text-gray-700 mt-0.5">
+                    {dataHienThi.giaoVien}
+                  </p>
+                </div>
               </div>
-            </div>
 
-            {/* 4. Niên khóa */}
-            <div className="flex items-start gap-3">
-              <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
-              <div>
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
-                  Niên khóa
-                </p>
-                <p className="text-sm font-semibold text-gray-700 mt-0.5">
-                  {dataHienThi.hocKyBatDau
-                    ? `HK1 - ${dataHienThi.hocKyBatDau}`
-                    : "N/A"}
-                  <span className="text-gray-300 mx-1.5">→</span>
-                  {dataHienThi.hocKyKetThuc
-                    ? `HK1 - ${dataHienThi.hocKyKetThuc}`
-                    : "N/A"}
-                </p>
+              {/* 3. Sĩ số lớp */}
+              <div className="flex items-start gap-3">
+                <Users className="h-5 w-5 text-gray-400 mt-0.5" />
+                <div>
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                    Sĩ số lớp
+                  </p>
+                  <p className="text-sm font-semibold text-gray-700 mt-0.5">
+                    <span className="text-blue-600 font-bold">
+                      {dataHienThi.siSo} / {dataHienThi.maxStudent}
+                    </span>{" "}
+                    học sinh
+                  </p>
+                </div>
+              </div>
+
+              {/* 4. Niên khóa */}
+              <div className="flex items-start gap-3">
+                <Calendar className="h-5 w-5 text-gray-400 mt-0.5" />
+                <div>
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                    Niên khóa
+                  </p>
+                  <p className="text-sm font-semibold text-gray-700 mt-0.5">
+                    {dataHienThi.hocKyBatDau
+                      ? `HK1 - ${dataHienThi.hocKyBatDau}`
+                      : "N/A"}
+                    <span className="text-gray-300 mx-1.5">→</span>
+                    {dataHienThi.hocKyKetThuc
+                      ? `HK1 - ${dataHienThi.hocKyKetThuc}`
+                      : "N/A"}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      {/* --- PHẦN 2: DANH SÁCH HỌC SINH (TANSTACK TABLE) --- */}
-      <Tabs
-        tabs={[
-          { value: "mon-hoc", label: "Môn học" },
-          { value: "hoc-sinh", label: "Học sinh" },
-        ]}
-        activeTab={activeTab}
-        onChange={setActiveTab}
-      />
-      {activeTab === "hoc-sinh" ? (
-        <TableDanhSachHocSinh />
-      ) : activeTab === "mon-hoc" ? (
-        <TabMonHoc />
-      ) : null}
+        {/* --- PHẦN 2: DANH SÁCH HỌC SINH (TANSTACK TABLE) --- */}
+        <Tabs
+          tabs={[
+            { value: "mon-hoc", label: "Môn học" },
+            { value: "hoc-sinh", label: "Học sinh" },
+          ]}
+          activeTab={activeTab}
+          onChange={setActiveTab}
+        />
+        {activeTab === "hoc-sinh" ? (
+          <TableDanhSachHocSinh />
+        ) : activeTab === "mon-hoc" ? (
+          <TabMonHoc />
+        ) : null}
 
-      <ModelThemHocSinh
-        isOpen={isOpenModalAddStudent}
-        onClose={() => setIsOpenModalAddStudent(false)}
-      />
+        <ModelThemHocSinh
+          isOpen={isOpenModalAddStudent}
+          onClose={() => setIsOpenModalAddStudent(false)}
+        />
 
-      <ModalSinhLopHocPhan
-        isOpen={isOpenModalSinhLopHocPhan}
-        onClose={() => setIsOpenModalSinhLopHocPhan(false)}
-      />
+        <ModalSinhLopHocPhan
+          isOpen={isOpenModalSinhLopHocPhan}
+          onClose={() => setIsOpenModalSinhLopHocPhan(false)}
+        />
+      </LoadingWrapper>
     </div>
   );
 };
