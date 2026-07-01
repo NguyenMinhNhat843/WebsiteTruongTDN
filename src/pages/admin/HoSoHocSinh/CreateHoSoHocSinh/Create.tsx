@@ -7,6 +7,7 @@ import ButtonAction from "../../../../components/ui/ButtonAction";
 import type { createStudentDto } from "../HocSinhProvider";
 import SelectBatch from "../../../../components/ui/SelectBatch";
 import { CreateProvider, useCreateContext } from "./CreateProvider";
+import { cleanEmptyFields } from "../../../../util/cleanEmptyField";
 
 const CreateStudent = () => {
   return (
@@ -28,29 +29,9 @@ const Inner = () => {
   } = useForm<createStudentDto>({
     defaultValues: {
       fullName: "",
-      email: "",
       gender: true,
-      dob: "",
-      phone: "",
-      address: "",
-      identityNumber: "",
-      fatherName: "",
-      fatherPhone: "",
-      fatherCCCD: "",
-      fatherYearOfBirth: undefined,
-      fatherJob: "",
-      motherName: "",
-      motherPhone: "",
-      motherCCCD: "",
-      motherYearOfBirth: undefined,
-      motherJob: "",
-      guardianName: "",
-      guardianRelationship: "",
-      guardianPhone: "",
-      guardianCCCD: "",
-      guardianYearOfBirth: undefined,
-      guardianJob: "",
-      status: "studying",
+      identityNumber: undefined,
+      status: "pending",
       batchId: batchIdselected,
       admissionProfile: {
         conduct6: "TOT",
@@ -98,7 +79,7 @@ const Inner = () => {
 
       await createStudent(
         {
-          body: payload,
+          body: cleanEmptyFields(payload),
         },
         {
           onSuccess: () => {

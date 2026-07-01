@@ -3961,6 +3961,8 @@ export interface operations {
                 /** @description Tìm kiếm theo mã SV, tên SV hoặc CCCD */
                 keyword?: string;
                 status?: components["schemas"]["StudentStatus"];
+                /** @description nếu true: Lọc theo fiel status, nếu false: lọc theo không phải status */
+                excludeStatus?: boolean;
                 classId?: number | null;
                 /** @description Lọc theo ngày nhập học từ (YYYY-MM-DD) */
                 fromDate?: string;

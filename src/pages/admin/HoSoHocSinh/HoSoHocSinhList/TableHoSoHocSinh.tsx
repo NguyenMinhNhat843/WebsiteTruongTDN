@@ -11,17 +11,25 @@ const TableHoSoHocSinh = () => {
     isLoadingStudents,
     filters,
     setFilters,
-    total, // Tổng số học sinh (ví dụ: 100)
+    total,
   } = useHocSinhContext();
 
-  // Lấy trang hiện tại và kích thước trang (limit) để tính toán
   const currentPage = filters.page || 1;
   const pageSize = filters.limit || 10;
-
-  // Tính tổng số trang: Chia tổng số phần tử cho limit và làm tròn lên
   const totalPages = Math.ceil((total || 0) / pageSize) || 1;
 
-  // Hàm chuyển trang bảo vệ ranh giới từ 1 đến totalPages
+  // Xác định tab hiện tại dựa trên trường excludeStatus từ context
+  const isExcludePending = !!filters.excludeStatus;
+
+  // Hàm chuyển đổi giữa các Tab
+  const handleTabChange = (excludeStatus: boolean) => {
+    setFilters((prev) => ({
+      ...prev,
+      page: 1, // Reset về trang 1 khi đổi tab tránh lỗi lệch trang dữ liệu
+      excludeStatus: excludeStatus,
+    }));
+  };
+
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setFilters((prev) => ({ ...prev, page: newPage }));
@@ -48,6 +56,37 @@ const TableHoSoHocSinh = () => {
 
   return (
     <div className="w-full flex flex-col gap-4">
+      {/* THANH CHUYỂN TAB (TABS NAVIGATION) */}
+      <div className="flex border-b border-slate-200 gap-6 px-2">
+        <button
+          onClick={() => handleTabChange(false)}
+          className={`pb-3 text-sm font-medium transition-all relative ${
+            !isExcludePending
+              ? "text-indigo-600 font-bold"
+              : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          Chờ xét tuyển
+          {!isExcludePending && (
+            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-indigo-600 rounded-full animate-fadeIn" />
+          )}
+        </button>
+
+        <button
+          onClick={() => handleTabChange(true)}
+          className={`pb-3 text-sm font-medium transition-all relative ${
+            isExcludePending
+              ? "text-indigo-600 font-bold"
+              : "text-slate-500 hover:text-slate-700"
+          }`}
+        >
+          Đã đậu / Đã nhập học
+          {isExcludePending && (
+            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-indigo-600 rounded-full animate-fadeIn" />
+          )}
+        </button>
+      </div>
+
       {/* KHỐI TABLE */}
       <div className="w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
         <div className="overflow-x-auto">
@@ -171,11 +210,11 @@ const TableHoSoHocSinh = () => {
                       <td className="px-5 py-3.5">
                         {isQualified ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
-                            Đạt
+                            Đủ điều kiện
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200">
-                            Không đạt
+                            Không đủ điều kiện
                           </span>
                         )}
                       </td>
@@ -251,7 +290,6 @@ const TableHoSoHocSinh = () => {
               Trước
             </button>
 
-            {/* Tạo các nút bấm dựa trên totalPages đã tính toán */}
             {Array.from({ length: totalPages }).map((_, i) => {
               const pageNum = i + 1;
               return (

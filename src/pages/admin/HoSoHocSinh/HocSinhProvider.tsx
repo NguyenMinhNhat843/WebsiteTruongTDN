@@ -20,6 +20,8 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
     const [filters, setFilters] = useState<SearchStudentDto>({
       page: 1,
       limit: 10,
+      status: "pending",
+      excludeStatus: false,
     });
 
     /**
