@@ -103,11 +103,6 @@ const navItems: NavItem[] = [
         label: "Phân lớp",
         href: "/admin/hoc-sinh/phan-lop",
       },
-      {
-        id: "quan-ly-tot-nghiep",
-        label: "Xét tốt nghiệp",
-        href: "/admin/hoc-sinh/tot-nghiep",
-      },
     ],
   },
   // --- NHÓM TUYỂN SINH ---

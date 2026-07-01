@@ -107,12 +107,6 @@ const CreateStudent = lazy(
 const HoSoHocSinhOne = lazy(
   () => import("./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne"),
 );
-const XetTotNghiep = lazy(
-  () => import("./pages/admin/XetTotNghiep/XetTotNghiep"),
-);
-const QuanLyXetTotNghiep = lazy(
-  () => import("./pages/admin/QuanLyVanBang/QuanLyVanBang"),
-);
 const HocKyLayout = lazy(() => import("./pages/admin/HocKy/HocKyLayout"));
 const HocKyList = lazy(() => import("./pages/admin/HocKy/HocKyList"));
 const TuyenSinh = lazy(() => import("./pages/admin/TuyenSinh/LayoutTuyenSinh"));
@@ -333,11 +327,6 @@ function App() {
                 <Route
                   path="hoc-sinh/ho-so/:maSinhVien"
                   element={<HoSoHocSinhOne />}
-                />
-                <Route path="hoc-sinh/tot-nghiep" element={<XetTotNghiep />} />
-                <Route
-                  path="hoc-sinh/dot-xet-tot-nghiep"
-                  element={<QuanLyXetTotNghiep />}
                 />
               </Route>
 

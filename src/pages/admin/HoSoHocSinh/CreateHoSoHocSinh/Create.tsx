@@ -52,16 +52,15 @@ const Inner = () => {
       guardianJob: "",
       status: "studying",
       batchId: batchIdselected,
-      // Thêm default values cho Hồ sơ nhập học
       admissionProfile: {
         conduct6: "TOT",
         conduct7: "TOT",
         conduct8: "TOT",
         conduct9: "TOT",
-        gpa6: "",
-        gpa7: "",
-        gpa8: "",
-        gpa9: "",
+        gpa6: undefined,
+        gpa7: undefined,
+        gpa8: undefined,
+        gpa9: undefined,
       },
     },
   });
@@ -87,21 +86,13 @@ const Inner = () => {
         guardianYearOfBirth: data.guardianYearOfBirth
           ? Number(data.guardianYearOfBirth)
           : null,
-        // Ép kiểu gpa sang chuỗi định dạng số (hoặc giữ nguyên tuỳ cấu hình schema backend)
+
         admissionProfile: {
           ...data.admissionProfile,
-          gpa6: data.admissionProfile?.gpa6
-            ? String(data.admissionProfile.gpa6)
-            : "",
-          gpa7: data.admissionProfile?.gpa7
-            ? String(data.admissionProfile.gpa7)
-            : "",
-          gpa8: data.admissionProfile?.gpa8
-            ? String(data.admissionProfile.gpa8)
-            : "",
-          gpa9: data.admissionProfile?.gpa9
-            ? String(data.admissionProfile.gpa9)
-            : "",
+          gpa6: Number(data.admissionProfile.gpa6),
+          gpa7: Number(data.admissionProfile.gpa7),
+          gpa8: Number(data.admissionProfile.gpa8),
+          gpa9: Number(data.admissionProfile.gpa9),
         },
       };
 
@@ -114,7 +105,7 @@ const Inner = () => {
             alert("Tạo hồ sơ học sinh thành công!");
             reset();
           },
-          /* eslint-disable @typescript-eslint/no-explicit-any */
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onError: (error: any) => {
             alert(error.message || "Tạo hồ sơ học sinh thất bại!");
           },
@@ -125,7 +116,6 @@ const Inner = () => {
     }
   };
 
-  // Danh mục Options
   const genderOptions = [
     { value: "true", label: "Nam" },
     { value: "false", label: "Nữ" },
@@ -151,19 +141,17 @@ const Inner = () => {
   return (
     <div className="flex items-center justify-center p-4">
       <div className="bg-white w-full overflow-y-auto rounded-xl shadow-xl flex flex-col">
-        {/* Header thành phần mượt mà */}
         <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center z-10">
           <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
             Thêm Hồ Sơ Học Sinh Mới
           </h2>
         </div>
 
-        {/* Form Body chính */}
         <form
           onSubmit={handleSubmit(handleFormSubmit)}
           className="p-6 space-y-6 flex-1"
         >
-          {/* PHÂN KHU 1: THÔNG TIN CÁ NHÂN HỌC SINH */}
+          {/* PHÂN KHU 1: THÔNG TIN CÁ NHÂN */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
               <User className="w-4 h-4 text-blue-500" /> 1. Thông tin cá nhân
@@ -309,7 +297,7 @@ const Inner = () => {
                 </div>
               </div>
 
-              {/* Thông tin Người giám hộ (Tùy chọn) */}
+              {/* Người giám hộ */}
               <div className="bg-slate-50/50 p-4 rounded-xl border border-dashed border-slate-200 grid grid-cols-1 md:grid-cols-5 gap-4">
                 <div className="md:col-span-2">
                   <Input
@@ -350,7 +338,7 @@ const Inner = () => {
             </div>
           </div>
 
-          {/* PHÂN KHU 3: HỒ SƠ NHẬP HỌC (ĐIỂM & HẠNH KIỂM THCS) */}
+          {/* PHÂN KHU 3: HỒ SƠ NHẬP HỌC */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
               <FileText className="w-4 h-4 text-blue-500" /> 3. Kết quả học tập
@@ -368,7 +356,11 @@ const Inner = () => {
                     type="text"
                     label="Điểm TB (GPA)"
                     placeholder="VD: 8.5"
-                    {...register("admissionProfile.gpa6")}
+                    require
+                    error={errors.admissionProfile?.gpa6?.message}
+                    {...register("admissionProfile.gpa6", {
+                      required: "Vui lòng nhập GPA lớp 6",
+                    })}
                   />
                   <SelectOption
                     label="Hạnh kiểm"
@@ -386,7 +378,11 @@ const Inner = () => {
                     type="text"
                     label="Điểm TB (GPA)"
                     placeholder="VD: 8.2"
-                    {...register("admissionProfile.gpa7")}
+                    require
+                    error={errors.admissionProfile?.gpa7?.message}
+                    {...register("admissionProfile.gpa7", {
+                      required: "Vui lòng nhập GPA lớp 7",
+                    })}
                   />
                   <SelectOption
                     label="Hạnh kiểm"
@@ -404,7 +400,11 @@ const Inner = () => {
                     type="text"
                     label="Điểm TB (GPA)"
                     placeholder="VD: 8.8"
-                    {...register("admissionProfile.gpa8")}
+                    require
+                    error={errors.admissionProfile?.gpa8?.message}
+                    {...register("admissionProfile.gpa8", {
+                      required: "Vui lòng nhập GPA lớp 8",
+                    })}
                   />
                   <SelectOption
                     label="Hạnh kiểm"
@@ -422,7 +422,11 @@ const Inner = () => {
                     type="text"
                     label="Điểm TB (GPA)"
                     placeholder="VD: 9.0"
-                    {...register("admissionProfile.gpa9")}
+                    require
+                    error={errors.admissionProfile?.gpa9?.message}
+                    {...register("admissionProfile.gpa9", {
+                      required: "Vui lòng nhập GPA lớp 9",
+                    })}
                   />
                   <SelectOption
                     label="Hạnh kiểm"
@@ -449,7 +453,7 @@ const Inner = () => {
             </div>
           </div>
 
-          {/* Sticky Footer cố định để tiện thao tác */}
+          {/* Sticky Footer */}
           <div className="sticky bottom-0 bg-white border-t border-slate-100 pt-4 flex justify-end gap-3 z-10">
             <ButtonAction
               type="button"
