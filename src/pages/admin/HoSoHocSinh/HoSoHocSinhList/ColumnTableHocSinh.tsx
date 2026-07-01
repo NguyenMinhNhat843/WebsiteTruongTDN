@@ -5,30 +5,6 @@ import { BadgeStudentStatus } from "../../../../components/enum/StudentStatusBad
 
 export const studentColumns: ColumnDef<HocSinhDto>[] = [
   {
-    accessorKey: "studentCode",
-    header: "Mã SV",
-    cell: ({ getValue, row }) => {
-      const id = row.original.id;
-      const code = getValue();
-
-      return (
-        <div className="flex flex-col gap-0.5 group">
-          <span className="font-bold text-slate-800 tracking-tight">
-            {String(code)}
-          </span>
-          <div className="flex items-center gap-1">
-            <span className="text-[10px] font-medium uppercase text-slate-400 bg-slate-100 px-1 rounded">
-              ID
-            </span>
-            <span className="text-[11px] font-medium text-slate-400">
-              #{id}
-            </span>
-          </div>
-        </div>
-      );
-    },
-  },
-  {
     accessorKey: "fullName",
     header: "Họ và tên",
     cell: ({ row }) => {
@@ -60,10 +36,6 @@ export const studentColumns: ColumnDef<HocSinhDto>[] = [
   {
     accessorKey: "batch.batchCode",
     header: "Khóa đào tạo",
-  },
-  {
-    accessorKey: "batch.batchName",
-    header: "Ngành nghề",
   },
   {
     accessorKey: "documentProgress",

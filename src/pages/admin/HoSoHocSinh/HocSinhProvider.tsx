@@ -17,13 +17,16 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
     const [isOpenModalImport, setIsOpenModalImport] = useState(false);
     const { maSinhVien } = useParams(); // Lấy id từ URL nếu có - dùng cho load trang chi tiết học sinh
     const [isOpenModalCreate, setIsOpenModalCreate] = useState(false);
-    const [filters, setFilters] = useState<SearchStudentDto>({});
+    const [filters, setFilters] = useState<SearchStudentDto>({
+      page: 1,
+      limit: 10,
+    });
 
     /**
      * Lấy danh sách học sinh
      */
     const {
-      data: students,
+      data: studentsResponse,
       isLoading: isLoadingStudents,
       refetch: refetchStudents,
     } = $api.useQuery("get", "/students", {
@@ -33,6 +36,8 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
         },
       },
     });
+    const students = studentsResponse?.students || [];
+    const total = studentsResponse?.total || 0;
     // thống kê đơn giản
     const dataAnalyst = {
       total: students?.length || 0,
@@ -130,6 +135,7 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       setIsOpenModalCreate,
       filters: filters || {},
       setFilters,
+      total,
     };
   },
 );

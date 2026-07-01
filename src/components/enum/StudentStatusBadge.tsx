@@ -7,18 +7,10 @@ import {
   AlertOctagon,
   GraduationCap,
 } from "lucide-react";
-
-// Định nghĩa type chuẩn theo yêu cầu của bạn
-export type StudentStatusType =
-  | "approved"
-  | "studying"
-  | "suspended"
-  | "dropped"
-  | "expelled"
-  | "graduated";
+import type { StudentStatusEnum } from "../../api/enum";
 
 interface BadgeStudentStatusProps {
-  status: StudentStatusType;
+  status: StudentStatusEnum;
   className?: string;
 }
 
@@ -28,9 +20,14 @@ export const BadgeStudentStatus: React.FC<BadgeStudentStatusProps> = ({
 }) => {
   // Cấu hình UI (Màu sắc, Icon, Chữ hiển thị) dựa theo từng trạng thái
   const statusConfig: Record<
-    StudentStatusType,
+    StudentStatusEnum,
     { label: string; classes: string; icon: React.ReactNode }
   > = {
+    pending: {
+      label: "Chờ duyệt",
+      classes: "bg-yellow-50 text-yellow-700 border-yellow-200/60",
+      icon: <UserCheck size={13} className="text-yellow-500" />,
+    },
     approved: {
       label: "Chờ nhập học",
       classes:

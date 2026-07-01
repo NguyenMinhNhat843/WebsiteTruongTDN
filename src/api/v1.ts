@@ -2066,6 +2066,58 @@ export interface components {
         };
         /** @enum {string} */
         StudentStatus: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+        QualifiedStudentResponseDto: {
+            id?: number;
+            studentCode?: string;
+            enrollmentDate?: string | null;
+            graduationDate?: string | null;
+            applicationId?: number | null;
+            avatarUrl?: string | null;
+            userId?: number | null;
+            createdAt?: string;
+            updatedAt?: string;
+            fullName: string;
+            email?: string | null;
+            gender?: boolean | null;
+            dob?: string | null;
+            phone?: string | null;
+            address?: string | null;
+            identityNumber?: string | null;
+            fatherName?: string | null;
+            fatherPhone?: string | null;
+            fatherCCCD?: string | null;
+            fatherYearOfBirth?: number | null;
+            fatherJob?: string | null;
+            motherName?: string | null;
+            motherPhone?: string | null;
+            motherCCCD?: string | null;
+            motherYearOfBirth?: number | null;
+            motherJob?: string | null;
+            guardianName?: string | null;
+            guardianRelationship?: string | null;
+            guardianPhone?: string | null;
+            guardianCCCD?: string | null;
+            guardianYearOfBirth?: number | null;
+            guardianJob?: string | null;
+            batchId?: number | null;
+            classId?: number | null;
+            /**
+             * @default approved
+             * @enum {string}
+             */
+            status: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
+            batch?: components["schemas"]["BatchResponseDto"] | null;
+            class?: components["schemas"]["ClassResponseDto"] | null;
+            /** @description Thông tin tiến độ nộp hồ sơ của học sinh */
+            documentProgress: components["schemas"]["DocumentProgressDto"];
+            /** @description Học sinh có đủ điều kiện xét tuyển ko */
+            isQualified: boolean;
+        };
+        ResponseStudentPaginationDto: {
+            students: components["schemas"]["QualifiedStudentResponseDto"][];
+            total: number;
+        };
         StudentSimpleInfo: {
             id?: number;
             studentCode?: string;
@@ -3932,7 +3984,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StudentResponseDto"][];
+                    "application/json": components["schemas"]["ResponseStudentPaginationDto"];
                 };
             };
         };
