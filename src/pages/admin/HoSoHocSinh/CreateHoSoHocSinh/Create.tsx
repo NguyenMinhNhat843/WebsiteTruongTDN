@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { User, Users, GraduationCap } from "lucide-react";
+import { User, Users, GraduationCap, FileText } from "lucide-react";
 import Input from "../../../../components/ui/Form/Input";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import ButtonAction from "../../../../components/ui/ButtonAction";
@@ -19,6 +19,7 @@ const CreateStudent = () => {
 const Inner = () => {
   const { createStudent, isCreatingStudent } = useCreateContext();
   const [batchIdselected, setBatchIdSelected] = useState<number | null>(null);
+
   const {
     register,
     handleSubmit,
@@ -51,12 +52,22 @@ const Inner = () => {
       guardianJob: "",
       status: "studying",
       batchId: batchIdselected,
+      // Thêm default values cho Hồ sơ nhập học
+      admissionProfile: {
+        conduct6: "TOT",
+        conduct7: "TOT",
+        conduct8: "TOT",
+        conduct9: "TOT",
+        gpa6: "",
+        gpa7: "",
+        gpa8: "",
+        gpa9: "",
+      },
     },
   });
 
   const handleFormSubmit = async (data: createStudentDto) => {
     try {
-      // Định dạng lại cấu trúc dữ liệu thích hợp trước khi gửi lên API Backend
       if (!batchIdselected) {
         alert("Vui lòng chọn khóa đào tạo cho học sinh!");
         return;
@@ -76,6 +87,22 @@ const Inner = () => {
         guardianYearOfBirth: data.guardianYearOfBirth
           ? Number(data.guardianYearOfBirth)
           : null,
+        // Ép kiểu gpa sang chuỗi định dạng số (hoặc giữ nguyên tuỳ cấu hình schema backend)
+        admissionProfile: {
+          ...data.admissionProfile,
+          gpa6: data.admissionProfile?.gpa6
+            ? String(data.admissionProfile.gpa6)
+            : "",
+          gpa7: data.admissionProfile?.gpa7
+            ? String(data.admissionProfile.gpa7)
+            : "",
+          gpa8: data.admissionProfile?.gpa8
+            ? String(data.admissionProfile.gpa8)
+            : "",
+          gpa9: data.admissionProfile?.gpa9
+            ? String(data.admissionProfile.gpa9)
+            : "",
+        },
       };
 
       await createStudent(
@@ -105,12 +132,20 @@ const Inner = () => {
   ];
 
   const statusOptions = [
+    { value: "pending", label: "Chờ duyệt" },
     { value: "approved", label: "Đã duyệt" },
     { value: "studying", label: "Đang học" },
     { value: "suspended", label: "Bảo lưu / Tạm dừng" },
     { value: "dropped", label: "Thôi học" },
     { value: "expelled", label: "Buộc thôi học" },
     { value: "graduated", label: "Đã tốt nghiệp" },
+  ];
+
+  const conductOptions = [
+    { value: "TOT", label: "Tốt" },
+    { value: "KHA", label: "Khá" },
+    { value: "TB", label: "Trung bình" },
+    { value: "YEU", label: "Yếu" },
   ];
 
   return (
@@ -315,10 +350,94 @@ const Inner = () => {
             </div>
           </div>
 
-          {/* PHÂN KHU 3: TRẠNG THÁI HỆ THỐNG */}
+          {/* PHÂN KHU 3: HỒ SƠ NHẬP HỌC (ĐIỂM & HẠNH KIỂM THCS) */}
           <div className="space-y-4">
             <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
-              <GraduationCap className="w-4 h-4 text-blue-500" /> 3. Trạng thái
+              <FileText className="w-4 h-4 text-blue-500" /> 3. Kết quả học tập
+              cấp THCS
+            </h3>
+
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {/* Lớp 6 */}
+                <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
+                    Lớp 6
+                  </span>
+                  <Input
+                    type="text"
+                    label="Điểm TB (GPA)"
+                    placeholder="VD: 8.5"
+                    {...register("admissionProfile.gpa6")}
+                  />
+                  <SelectOption
+                    label="Hạnh kiểm"
+                    options={conductOptions}
+                    {...register("admissionProfile.conduct6")}
+                  />
+                </div>
+
+                {/* Lớp 7 */}
+                <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
+                    Lớp 7
+                  </span>
+                  <Input
+                    type="text"
+                    label="Điểm TB (GPA)"
+                    placeholder="VD: 8.2"
+                    {...register("admissionProfile.gpa7")}
+                  />
+                  <SelectOption
+                    label="Hạnh kiểm"
+                    options={conductOptions}
+                    {...register("admissionProfile.conduct7")}
+                  />
+                </div>
+
+                {/* Lớp 8 */}
+                <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
+                    Lớp 8
+                  </span>
+                  <Input
+                    type="text"
+                    label="Điểm TB (GPA)"
+                    placeholder="VD: 8.8"
+                    {...register("admissionProfile.gpa8")}
+                  />
+                  <SelectOption
+                    label="Hạnh kiểm"
+                    options={conductOptions}
+                    {...register("admissionProfile.conduct8")}
+                  />
+                </div>
+
+                {/* Lớp 9 */}
+                <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
+                    Lớp 9
+                  </span>
+                  <Input
+                    type="text"
+                    label="Điểm TB (GPA)"
+                    placeholder="VD: 9.0"
+                    {...register("admissionProfile.gpa9")}
+                  />
+                  <SelectOption
+                    label="Hạnh kiểm"
+                    options={conductOptions}
+                    {...register("admissionProfile.conduct9")}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* PHÂN KHU 4: TRẠNG THÁI HỆ THỐNG */}
+          <div className="space-y-4">
+            <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
+              <GraduationCap className="w-4 h-4 text-blue-500" /> 4. Trạng thái
               học tập ban đầu
             </h3>
             <div className="w-full md:w-1/3 bg-slate-50 p-4 rounded-xl border border-slate-100">
@@ -336,9 +455,7 @@ const Inner = () => {
               type="button"
               variant="outline"
               label="Hủy bỏ"
-              onClick={() => {
-                reset();
-              }}
+              onClick={() => reset()}
             />
             <ButtonAction
               type="submit"

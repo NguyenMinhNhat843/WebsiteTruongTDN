@@ -1,28 +1,41 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { $api } from "../../../api/client";
 import { createContextProvider } from "../../../util/createContextProvider";
 
 export const [PhanLopProvider, usePhanLopContext] = createContextProvider(
   () => {
     const [selectedMajorId, setSelectedMajorId] = useState<number | null>(null);
+    const [selectedBatchId, setSelectedBatchId] = useState<
+      number | null | undefined
+    >(null);
     // nganhf
     const { data: nganhs, isPending: isPendingNganhs } = $api.useQuery(
       "get",
       "/majors",
     );
 
-    // batch
+    /**
+     * Lấy khóa đào tạo
+     */
     const { data: batches, isPending: isPendingbatches } = $api.useQuery(
       "get",
       "/batches",
     );
-    const allBatch = batches?.filter((b) => b.majorId === selectedMajorId);
-    const latestBatch = useMemo(() => {
-      if (!selectedMajorId || !batches) return null;
+    const allBatch = useMemo(() => {
+      if (!selectedMajorId || !batches) return [];
       return batches
         .filter((b) => b.majorId === selectedMajorId)
-        .sort((a, b) => (b?.id || 0) - (a?.id || 0))[0];
+        .sort((a, b) => (b?.id || 0) - (a?.id || 0)); // Mới nhất lên đầu
     }, [selectedMajorId, batches]);
+
+    // 4. Dùng useEffect để khi đổi Ngành thì tự động chọn Khóa đầu tiên (Khóa mới nhất)
+    useEffect(() => {
+      if (allBatch && allBatch.length > 0) {
+        setSelectedBatchId(allBatch[0].id);
+      } else {
+        setSelectedBatchId(null);
+      }
+    }, [allBatch]);
 
     // get danh sách học sinh đủ điều kiện phân lớp
     const {
@@ -31,16 +44,16 @@ export const [PhanLopProvider, usePhanLopContext] = createContextProvider(
       refetch: refetchStudents,
     } = $api.useQuery(
       "get",
-      "/classes/eligible-for-assignment",
+      "/students/eligible-for-assignment",
       {
         params: {
           query: {
-            batchId: latestBatch?.id, // Lấy batchId từ latestBatch đã tính toán ở trên
+            batchId: selectedBatchId!,
           },
         },
       },
       {
-        enabled: !!latestBatch, // Chỉ chạy query này khi latestBatch đã có giá trị
+        enabled: !!selectedBatchId,
       },
     );
 
@@ -69,7 +82,8 @@ export const [PhanLopProvider, usePhanLopContext] = createContextProvider(
       // state
       selectedMajorId,
       setSelectedMajorId,
-      latestBatch,
+      selectedBatchId,
+      setSelectedBatchId,
     };
   },
 );

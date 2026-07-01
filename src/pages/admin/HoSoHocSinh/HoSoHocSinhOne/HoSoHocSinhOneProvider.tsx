@@ -47,6 +47,28 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
       );
 
     /**
+     * Lấy admissionProfile: gồm điểm và hạnh kiểm 4 năm của sinh viên
+     */
+    const {
+      data: admissionProfileResponse,
+      isLoading: isLoadingAdmissionProfile,
+    } = $api.useQuery(
+      "get",
+      "/admission-profiles",
+      {
+        params: {
+          query: {
+            studentId: studentDetail?.id,
+          },
+        },
+      },
+      {
+        enabled: !!studentDetail && !isGettingStudentDetail,
+      },
+    );
+    const admissionProfile = admissionProfileResponse?.items?.[0] || null;
+
+    /**
      * Xử lý data hiển thị hồ sơ học sinh
      */
     const hoSoMap = new Map<number, typeof hoSoHocSinh>();
@@ -96,5 +118,7 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
       createStudentDocument,
       isCreatingStudentDocument,
       studentDetail,
+      admissionProfile,
+      isLoadingAdmissionProfile,
     };
   });

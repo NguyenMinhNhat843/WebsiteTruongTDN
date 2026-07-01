@@ -91,6 +91,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/students/eligible-for-assignment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách sinh viên đủ điều kiện phân lớp */
+        get: operations["getEligibleStudentsForAssignment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/{id}": {
         parameters: {
             query?: never;
@@ -636,26 +653,6 @@ export interface paths {
          * @description Gom các sinh viên có trạng thái "studying" chưa có lớp thuộc Ngành và Khóa học được chỉ định để thực hiện thuật toán chia đều lớp dựa trên sĩ số tối đa.
          */
         post: operations["ClassController_assignStudentsToClasses"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/classes/eligible-for-assignment": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Lấy danh sách sinh viên đủ điều kiện phân lớp
-         * @description Danh sách sinh viên có trạng thái "studying" nhưng chưa có classId.
-         */
-        get: operations["ClassController_getEligibleStudents"];
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1636,117 +1633,103 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admission-profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách hồ sơ tuyển sinh (Phân trang) */
+        get: operations["AdmissionProfileController_findAll"];
+        put?: never;
+        /** Tạo mới hồ sơ tuyển sinh */
+        post: operations["AdmissionProfileController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admission-profiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin chi tiết một hồ sơ tuyển sinh */
+        get: operations["AdmissionProfileController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa hồ sơ tuyển sinh */
+        delete: operations["AdmissionProfileController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật hồ sơ tuyển sinh */
+        patch: operations["AdmissionProfileController_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        CreateAdmissionProfileDto: {
+            studentId: number;
+            /** @enum {string} */
+            conduct6: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct7: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct8: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct9: "TOT" | "KHA" | "TB" | "YEU";
+            gpa6: number;
+            gpa7: number;
+            gpa8: number;
+            gpa9: number;
+        };
         CreateStudentDto: {
-            /**
-             * @description ID tự tăng của học sinh (Nếu tạo mới có thể bỏ qua hoặc truyền 0 tùy logic backend)
-             * @example 1
-             */
             id?: number;
-            /**
-             * @description Mã số học sinh duy nhất
-             * @example HS20260001
-             */
             studentCode?: string;
-            /**
-             * @description Ngày nhập học (Định dạng YYYY-MM-DD)
-             * @example 2026-09-05
-             */
             enrollmentDate?: string | null;
-            /**
-             * @description Ngày tốt nghiệp dự kiến/thực tế (Định dạng YYYY-MM-DD)
-             * @example 2029-06-15
-             */
             graduationDate?: string | null;
-            /**
-             * @description ID Hồ sơ tuyển sinh liên kết
-             * @example 42
-             */
             applicationId?: number | null;
-            /**
-             * @description Đường dẫn ảnh đại diện học sinh
-             * @example https://storage.googleapis.com/bucket/avatar.jpg
-             */
             avatarUrl?: string | null;
-            /**
-             * @description ID tài khoản liên kết trong bảng User
-             * @example 102
-             */
             userId?: number | null;
-            /**
-             * @description Thời gian khởi tạo bản ghi
-             * @example 2026-05-22T07:10:00.000Z
-             */
             createdAt?: string;
-            /**
-             * @description Thời gian cập nhật bản ghi gần nhất
-             * @example 2026-05-22T07:10:00.000Z
-             */
             updatedAt?: string;
-            /**
-             * @description Họ và tên đầy đủ của học sinh
-             * @example Nguyễn Văn A
-             */
             fullName: string;
-            /** @example nguyenvana@gmail.com */
             email?: string | null;
-            /**
-             * @description true: Nam, false: Nữ
-             * @example true
-             */
             gender?: boolean | null;
-            /** @example 2008-05-20 */
             dob?: string | null;
-            /** @example 0987654321 */
             phone?: string | null;
-            /** @example 123 Đường ABC, Nha Trang */
             address?: string | null;
-            /** @example 056205001234 */
             identityNumber?: string | null;
-            /** @example Nguyễn Văn B */
             fatherName?: string | null;
-            /** @example 0912345678 */
             fatherPhone?: string | null;
-            /** @example 056201001234 */
             fatherCCCD?: string | null;
-            /** @example 1975 */
             fatherYearOfBirth?: number | null;
-            /** @example Kỹ sư */
             fatherJob?: string | null;
-            /** @example Trần Thị C */
             motherName?: string | null;
-            /** @example 0923456789 */
             motherPhone?: string | null;
-            /** @example 056202001234 */
             motherCCCD?: string | null;
-            /** @example 1978 */
             motherYearOfBirth?: number | null;
-            /** @example Giáo viên */
             motherJob?: string | null;
-            /** @example Nguyễn Văn D */
             guardianName?: string | null;
-            /** @example Ông nội */
             guardianRelationship?: string | null;
-            /** @example 0934567890 */
             guardianPhone?: string | null;
-            /** @example 056200001234 */
             guardianCCCD?: string | null;
-            /** @example 1950 */
             guardianYearOfBirth?: number | null;
-            /** @example Hưu trí */
             guardianJob?: string | null;
-            /** @example 1 */
             batchId?: number | null;
-            /** @example 3 */
             classId?: number | null;
             /**
              * @default approved
              * @enum {string}
              */
-            status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
         };
         DepartmentResponseDto: {
             /** @example 1 */
@@ -2032,238 +2015,116 @@ export interface components {
             batch?: components["schemas"]["BatchResponseDto"];
         };
         DocumentProgressDto: {
-            /**
-             * @description Số lượng hồ sơ học sinh hiện đã nộp
-             * @example 3
-             */
             current: number;
-            /**
-             * @description Tổng số lượng hồ sơ cần có theo cấu hình
-             * @example 5
-             */
             total: number;
         };
         StudentResponseDto: {
-            /**
-             * @description ID tự tăng của học sinh (Nếu tạo mới có thể bỏ qua hoặc truyền 0 tùy logic backend)
-             * @example 1
-             */
             id?: number;
-            /**
-             * @description Mã số học sinh duy nhất
-             * @example HS20260001
-             */
             studentCode?: string;
-            /**
-             * @description Ngày nhập học (Định dạng YYYY-MM-DD)
-             * @example 2026-09-05
-             */
             enrollmentDate?: string | null;
-            /**
-             * @description Ngày tốt nghiệp dự kiến/thực tế (Định dạng YYYY-MM-DD)
-             * @example 2029-06-15
-             */
             graduationDate?: string | null;
-            /**
-             * @description ID Hồ sơ tuyển sinh liên kết
-             * @example 42
-             */
             applicationId?: number | null;
-            /**
-             * @description Đường dẫn ảnh đại diện học sinh
-             * @example https://storage.googleapis.com/bucket/avatar.jpg
-             */
             avatarUrl?: string | null;
-            /**
-             * @description ID tài khoản liên kết trong bảng User
-             * @example 102
-             */
             userId?: number | null;
-            /**
-             * @description Thời gian khởi tạo bản ghi
-             * @example 2026-05-22T07:10:00.000Z
-             */
             createdAt?: string;
-            /**
-             * @description Thời gian cập nhật bản ghi gần nhất
-             * @example 2026-05-22T07:10:00.000Z
-             */
             updatedAt?: string;
-            /**
-             * @description Họ và tên đầy đủ của học sinh
-             * @example Nguyễn Văn A
-             */
             fullName: string;
-            /** @example nguyenvana@gmail.com */
             email?: string | null;
-            /**
-             * @description true: Nam, false: Nữ
-             * @example true
-             */
             gender?: boolean | null;
-            /** @example 2008-05-20 */
             dob?: string | null;
-            /** @example 0987654321 */
             phone?: string | null;
-            /** @example 123 Đường ABC, Nha Trang */
             address?: string | null;
-            /** @example 056205001234 */
             identityNumber?: string | null;
-            /** @example Nguyễn Văn B */
             fatherName?: string | null;
-            /** @example 0912345678 */
             fatherPhone?: string | null;
-            /** @example 056201001234 */
             fatherCCCD?: string | null;
-            /** @example 1975 */
             fatherYearOfBirth?: number | null;
-            /** @example Kỹ sư */
             fatherJob?: string | null;
-            /** @example Trần Thị C */
             motherName?: string | null;
-            /** @example 0923456789 */
             motherPhone?: string | null;
-            /** @example 056202001234 */
             motherCCCD?: string | null;
-            /** @example 1978 */
             motherYearOfBirth?: number | null;
-            /** @example Giáo viên */
             motherJob?: string | null;
-            /** @example Nguyễn Văn D */
             guardianName?: string | null;
-            /** @example Ông nội */
             guardianRelationship?: string | null;
-            /** @example 0934567890 */
             guardianPhone?: string | null;
-            /** @example 056200001234 */
             guardianCCCD?: string | null;
-            /** @example 1950 */
             guardianYearOfBirth?: number | null;
-            /** @example Hưu trí */
             guardianJob?: string | null;
-            /** @example 1 */
             batchId?: number | null;
-            /** @example 3 */
             classId?: number | null;
             /**
              * @default approved
              * @enum {string}
              */
-            status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
             batch?: components["schemas"]["BatchResponseDto"] | null;
             class?: components["schemas"]["ClassResponseDto"] | null;
             /** @description Thông tin tiến độ nộp hồ sơ của học sinh */
             documentProgress: components["schemas"]["DocumentProgressDto"];
         };
         /** @enum {string} */
-        StudentStatus: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
-        UpdateStudentDto: {
-            /**
-             * @description ID tự tăng của học sinh (Nếu tạo mới có thể bỏ qua hoặc truyền 0 tùy logic backend)
-             * @example 1
-             */
+        StudentStatus: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+        StudentSimpleInfo: {
             id?: number;
-            /**
-             * @description Mã số học sinh duy nhất
-             * @example HS20260001
-             */
             studentCode?: string;
+            fullName: string;
+        };
+        BatchSimpleDto: {
             /**
-             * @description Ngày nhập học (Định dạng YYYY-MM-DD)
-             * @example 2026-09-05
+             * @description Mã khóa học viết tắt
+             * @example K1
              */
+            batchCode: string;
+            /**
+             * @description Tên đầy đủ của khóa
+             * @example Khóa 1
+             */
+            batchName: string;
+            id?: number;
+        };
+        GetEligibleStudentsDtoForAssignmentResponse: {
+            student: components["schemas"]["StudentSimpleInfo"];
+            batch: components["schemas"]["BatchSimpleDto"];
+        };
+        UpdateStudentDto: {
+            studentCode?: string;
             enrollmentDate?: string | null;
-            /**
-             * @description Ngày tốt nghiệp dự kiến/thực tế (Định dạng YYYY-MM-DD)
-             * @example 2029-06-15
-             */
             graduationDate?: string | null;
-            /**
-             * @description ID Hồ sơ tuyển sinh liên kết
-             * @example 42
-             */
             applicationId?: number | null;
-            /**
-             * @description Đường dẫn ảnh đại diện học sinh
-             * @example https://storage.googleapis.com/bucket/avatar.jpg
-             */
             avatarUrl?: string | null;
-            /**
-             * @description ID tài khoản liên kết trong bảng User
-             * @example 102
-             */
             userId?: number | null;
-            /**
-             * @description Thời gian khởi tạo bản ghi
-             * @example 2026-05-22T07:10:00.000Z
-             */
-            createdAt?: string;
-            /**
-             * @description Thời gian cập nhật bản ghi gần nhất
-             * @example 2026-05-22T07:10:00.000Z
-             */
-            updatedAt?: string;
-            /**
-             * @description Họ và tên đầy đủ của học sinh
-             * @example Nguyễn Văn A
-             */
             fullName?: string;
-            /** @example nguyenvana@gmail.com */
             email?: string | null;
-            /**
-             * @description true: Nam, false: Nữ
-             * @example true
-             */
             gender?: boolean | null;
-            /** @example 2008-05-20 */
             dob?: string | null;
-            /** @example 0987654321 */
             phone?: string | null;
-            /** @example 123 Đường ABC, Nha Trang */
             address?: string | null;
-            /** @example 056205001234 */
             identityNumber?: string | null;
-            /** @example Nguyễn Văn B */
             fatherName?: string | null;
-            /** @example 0912345678 */
             fatherPhone?: string | null;
-            /** @example 056201001234 */
             fatherCCCD?: string | null;
-            /** @example 1975 */
             fatherYearOfBirth?: number | null;
-            /** @example Kỹ sư */
             fatherJob?: string | null;
-            /** @example Trần Thị C */
             motherName?: string | null;
-            /** @example 0923456789 */
             motherPhone?: string | null;
-            /** @example 056202001234 */
             motherCCCD?: string | null;
-            /** @example 1978 */
             motherYearOfBirth?: number | null;
-            /** @example Giáo viên */
             motherJob?: string | null;
-            /** @example Nguyễn Văn D */
             guardianName?: string | null;
-            /** @example Ông nội */
             guardianRelationship?: string | null;
-            /** @example 0934567890 */
             guardianPhone?: string | null;
-            /** @example 056200001234 */
             guardianCCCD?: string | null;
-            /** @example 1950 */
             guardianYearOfBirth?: number | null;
-            /** @example Hưu trí */
             guardianJob?: string | null;
-            /** @example 1 */
             batchId?: number | null;
-            /** @example 3 */
             classId?: number | null;
             /**
              * @default approved
              * @enum {string}
              */
-            status: "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         };
         CreateUserDto: {
             /**
@@ -2910,21 +2771,6 @@ export interface components {
             batchId?: number;
             /** @default 40 */
             studentsPerClass: number;
-        };
-        StudentSimpleDto: {
-            /** @example 1 */
-            id: number;
-            /** @example SV2026001 */
-            studentCode: string;
-            /** @example Nguyễn Văn A */
-            fullName: string;
-            /** @example Tuyển sinh Đợt 1 - 2026 */
-            admissionName: string;
-        };
-        EligibleStudentsResponseDto: {
-            /** @example 150 */
-            totalEligible: number;
-            students: components["schemas"]["StudentSimpleDto"][];
         };
         UpdateClassDto: {
             /**
@@ -4007,6 +3853,45 @@ export interface components {
             documentConfigItemId?: number;
             studentId?: number;
         };
+        AdmissionProfileDto: {
+            id: number;
+            studentId: number;
+            /** @enum {string} */
+            conduct6: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct7: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct8: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct9: "TOT" | "KHA" | "TB" | "YEU";
+            gpa6: number;
+            gpa7: number;
+            gpa8: number;
+            gpa9: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ResponseAdmissionProfilePaginationDto: {
+            items: components["schemas"]["AdmissionProfileDto"][];
+            total: number;
+        };
+        UpdateAdmissionProfileDto: {
+            studentId?: number;
+            /** @enum {string} */
+            conduct6?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct7?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct8?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct9?: "TOT" | "KHA" | "TB" | "YEU";
+            gpa6?: number;
+            gpa7?: number;
+            gpa8?: number;
+            gpa9?: number;
+        };
     };
     responses: never;
     parameters: never;
@@ -4024,8 +3909,7 @@ export interface operations {
                 /** @description Tìm kiếm theo mã SV, tên SV hoặc CCCD */
                 keyword?: string;
                 status?: components["schemas"]["StudentStatus"];
-                /** @description Lọc theo ID lớp học */
-                classId?: number;
+                classId?: number | null;
                 /** @description Lọc theo ngày nhập học từ (YYYY-MM-DD) */
                 fromDate?: string;
                 /** @description Lọc theo ngày nhập học đến (YYYY-MM-DD) */
@@ -4083,7 +3967,6 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        /** @description Danh sách hồ sơ sinh viên cần tạo mới */
         requestBody: {
             content: {
                 "application/json": components["schemas"]["CreateStudentDto"][];
@@ -4181,6 +4064,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StudentResponseDto"];
+                };
+            };
+        };
+    };
+    getEligibleStudentsForAssignment: {
+        parameters: {
+            query?: {
+                batchId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetEligibleStudentsDtoForAssignmentResponse"][];
                 };
             };
         };
@@ -5377,28 +5281,6 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-        };
-    };
-    ClassController_getEligibleStudents: {
-        parameters: {
-            query?: {
-                /** @description ID của Khóa đào tạo cần phân lớp */
-                batchId?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EligibleStudentsResponseDto"];
-                };
             };
         };
     };
@@ -7358,6 +7240,128 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    AdmissionProfileController_findAll: {
+        parameters: {
+            query?: {
+                id?: number;
+                studentId?: number;
+                conduct6?: "TOT" | "KHA" | "TB" | "YEU";
+                conduct7?: "TOT" | "KHA" | "TB" | "YEU";
+                conduct8?: "TOT" | "KHA" | "TB" | "YEU";
+                conduct9?: "TOT" | "KHA" | "TB" | "YEU";
+                gpa6?: number;
+                gpa7?: number;
+                gpa8?: number;
+                gpa9?: number;
+                createdAt?: string;
+                updatedAt?: string;
+                limit?: number;
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseAdmissionProfilePaginationDto"];
+                };
+            };
+        };
+    };
+    AdmissionProfileController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAdmissionProfileDto"];
+            };
+        };
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionProfileDto"];
+                };
+            };
+        };
+    };
+    AdmissionProfileController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionProfileDto"];
+                };
+            };
+        };
+    };
+    AdmissionProfileController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionProfileController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAdmissionProfileDto"];
+            };
+        };
+        responses: {
+            default: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionProfileDto"];
+                };
             };
         };
     };

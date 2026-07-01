@@ -1,10 +1,8 @@
 import { useEffect } from "react"; // Thêm useEffect
-import { Save } from "lucide-react";
 import {
   useTaoChuongTrinhKhungContext,
   type CreateProgramDto,
 } from "./CreateProgramProvider";
-import ButtonAction from "../../../../components/ui/ButtonAction";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import Input from "../../../../components/ui/Form/Input";
 
@@ -131,16 +129,6 @@ const CreateProgramForm = () => {
             required: "Vui lòng nhập tên chương trình học",
           })}
         />
-
-        <div className="flex justify-end pt-2">
-          <ButtonAction
-            type="submit"
-            variant="primary"
-            label="Lưu chương trình"
-            icon={<Save size={16} />}
-            className="px-5 py-2.5 rounded-xl text-sm font-bold shadow-sm shadow-blue-100"
-          />
-        </div>
       </form>
     </div>
   );

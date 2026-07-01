@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { $api } from "../../../../api/client";
 import { createContextProvider } from "../../../../util/createContextProvider";
+import type { components } from "../../../../api/v1";
 
 export interface LocalFileItem {
   id: string;
@@ -12,6 +13,8 @@ export interface LocalFileItem {
 export interface SelectedFilesMap {
   [configItemId: number]: LocalFileItem[];
 }
+
+export type CreateStudentDto = components["schemas"]["CreateStudentDto"];
 
 export const [CreateProvider, useCreateContext] = createContextProvider(() => {
   /**

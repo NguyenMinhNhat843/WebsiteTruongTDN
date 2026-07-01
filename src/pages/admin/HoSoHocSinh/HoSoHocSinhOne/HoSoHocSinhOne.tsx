@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { User, Users, FileText, ClipboardList } from "lucide-react";
 import Breadcrumb from "../../../../components/ui/Breadcrum";
 import { useHocSinhContext, type StatusHocSinhEnum } from "../HocSinhProvider";
 import { StudentDocuments } from "./HoSoFile";
@@ -5,6 +7,9 @@ import {
   HoSoHocSinhOneProvider,
   useHoSoHocSinhOneContext,
 } from "./HoSoHocSinhOneProvider";
+import TabThongTinCaNhan from "./Tabs/TabThongTinCaNhan";
+import TabThongTinNguoiGiamHo from "./Tabs/TabThongTinNguoiGiamHo";
+import TabHoSoXetTuyen from "./Tabs/TabHoSoXetTuyen";
 
 const HoSoHocSinhOne = () => {
   return (
@@ -17,6 +22,9 @@ const HoSoHocSinhOne = () => {
 const Inner = () => {
   const { dataHoSoHocSinh } = useHoSoHocSinhOneContext();
   const { studentDetail, isGettingStudentDetail } = useHocSinhContext();
+  const [activeTab, setActiveTab] = useState<
+    "personal" | "family" | "admission" | "documents"
+  >("personal");
 
   // Trạng thái Loading
   if (isGettingStudentDetail) {
@@ -47,16 +55,13 @@ const Inner = () => {
     return new Date(dateString).toLocaleDateString("vi-VN");
   };
 
-  // Hàm chuyển đổi giới tính
-  const renderGender = (gender: boolean | null | undefined) => {
-    if (gender === true) return "Nam";
-    if (gender === false) return "Nữ";
-    return "---";
-  };
-
   // Hàm hiển thị Badge trạng thái
   const renderStatusBadge = (status: StatusHocSinhEnum) => {
     const statusMap = {
+      pending: {
+        text: "Chờ duyệt",
+        color: "bg-gray-100 text-gray-800 border-gray-200",
+      },
       studying: {
         text: "Đang học",
         color: "bg-green-100 text-green-800 border-green-200",
@@ -96,20 +101,39 @@ const Inner = () => {
     );
   };
 
+  // Định nghĩa danh sách Tabs
+  const tabs = [
+    {
+      id: "personal",
+      label: "Thông tin cá nhân & Nhập học",
+      icon: <User className="w-4 h-4" />,
+    },
+    {
+      id: "family",
+      label: "Thông tin người giám hộ",
+      icon: <Users className="w-4 h-4" />,
+    },
+    {
+      id: "admission",
+      label: "Hồ sơ xét tuyển (Điểm THCS)",
+      icon: <ClipboardList className="w-4 h-4" />,
+    },
+    {
+      id: "documents",
+      label: "Tài liệu & Học bạ đính kèm",
+      icon: <FileText className="w-4 h-4" />,
+    },
+  ] as const;
+
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 sm:p-6 lg:p-8">
       <Breadcrumb
         items={[
-          {
-            label: "Hồ sơ học sinh",
-            link: "/admin/hoc-sinh/ho-so",
-          },
-          {
-            label: `${studentDetail.fullName}`,
-            active: true,
-          },
+          { label: "Hồ sơ học sinh", link: "/admin/hoc-sinh/ho-so" },
+          { label: `${studentDetail.fullName}`, active: true },
         ]}
       />
+
       <div className="space-y-6 mt-4">
         {/* ================= HEADER PROFILE ================= */}
         <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
@@ -166,199 +190,41 @@ const Inner = () => {
           </div>
         </div>
 
-        {/* ================= GRID CONTENT ================= */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {/* CỘT TRÁI: THÔNG TIN CÁ NHÂN & TRƯỜNG HỌC (Chiếm 2/3 trên màn hình lớn) */}
-          <div className="space-y-6 md:col-span-2">
-            {/* Khối 1: Thông tin cá nhân */}
-            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
-                <svg
-                  className="h-5 w-5 text-blue-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  />
-                </svg>
-                Thông Tin Cá Nhân
-              </h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <InfoItem
-                  label="Ngày sinh"
-                  value={formatDate(studentDetail.dob)}
-                />
-                <InfoItem
-                  label="Giới tính"
-                  value={renderGender(studentDetail.gender)}
-                />
-                <InfoItem label="Số điện thoại" value={studentDetail.phone} />
-                <InfoItem label="Email" value={studentDetail.email} />
-                <InfoItem
-                  label="Số CCCD/Định danh"
-                  value={studentDetail.identityNumber}
-                />
-                <InfoItem
-                  label="Địa chỉ hiện tại"
-                  value={studentDetail.address}
-                  className="sm:col-span-2"
-                />
-              </div>
-            </div>
+        {/* ================= NAVIGATION TABS ================= */}
+        <div className="flex border-b border-gray-200 bg-white px-4 pt-2 rounded-xl shadow-sm overflow-x-auto scrollbar-none">
+          <div className="flex space-x-6">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 pb-4 text-sm font-medium border-b-2 transition-all whitespace-nowrap ${
+                  activeTab === tab.id
+                    ? "border-blue-600 text-blue-600 font-semibold"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                {tab.icon}
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
-            {/* Khối 2: Thông tin nhập học / Hệ thống */}
-            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-lg font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
-                <svg
-                  className="h-5 w-5 text-purple-500"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-                  />
-                </svg>
-                Thông Tin Nhập Học & Hệ Thống
-              </h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <InfoItem
-                  label="Ngày nhập học"
-                  value={formatDate(studentDetail.enrollmentDate)}
-                />
-                <InfoItem
-                  label="Ngày tốt nghiệp (Dự kiến)"
-                  value={formatDate(studentDetail.graduationDate)}
-                />
-                <InfoItem
-                  label="Mã hồ sơ tuyển sinh"
-                  value={
-                    studentDetail.applicationId
-                      ? `#${studentDetail.applicationId}`
-                      : "---"
-                  }
-                />
-                <InfoItem
-                  label="ID Tài khoản liên kết"
-                  value={
-                    studentDetail.userId ? `#${studentDetail.userId}` : "---"
-                  }
-                />
-              </div>
-            </div>
+        {/* ================= TAB CONTENT RENDER ================= */}
+        <div className="bg-transparent transition-all duration-200">
+          {/* TAB 1: THÔNG TIN CÁ NHÂN & NHẬP HỌC */}
+          {activeTab === "personal" && <TabThongTinCaNhan />}
 
+          {/* TAB 2: THÔNG TIN NGƯỜI GIÁM HỘ (GIA ĐÌNH) */}
+          {activeTab === "family" && <TabThongTinNguoiGiamHo />}
+
+          {/* TAB 3: HỒ SƠ XÉT TUYỂN (ĐIỂM SỐ & HẠNH KIỂM CẤP THCS) */}
+          {activeTab === "admission" && <TabHoSoXetTuyen />}
+
+          {/* TAB 4: TÀI LIỆU ĐÍNH KÈM */}
+          {activeTab === "documents" && (
             <StudentDocuments documents={dataHoSoHocSinh} />
-          </div>
-
-          {/* CỘT PHẢI: THÔNG TIN GIA ĐÌNH & NGƯỜI GIÁM HỘ (Chiếm 1/3 trên màn hình lớn) */}
-          <div className="space-y-6 md:col-span-1">
-            {/* Khối Cha */}
-            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-2">
-                <div className="h-2 w-2 rounded-full bg-blue-500"></div>
-                Thông Tin Cha
-              </h2>
-              <div className="space-y-3">
-                <InfoItemVertical
-                  label="Họ và tên"
-                  value={studentDetail.fatherName}
-                />
-                <InfoItemVertical
-                  label="Số điện thoại"
-                  value={studentDetail.fatherPhone}
-                />
-                <InfoItemVertical
-                  label="Số CCCD"
-                  value={studentDetail.fatherCCCD}
-                />
-                <div className="grid grid-cols-2 gap-2">
-                  <InfoItemVertical
-                    label="Năm sinh"
-                    value={studentDetail.fatherYearOfBirth}
-                  />
-                  <InfoItemVertical
-                    label="Nghề nghiệp"
-                    value={studentDetail.fatherJob}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Khối Mẹ */}
-            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-2">
-                <div className="h-2 w-2 rounded-full bg-pink-500"></div>
-                Thông Tin Mẹ
-              </h2>
-              <div className="space-y-3">
-                <InfoItemVertical
-                  label="Họ và tên"
-                  value={studentDetail.motherName}
-                />
-                <InfoItemVertical
-                  label="Số điện thoại"
-                  value={studentDetail.motherPhone}
-                />
-                <InfoItemVertical
-                  label="Số CCCD"
-                  value={studentDetail.motherCCCD}
-                />
-                <div className="grid grid-cols-2 gap-2">
-                  <InfoItemVertical
-                    label="Năm sinh"
-                    value={studentDetail.motherYearOfBirth}
-                  />
-                  <InfoItemVertical
-                    label="Nghề nghiệp"
-                    value={studentDetail.motherJob}
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Khối Người giám hộ */}
-            <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-              <h2 className="mb-4 text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-2">
-                <div className="h-2 w-2 rounded-full bg-teal-500"></div>
-                Người Giám Hộ{" "}
-                {studentDetail.guardianRelationship
-                  ? `(${studentDetail.guardianRelationship})`
-                  : ""}
-              </h2>
-              <div className="space-y-3">
-                <InfoItemVertical
-                  label="Họ và tên"
-                  value={studentDetail.guardianName}
-                />
-                <InfoItemVertical
-                  label="Số điện thoại"
-                  value={studentDetail.guardianPhone}
-                />
-                <InfoItemVertical
-                  label="Số CCCD"
-                  value={studentDetail.guardianCCCD}
-                />
-                <div className="grid grid-cols-2 gap-2">
-                  <InfoItemVertical
-                    label="Năm sinh"
-                    value={studentDetail.guardianYearOfBirth}
-                  />
-                  <InfoItemVertical
-                    label="Nghề nghiệp"
-                    value={studentDetail.guardianJob}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Hệ thống Footprint thời gian */}
@@ -372,41 +238,3 @@ const Inner = () => {
 };
 
 export default HoSoHocSinhOne;
-
-/* ================= COMPONENT CON ĐỂ TÁI SỬ DỤNG ================= */
-
-// Dùng cho Layout hàng ngang ở cột trái
-const InfoItem = ({
-  label,
-  value,
-  className = "",
-}: {
-  label: string;
-  value: string | number | null | undefined;
-  className?: string;
-}) => (
-  <div
-    className={`space-y-1 p-2 rounded-lg hover:bg-slate-50 transition-colors ${className}`}
-  >
-    <span className="text-xs font-medium text-gray-400 uppercase tracking-wider">
-      {label}
-    </span>
-    <p className="text-sm font-semibold text-gray-700">{value || "---"}</p>
-  </div>
-);
-
-// Dùng cho Layout hàng dọc ở khối Gia đình (Cột phải)
-const InfoItemVertical = ({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number | null | undefined;
-}) => (
-  <div className="text-sm">
-    <span className="text-gray-400 text-xs">{label}: </span>
-    <span className="font-medium text-gray-800 block sm:inline">
-      {value || "---"}
-    </span>
-  </div>
-);
