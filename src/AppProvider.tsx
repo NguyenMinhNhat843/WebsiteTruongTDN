@@ -39,6 +39,10 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
   );
   const hocKysData = hocKys || [];
   const currentSemester = hocKysData.find((hk) => hk.isCurrent);
+  const hocKysOptions = hocKysData.map((hk) => ({
+    value: hk.id,
+    label: hk.name,
+  }));
 
   /**
    * Lấy danh sách ngành
@@ -48,6 +52,10 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
     isLoading: isMajorsLoading,
     error: majorsError,
   } = $api.useQuery("get", "/majors");
+  const majorsOptions = majors?.map((nganh) => ({
+    value: nganh.id,
+    label: nganh.majorName,
+  }));
 
   /**
    * Lấy danh sách phòng ban
@@ -65,10 +73,12 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
   return {
     hocKysData,
     isHocKysLoading,
+    hocKysOptions,
     currentSemester,
     majors,
     isMajorsLoading,
     majorsError,
+    majorsOptions,
     departments,
     isDepartmentsLoading,
     departmentsError,

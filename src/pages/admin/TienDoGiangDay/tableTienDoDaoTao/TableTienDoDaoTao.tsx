@@ -22,10 +22,11 @@ import {
   mapEnumDayOfWeek,
 } from "./helpers";
 import PageShell from "../../../../components/ui/PageShell";
-import { GridIcon } from "lucide-react";
+import { ArrowRight, CalendarDays, FileText, GridIcon } from "lucide-react";
 import { SpinnerLoading } from "../../../../components/ui/SpinnerLoading";
 import { getTienDoDaoTaoColumns } from "./columnTable";
 import { StickyTanStackTable } from "../../../../components/ui/StickyTanstackTable";
+import { downloadFromBlob } from "../../../../util/download";
 
 // Mở rộng kiểu TableMeta của TanStack Table để không bị báo lỗi TypeScript
 declare module "@tanstack/react-table" {
@@ -52,9 +53,14 @@ const TableTienDoDaoTao = () => {
     searchParams,
     setSearchParams,
     assignTeacher,
+    exportStudyScheduleToExcel,
+    isExportingStudySchedule,
   } = useTienDoDaoTaoContext();
-
   const { hocKysData, isHocKysLoading } = useAppContext();
+
+  const classSelected = classes?.find((cls) => cls.id === classId);
+  const semesterSelected = hocKysData?.find((hk) => hk.id === semesterId);
+
   const hocKysSelected = hocKysData?.find((hk) => hk.id === semesterId);
   const startDateSemester = hocKysSelected?.startDate;
   const endDateSemester = hocKysSelected?.endDate;
@@ -309,14 +315,16 @@ const TableTienDoDaoTao = () => {
     );
   };
 
+  const hasSelectedFilters = semesterId && classId;
+
   return (
     <PageShell
       title="Tiến độ đào tạo"
       sub="Quản lý tiến độ giảng dạy theo tuần của từng môn học"
       icon={GridIcon}
     >
-      <div className="space-y-4 p-4 bg-white rounded-lg shadow-sm">
-        {/* Phần select học kỳ và lớp học giữ nguyên */}
+      <div className="space-y-6 p-6 bg-white rounded-xl shadow-sm border border-gray-100">
+        {/* Phần select học kỳ và lớp học */}
         <div className="flex gap-4">
           <div className="w-1/2">
             <SelectOption
@@ -366,20 +374,74 @@ const TableTienDoDaoTao = () => {
           </div>
         </div>
 
+        {/* Phần hiển thị logic dưới bộ lọc */}
         {isLoadingStudySchedule || isLoadingClassSubjects ? (
-          <SpinnerLoading />
+          <div className="py-12">
+            <SpinnerLoading />
+          </div>
+        ) : !hasSelectedFilters ? (
+          /* UI Hướng dẫn khi chưa chọn đủ filter (Empty State) */
+          <div className="flex flex-col items-center justify-center p-10 border-2 border-dashed border-gray-200 rounded-xl bg-gray-50/50 text-center animate-fade-in">
+            <div className="p-4 bg-blue-50 text-blue-600 rounded-full mb-4">
+              <CalendarDays className="h-8 w-8" />
+            </div>
+            <h3 className="text-base font-semibold text-gray-800 mb-1">
+              Bắt đầu tạo tiến độ đào tạo
+            </h3>
+            <p className="text-sm text-gray-500 max-w-sm mb-4 leading-relaxed">
+              Vui lòng chọn **Học kỳ** và **Lớp học** ở phía trên để hệ thống
+              hiển thị danh sách môn học và cấu trúc tiến độ.
+            </p>
+            <div className="flex items-center gap-2 text-xs font-medium text-blue-600 bg-blue-50/80 px-3 py-1.5 rounded-full">
+              <span>Chọn bộ lọc</span>
+              <ArrowRight className="h-3 w-3" />
+              <span>Thiết lập tiến độ</span>
+            </div>
+          </div>
         ) : (
-          <StickyTanStackTable table={table} stickyColumnCount={3} />
-        )}
+          /* Khi đã chọn đủ filter: Hiện bảng và nút Lưu */
+          <div className="space-y-4 animate-fade-in">
+            <StickyTanStackTable table={table} stickyColumnCount={3} />
 
-        <div className="flex justify-end pt-2">
-          <ButtonAction
-            variant="outline"
-            loading={isCreatingStudySchedule}
-            label="Lưu tiến độ đào tạo"
-            onClick={handleSubmit}
-          />
-        </div>
+            <div className="flex justify-end pt-2">
+              <ButtonAction
+                variant="outline"
+                loading={isCreatingStudySchedule}
+                label="Lưu tiến độ đào tạo"
+                onClick={handleSubmit}
+              />
+
+              <ButtonAction
+                variant="export"
+                label="Xuất bảng điểm học kỳ"
+                icon={<FileText className="h-4 w-4" />}
+                loading={isExportingStudySchedule}
+                onClick={() => {
+                  return exportStudyScheduleToExcel(
+                    {
+                      parseAs: "blob",
+                      params: {
+                        query: {
+                          semesterId: semesterId!,
+                          classId: classId!,
+                        },
+                      },
+                    },
+                    {
+                      onSuccess: (blob) => {
+                        downloadFromBlob(
+                          blob as never,
+                          `Tien_Do_Dao_Tao_${classSelected?.className}_${semesterSelected?.name}`,
+                          ".xlsx",
+                        );
+                      },
+                    },
+                  );
+                }}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </PageShell>
   );

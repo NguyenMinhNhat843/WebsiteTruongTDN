@@ -1206,6 +1206,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/schedule/export-excel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Xuất excel tiến độ đào tạo của 1 lớp trong 1 học kỳ */
+        get: operations["ScheduleController_exportStudyScheduleToExcel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/posts/stats": {
         parameters: {
             query?: never;
@@ -6583,6 +6600,29 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    ScheduleController_exportStudyScheduleToExcel: {
+        parameters: {
+            query?: {
+                classId?: number;
+                semesterId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xuất excel thành công. Trả về file nhị phân (stream). */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
             };
         };
     };

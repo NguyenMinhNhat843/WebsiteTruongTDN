@@ -99,6 +99,14 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
       },
     );
 
+    /**
+     * Xuất excel tiến độ đào tạo của 1 lớp trong 1 học kỳ
+     */
+    const {
+      mutate: exportStudyScheduleToExcel,
+      isPending: isExportingStudySchedule,
+    } = $api.useMutation("get", "/schedule/export-excel");
+
     return {
       giaoViens,
       isLoadingGiaoViens,
@@ -114,6 +122,8 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
       isLoadingTeachers,
       assignTeacher,
       isAssigningTeacher,
+      exportStudyScheduleToExcel,
+      isExportingStudySchedule,
 
       //state
       semesterId,
