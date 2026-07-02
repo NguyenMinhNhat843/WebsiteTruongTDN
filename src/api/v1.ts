@@ -39,23 +39,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/students/{id}/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Duyệt hồ sơ và cấp tài khoản đăng nhập */
-        post: operations["approveStudent"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/students/{id}": {
         parameters: {
             query?: never;
@@ -106,6 +89,23 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/students/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Duyệt hồ sơ sinh viên */
+        patch: operations["approveStudent"];
         trace?: never;
     };
     "/users/{id}": {
@@ -2178,6 +2178,9 @@ export interface components {
              */
             status: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         };
+        ApprovedStudentDto: {
+            quote?: number;
+        };
         CreateUserDto: {
             /**
              * @description Tên đăng nhập duy nhất
@@ -4035,27 +4038,6 @@ export interface operations {
             };
         };
     };
-    approveStudent: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StudentResponseDto"];
-                };
-            };
-        };
-    };
     deleteStudent: {
         parameters: {
             query?: never;
@@ -4140,6 +4122,27 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["GetEligibleStudentsDtoForAssignmentResponse"][];
                 };
+            };
+        };
+    };
+    approveStudent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApprovedStudentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

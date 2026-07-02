@@ -152,9 +152,7 @@ const PhanLop = () => {
               <thead>
                 <tr className="bg-slate-50 text-slate-500 uppercase text-xs tracking-widest font-semibold">
                   <th className="px-6 py-4 text-center w-20">STT</th>
-                  <th className="px-6 py-4 text-left">Mã sinh viên</th>
                   <th className="px-6 py-4 text-left">Họ và Tên</th>
-                  {/* SỬA: Đổi tiêu đề cột thành Khóa học */}
                   <th className="px-6 py-4 text-left">Khóa học</th>
                 </tr>
               </thead>
@@ -179,11 +177,7 @@ const PhanLop = () => {
                       <td className="px-6 py-4 text-center font-medium text-slate-400">
                         {index + 1}
                       </td>
-                      <td className="px-6 py-4">
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold bg-slate-100 text-slate-800 group-hover:bg-blue-100 group-hover:text-blue-700 transition-colors font-mono">
-                          {st.student.studentCode || "N/A"}
-                        </span>
-                      </td>
+
                       <td className="px-6 py-4 font-semibold text-slate-700">
                         {st.student.fullName}
                       </td>

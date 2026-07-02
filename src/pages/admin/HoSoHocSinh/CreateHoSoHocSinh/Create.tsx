@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { User, Users, GraduationCap, FileText } from "lucide-react";
+import { User, Users, GraduationCap, FileText, Layers } from "lucide-react";
 import Input from "../../../../components/ui/Form/Input";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import ButtonAction from "../../../../components/ui/ButtonAction";
@@ -8,6 +8,8 @@ import type { createStudentDto } from "../HocSinhProvider";
 import SelectBatch from "../../../../components/ui/SelectBatch";
 import { CreateProvider, useCreateContext } from "./CreateProvider";
 import { cleanEmptyFields } from "../../../../util/cleanEmptyField";
+import { useQueryClient } from "@tanstack/react-query";
+import PageShell from "../../../../components/ui/PageShell";
 
 const CreateStudent = () => {
   return (
@@ -20,6 +22,7 @@ const CreateStudent = () => {
 const Inner = () => {
   const { createStudent, isCreatingStudent } = useCreateContext();
   const [batchIdselected, setBatchIdSelected] = useState<number | null>(null);
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -85,6 +88,7 @@ const Inner = () => {
           onSuccess: () => {
             alert("Tạo hồ sơ học sinh thành công!");
             reset();
+            queryClient.invalidateQueries({ queryKey: ["get", "/students"] });
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onError: (error: any) => {
@@ -119,99 +123,153 @@ const Inner = () => {
     { value: "YEU", label: "Yếu" },
   ];
 
+  const [familyTab, setFamilyTab] = useState<"father" | "mother" | "guardian">(
+    "father",
+  );
+
   return (
-    <div className="flex items-center justify-center p-4">
-      <div className="bg-white w-full overflow-y-auto rounded-xl shadow-xl flex flex-col">
-        <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex justify-between items-center z-10">
-          <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-            Thêm Hồ Sơ Học Sinh Mới
-          </h2>
+    <PageShell
+      title="Thêm hồ sơ học sinh"
+      sub="Tạo hồ sơ học sinh mới và nhập thông tin cá nhân, gia đình, kết quả học tập"
+      icon={User}
+      renderRight={
+        <div className="sticky bottom-0 bg-white border-t border-slate-200 pt-4 pb-2 flex justify-end gap-3 z-10">
+          <ButtonAction
+            type="button"
+            variant="outline"
+            label="Hủy bỏ"
+            onClick={() => reset()}
+          />
+          <ButtonAction
+            type="submit"
+            variant="primary"
+            loading={isSubmitting || isCreatingStudent}
+            label="Lưu hồ sơ học sinh"
+          />
+        </div>
+      }
+    >
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
+        className="space-y-8 flex-1"
+      >
+        {/* PHÂN KHU 1: CHỌN ĐỢT TUYỂN SINH / NGÀNH & KHOA (ĐÃ ĐƯA LÊN ĐẦU) */}
+        <div className="space-y-4 bg-blue-50/40 p-5 rounded-xl border border-blue-100/70">
+          <h3 className="text-sm font-bold text-blue-900 flex items-center gap-2 border-b border-blue-100 pb-2">
+            <Layers className="w-4 h-4 text-blue-600" /> 1. Thông tin đợt tuyển
+            sinh & Ngành học
+          </h3>
+          <SelectBatch
+            onBatchChange={(id) => setBatchIdSelected(id)}
+            className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          />
         </div>
 
-        <form
-          onSubmit={handleSubmit(handleFormSubmit)}
-          className="p-6 space-y-6 flex-1"
-        >
-          {/* PHÂN KHU 1: THÔNG TIN CÁ NHÂN */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
-              <User className="w-4 h-4 text-blue-500" /> 1. Thông tin cá nhân
-              học sinh
-            </h3>
+        {/* PHÂN KHU 2: THÔNG TIN CÁ NHÂN */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
+            <User className="w-4 h-4 text-blue-500" /> 2. Thông tin cá nhân học
+            sinh
+          </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-              <div className="md:col-span-2">
-                <Input
-                  label="Họ và tên học sinh"
-                  placeholder="Nhập đầy đủ họ và tên"
-                  require
-                  error={errors.fullName?.message}
-                  {...register("fullName", {
-                    required: "Họ tên học sinh không được để trống",
-                  })}
-                />
-              </div>
-
-              <SelectOption
-                label="Giới tính"
-                options={genderOptions}
-                {...register("gender", {
-                  setValueAs: (value) => value === "true",
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <div className="md:col-span-2">
+              <Input
+                label="Họ và tên học sinh"
+                placeholder="Nhập đầy đủ họ và tên"
+                require
+                error={errors.fullName?.message}
+                {...register("fullName", {
+                  required: "Họ tên học sinh không được để trống",
                 })}
               />
+            </div>
 
+            <SelectOption
+              label="Giới tính"
+              options={genderOptions}
+              {...register("gender", {
+                setValueAs: (value) => value === "true",
+              })}
+            />
+
+            <Input
+              type="date"
+              label="Ngày sinh"
+              require
+              error={errors.dob?.message ?? undefined}
+              {...register("dob")}
+            />
+
+            <Input
+              type="email"
+              label="Địa chỉ Email"
+              placeholder="example@gmail.com"
+              error={errors.email?.message ?? undefined}
+              {...register("email")}
+            />
+
+            <Input
+              label="Số điện thoại cá nhân"
+              placeholder="VD: 0912345678"
+              {...register("phone")}
+            />
+
+            <Input
+              label="Số CCCD / Định danh"
+              require
+              placeholder="Nhập số CCCD (nếu có)"
+              {...register("identityNumber")}
+            />
+
+            <div className="md:col-span-2">
               <Input
-                type="date"
-                label="Ngày sinh"
-                error={errors.dob?.message ?? undefined}
-                {...register("dob")}
-              />
-
-              <Input
-                type="email"
-                label="Địa chỉ Email"
-                placeholder="example@gmail.com"
-                error={errors.email?.message ?? undefined}
-                {...register("email")}
-              />
-
-              <Input
-                label="Số điện thoại cá nhân"
-                placeholder="VD: 0912345678"
-                {...register("phone")}
-              />
-
-              <Input
-                label="Số CCCD / Định danh"
-                placeholder="Nhập số CCCD (nếu có)"
-                {...register("identityNumber")}
-              />
-
-              <div className="md:col-span-2">
-                <Input
-                  label="Địa chỉ thường trú"
-                  placeholder="Số nhà, tên đường, xã/phường, quận/huyện"
-                  {...register("address")}
-                />
-              </div>
-
-              <SelectBatch
-                onBatchChange={(id) => setBatchIdSelected(id)}
-                className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4"
+                label="Địa chỉ thường trú"
+                placeholder="Số nhà, tên đường, xã/phường, quận/huyện"
+                {...register("address")}
               />
             </div>
           </div>
+        </div>
 
-          {/* PHÂN KHU 2: THÔNG TIN GIA ĐÌNH */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
-              <Users className="w-4 h-4 text-blue-500" /> 2. Thông tin gia đình
+        {/* PHÂN KHU 3: THÔNG TIN GIA ĐÌNH (CHUYỂN THÀNH 3 TAB) */}
+        <div className="space-y-4">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200 pb-2">
+            <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2Th">
+              <Users className="w-4 h-4 text-blue-500" /> 3. Thông tin gia đình
               & Người giám hộ
             </h3>
 
-            <div className="space-y-4">
-              {/* Thông tin Bố */}
-              <div className="bg-white p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-5 gap-4">
+            {/* Thanh điều hướng TAB */}
+            <div className="flex bg-slate-100 p-1 rounded-lg border border-slate-200 text-xs font-medium self-start md:self-auto">
+              <button
+                type="button"
+                onClick={() => setFamilyTab("father")}
+                className={`px-4 py-1.5 rounded-md transition-all ${familyTab === "father" ? "bg-white text-blue-600 shadow-sm font-bold" : "text-slate-600 hover:text-slate-900"}`}
+              >
+                Thông tin Cha
+              </button>
+              <button
+                type="button"
+                onClick={() => setFamilyTab("mother")}
+                className={`px-4 py-1.5 rounded-md transition-all ${familyTab === "mother" ? "bg-white text-blue-600 shadow-sm font-bold" : "text-slate-600 hover:text-slate-900"}`}
+              >
+                Thông tin Mẹ
+              </button>
+              <button
+                type="button"
+                onClick={() => setFamilyTab("guardian")}
+                className={`px-4 py-1.5 rounded-md transition-all ${familyTab === "guardian" ? "bg-white text-blue-600 shadow-sm font-bold" : "text-slate-600 hover:text-slate-900"}`}
+              >
+                Người giám hộ
+              </button>
+            </div>
+          </div>
+
+          <div className="bg-slate-50/50 p-4 rounded-xl border border-slate-200 min-h-[160px]">
+            {/* TAB THÔNG TIN CHA */}
+            {familyTab === "father" && (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-fadeIn">
                 <div className="md:col-span-2">
                   <Input
                     label="Họ tên Cha"
@@ -243,9 +301,11 @@ const Inner = () => {
                   />
                 </div>
               </div>
+            )}
 
-              {/* Thông tin Mẹ */}
-              <div className="bg-white p-4 rounded-xl border border-slate-200 grid grid-cols-1 md:grid-cols-5 gap-4">
+            {/* TAB THÔNG TIN MẸ */}
+            {familyTab === "mother" && (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-fadeIn">
                 <div className="md:col-span-2">
                   <Input
                     label="Họ tên Mẹ"
@@ -277,9 +337,11 @@ const Inner = () => {
                   />
                 </div>
               </div>
+            )}
 
-              {/* Người giám hộ */}
-              <div className="bg-slate-50/50 p-4 rounded-xl border border-dashed border-slate-200 grid grid-cols-1 md:grid-cols-5 gap-4">
+            {/* TAB NGƯỜI GIÁM HỘ */}
+            {familyTab === "guardian" && (
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 animate-fadeIn">
                 <div className="md:col-span-2">
                   <Input
                     label="Họ tên Người giám hộ"
@@ -316,142 +378,126 @@ const Inner = () => {
                   />
                 </div>
               </div>
-            </div>
+            )}
           </div>
+        </div>
 
-          {/* PHÂN KHU 3: HỒ SƠ NHẬP HỌC */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
-              <FileText className="w-4 h-4 text-blue-500" /> 3. Kết quả học tập
-              cấp THCS
-            </h3>
+        {/* PHÂN KHU 4: KẾT QUẢ HỌC TẬP */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
+            <FileText className="w-4 h-4 text-blue-500" /> 4. Kết quả học tập
+            cấp THCS
+          </h3>
 
-            <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {/* Lớp 6 */}
-                <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
-                    Lớp 6
-                  </span>
-                  <Input
-                    type="text"
-                    label="Điểm TB (GPA)"
-                    placeholder="VD: 8.5"
-                    require
-                    error={errors.admissionProfile?.gpa6?.message}
-                    {...register("admissionProfile.gpa6", {
-                      required: "Vui lòng nhập GPA lớp 6",
-                    })}
-                  />
-                  <SelectOption
-                    label="Hạnh kiểm"
-                    options={conductOptions}
-                    {...register("admissionProfile.conduct6")}
-                  />
-                </div>
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Lớp 6 */}
+              <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
+                  Lớp 6
+                </span>
+                <Input
+                  type="text"
+                  label="Điểm TB (GPA)"
+                  placeholder="VD: 8.5"
+                  require
+                  error={errors.admissionProfile?.gpa6?.message}
+                  {...register("admissionProfile.gpa6", {
+                    required: "Vui lòng nhập GPA lớp 6",
+                  })}
+                />
+                <SelectOption
+                  label="Hạnh kiểm"
+                  options={conductOptions}
+                  {...register("admissionProfile.conduct6")}
+                />
+              </div>
 
-                {/* Lớp 7 */}
-                <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
-                    Lớp 7
-                  </span>
-                  <Input
-                    type="text"
-                    label="Điểm TB (GPA)"
-                    placeholder="VD: 8.2"
-                    require
-                    error={errors.admissionProfile?.gpa7?.message}
-                    {...register("admissionProfile.gpa7", {
-                      required: "Vui lòng nhập GPA lớp 7",
-                    })}
-                  />
-                  <SelectOption
-                    label="Hạnh kiểm"
-                    options={conductOptions}
-                    {...register("admissionProfile.conduct7")}
-                  />
-                </div>
+              {/* Lớp 7 */}
+              <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
+                  Lớp 7
+                </span>
+                <Input
+                  type="text"
+                  label="Điểm TB (GPA)"
+                  placeholder="VD: 8.2"
+                  require
+                  error={errors.admissionProfile?.gpa7?.message}
+                  {...register("admissionProfile.gpa7", {
+                    required: "Vui lòng nhập GPA lớp 7",
+                  })}
+                />
+                <SelectOption
+                  label="Hạnh kiểm"
+                  options={conductOptions}
+                  {...register("admissionProfile.conduct7")}
+                />
+              </div>
 
-                {/* Lớp 8 */}
-                <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
-                    Lớp 8
-                  </span>
-                  <Input
-                    type="text"
-                    label="Điểm TB (GPA)"
-                    placeholder="VD: 8.8"
-                    require
-                    error={errors.admissionProfile?.gpa8?.message}
-                    {...register("admissionProfile.gpa8", {
-                      required: "Vui lòng nhập GPA lớp 8",
-                    })}
-                  />
-                  <SelectOption
-                    label="Hạnh kiểm"
-                    options={conductOptions}
-                    {...register("admissionProfile.conduct8")}
-                  />
-                </div>
+              {/* Lớp 8 */}
+              <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
+                  Lớp 8
+                </span>
+                <Input
+                  type="text"
+                  label="Điểm TB (GPA)"
+                  placeholder="VD: 8.8"
+                  require
+                  error={errors.admissionProfile?.gpa8?.message}
+                  {...register("admissionProfile.gpa8", {
+                    required: "Vui lòng nhập GPA lớp 8",
+                  })}
+                />
+                <SelectOption
+                  label="Hạnh kiểm"
+                  options={conductOptions}
+                  {...register("admissionProfile.conduct8")}
+                />
+              </div>
 
-                {/* Lớp 9 */}
-                <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
-                    Lớp 9
-                  </span>
-                  <Input
-                    type="text"
-                    label="Điểm TB (GPA)"
-                    placeholder="VD: 9.0"
-                    require
-                    error={errors.admissionProfile?.gpa9?.message}
-                    {...register("admissionProfile.gpa9", {
-                      required: "Vui lòng nhập GPA lớp 9",
-                    })}
-                  />
-                  <SelectOption
-                    label="Hạnh kiểm"
-                    options={conductOptions}
-                    {...register("admissionProfile.conduct9")}
-                  />
-                </div>
+              {/* Lớp 9 */}
+              <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-2">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block border-b pb-1">
+                  Lớp 9
+                </span>
+                <Input
+                  type="text"
+                  label="Điểm TB (GPA)"
+                  placeholder="VD: 9.0"
+                  require
+                  error={errors.admissionProfile?.gpa9?.message}
+                  {...register("admissionProfile.gpa9", {
+                    required: "Vui lòng nhập GPA lớp 9",
+                  })}
+                />
+                <SelectOption
+                  label="Hạnh kiểm"
+                  options={conductOptions}
+                  {...register("admissionProfile.conduct9")}
+                />
               </div>
             </div>
           </div>
+        </div>
 
-          {/* PHÂN KHU 4: TRẠNG THÁI HỆ THỐNG */}
-          <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
-              <GraduationCap className="w-4 h-4 text-blue-500" /> 4. Trạng thái
-              học tập ban đầu
-            </h3>
-            <div className="w-full md:w-1/3 bg-slate-50 p-4 rounded-xl border border-slate-100">
-              <SelectOption
-                label="Trạng thái hồ sơ học sinh"
-                options={statusOptions}
-                {...register("status")}
-              />
-            </div>
-          </div>
-
-          {/* Sticky Footer */}
-          <div className="sticky bottom-0 bg-white border-t border-slate-100 pt-4 flex justify-end gap-3 z-10">
-            <ButtonAction
-              type="button"
-              variant="outline"
-              label="Hủy bỏ"
-              onClick={() => reset()}
-            />
-            <ButtonAction
-              type="submit"
-              variant="primary"
-              loading={isSubmitting || isCreatingStudent}
-              label="Lưu hồ sơ học sinh"
+        {/* PHÂN KHU 5: TRẠNG THÁI HỆ THỐNG */}
+        <div className="space-y-4">
+          <h3 className="text-sm font-bold text-slate-700 flex items-center gap-2 border-b border-slate-100 pb-2">
+            <GraduationCap className="w-4 h-4 text-blue-500" /> 5. Trạng thái
+            học tập ban đầu
+          </h3>
+          <div className="w-full md:w-1/3 bg-slate-50 p-4 rounded-xl border border-slate-100">
+            <SelectOption
+              label="Trạng thái hồ sơ học sinh"
+              options={statusOptions}
+              {...register("status")}
             />
           </div>
-        </form>
-      </div>
-    </div>
+        </div>
+      </form>
+    </PageShell>
   );
 };
 

@@ -2,6 +2,14 @@ import RowActions from "./components/RowAction";
 import { useHocSinhContext } from "../HocSinhProvider";
 import { formatDate } from "../../../../util/formatDate";
 import { BadgeStudentStatus } from "../../../../components/enum/StudentStatusBadge";
+import { $api } from "../../../../api/client";
+import type { components } from "../../../../api/v1";
+import {
+  STUDENT_STATUS_TABS,
+  type StudentStatusEnum,
+} from "../../../../api/enum";
+
+export type ApproveStudentDto = components["schemas"]["ApprovedStudentDto"];
 
 const TableHoSoHocSinh = () => {
   const {
@@ -13,20 +21,55 @@ const TableHoSoHocSinh = () => {
     setFilters,
     total,
   } = useHocSinhContext();
+  const currentTab = filters.status || "pending";
+
+  /**
+   * Xét duyệt học sinh, chuyển từ chờ xét tuyển sang đã đậu
+   */
+  const { mutate: approveStudent, isPending: isPendingApprove } =
+    $api.useMutation("patch", "/students/approve");
+
+  const handleApproveAll = () => {
+    if (students.length === 0) return;
+
+    // Xác nhận lại với người dùng trước khi duyệt hàng loạt
+    if (
+      !window.confirm(
+        "Bạn có chắc chắn muốn duyệt TOÀN BỘ học sinh trong trang này không?",
+      )
+    ) {
+      return;
+    }
+
+    approveStudent(
+      {
+        // Truyền body chứa trường quote = undefined theo yêu cầu của bạn
+        body: {
+          quote: undefined,
+        },
+      },
+      {
+        onSuccess: () => {
+          alert("🎉 Đã duyệt toàn bộ học sinh thành công!");
+          // Bạn có thể gọi thêm hàm làm mới dữ liệu từ context nếu có (ví dụ: fetchStudents())
+        },
+        onError: () => {
+          alert("❌ Duyệt hàng loạt thất bại!");
+        },
+      },
+    );
+  };
 
   const currentPage = filters.page || 1;
   const pageSize = filters.limit || 10;
   const totalPages = Math.ceil((total || 0) / pageSize) || 1;
 
-  // Xác định tab hiện tại dựa trên trường excludeStatus từ context
-  const isExcludePending = !!filters.excludeStatus;
-
   // Hàm chuyển đổi giữa các Tab
-  const handleTabChange = (excludeStatus: boolean) => {
+  const handleTabChange = (status: StudentStatusEnum) => {
     setFilters((prev) => ({
       ...prev,
-      page: 1, // Reset về trang 1 khi đổi tab tránh lỗi lệch trang dữ liệu
-      excludeStatus: excludeStatus,
+      page: 1,
+      status: status,
     }));
   };
 
@@ -57,34 +100,50 @@ const TableHoSoHocSinh = () => {
   return (
     <div className="w-full flex flex-col gap-4">
       {/* THANH CHUYỂN TAB (TABS NAVIGATION) */}
-      <div className="flex border-b border-slate-200 gap-6 px-2">
-        <button
-          onClick={() => handleTabChange(false)}
-          className={`pb-3 text-sm font-medium transition-all relative ${
-            !isExcludePending
-              ? "text-indigo-600 font-bold"
-              : "text-slate-500 hover:text-slate-700"
-          }`}
-        >
-          Chờ xét tuyển
-          {!isExcludePending && (
-            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-indigo-600 rounded-full animate-fadeIn" />
-          )}
-        </button>
+      <div className="flex items-center justify-between border-b border-slate-200 px-2 pb-2 gap-4">
+        {/* Các Tab bên trái - Thêm flex-1 và min-w-0 để tối ưu scrollbar */}
+        <div className="flex gap-6 overflow-x-auto custom-scrollbar flex-1 min-w-0">
+          {STUDENT_STATUS_TABS.map((tab) => {
+            const isActive = currentTab === tab.value;
 
-        <button
-          onClick={() => handleTabChange(true)}
-          className={`pb-3 text-sm font-medium transition-all relative ${
-            isExcludePending
-              ? "text-indigo-600 font-bold"
-              : "text-slate-500 hover:text-slate-700"
-          }`}
-        >
-          Đã đậu / Đã nhập học
-          {isExcludePending && (
-            <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-indigo-600 rounded-full animate-fadeIn" />
-          )}
-        </button>
+            return (
+              <button
+                key={tab.value}
+                onClick={() => handleTabChange(tab.value)}
+                className={`pb-2 text-sm font-medium transition-all relative whitespace-nowrap ${
+                  isActive
+                    ? "text-indigo-600 font-bold"
+                    : "text-slate-500 hover:text-slate-700"
+                }`}
+              >
+                {tab.label}
+                {isActive && (
+                  <div className="absolute bottom-[-1px] left-0 right-0 h-[2px] bg-indigo-600 rounded-full animate-fadeIn" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Nút Duyệt Tổng bên phải - Thêm shrink-0 để chống vỡ/xuống dòng */}
+        {currentTab === "pending" && students.length > 0 && (
+          <button
+            onClick={handleApproveAll}
+            disabled={isPendingApprove}
+            className="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 rounded-xl shadow-sm transition-all flex items-center gap-1.5 dynamic-btn shrink-0 whitespace-nowrap"
+          >
+            {isPendingApprove ? (
+              <>
+                <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                Đang duyệt...
+              </>
+            ) : (
+              <>
+                <span>✓</span> Duyệt toàn bộ hồ sơ
+              </>
+            )}
+          </button>
+        )}
       </div>
 
       {/* KHỐI TABLE */}
