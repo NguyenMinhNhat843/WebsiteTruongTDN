@@ -8,6 +8,7 @@ import {
   STUDENT_STATUS_TABS,
   type StudentStatusEnum,
 } from "../../../../api/enum";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type ApproveStudentDto = components["schemas"]["ApprovedStudentDto"];
 
@@ -22,6 +23,7 @@ const TableHoSoHocSinh = () => {
     total,
   } = useHocSinhContext();
   const currentTab = filters.status || "pending";
+  const queryClient = useQueryClient();
 
   /**
    * Xét duyệt học sinh, chuyển từ chờ xét tuyển sang đã đậu
@@ -51,6 +53,9 @@ const TableHoSoHocSinh = () => {
       {
         onSuccess: () => {
           alert("🎉 Đã duyệt toàn bộ học sinh thành công!");
+          queryClient.invalidateQueries({
+            queryKey: ["get", "/students"],
+          });
           // Bạn có thể gọi thêm hàm làm mới dữ liệu từ context nếu có (ví dụ: fetchStudents())
         },
         onError: () => {

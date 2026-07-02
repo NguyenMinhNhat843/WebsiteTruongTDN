@@ -59,8 +59,8 @@ export const [PhanLopProvider, usePhanLopContext] = createContextProvider(
 
     // Phân lớp tự động
     const { mutate: phanLop, isPending: isPendingPhanLop } = $api.useMutation(
-      "post",
-      "/classes/assign-classes",
+      "patch",
+      "/students/assign-classes",
       {
         onSuccess: () => {
           refetchStudents();

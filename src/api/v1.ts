@@ -108,6 +108,23 @@ export interface paths {
         patch: operations["approveStudent"];
         trace?: never;
     };
+    "/students/assign-classes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Phân lớp cho sinh viên */
+        patch: operations["assignStudentsToClasses"];
+        trace?: never;
+    };
     "/users/{id}": {
         parameters: {
             query?: never;
@@ -2140,6 +2157,9 @@ export interface components {
             student: components["schemas"]["StudentSimpleInfo"];
             batch: components["schemas"]["BatchSimpleDto"];
         };
+        ApprovedStudentDto: {
+            quote?: number;
+        };
         UpdateStudentDto: {
             studentCode?: string;
             enrollmentDate?: string | null;
@@ -2178,8 +2198,10 @@ export interface components {
              */
             status: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         };
-        ApprovedStudentDto: {
-            quote?: number;
+        AssignStudentsToClassesDto: {
+            batchId?: number;
+            /** @default 40 */
+            studentsPerClass: number;
         };
         CreateUserDto: {
             /**
@@ -2821,11 +2843,6 @@ export interface components {
             maxStudents: number;
             /** @default active */
             status: string;
-        };
-        AssignStudentsToClassesDto: {
-            batchId?: number;
-            /** @default 40 */
-            studentsPerClass: number;
         };
         UpdateClassDto: {
             /**
@@ -4135,6 +4152,27 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["ApprovedStudentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    assignStudentsToClasses: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignStudentsToClassesDto"];
             };
         };
         responses: {
