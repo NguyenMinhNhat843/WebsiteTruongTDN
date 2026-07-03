@@ -6,6 +6,7 @@ import "./App.css";
 import { AppProvider } from "./AppProvider";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { Loader2 } from "lucide-react";
+import PhongHocIndex from "./pages/admin/PhongHoc";
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -300,6 +301,7 @@ function App() {
 
               {/* Môn học */}
               <Route path="mon-hoc" element={<MonHocIndex />} />
+              <Route path="phong-hoc" element={<PhongHocIndex />} />
 
               {/* Công tác học sinh */}
               <Route element={<HocSinhLayout />}>

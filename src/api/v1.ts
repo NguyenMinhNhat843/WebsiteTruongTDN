@@ -753,8 +753,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lấy danh sách tất cả phòng học */
-        get: operations["RoomController_findAll"];
+        /** Tìm kiếm phòng học */
+        get: operations["RoomController_getRooms"];
         put?: never;
         /** Tạo mới phòng học */
         post: operations["RoomController_create"];
@@ -2961,38 +2961,37 @@ export interface components {
             theoryHours?: number;
         };
         CreateRoomDto: {
-            building: Record<string, never>;
+            building: string | null;
             capacity: number | null;
             roomCode: string;
-            type: string;
+            /**
+             * @example Thực hành
+             * @enum {string}
+             */
+            type: "Lý thuyết" | "Thực hành" | "Phòng Lab/Máy tính" | "Xưởng thực tập" | "Phòng chức năng";
         };
-        RoomResponseDto: {
-            /** @example 1 */
+        RoomDto: {
             id: number;
-            /** @example A1.102 */
+            building: string | null;
+            capacity: number | null;
             roomCode: string;
-            /** @example theory */
-            type: string;
-            /** @example 45 */
-            capacity?: number | null;
-            /** @example Tòa A */
-            building?: string | null;
             /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
+             * @example Thực hành
+             * @enum {string}
              */
+            type: "Lý thuyết" | "Thực hành" | "Phòng Lab/Máy tính" | "Xưởng thực tập" | "Phòng chức năng";
+            /** Format: date-time */
             createdAt: string;
-            /**
-             * @description Số lượng lịch học tại phòng này
-             * @example 10
-             */
-            scheduleCount?: number;
         };
         UpdateRoomDto: {
-            building?: Record<string, never>;
+            building?: string | null;
             capacity?: number | null;
             roomCode?: string;
-            type?: string;
+            /**
+             * @example Thực hành
+             * @enum {string}
+             */
+            type?: "Lý thuyết" | "Thực hành" | "Phòng Lab/Máy tính" | "Xưởng thực tập" | "Phòng chức năng";
         };
         CreateAdmissionItemCriterionDto: {
             /**
@@ -3591,15 +3590,6 @@ export interface components {
             /** Format: date-time */
             studyDate?: string | null;
             weekNumber: number;
-        };
-        RoomDto: {
-            id: number;
-            building: Record<string, never>;
-            capacity: number | null;
-            roomCode: string;
-            type: string;
-            /** Format: date-time */
-            createdAt: string;
         };
         ClassSubjectSessionWithRelationDto: {
             id: number;
@@ -5638,9 +5628,16 @@ export interface operations {
             };
         };
     };
-    RoomController_findAll: {
+    RoomController_getRooms: {
         parameters: {
-            query?: never;
+            query?: {
+                id?: number;
+                building?: string | null;
+                capacity?: number | null;
+                roomCode?: string;
+                type?: "Lý thuyết" | "Thực hành" | "Phòng Lab/Máy tính" | "Xưởng thực tập" | "Phòng chức năng";
+                createdAt?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -5652,7 +5649,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RoomResponseDto"][];
+                    "application/json": components["schemas"]["RoomDto"][];
                 };
             };
         };
@@ -5675,7 +5672,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RoomResponseDto"];
+                    "application/json": components["schemas"]["RoomDto"];
                 };
             };
         };
@@ -5696,7 +5693,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RoomResponseDto"];
+                    "application/json": components["schemas"]["RoomDto"];
                 };
             };
         };
@@ -5741,7 +5738,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RoomResponseDto"];
+                    "application/json": components["schemas"]["RoomDto"];
                 };
             };
         };

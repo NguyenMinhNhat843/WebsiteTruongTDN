@@ -28,6 +28,12 @@ const navItems: NavItem[] = [
         roles: ["admin", "teacher"],
       },
       {
+        id: "mon-hoc",
+        label: "Môn học",
+        href: "/admin/mon-hoc",
+        roles: ["admin", "teacher"],
+      },
+      {
         id: "lop-hoc",
         label: "Lớp học",
         href: "/admin/dao-tao/lop-hoc",
@@ -38,12 +44,7 @@ const navItems: NavItem[] = [
         href: "/admin/dao-tao/khoa",
         roles: ["admin", "teacher"],
       },
-      {
-        id: "mon-hoc",
-        label: "Môn học",
-        href: "/admin/mon-hoc",
-        roles: ["admin", "teacher"],
-      },
+
       {
         id: "khoa-dao-tao",
         label: "Khóa đào tạo",
@@ -54,6 +55,12 @@ const navItems: NavItem[] = [
         id: "nganh",
         label: "Ngành học",
         href: "/admin/nganh-hoc",
+        roles: ["admin", "teacher"],
+      },
+      {
+        id: "phong-hoc",
+        label: "Phòng học",
+        href: "/admin/phong-hoc",
         roles: ["admin", "teacher"],
       },
       {
