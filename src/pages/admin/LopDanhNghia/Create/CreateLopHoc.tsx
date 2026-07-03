@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
-import Input from "../../../components/ui/Form/Input";
-import { SelectOption } from "../../../components/ui/Form/SelectOption";
+import Input from "../../../../components/ui/Form/Input";
+import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import {
   FolderKanban,
   GraduationCap,
@@ -10,8 +10,8 @@ import {
   UserCheck,
   X,
 } from "lucide-react";
-import ButtonAction from "../../../components/ui/ButtonAction";
-import { useLopHocContext, type CreateLopHocDto } from "./LopHocProvider";
+import ButtonAction from "../../../../components/ui/ButtonAction";
+import { useLopHocContext, type CreateLopHocDto } from "../LopHocProvider";
 
 interface CreateLopHocProps {
   isOpen: boolean;
@@ -39,7 +39,7 @@ const CreateLopHoc = ({ isOpen, onClose }: CreateLopHocProps) => {
   const khoaHocsOptions = [
     { value: "", label: "-- Chọn khóa học --" },
     ...(khoaHocs?.map((batch) => ({
-      value: batch.id,
+      value: batch.id!,
       label: `${batch.batchName} (${batch.batchCode})`,
     })) || []),
   ];

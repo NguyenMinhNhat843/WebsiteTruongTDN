@@ -1,4 +1,4 @@
-import type { DayOfWeek } from "../TienDoDaoTaoProvider";
+import type { EnumDayOfWeek } from "../../../../api/enum";
 import type { TienDoDaoTaoRow } from "./columnType";
 
 export const mapEnumDayOfWeek = (thu: string) => {
@@ -23,7 +23,7 @@ export const mapEnumDayOfWeek = (thu: string) => {
 };
 
 export const convertEnumDayOfWeekToString = (
-  dayOfWeek: DayOfWeek | undefined,
+  dayOfWeek: EnumDayOfWeek | undefined,
 ) => {
   switch (dayOfWeek) {
     case "MONDAY":
@@ -67,7 +67,7 @@ export const getWeeksInRange = (
     }
 
     weeks.push({
-      weekNumber: `Tuần ${weekIndex}`,
+      weekNumber: weekIndex,
       start: currentStart.toISOString(),
       end: currentEnd.toISOString(),
     });
@@ -82,12 +82,12 @@ export const getWeeksInRange = (
 export const calculateStudyDate = (
   startDateInWeek: Date | string,
   endDateInWeek: Date | string,
-  dayOfWeek: DayOfWeek,
+  dayOfWeek: EnumDayOfWeek,
 ): string | null => {
   if (!startDateInWeek || !dayOfWeek) return null;
 
   // Định nghĩa số ngày chênh lệch cần cộng thêm so với ngày đầu tuần (Thứ Hai = 0)
-  const dayOffsets: Record<DayOfWeek, number> = {
+  const dayOffsets: Record<EnumDayOfWeek, number> = {
     MONDAY: 0,
     TUESDAY: 1,
     WEDNESDAY: 2,

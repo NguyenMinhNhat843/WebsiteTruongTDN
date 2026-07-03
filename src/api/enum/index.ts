@@ -5,6 +5,7 @@ export type StudentStatusEnum =
 export const STUDENT_STATUS_MAP: Record<StudentStatusEnum, string> = {
   pending: "Chờ xét tuyển",
   approved: "Đã đậu / Chờ nhập học",
+  failed: "Không đậu",
   studying: "Đã nhập học / Đang học",
   suspended: "Bảo lưu",
   dropped: "Thôi học",
@@ -17,3 +18,6 @@ export const STUDENT_STATUS_TABS = Object.entries(STUDENT_STATUS_MAP).map(
     label,
   }),
 );
+
+export type EnumDayOfWeek =
+  components["schemas"]["ClassSubjectSessionDto"]["dayOfWeek"];

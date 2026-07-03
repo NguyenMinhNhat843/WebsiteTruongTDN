@@ -54,12 +54,6 @@ export const getTienDoDaoTaoColumns = (
       },
     },
     {
-      id: "tongGioMon",
-      header: "Tổng Giờ Môn",
-      size: 140,
-      cell: ({ row, table }) => <TotalHoursCell row={row} table={table} />,
-    },
-    {
       accessorKey: "giaoVienGiangDay",
       header: "Giáo Viên Giảng Dạy",
       size: 220,
@@ -104,6 +98,13 @@ export const getTienDoDaoTaoColumns = (
         );
       },
     },
+    {
+      id: "tongGioMon",
+      header: "Tổng Giờ Môn",
+      size: 140,
+      cell: ({ row, table }) => <TotalHoursCell row={row} table={table} />,
+    },
+
     {
       accessorKey: "phongHoc",
       header: "Phòng Học",

@@ -63,12 +63,6 @@ const navItems: NavItem[] = [
         roles: ["admin", "teacher"],
       },
       {
-        id: "tieu-chuan-tuyen-sinh",
-        label: "Tiêu chuẩn tuyển sinh",
-        href: "/admin/tieu-chuan-tuyen-sinh",
-        roles: ["admin", "teacher"],
-      },
-      {
         id: "tien-do-dao-tao",
         label: "Tiến độ đào tạo",
         href: "/admin/dao-tao/tien-do-dao-tao",
@@ -102,20 +96,6 @@ const navItems: NavItem[] = [
         id: "phan-lop",
         label: "Phân lớp",
         href: "/admin/hoc-sinh/phan-lop",
-      },
-    ],
-  },
-  // --- NHÓM TUYỂN SINH ---
-  {
-    id: "tuyen-sinh",
-    label: "Tuyển sinh",
-    icon: "📝",
-    badge: "Hot",
-    children: [
-      {
-        id: "dot-tuyen-sinh",
-        label: "Đợt tuyển sinh",
-        href: "/admin/tuyen-sinh/dot-tuyen-sinh",
       },
     ],
   },

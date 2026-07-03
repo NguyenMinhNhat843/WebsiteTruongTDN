@@ -54,7 +54,7 @@ const Inner = () => {
       maLop: LopHocDetail?.classCode || "N/A",
       nganhHoc: LopHocDetail?.major?.majorName || "N/A",
       giaoVien: LopHocDetail?.formTeacher?.fullName || "Chưa phân bổ",
-      siSo: studentsInLopHoc?.length || 0,
+      siSo: studentsInLopHoc?.total || 0,
       maxStudent: LopHocDetail?.maxStudents || 0,
       hocKyBatDau: LopHocDetail?.batch?.startYear,
       hocKyKetThuc: LopHocDetail?.batch?.endYear,

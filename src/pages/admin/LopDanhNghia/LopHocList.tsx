@@ -1,11 +1,11 @@
 import { CalendarDays, CheckCircle2, Plus, School } from "lucide-react";
 import PageShell from "../../../components/ui/PageShell";
-import TableLopHocList from "./TableLopHocList";
+import TableLopHocList from "./List/TableLopHocList";
 import { useNavigate } from "react-router-dom";
-import CreateLopHoc from "./CreateLopHoc";
+import CreateLopHoc from "./Create/CreateLopHoc";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import { useLopHocContext } from "./LopHocProvider";
-import SearchClassSection from "./components/SearchClassSection";
+import SearchClassSection from "./List/components/SearchClassSection";
 import { LoadingWrapper } from "../../../components/ui/LoadingWrapper";
 
 const LopHocList = () => {

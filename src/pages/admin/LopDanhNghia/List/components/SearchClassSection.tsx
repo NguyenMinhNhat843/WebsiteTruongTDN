@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Search } from "lucide-react";
-import { useLopHocContext } from "../LopHocProvider";
-import Input from "../../../../components/ui/Form/Input";
-import { SelectOption } from "../../../../components/ui/Form/SelectOption";
+import { useLopHocContext } from "../../LopHocProvider";
+import Input from "../../../../../components/ui/Form/Input";
+import { SelectOption } from "../../../../../components/ui/Form/SelectOption";
 
 const SearchClassSection = () => {
   const { filterClass, setFilterClass, nganhHocs, khoaHocs } =

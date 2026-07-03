@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useLopHocContext } from "./LopHocProvider";
+import { useLopHocContext } from "../LopHocProvider";
 
 const TableLopHocList = () => {
   const { LopHocList, isLoadingLopHocList } = useLopHocContext();
@@ -99,9 +99,7 @@ const TableLopHocList = () => {
                       <div className="flex flex-col">
                         {/* Giả định object formTeacher có trường fullName hoặc name dựa theo Staff DTO */}
                         <span className="font-medium text-slate-800">
-                          {lopHoc.formTeacher?.fullName ||
-                            lopHoc.formTeacher?.username ||
-                            "Giáo viên"}
+                          {lopHoc.formTeacher?.fullName || "-"}
                         </span>
                         <span className="text-[11px] text-slate-400 font-mono">
                           ID: {lopHoc.formTeacherId}

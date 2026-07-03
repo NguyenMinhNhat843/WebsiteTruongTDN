@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 import { Routes, Route } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
@@ -75,7 +75,7 @@ const LopHocLayout = lazy(
 );
 const LopHocList = lazy(() => import("./pages/admin/LopDanhNghia/LopHocList"));
 const LopHocOne = lazy(
-  () => import("./pages/admin/LopDanhNghia/LopHocOne/LopHocOne"),
+  () => import("./pages/admin/LopDanhNghia/LopHocOne/index"),
 );
 const NhapDiemPage = lazy(
   () =>
@@ -92,9 +92,6 @@ const KhoaList = lazy(() => import("./pages/admin/Khoa/KhoaList"));
 const KhoaDaoTao = lazy(() => import("./features/khoaHoc/KhoaDaoTaoIndex"));
 const NganhIndex = lazy(() => import("./features/Nganh/NganhIndex"));
 const MonHocIndex = lazy(() => import("./features/MonHoc/MonHocIndex"));
-const TieuChuanTuyenSinh = lazy(
-  () => import("./features/TieuChuanTuyenSinh/TieuChuanTuyenSinh"),
-);
 const HocSinhLayout = lazy(
   () => import("./pages/admin/HoSoHocSinh/HocSinhLayout"),
 );
@@ -109,10 +106,6 @@ const HoSoHocSinhOne = lazy(
 );
 const HocKyLayout = lazy(() => import("./pages/admin/HocKy/HocKyLayout"));
 const HocKyList = lazy(() => import("./pages/admin/HocKy/HocKyList"));
-const TuyenSinh = lazy(() => import("./pages/admin/TuyenSinh/LayoutTuyenSinh"));
-const DotTuyenSinhList = lazy(
-  () => import("./pages/admin/TuyenSinh/IndexTuyenSinh"),
-);
 const AdmissionDetail = lazy(
   () => import("./features/DotTuyenSinh/DotTuyenSinhOne"),
 );
@@ -308,12 +301,6 @@ function App() {
               {/* Môn học */}
               <Route path="mon-hoc" element={<MonHocIndex />} />
 
-              {/* Tiêu chuẩn tuyển sinh */}
-              <Route
-                path="tieu-chuan-tuyen-sinh"
-                element={<TieuChuanTuyenSinh />}
-              />
-
               {/* Công tác học sinh */}
               <Route element={<HocSinhLayout />}>
                 <Route
@@ -333,15 +320,6 @@ function App() {
               {/* Học kỳ */}
               <Route element={<HocKyLayout />}>
                 <Route path="hoc-ky" element={<HocKyList />} />
-              </Route>
-
-              {/* Tuyển sinh */}
-              <Route path="tuyen-sinh" element={<TuyenSinh />}>
-                <Route path="dot-tuyen-sinh" element={<DotTuyenSinhList />} />
-                <Route
-                  path="dot-tuyen-sinh/:id"
-                  element={<AdmissionDetail />}
-                />
               </Route>
 
               {/* Tài chính */}

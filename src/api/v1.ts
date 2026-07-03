@@ -656,26 +656,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/classes/assign-classes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Tự động chia lớp danh nghĩa cho sinh viên chính thức
-         * @description Gom các sinh viên có trạng thái "studying" chưa có lớp thuộc Ngành và Khóa học được chỉ định để thực hiện thuật toán chia đều lớp dựa trên sĩ số tối đa.
-         */
-        post: operations["ClassController_assignStudentsToClasses"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/classes/{id}": {
         parameters: {
             query?: never;
@@ -724,6 +704,23 @@ export interface paths {
         put?: never;
         /** Tạo mới môn học */
         post: operations["SubjectController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subjects/subjects-by-class-and-semester": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách môn học theo lớp và học kỳ */
+        get: operations["SubjectController_getSubjectsByClassAndSemester"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1186,15 +1183,36 @@ export interface paths {
         patch: operations["CreditPriceController_update"];
         trace?: never;
     };
-    "/schedule": {
+    "/class-subject-session": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Load study schedule của 1 lớp trong 1 kỳ */
-        get: operations["ScheduleController_loadStudySchedule"];
+        /** Get all class subject sessions matching query */
+        get: operations["ClassSubjectSessionController_findAll"];
+        put?: never;
+        /** Create new class subject session */
+        post: operations["ClassSubjectSessionController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/class-subject-session/plan-training": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Lấy kế hoạch đào tạo theo Lớp và Học kỳ
+         * @description Lấy toàn bộ môn học trong Chương trình khung của lớp tại học kỳ đó. Môn nào chưa được xếp lịch (chưa có CourseOffer) thì các trường lịch và giáo viên sẽ trả về null/mảng rỗng.
+         */
+        get: operations["ClassSubjectSessionController_getTrainingPlan"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1203,7 +1221,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/schedule/generate-schedule": {
+    "/class-subject-session/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get details of a class subject session */
+        get: operations["ClassSubjectSessionController_findOne"];
+        /** Update a class subject session */
+        put: operations["ClassSubjectSessionController_update"];
+        post?: never;
+        /** Delete a class subject session */
+        delete: operations["ClassSubjectSessionController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/class-subject-session/upsert": {
         parameters: {
             query?: never;
             header?: never;
@@ -1212,26 +1249,80 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Tạo lịch học cho 1 lớp, 1 học kỳ */
-        post: operations["ScheduleController_generateScheduleForAClass"];
+        /** Tạo hoặc Cập nhật kế hoạch đào tạo cho môn học */
+        post: operations["ClassSubjectSessionController_upsertTrainingPlan"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/schedule/export-excel": {
+    "/class-subject-schedule-detail": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Xuất excel tiến độ đào tạo của 1 lớp trong 1 học kỳ */
-        get: operations["ScheduleController_exportStudyScheduleToExcel"];
+        /** Get all schedule details matching query */
+        get: operations["ClassSubjectScheduleDetailController_findAll"];
+        put?: never;
+        /** Create new schedule detail */
+        post: operations["ClassSubjectScheduleDetailController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/class-subject-schedule-detail/load-schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Load study schedule of a class, teacher, or semester */
+        get: operations["ClassSubjectScheduleDetailController_loadStudySchedule"];
         put?: never;
         post?: never;
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/class-subject-schedule-detail/export-excel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export excel study schedule of a class in a semester */
+        get: operations["ClassSubjectScheduleDetailController_exportStudyScheduleToExcel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/class-subject-schedule-detail/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get details of a specific schedule detail */
+        get: operations["ClassSubjectScheduleDetailController_findOne"];
+        /** Update a specific schedule detail */
+        put: operations["ClassSubjectScheduleDetailController_update"];
+        post?: never;
+        /** Delete a specific schedule detail */
+        delete: operations["ClassSubjectScheduleDetailController_remove"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1306,23 +1397,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-offers": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy danh sách Môn học trong lớp học */
-        get: operations["ClassSubjectController_getAll"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/course-offers/{id}": {
         parameters: {
             query?: never;
@@ -1339,23 +1413,6 @@ export interface paths {
         head?: never;
         /** Cập nhật môn học trong lớp học */
         patch: operations["ClassSubjectController_updateClassSubject"];
-        trace?: never;
-    };
-    "/course-offers/previewpreviewGenerateSectionForClass": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Xem trước danh sách lớp học phần tự động */
-        get: operations["ClassSubjectController_previewGenerateSectionForClass"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
         trace?: never;
     };
     "/course-offers/gen-classSubject": {
@@ -1419,6 +1476,40 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["ClassSubjectController_exportExcel"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/course-offers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách Môn học trong lớp học */
+        get: operations["ClassSubjectController_getAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/course-offers/previewpreviewGenerateSectionForClass": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Xem trước danh sách lớp học phần tự động */
+        get: operations["ClassSubjectController_previewGenerateSectionForClass"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1745,7 +1836,7 @@ export interface components {
              * @default approved
              * @enum {string}
              */
-            status: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
             admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
         };
         DepartmentResponseDto: {
@@ -1884,42 +1975,20 @@ export interface components {
             /** @example 2024-01-01T12:00:00Z */
             lastLoginAt?: Record<string, never>;
         };
-        SubjectResponseDto: {
-            /** @example 1 */
+        ResponseSubjectDto: {
             id: number;
-            /** @example BAS1201 */
+            departmentId: number | null;
             subjectCode: string;
-            /** @example Lập trình hướng đối tượng */
             subjectName: string;
-            /** @example 3 */
             credits: number;
-            /** @example 30 */
-            theoryHours: number;
-            /** @example 15 */
+            description: string | null;
             practiceHours: number;
-            testHours?: number;
-            /** @example 1 */
-            deptId: number;
-            /** @example Mô tả môn học */
-            description?: string | null;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
+            testHours: number | null;
+            theoryHours: number;
+            /** Format: date-time */
             createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
+            /** Format: date-time */
             updatedAt: string;
-            /** @description Thông tin khoa quản lý */
-            department?: Record<string, never>;
-            /**
-             * @description Số lượng chương trình đào tạo có môn này
-             * @example 5
-             */
-            curriculumCount?: number;
-            departmentId?: Record<string, never>;
         };
         TeacherSubjectResponseDto: {
             /**
@@ -1946,7 +2015,7 @@ export interface components {
             /** @description Thông tin giáo viên (nếu có) */
             teacher?: components["schemas"]["StaffResponseDto"];
             /** @description Thông tin môn học (nếu có) */
-            subject?: components["schemas"]["SubjectResponseDto"];
+            subject?: components["schemas"]["ResponseSubjectDto"];
         };
         StaffResponseDto: {
             id?: number;
@@ -2074,7 +2143,7 @@ export interface components {
              * @default approved
              * @enum {string}
              */
-            status: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
             admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
             batch?: components["schemas"]["BatchResponseDto"] | null;
             class?: components["schemas"]["ClassResponseDto"] | null;
@@ -2082,7 +2151,7 @@ export interface components {
             documentProgress: components["schemas"]["DocumentProgressDto"];
         };
         /** @enum {string} */
-        StudentStatus: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+        StudentStatus: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         QualifiedStudentResponseDto: {
             id?: number;
             studentCode?: string;
@@ -2122,7 +2191,7 @@ export interface components {
              * @default approved
              * @enum {string}
              */
-            status: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
             admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
             batch?: components["schemas"]["BatchResponseDto"] | null;
             class?: components["schemas"]["ClassResponseDto"] | null;
@@ -2160,6 +2229,11 @@ export interface components {
         ApprovedStudentDto: {
             quote?: number;
         };
+        AssignStudentsToClassesDto: {
+            batchId?: number;
+            /** @default 40 */
+            studentsPerClass: number;
+        };
         UpdateStudentDto: {
             studentCode?: string;
             enrollmentDate?: string | null;
@@ -2196,12 +2270,7 @@ export interface components {
              * @default approved
              * @enum {string}
              */
-            status: "pending" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
-        };
-        AssignStudentsToClassesDto: {
-            batchId?: number;
-            /** @default 40 */
-            studentsPerClass: number;
+            status: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         };
         CreateUserDto: {
             /**
@@ -2489,7 +2558,7 @@ export interface components {
              */
             createdAt: string;
             /** @description Thông tin chi tiết môn học */
-            subject?: components["schemas"]["SubjectResponseDto"];
+            subject?: components["schemas"]["ResponseSubjectDto"];
             /** @description Thông tin chương trình khung */
             curriculum?: Record<string, never>;
         };
@@ -2872,80 +2941,30 @@ export interface components {
             status: string;
         };
         CreateSubjectDto: {
-            /**
-             * @description Mã môn học duy nhất
-             * @example BAS1201
-             */
+            departmentId: number | null;
             subjectCode: string;
-            /** @example Lập trình hướng đối tượng */
             subjectName: string;
-            /**
-             * @default 0
-             * @example 3
-             */
             credits: number;
-            /**
-             * @default 0
-             * @example 30
-             */
-            theoryHours: number;
-            /**
-             * @default 0
-             * @example 15
-             */
+            description: string | null;
             practiceHours: number;
-            description?: string | null;
-            testHours?: number | null;
-            departmentId?: number | null;
+            testHours: number | null;
+            theoryHours: number;
         };
         UpdateSubjectDto: {
-            /**
-             * @description Mã môn học duy nhất
-             * @example BAS1201
-             */
-            subjectCode?: string;
-            /** @example Lập trình hướng đối tượng */
-            subjectName?: string;
-            /**
-             * @default 0
-             * @example 3
-             */
-            credits: number;
-            /**
-             * @default 0
-             * @example 30
-             */
-            theoryHours: number;
-            /**
-             * @default 0
-             * @example 15
-             */
-            practiceHours: number;
-            description?: string | null;
-            testHours?: number | null;
             departmentId?: number | null;
+            subjectCode?: string;
+            subjectName?: string;
+            credits?: number;
+            description?: string | null;
+            practiceHours?: number;
+            testHours?: number | null;
+            theoryHours?: number;
         };
         CreateRoomDto: {
-            /**
-             * @description Mã phòng học duy nhất
-             * @example A1.102
-             */
+            building: Record<string, never>;
+            capacity: number | null;
             roomCode: string;
-            /**
-             * @description Loại phòng: theory (lý thuyết), practice (thực hành), hall (hội trường)
-             * @example theory
-             */
             type: string;
-            /**
-             * @description Sức chứa của phòng
-             * @example 45
-             */
-            capacity?: number;
-            /**
-             * @description Tòa nhà
-             * @example Tòa A
-             */
-            building?: string;
         };
         RoomResponseDto: {
             /** @example 1 */
@@ -2970,26 +2989,10 @@ export interface components {
             scheduleCount?: number;
         };
         UpdateRoomDto: {
-            /**
-             * @description Mã phòng học duy nhất
-             * @example A1.102
-             */
+            building?: Record<string, never>;
+            capacity?: number | null;
             roomCode?: string;
-            /**
-             * @description Loại phòng: theory (lý thuyết), practice (thực hành), hall (hội trường)
-             * @example theory
-             */
             type?: string;
-            /**
-             * @description Sức chứa của phòng
-             * @example 45
-             */
-            capacity?: number;
-            /**
-             * @description Tòa nhà
-             * @example Tòa A
-             */
-            building?: string;
         };
         CreateAdmissionItemCriterionDto: {
             /**
@@ -3533,7 +3536,29 @@ export interface components {
              */
             price?: number;
         };
-        ClassSubjectResponseDto: {
+        CreateClassSubjectSessionDto: {
+            classSubjectId: number;
+            roomId?: Record<string, never> | null;
+            countPeriod?: Record<string, never> | null;
+            /** @enum {string} */
+            dayOfWeek: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+            endPeriod: number;
+            shift: string;
+            startPeriod: number;
+        };
+        ClassSubjectSessionDto: {
+            id: number;
+            classSubjectId: number;
+            roomId?: Record<string, never> | null;
+            countPeriod?: Record<string, never> | null;
+            /** @enum {string} */
+            dayOfWeek: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+            endPeriod: number;
+            shift: string;
+            startPeriod: number;
+        };
+        Object: Record<string, never>;
+        ClassSubjectDto: {
             id: number;
             teacherId: number | null;
             classId: number | null;
@@ -3543,38 +3568,88 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            baseClass?: components["schemas"]["ClassResponseDto"];
-            teacher?: components["schemas"]["StaffResponseDto"];
-            semester?: components["schemas"]["SemesterResponseDto"];
-            subject?: components["schemas"]["SubjectResponseDto"];
         };
-        StudyScheduleResponseDto: {
+        SubjectDto: {
+            id: number;
+            departmentId: number | null;
+            subjectCode: string;
+            subjectName: string;
+            credits: number;
+            description: string | null;
+            practiceHours: number;
+            testHours: number | null;
+            theoryHours: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ClassSubjectScheduleDetailDto: {
+            id: number;
+            roomId?: Record<string, never> | null;
+            sessionId: number;
+            /** Format: date-time */
+            studyDate?: string | null;
+            weekNumber: number;
+        };
+        RoomDto: {
+            id: number;
+            building: Record<string, never>;
+            capacity: number | null;
+            roomCode: string;
+            type: string;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        ClassSubjectSessionWithRelationDto: {
             id: number;
             classSubjectId: number;
+            roomId?: Record<string, never> | null;
+            countPeriod?: Record<string, never> | null;
             /** @enum {string} */
             dayOfWeek: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
-            weekNumber: number;
             endPeriod: number;
-            roomId: number | null;
             shift: string;
             startPeriod: number;
-            countPeriod: number | null;
-            /** Format: date-time */
-            studyDate?: string | null;
-            classSubject?: components["schemas"]["ClassSubjectResponseDto"];
+            schedules: components["schemas"]["ClassSubjectScheduleDetailDto"][];
+            room: components["schemas"]["RoomDto"];
         };
-        CreateStudyScheduleDto: {
-            classSubjectId: number;
+        ResponseTrainingProgress: {
+            classSubject: components["schemas"]["ClassSubjectDto"];
+            subject: components["schemas"]["SubjectDto"];
+            teacher: components["schemas"]["StaffResponseDto"];
+            classSubjectSessions: components["schemas"]["ClassSubjectSessionWithRelationDto"][];
+        };
+        UpdateClassSubjectSessionDto: {
+            classSubjectId?: number;
+            roomId?: Record<string, never> | null;
+            countPeriod?: Record<string, never> | null;
             /** @enum {string} */
-            dayOfWeek: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
-            weekNumber: number;
-            endPeriod: number;
-            roomId: number | null;
-            shift: string;
-            startPeriod: number;
-            countPeriod: number | null;
+            dayOfWeek?: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+            endPeriod?: number;
+            shift?: string;
+            startPeriod?: number;
+        };
+        UpsertTrainingPlanDto: {
+            classId: number;
+            semesterId: number;
+            subjectId: number;
+            teacherId?: Record<string, never> | null;
+            sessions: components["schemas"]["ClassSubjectSessionWithRelationDto"][];
+        };
+        CreateClassSubjectScheduleDetailDto: {
+            roomId?: Record<string, never> | null;
+            sessionId: number;
             /** Format: date-time */
             studyDate?: string | null;
+            weekNumber: number;
+        };
+        UpdateClassSubjectScheduleDetailDto: {
+            roomId?: Record<string, never> | null;
+            sessionId?: number;
+            /** Format: date-time */
+            studyDate?: string | null;
+            weekNumber?: number;
         };
         CreatePostDto: {
             authorId: number;
@@ -3638,28 +3713,28 @@ export interface components {
             publicId: string;
         };
         updateClassSubjectDto: {
-            /**
-             * @description ID học kỳ muốn mở lớp
-             * @example 1
-             */
+            teacherId?: number | null;
+            classId?: number | null;
             semesterId?: number;
-            /**
-             * @description ID môn học
-             * @example 10
-             */
             subjectId?: number;
-            /**
-             * @description ID lớp danh nghĩa nòng cốt (nếu có)
-             * @example 5
-             */
-            classId?: number;
-            /**
-             * @description ID giảng viên phụ trách (nếu muốn chỉ định ngay)
-             * @example 15
-             */
-            teacherId?: number;
         };
-        CourseOfferDto: {
+        SearchClassSubjectDto: {
+            id?: number;
+            teacherId?: number | null;
+            classId?: number | null;
+            semesterId?: number;
+            subjectId?: number;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            majorId?: number;
+        };
+        ExportGradeTableDto: {
+            classSubjectIds: number[];
+            haveTongKetSheet?: boolean;
+        };
+        ClassSubjectResponseDto: {
             id: number;
             teacherId: number | null;
             classId: number | null;
@@ -3669,6 +3744,10 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            baseClass?: components["schemas"]["ClassResponseDto"];
+            teacher?: components["schemas"]["StaffResponseDto"];
+            semester?: components["schemas"]["SemesterResponseDto"];
+            subject?: components["schemas"]["ResponseSubjectDto"];
         };
         ResponsePreviewGenerateSectionForClass: {
             subjectId: number;
@@ -3676,16 +3755,6 @@ export interface components {
             subjectName: string;
             credits: number;
             isExisted: boolean;
-        };
-        SearchClassSubjectDto: {
-            /** @description ID của lớp hành chính (Lớp danh nghĩa) */
-            classId?: number;
-            /** @description ID của ngành học */
-            majorId?: number;
-            /** @description ID của học kỳ */
-            semesterId?: number;
-            /** @description ID của giảng viên phụ trách */
-            teacherId?: number;
         };
         CourseOfferRegisResponseDto: {
             id: number;
@@ -3815,17 +3884,13 @@ export interface components {
             /** @description Thông tin lớp hành chính liên kết */
             baseClass?: components["schemas"]["ClassResponseDto"] | null;
             /** @description Thông tin chi tiết của môn học */
-            subject?: components["schemas"]["SubjectResponseDto"] | null;
+            subject?: components["schemas"]["ResponseSubjectDto"] | null;
             /** @description Thông tin chi tiết của học kỳ */
             semester?: components["schemas"]["SemesterResponseDto"] | null;
             /** @description Thông tin chi tiết của giảng viên phụ trách */
             teacher?: components["schemas"]["StaffResponseDto"] | null;
             /** @description Danh sách các đơn đăng ký của sinh viên vào lớp học phần này */
             registrations?: components["schemas"]["CourseOfferRegisResponseDto"][] | null;
-        };
-        ExportGradeTableDto: {
-            classSubjectIds: number[];
-            haveTongKetSheet?: boolean;
         };
         UpdateCourseRegistrationDto: {
             id?: number;
@@ -5357,28 +5422,6 @@ export interface operations {
             };
         };
     };
-    ClassController_assignStudentsToClasses: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AssignStudentsToClassesDto"];
-            };
-        };
-        responses: {
-            /** @description Tự động xử lý phân phối lớp cho sinh viên thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     ClassController_findOne: {
         parameters: {
             query?: never;
@@ -5479,7 +5522,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SubjectResponseDto"][];
+                    "application/json": components["schemas"]["ResponseSubjectDto"][];
                 };
             };
         };
@@ -5502,7 +5545,29 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SubjectResponseDto"];
+                    "application/json": components["schemas"]["ResponseSubjectDto"];
+                };
+            };
+        };
+    };
+    SubjectController_getSubjectsByClassAndSemester: {
+        parameters: {
+            query: {
+                classId: number;
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseSubjectDto"][];
                 };
             };
         };
@@ -5523,7 +5588,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SubjectResponseDto"];
+                    "application/json": components["schemas"]["ResponseSubjectDto"];
                 };
             };
         };
@@ -5568,7 +5633,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SubjectResponseDto"];
+                    "application/json": components["schemas"]["ResponseSubjectDto"];
                 };
             };
         };
@@ -6533,14 +6598,17 @@ export interface operations {
             };
         };
     };
-    ScheduleController_loadStudySchedule: {
+    ClassSubjectSessionController_findAll: {
         parameters: {
             query?: {
-                classId?: number;
-                teacherId?: number;
-                semesterId?: number;
-                weekNumber?: number;
-                startDate?: string;
+                id?: number;
+                classSubjectId?: number;
+                roomId?: components["schemas"]["Object"];
+                countPeriod?: components["schemas"]["Object"];
+                dayOfWeek?: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+                endPeriod?: number;
+                shift?: string;
+                startPeriod?: number;
             };
             header?: never;
             path?: never;
@@ -6553,12 +6621,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StudyScheduleResponseDto"][];
+                    "application/json": components["schemas"]["ClassSubjectSessionDto"][];
                 };
             };
         };
     };
-    ScheduleController_generateScheduleForAClass: {
+    ClassSubjectSessionController_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -6567,11 +6635,120 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateStudyScheduleDto"][];
+                "application/json": components["schemas"]["CreateClassSubjectSessionDto"];
             };
         };
         responses: {
-            /** @description Tạo tiến độ đào tạo thành công */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassSubjectSessionDto"];
+                };
+            };
+        };
+    };
+    ClassSubjectSessionController_getTrainingPlan: {
+        parameters: {
+            query: {
+                classId: number;
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseTrainingProgress"][];
+                };
+            };
+        };
+    };
+    ClassSubjectSessionController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassSubjectSessionDto"];
+                };
+            };
+        };
+    };
+    ClassSubjectSessionController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateClassSubjectSessionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassSubjectSessionDto"];
+                };
+            };
+        };
+    };
+    ClassSubjectSessionController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ClassSubjectSessionController_upsertTrainingPlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertTrainingPlanDto"];
+            };
+        };
+        responses: {
             201: {
                 headers: {
                     [name: string]: unknown;
@@ -6580,11 +6757,14 @@ export interface operations {
             };
         };
     };
-    ScheduleController_exportStudyScheduleToExcel: {
+    ClassSubjectScheduleDetailController_findAll: {
         parameters: {
             query?: {
-                classId?: number;
-                semesterId?: number;
+                id?: number;
+                roomId?: components["schemas"]["Object"];
+                sessionId?: number;
+                studyDate?: string | null;
+                weekNumber?: number;
             };
             header?: never;
             path?: never;
@@ -6592,14 +6772,143 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Xuất excel thành công. Trả về file nhị phân (stream). */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": string;
+                    "application/json": components["schemas"]["ClassSubjectScheduleDetailDto"][];
                 };
+            };
+        };
+    };
+    ClassSubjectScheduleDetailController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateClassSubjectScheduleDetailDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassSubjectScheduleDetailDto"];
+                };
+            };
+        };
+    };
+    ClassSubjectScheduleDetailController_loadStudySchedule: {
+        parameters: {
+            query: {
+                classId: string;
+                semesterId: string;
+                teacherId: string;
+                weekNumber: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ClassSubjectScheduleDetailController_exportStudyScheduleToExcel: {
+        parameters: {
+            query: {
+                classId: string;
+                semesterId: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ClassSubjectScheduleDetailController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassSubjectScheduleDetailDto"];
+                };
+            };
+        };
+    };
+    ClassSubjectScheduleDetailController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateClassSubjectScheduleDetailDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassSubjectScheduleDetailDto"];
+                };
+            };
+        };
+    };
+    ClassSubjectScheduleDetailController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -6755,34 +7064,6 @@ export interface operations {
             };
         };
     };
-    ClassSubjectController_getAll: {
-        parameters: {
-            query?: {
-                /** @description ID của lớp hành chính (Lớp danh nghĩa) */
-                classId?: number;
-                /** @description ID của ngành học */
-                majorId?: number;
-                /** @description ID của học kỳ */
-                semesterId?: number;
-                /** @description ID của giảng viên phụ trách */
-                teacherId?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ClassSubjectResponseDto"][];
-                };
-            };
-        };
-    };
     ClassSubjectController_getDetail: {
         parameters: {
             query?: never;
@@ -6824,30 +7105,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CourseOfferDto"];
-                };
-            };
-        };
-    };
-    ClassSubjectController_previewGenerateSectionForClass: {
-        parameters: {
-            query: {
-                classId: number;
-                semesterId: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Lấy dữ liệu cấu trúc xem trước thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResponsePreviewGenerateSectionForClass"][];
+                    "application/json": components["schemas"]["ClassSubjectDto"];
                 };
             };
         };
@@ -6930,6 +7188,57 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    ClassSubjectController_getAll: {
+        parameters: {
+            query?: {
+                id?: number;
+                teacherId?: number | null;
+                classId?: number | null;
+                semesterId?: number;
+                subjectId?: number;
+                createdAt?: string;
+                updatedAt?: string;
+                majorId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClassSubjectResponseDto"][];
+                };
+            };
+        };
+    };
+    ClassSubjectController_previewGenerateSectionForClass: {
+        parameters: {
+            query: {
+                classId: number;
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lấy dữ liệu cấu trúc xem trước thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponsePreviewGenerateSectionForClass"][];
+                };
             };
         };
     };

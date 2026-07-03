@@ -1,12 +1,10 @@
 import { $api } from "../../../api/client";
-import { createContextProvider } from "../../../util/createContextProvider";
 import type { components } from "../../../api/v1";
+import { createContextProvider } from "../../../util/createContextProvider";
 import { useSearchParams } from "react-router-dom";
 
-export type CreateScheduleDto = components["schemas"]["CreateStudyScheduleDto"];
-export type DayOfWeek = CreateScheduleDto["dayOfWeek"];
-export type StudyScheduleResponseDto =
-  components["schemas"]["StudyScheduleResponseDto"];
+export type TrainingProgressDto =
+  components["schemas"]["ResponseTrainingProgress"];
 
 export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
   createContextProvider(() => {
@@ -38,7 +36,7 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
     const { data: classSubjects, isLoading: isLoadingClassSubjects } =
       $api.useQuery(
         "get",
-        "/course-offers",
+        "/subjects/subjects-by-class-and-semester",
         {
           params: {
             query: {
@@ -53,36 +51,17 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
       );
 
     /**
-     * Tạo tiến độ đào tạo
+     * Load bảng kế hoạch đào tạo
      */
-    const { mutate: createStudySchedule, isPending: isCreatingStudySchedule } =
-      $api.useMutation("post", "/schedule/generate-schedule");
-
-    /**
-     * Load tiến độ đào tạo
-     */
-    const { data: studySchedule, isLoading: isLoadingStudySchedule } =
-      $api.useQuery(
-        "get",
-        "/schedule",
-        {
-          params: {
-            query: {
-              semesterId: semesterId!,
-              classId: classId!,
-            },
+    const { data: trainingPlan, isLoading: isLoadingTrainingPlan } =
+      $api.useQuery("get", "/class-subject-session/plan-training", {
+        params: {
+          query: {
+            semesterId: semesterId!,
+            classId: classId!,
           },
         },
-        {
-          enabled: !!semesterId && !!classId,
-        },
-      );
-
-    /**
-     * Bổ nhiệm giáo viên cho 1 môn của 1 lớp (API update classSubject)
-     */
-    const { mutate: assignTeacher, isPending: isAssigningTeacher } =
-      $api.useMutation("patch", "/course-offers/{id}");
+      });
 
     /**
      * Load danh sách Giáo viên
@@ -99,14 +78,6 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
       },
     );
 
-    /**
-     * Xuất excel tiến độ đào tạo của 1 lớp trong 1 học kỳ
-     */
-    const {
-      mutate: exportStudyScheduleToExcel,
-      isPending: isExportingStudySchedule,
-    } = $api.useMutation("get", "/schedule/export-excel");
-
     return {
       giaoViens,
       isLoadingGiaoViens,
@@ -114,22 +85,14 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
       isLoadingClasses,
       classSubjects,
       isLoadingClassSubjects,
-      createStudySchedule,
-      isCreatingStudySchedule,
-      studySchedule,
-      isLoadingStudySchedule,
       teachers,
       isLoadingTeachers,
-      assignTeacher,
-      isAssigningTeacher,
-      exportStudyScheduleToExcel,
-      isExportingStudySchedule,
+      trainingPlan,
+      isLoadingTrainingPlan,
 
       //state
       semesterId,
-      // setSemesterId,
       classId,
-      // setClassId,
       searchParams,
       setSearchParams,
     };

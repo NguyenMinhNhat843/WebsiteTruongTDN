@@ -22,7 +22,7 @@ const TableDanhSachHocSinh = () => {
 
   // 1. Chuẩn hóa dữ liệu danh sách học sinh cho TanStack Table [cite: 14]
   const dataDanhSachHocSinh = useMemo(() => {
-    return (studentsInLopHoc || []).map((student, index) => ({
+    return (studentsInLopHoc?.students || []).map((student, index) => ({
       stt: index + 1,
       id: student.id,
       tenHocSinh: student.fullName || "Chưa cập nhật",
