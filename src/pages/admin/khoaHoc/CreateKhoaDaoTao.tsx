@@ -12,9 +12,9 @@ import {
   useKhoaDaoTaoContext,
   type createKhoaDaoTaoDTO,
 } from "./KhoaHocProvider";
-import Input from "../../components/ui/Form/Input";
-import { SelectOption } from "../../components/ui/Form/SelectOption";
-import ButtonAction from "../../components/ui/ButtonAction";
+import Input from "../../../components/ui/Form/Input";
+import { SelectOption } from "../../../components/ui/Form/SelectOption";
+import ButtonAction from "../../../components/ui/ButtonAction";
 
 interface Props {
   isOpen: boolean;

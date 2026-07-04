@@ -70,6 +70,18 @@ const navItems: NavItem[] = [
         roles: ["admin", "teacher"],
       },
       {
+        id: "diem-ren-luyen",
+        label: "Điểm rèn luyện",
+        href: "/admin/diem-ren-luyen",
+        roles: ["admin", "teacher"],
+      },
+      {
+        id: "tieu-chi-danh-gia-diem-ren-luyen",
+        label: "Tiêu chí đánh giá điểm rèn luyện",
+        href: "/admin/diem-ren-luyen/tieu-chi-danh-gia",
+        roles: ["admin", "teacher"],
+      },
+      {
         id: "tien-do-dao-tao",
         label: "Tiến độ đào tạo",
         href: "/admin/dao-tao/tien-do-dao-tao",

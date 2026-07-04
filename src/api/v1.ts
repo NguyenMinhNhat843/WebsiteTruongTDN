@@ -478,23 +478,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/batches/{id}/subjects": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy danh sách môn học của một khóa đào tạo theo học kỳ */
-        get: operations["BatchController_getBatchSubjectsBySemester"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/batches/{id}": {
         parameters: {
             query?: never;
@@ -781,142 +764,6 @@ export interface paths {
         head?: never;
         /** Cập nhật thông tin phòng học */
         patch: operations["RoomController_update"];
-        trace?: never;
-    };
-    "/admissions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy danh sách tất cả các đợt tuyển sinh */
-        get: operations["AdmissionController_findAll"];
-        put?: never;
-        /** Tạo đợt tuyển sinh mới kèm danh mục ngành/khóa */
-        post: operations["AdmissionController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admissions/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy chi tiết một đợt tuyển sinh theo ID */
-        get: operations["AdmissionController_findOne"];
-        put?: never;
-        post?: never;
-        /** Xóa một đợt tuyển sinh theo ID */
-        delete: operations["AdmissionController_deleteAdmissionById"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admissions/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Chốt đợt xét tuyển */
-        post: operations["AdmissionController_approveAdmissionBatch"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/criteria": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Lấy danh sách tiêu chí
-         * @description Hỗ trợ tìm kiếm theo tên và phân trang.
-         */
-        get: operations["CriterionController_findAll"];
-        put?: never;
-        /**
-         * Tạo mới tiêu chí tuyển sinh
-         * @description Tạo một tiêu chí mẫu (Ví dụ: IELTS, Điểm Toán) để dùng chung cho các ngành học.
-         */
-        post: operations["CriterionController_create"];
-        /**
-         * Xóa tiêu chí
-         * @description Xóa một tiêu chí theo ID.
-         */
-        delete: operations["CriterionController_deleteCriteria"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/applications": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ApplicationController_findAll"];
-        put?: never;
-        post: operations["ApplicationController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/applications/stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Thống kê số lượng đơn theo trạng thái */
-        get: operations["ApplicationController_getStats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/applications/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy chi tiết một đơn ứng tuyển */
-        get: operations["ApplicationController_findOne"];
-        put?: never;
-        post?: never;
-        /** Xóa đơn ứng tuyển */
-        delete: operations["ApplicationController_remove"];
-        options?: never;
-        head?: never;
-        /**
-         * Cập nhật đơn ứng tuyển
-         * @description Dùng để sửa thông tin cá nhân hoặc thay đổi trạng thái hồ sơ (Duyệt/Loại).
-         */
-        patch: operations["ApplicationController_update"];
         trace?: never;
     };
     "/tuition-fee/delete-all": {
@@ -1778,6 +1625,144 @@ export interface paths {
         patch: operations["AdmissionProfileController_update"];
         trace?: never;
     };
+    "/assessment/periods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách các đợt đánh giá */
+        get: operations["AssessmentController_getPeriods"];
+        put?: never;
+        /** Phòng CTHS: Khởi tạo đợt đánh giá mới */
+        post: operations["AssessmentController_createPeriod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assessment/criteria": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tiêu chí chấm điểm chuẩn */
+        get: operations["AssessmentController_getCriteria"];
+        put?: never;
+        /** Phòng CTHS: Tạo tiêu chí chấm điểm chuẩn */
+        post: operations["AssessmentController_createCriterion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assessment/periods/{id}/freeze": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Phòng CTHS: Khóa đợt đánh giá & công bố kết quả (Tính toán xếp loại tự động) */
+        post: operations["AssessmentController_freezePeriod"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assessment/student/my-assessment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Học sinh: Lấy phiếu điểm rèn luyện cá nhân trong đợt */
+        get: operations["AssessmentController_getMyAssessment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assessment/student/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Học sinh: Tự đánh giá và nộp phiếu rèn luyện (Trạng thái chuyển sang PENDING) */
+        post: operations["AssessmentController_submitAssessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assessment/teacher/class-students": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** GVCN: Xem danh sách học sinh của lớp mình chủ nhiệm kèm trạng thái phiếu rèn luyện */
+        get: operations["AssessmentController_getClassStudentsAssessments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assessment/teacher/student-assessment/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** GVCN: Xem chi tiết phiếu rèn luyện của một học sinh trong lớp */
+        get: operations["AssessmentController_getStudentAssessmentForTeacher"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assessment/teacher/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** GVCN: Chấm điểm điều chỉnh, nhận xét và Duyệt phiếu rèn luyện (APPROVED) */
+        post: operations["AssessmentController_approveAssessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1911,49 +1896,20 @@ export interface components {
             description?: Record<string, never>;
         };
         BatchResponseDto: {
-            /**
-             * @description Mã khóa học viết tắt
-             * @example K1
-             */
+            id: number;
             batchCode: string;
-            /**
-             * @description Tên đầy đủ của khóa
-             * @example Khóa 1
-             */
             batchName: string;
-            /**
-             * @description Năm bắt đầu khóa học
-             * @example 2026
-             */
-            startYear: number;
-            /**
-             * @description Năm kết thúc dự kiến
-             * @example 2030
-             */
-            endYear: number;
-            /** @example Khóa đào tạo kỹ sư CNTT */
-            description?: string;
-            /**
-             * @description ID ngành học mà khóa này thuộc về
-             * @example 1
-             */
             majorId: number;
-            /**
-             * @description ID chương trình đào tạo nếu có
-             * @example 1
-             */
-            curriculumId?: number;
-            /**
-             * @description Trạng thái: ADMISSION, ACTIVE, GRADUATED
-             * @default ACTIVE
-             * @example ADMISSION
-             */
+            curriculumId?: number | null;
+            description?: string | null;
+            endTerm?: number | null;
+            endYear: number;
+            startYear: number;
             status: string;
             /** Format: date-time */
-            createdAt?: string;
-            id?: number;
+            createdAt: string;
             /** Format: date-time */
-            updatedAt?: string;
+            updatedAt: string;
             major: components["schemas"]["MajorResponseDto"] | null;
         };
         UserResponseDto: {
@@ -2055,47 +2011,23 @@ export interface components {
             teacherSubjects?: components["schemas"]["TeacherSubjectResponseDto"][];
         };
         ClassResponseDto: {
-            /** @example 1 */
             id: number;
-            /** @example CNTT17A */
             classCode: string;
-            /** @example Lớp Công nghệ thông tin 17A */
             className: string;
-            /** @example 1 */
             majorId: number;
-            /** @example 2024 */
             courseYear: number;
-            /** @example 1 */
-            formTeacherId?: number | null;
-            /** @example 40 */
+            formTeacherId?: number;
             maxStudents: number;
             /** @example active */
             status: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
+            /** Format: date-time */
             createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
+            /** Format: date-time */
             updatedAt: string;
-            /** @example 1 */
-            batchId?: number | null;
-            /**
-             * @description Số lượng sinh viên hiện tại
-             * @example 35
-             */
+            batchId?: Record<string, never>;
             currentSize?: number;
-            /** @description Thông tin ngành đào tạo */
             major?: components["schemas"]["MajorResponseDto"];
-            /** @description Thông tin giáo viên chủ nhiệm */
             formTeacher?: components["schemas"]["StaffResponseDto"];
-            /**
-             * @description Số lượng sinh viên hiện tại
-             * @example 35
-             */
             studentCount?: number;
             /** @description Thông tin khóa học (batch) */
             batch?: components["schemas"]["BatchResponseDto"];
@@ -2210,17 +2142,9 @@ export interface components {
             fullName: string;
         };
         BatchSimpleDto: {
-            /**
-             * @description Mã khóa học viết tắt
-             * @example K1
-             */
+            id: number;
             batchCode: string;
-            /**
-             * @description Tên đầy đủ của khóa
-             * @example Khóa 1
-             */
             batchName: string;
-            id?: number;
         };
         GetEligibleStudentsDtoForAssignmentResponse: {
             student: components["schemas"]["StudentSimpleInfo"];
@@ -2495,115 +2419,34 @@ export interface components {
             description?: string;
         };
         CreateBatchDto: {
-            /**
-             * @description Mã khóa học viết tắt
-             * @example K1
-             */
+            id: number;
             batchCode: string;
-            /**
-             * @description Tên đầy đủ của khóa
-             * @example Khóa 1
-             */
             batchName: string;
-            /**
-             * @description Năm bắt đầu khóa học
-             * @example 2026
-             */
-            startYear: number;
-            /**
-             * @description Năm kết thúc dự kiến
-             * @example 2030
-             */
-            endYear: number;
-            /** @example Khóa đào tạo kỹ sư CNTT */
-            description?: string;
-            /**
-             * @description ID ngành học mà khóa này thuộc về
-             * @example 1
-             */
             majorId: number;
-            /**
-             * @description ID chương trình đào tạo nếu có
-             * @example 1
-             */
-            curriculumId?: number;
-            /**
-             * @description Trạng thái: ADMISSION, ACTIVE, GRADUATED
-             * @default ACTIVE
-             * @example ADMISSION
-             */
+            curriculumId?: number | null;
+            description?: string | null;
+            endTerm?: number | null;
+            endYear: number;
+            startYear: number;
             status: string;
             /** Format: date-time */
-            createdAt?: string;
-            id?: number;
-            /** Format: date-time */
-            updatedAt?: string;
-        };
-        CurriculumSubjectResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example 1 */
-            curriculumId: number;
-            /** @example 1 */
-            subjectId: number;
-            /** @example 1 */
-            semesterNumber: number;
-            /** @example true */
-            isMandatory: boolean;
-            /** @example 5 */
-            minGrade: number;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
             createdAt: string;
-            /** @description Thông tin chi tiết môn học */
-            subject?: components["schemas"]["ResponseSubjectDto"];
-            /** @description Thông tin chương trình khung */
-            curriculum?: Record<string, never>;
+            /** Format: date-time */
+            updatedAt: string;
         };
         UpdateBatchDto: {
-            /**
-             * @description Mã khóa học viết tắt
-             * @example K1
-             */
+            id?: number;
             batchCode?: string;
-            /**
-             * @description Tên đầy đủ của khóa
-             * @example Khóa 1
-             */
             batchName?: string;
-            /**
-             * @description Năm bắt đầu khóa học
-             * @example 2026
-             */
-            startYear?: number;
-            /**
-             * @description Năm kết thúc dự kiến
-             * @example 2030
-             */
-            endYear?: number;
-            /** @example Khóa đào tạo kỹ sư CNTT */
-            description?: string;
-            /**
-             * @description ID ngành học mà khóa này thuộc về
-             * @example 1
-             */
             majorId?: number;
-            /**
-             * @description ID chương trình đào tạo nếu có
-             * @example 1
-             */
-            curriculumId?: number;
-            /**
-             * @description Trạng thái: ADMISSION, ACTIVE, GRADUATED
-             * @default ACTIVE
-             * @example ADMISSION
-             */
-            status: string;
+            curriculumId?: number | null;
+            description?: string | null;
+            endTerm?: number | null;
+            endYear?: number;
+            startYear?: number;
+            status?: string;
             /** Format: date-time */
             createdAt?: string;
-            id?: number;
             /** Format: date-time */
             updatedAt?: string;
         };
@@ -2675,6 +2518,29 @@ export interface components {
             isActive: boolean;
             /** @description Danh sách các môn học thuộc chương trình khung */
             curriculumSubjects: components["schemas"]["CreateCurriculumSubjectDto"][];
+        };
+        CurriculumSubjectResponseDto: {
+            /** @example 1 */
+            id: number;
+            /** @example 1 */
+            curriculumId: number;
+            /** @example 1 */
+            subjectId: number;
+            /** @example 1 */
+            semesterNumber: number;
+            /** @example true */
+            isMandatory: boolean;
+            /** @example 5 */
+            minGrade: number;
+            /**
+             * Format: date-time
+             * @example 2024-04-25T10:00:00Z
+             */
+            createdAt: string;
+            /** @description Thông tin chi tiết môn học */
+            subject?: components["schemas"]["ResponseSubjectDto"];
+            /** @description Thông tin chương trình khung */
+            curriculum?: Record<string, never>;
         };
         CurriculumResponseDto: {
             /** @example 1 */
@@ -2887,56 +2753,24 @@ export interface components {
             isCurrent: boolean;
         };
         CreateClassDto: {
-            /**
-             * @description Mã lớp học duy nhất
-             * @example CNTT17A
-             */
             classCode: string;
-            /** @example Lớp Công nghệ thông tin 17A */
             className: string;
-            /**
-             * @description ID của ngành đào tạo
-             * @example 1
-             */
             majorId: number;
-            /** @description Số lượng sinh viên hiện tại trong lớp */
-            currentSize?: number;
-            /** @description ID giáo viên chủ nhiệm */
-            formTeacherId?: number;
-            /** @description ID của Khóa đào tạo (batchID) */
-            batchId?: number;
-            /**
-             * @default 40
-             * @example 40
-             */
+            batchId?: number | null;
+            formTeacherId?: number | null;
+            currentSize: number;
             maxStudents: number;
             /** @default active */
             status: string;
         };
         UpdateClassDto: {
-            /**
-             * @description Mã lớp học duy nhất
-             * @example CNTT17A
-             */
             classCode?: string;
-            /** @example Lớp Công nghệ thông tin 17A */
             className?: string;
-            /**
-             * @description ID của ngành đào tạo
-             * @example 1
-             */
             majorId?: number;
-            /** @description Số lượng sinh viên hiện tại trong lớp */
+            batchId?: number | null;
+            formTeacherId?: number | null;
             currentSize?: number;
-            /** @description ID giáo viên chủ nhiệm */
-            formTeacherId?: number;
-            /** @description ID của Khóa đào tạo (batchID) */
-            batchId?: number;
-            /**
-             * @default 40
-             * @example 40
-             */
-            maxStudents: number;
+            maxStudents?: number;
             /** @default active */
             status: string;
         };
@@ -2992,308 +2826,6 @@ export interface components {
              * @enum {string}
              */
             type?: "Lý thuyết" | "Thực hành" | "Phòng Lab/Máy tính" | "Xưởng thực tập" | "Phòng chức năng";
-        };
-        CreateAdmissionItemCriterionDto: {
-            /**
-             * @description ID của tiêu chí mẫu (Criterion ID)
-             * @example 1
-             */
-            criterionId: number;
-            /**
-             * @description Giá trị tối thiểu yêu cầu
-             * @example 6.5
-             */
-            minValue?: number;
-            /**
-             * @description Tiêu chí này có bắt buộc không?
-             * @example true
-             */
-            isRequired: boolean;
-            /**
-             * @description Hệ số/Trọng số của tiêu chí
-             * @example 1.5
-             */
-            weight?: number;
-        };
-        CreateAdmissionItemDto: {
-            /**
-             * @description ID của ngành học
-             * @example 1
-             */
-            majorId: number;
-            /**
-             * @description Tên khóa/bậc tuyển sinh
-             * @example K18
-             */
-            batchName: string;
-            /**
-             * @description Chỉ tiêu số lượng sinh viên
-             * @example 100
-             */
-            quota: number;
-            /** @description Danh sách các tiêu chí áp dụng cho ngành này */
-            criteria: components["schemas"]["CreateAdmissionItemCriterionDto"][];
-        };
-        CreateAdmissionDto: {
-            /**
-             * @description Tên đợt tuyển sinh
-             * @example Tuyển sinh Đợt 1 - 2026
-             */
-            name: string;
-            /**
-             * @description Ngày bắt đầu nhận hồ sơ
-             * @example 2026-05-01T00:00:00Z
-             */
-            startDate: string;
-            /**
-             * @description Ngày kết thúc nhận hồ sơ
-             * @example 2026-08-31T23:59:59Z
-             */
-            endDate: string;
-            /**
-             * @description Trạng thái đợt tuyển sinh
-             * @default OPEN
-             * @enum {string}
-             */
-            status: "OPEN" | "CLOSE" | "ARCHIVED";
-            /** @description Danh sách các ngành và chỉ tiêu trong đợt này */
-            items: components["schemas"]["CreateAdmissionItemDto"][];
-        };
-        CriterionResponseDto: {
-            /**
-             * @description ID duy nhất của tiêu chí
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description Tên của tiêu chí tuyển sinh
-             * @example IELTS
-             */
-            criterionName: string;
-            /**
-             * @description Kiểu dữ liệu của tiêu chí
-             * @example NUMBER
-             * @enum {string}
-             */
-            type: "NUMBER" | "STRING" | "BOOLEAN";
-            /** @example Chứng chỉ tiếng Anh quốc tế */
-            description?: Record<string, never> | null;
-        };
-        AdmissionItemCriterionResponseDto: {
-            /**
-             * @description ID của mục tuyển sinh
-             * @example 10
-             */
-            admissionItemId: number;
-            /**
-             * @description ID của tiêu chí
-             * @example 1
-             */
-            criterionId: number;
-            /**
-             * @description Giá trị tối thiểu yêu cầu (ví dụ: điểm sàn)
-             * @example 8
-             */
-            minValue?: Record<string, never> | null;
-            /**
-             * @description Tiêu chí này có bắt buộc hay không
-             * @default true
-             * @example true
-             */
-            isRequired: boolean;
-            /**
-             * @description Trọng số/Hệ số của tiêu chí (ví dụ: Toán hệ số 2)
-             * @example 2
-             */
-            weight?: Record<string, never> | null;
-            criterion: components["schemas"]["CriterionResponseDto"];
-        };
-        AdmissionItemResponseDto: {
-            /**
-             * @description ID chi tiết tuyển sinh
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description ID đợt tuyển sinh tổng quát
-             * @example 1
-             */
-            admissionId: number;
-            /**
-             * @description ID ngành học
-             * @example 1
-             */
-            majorId: number;
-            /**
-             * @description Khóa tuyển sinh (Tự động tính từ Major)
-             * @example K18
-             */
-            batchName: string;
-            /**
-             * @description Chỉ tiêu số lượng sinh viên cho ngành này
-             * @example 50
-             */
-            quota: number;
-            major: components["schemas"]["MajorResponseDto"];
-            /** @description Danh sách các điều kiện/tiêu chí để trúng tuyển ngành này */
-            criteria: components["schemas"]["AdmissionItemCriterionResponseDto"][];
-        };
-        AdmissionResponseDto: {
-            /**
-             * @description ID đợt tuyển sinh
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description Tên hiển thị của đợt tuyển sinh
-             * @example Tuyển sinh Đợt 1 - 2026
-             */
-            name: string;
-            /**
-             * Format: date-time
-             * @description Ngày bắt đầu nhận hồ sơ
-             * @example 2026-01-01T00:00:00Z
-             */
-            startDate: string;
-            /**
-             * Format: date-time
-             * @description Ngày kết thúc đợt tuyển sinh
-             * @example 2026-03-31T23:59:59Z
-             */
-            endDate: string;
-            /**
-             * @description Trạng thái hiện tại của đợt tuyển sinh
-             * @example OPEN
-             * @enum {string}
-             */
-            status: "OPEN" | "CLOSE" | "ARCHIVED";
-            /** @description Danh sách các ngành và chỉ tiêu tương ứng */
-            items?: components["schemas"]["AdmissionItemResponseDto"][];
-        };
-        ApproveAdmissionDto: {
-            /**
-             * @description ID của đợt xét tuyển cần duyệt
-             * @example 1
-             */
-            admissionId: number;
-        };
-        CreateCriterionDto: {
-            /**
-             * @description Tên của tiêu chí tuyển sinh
-             * @example Điểm IELTS
-             */
-            criterionName: string;
-            /**
-             * @description Loại dữ liệu của tiêu chí
-             * @example NUMBER
-             * @enum {string}
-             */
-            type: "NUMBER" | "STRING" | "BOOLEAN";
-            /**
-             * @description Mô tả chi tiết về tiêu chí
-             * @example Yêu cầu chứng chỉ IELTS quốc tế còn thời hạn
-             */
-            description?: string;
-        };
-        DeleteCriterionDto: {
-            /**
-             * @description ID của tiêu chí cần xóa
-             * @example 1
-             */
-            id: number;
-        };
-        CreateApplyApplicationDto: {
-            /** @example Nguyễn Văn A */
-            fullName: string;
-            /** @example nguyenvana@gmail.com */
-            email: string;
-            /** @example 0905123456 */
-            phone: string;
-            /**
-             * @description ID của AdmissionItem (Ngành muốn thi vào)
-             * @example 10
-             */
-            admissionItemId: number;
-            admissionId?: number;
-            /**
-             * @description Dữ liệu điểm số/chứng chỉ dạng JSON
-             * @example {
-             *       "math_score": 8.5,
-             *       "english_score": 7,
-             *       "ielts": 6.5
-             *     }
-             */
-            rawdata: Record<string, never>;
-        };
-        ApplicationResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example Nguyễn Văn A */
-            fullName: string;
-            /** @example nguyenvana@gmail.com */
-            email: string;
-            /** @example 0905123456 */
-            phone: string;
-            /**
-             * @description Dữ liệu JSON lưu điểm số
-             * @example {
-             *       "math_score": 8.5,
-             *       "ielts": 6.5
-             *     }
-             */
-            rawdata: Record<string, never> | null;
-            /**
-             * @example PENDING
-             * @enum {string}
-             */
-            status: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED";
-            /**
-             * Format: date-time
-             * @example 2024-03-20T08:00:00.000Z
-             */
-            createdAt: string;
-            admissionItem: components["schemas"]["AdmissionItemResponseDto"];
-        };
-        ApplicationStatsResponseDto: {
-            /**
-             * @example PENDING
-             * @enum {string}
-             */
-            status: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED";
-            /**
-             * @description Số lượng đơn ở trạng thái này
-             * @example 15
-             */
-            _count: Record<string, never>;
-        };
-        UpdateApplicationDto: {
-            /** @example Nguyễn Văn A */
-            fullName?: string;
-            /** @example nguyenvana@gmail.com */
-            email?: string;
-            /** @example 0905123456 */
-            phone?: string;
-            /**
-             * @description ID của AdmissionItem (Ngành muốn thi vào)
-             * @example 10
-             */
-            admissionItemId?: number;
-            admissionId?: number;
-            /**
-             * @description Dữ liệu điểm số/chứng chỉ dạng JSON
-             * @example {
-             *       "math_score": 8.5,
-             *       "english_score": 7,
-             *       "ielts": 6.5
-             *     }
-             */
-            rawdata?: Record<string, never>;
-            /**
-             * @description Trạng thái hồ sơ: PENDING, QUALIFIED, ADMITTED, REJECTED, ENROLLED
-             * @example ADMITTED
-             * @enum {string}
-             */
-            status?: "PENDING" | "QUALIFIED" | "ADMITTED" | "REJECTED";
         };
         TuitionPreviewResponseDto: {
             /**
@@ -4018,6 +3550,124 @@ export interface components {
             gpa7?: number;
             gpa8?: number;
             gpa9?: number;
+        };
+        CreatePeriodDto: {
+            /**
+             * @description Tên đợt đánh giá
+             * @example HK1-2026-2027
+             */
+            name: string;
+            semesterId: number;
+        };
+        CreateCriterionDto: {
+            /**
+             * @description Nội dung tiêu chí
+             * @example Ý thức học tập (Đi học đầy đủ, đúng giờ)
+             */
+            title: string;
+            /**
+             * @description Điểm tối đa của tiêu chí này
+             * @example 30
+             */
+            maxScore: number;
+            /**
+             * @description Thứ tự sắp xếp hiển thị
+             * @example 1
+             */
+            sortOrder?: number;
+        };
+        EvaluationPeriodDto: {
+            id: number;
+            isActive: boolean;
+            semesterId: number;
+            isFrozen: boolean;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CriterionDto: {
+            id: number;
+            maxScore: number;
+            sortOrder: number;
+            title: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        AssessmentDetailDtoWithRelation: {
+            id: number;
+            assessmentId: number;
+            criterionId: number;
+            studentScore: number;
+            teacherScore: number;
+            criterion: components["schemas"]["CriterionDto"];
+        };
+        AssessmentDtoWithRelation: {
+            id: number;
+            periodId: number;
+            studentId: number;
+            /** @enum {string} */
+            status: "NOT_SUBMITTED" | "PENDING" | "APPROVED";
+            totalStudentScore: number;
+            totalTeacherScore: number;
+            /** @enum {string|null} */
+            finalGrade: "EXCELLENT" | "GOOD" | "FAIR" | "AVERAGE" | "POOR" | null;
+            teacherComment: Record<string, never> | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            details: components["schemas"]["AssessmentDetailDtoWithRelation"][];
+        };
+        AssessmentDetailInput: {
+            /**
+             * @description ID tiêu chí
+             * @example 1
+             */
+            criterionId: number;
+            /**
+             * @description Điểm học sinh tự chấm
+             * @example 25
+             */
+            studentScore: number;
+        };
+        SubmitAssessmentDto: {
+            /**
+             * @description ID đợt đánh giá
+             * @example 1
+             */
+            periodId: number;
+            /** @description Chi tiết điểm tự chấm theo tiêu chí */
+            details: components["schemas"]["AssessmentDetailInput"][];
+        };
+        TeacherAssessmentDetailInput: {
+            /**
+             * @description ID tiêu chí
+             * @example 1
+             */
+            criterionId: number;
+            /**
+             * @description Điểm GVCN duyệt cuối cùng
+             * @example 24
+             */
+            teacherScore: number;
+        };
+        ApproveAssessmentDto: {
+            /**
+             * @description ID phiếu điểm cần duyệt
+             * @example 1
+             */
+            assessmentId: number;
+            /**
+             * @description Nhận xét của GVCN
+             * @example Học sinh tích cực tham gia các hoạt động
+             */
+            teacherComment?: string;
+            /** @description Chi tiết điểm GVCN chấm theo tiêu chí */
+            details: components["schemas"]["TeacherAssessmentDetailInput"][];
         };
     };
     responses: never;
@@ -4930,9 +4580,7 @@ export interface operations {
     BatchController_findAll: {
         parameters: {
             query?: {
-                /** @description Từ khóa tìm kiếm mã hoặc tên khóa */
                 majorId?: number;
-                /** @description Từ khóa tìm kiếm mã hoặc ngành */
                 majorCode?: string;
             };
             header?: never;
@@ -4977,29 +4625,6 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-        };
-    };
-    BatchController_getBatchSubjectsBySemester: {
-        parameters: {
-            query: {
-                semesterId: number;
-            };
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurriculumSubjectResponseDto"][];
-                };
             };
         };
     };
@@ -5364,14 +4989,18 @@ export interface operations {
     ClassController_findAll: {
         parameters: {
             query?: {
-                /** @description Mã lớp học (classCode) */
+                id?: number;
                 classCode?: string;
-                /** @description ID ngành học */
+                className?: string;
                 majorId?: number;
-                /** @description ID khóa đào tạo (batchId) */
-                batchId?: number;
+                batchId?: number | null;
+                formTeacherId?: number | null;
+                currentSize?: number;
+                maxStudents?: number;
+                status?: string;
+                createdAt?: string;
+                updatedAt?: string;
                 search?: string;
-                formTeacherId?: number;
             };
             header?: never;
             path?: never;
@@ -5740,382 +5369,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["RoomDto"];
                 };
-            };
-        };
-    };
-    AdmissionController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Lấy danh sách thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdmissionResponseDto"][];
-                };
-            };
-        };
-    };
-    AdmissionController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateAdmissionDto"];
-            };
-        };
-        responses: {
-            /** @description Tạo thành công. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdmissionResponseDto"];
-                };
-            };
-            /** @description Dữ liệu đầu vào không hợp lệ hoặc BatchID không tồn tại. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AdmissionController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID của đợt tuyển sinh */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Lấy chi tiết thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdmissionResponseDto"];
-                };
-            };
-            /** @description Không tìm thấy đợt tuyển sinh với ID đã cho. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AdmissionController_deleteAdmissionById: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Xóa thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Không tìm thấy đợt tuyển sinh với ID đã cho. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AdmissionController_approveAdmissionBatch: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApproveAdmissionDto"];
-            };
-        };
-        responses: {
-            /** @description Chốt đợt xét tuyển thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Dữ liệu đầu vào không hợp lệ hoặc đợt tuyển sinh không tồn tại. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CriterionController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Danh sách tiêu chí kèm metadata phân trang */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CriterionResponseDto"][];
-                };
-            };
-        };
-    };
-    CriterionController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCriterionDto"];
-            };
-        };
-        responses: {
-            /** @description Tiêu chí đã được tạo thành công */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CriterionResponseDto"];
-                };
-            };
-            /** @description Tên tiêu chí đã tồn tại */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CriterionController_deleteCriteria: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteCriterionDto"];
-            };
-        };
-        responses: {
-            /** @description Tiêu chí đã được xóa thành công */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ApplicationController_findAll: {
-        parameters: {
-            query?: {
-                skip?: number;
-                take?: number;
-                status?: string;
-                admissionId?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApplicationResponseDto"][];
-                };
-            };
-        };
-    };
-    ApplicationController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateApplyApplicationDto"];
-            };
-        };
-        responses: {
-            /** @description Dữ liệu đầu vào không hợp lệ. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApplicationResponseDto"];
-                };
-            };
-        };
-    };
-    ApplicationController_getStats: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Dữ liệu thống kê cho Dashboard. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApplicationStatsResponseDto"][];
-                };
-            };
-        };
-    };
-    ApplicationController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID của đơn ứng tuyển */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Thông tin chi tiết đơn ứng tuyển. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApplicationResponseDto"];
-                };
-            };
-            /** @description Không tìm thấy đơn ứng tuyển. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ApplicationController_remove: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID của đơn cần xóa */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Đã xóa đơn thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Không tìm thấy đơn để xóa. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ApplicationController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description ID của đơn cần cập nhật */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateApplicationDto"];
-            };
-        };
-        responses: {
-            /** @description Cập nhật thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApplicationResponseDto"];
-                };
-            };
-            /** @description Không tìm thấy đơn để cập nhật. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
@@ -7763,6 +7016,208 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["AdmissionProfileDto"];
                 };
+            };
+        };
+    };
+    AssessmentController_getPeriods: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluationPeriodDto"][];
+                };
+            };
+        };
+    };
+    AssessmentController_createPeriod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePeriodDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AssessmentController_getCriteria: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CriterionDto"][];
+                };
+            };
+        };
+    };
+    AssessmentController_createCriterion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCriterionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AssessmentController_freezePeriod: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AssessmentController_getMyAssessment: {
+        parameters: {
+            query: {
+                /** @description ID đợt đánh giá */
+                periodId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssessmentDtoWithRelation"];
+                };
+            };
+        };
+    };
+    AssessmentController_submitAssessment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitAssessmentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AssessmentController_getClassStudentsAssessments: {
+        parameters: {
+            query: {
+                /** @description ID đợt đánh giá */
+                periodId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AssessmentController_getStudentAssessmentForTeacher: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AssessmentController_approveAssessment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApproveAssessmentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

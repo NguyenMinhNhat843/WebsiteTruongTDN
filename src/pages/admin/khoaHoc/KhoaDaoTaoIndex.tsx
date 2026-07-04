@@ -1,11 +1,11 @@
 import { CalendarDays, Plus } from "lucide-react";
-import PageShell from "../../components/ui/PageShell";
+import PageShell from "../../../components/ui/PageShell";
 import { KhoaDaoTaoProvider, useKhoaDaoTaoContext } from "./KhoaHocProvider";
 import CreateBatchModal from "./CreateKhoaDaoTao";
 import KhoaDaoTaoTable from "./TableKhoaDaotao";
 import { UpdateBatchModal } from "./UpdateKhoaDaoTaoModal";
-import ButtonAction from "../../components/ui/ButtonAction";
-import { SelectOption } from "../../components/ui/Form/SelectOption";
+import ButtonAction from "../../../components/ui/ButtonAction";
+import { SelectOption } from "../../../components/ui/Form/SelectOption";
 
 const KhoaDaoTao = () => {
   return (
@@ -25,6 +25,7 @@ const Inner = () => {
     batchSelected,
     setBatchSelected,
     updateBatch,
+    isUpdating,
   } = useKhoaDaoTaoContext();
 
   const hocKyOptions = [
@@ -89,19 +90,23 @@ const Inner = () => {
         isOpen={batchSelected !== null}
         onClose={() => setBatchSelected(null)}
         data={batchSelected}
+        isSubmitting={isUpdating}
         onSave={(id, payload) =>
-          updateBatch({
-            params: {
-              path: {
-                id,
+          updateBatch(
+            {
+              params: {
+                path: {
+                  id,
+                },
+              },
+              body: payload,
+            },
+            {
+              onSuccess: () => {
+                setBatchSelected(null);
               },
             },
-            body: {
-              curriculumId: payload.curriculumId!,
-              status: batchSelected!.status, // PHẢI CÓ: Lấy giá trị hiện tại của batch
-              batchName: batchSelected!.batchName,
-            },
-          })
+          )
         }
       />
     </PageShell>

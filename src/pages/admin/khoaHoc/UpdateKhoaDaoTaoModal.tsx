@@ -11,7 +11,7 @@ interface UpdateBatchInput {
 interface UpdateBatchModalProps {
   isOpen: boolean;
   onClose: () => void;
-  data: khoaDaoTaoDto | null; // Dữ liệu khóa học đang chọn để sửa
+  data: khoaDaoTaoDto | null;
   onSave: (id: number, payload: UpdateBatchInput) => void;
   isSubmitting?: boolean;
 }

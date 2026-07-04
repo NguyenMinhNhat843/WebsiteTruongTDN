@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { $api } from "../../api/client";
-import type { components } from "../../api/v1";
-import { createContextProvider } from "../../util/createContextProvider";
+import { $api } from "../../../api/client";
+import type { components } from "../../../api/v1";
+import { createContextProvider } from "../../../util/createContextProvider";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export type createKhoaDaoTaoDTO = components["schemas"]["CreateBatchDto"];
 export type khoaDaoTaoDto = components["schemas"]["BatchResponseDto"];
@@ -45,7 +46,7 @@ export const [KhoaDaoTaoProvider, useKhoaDaoTaoContext] = createContextProvider(
     } = $api.useMutation("post", "/batches", {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ["get", "/batches"] });
-        alert("Thêm khóa đào tạo thành công");
+        toast.success("Thêm khóa đào tạo thành công");
       },
     });
 
@@ -67,7 +68,7 @@ export const [KhoaDaoTaoProvider, useKhoaDaoTaoContext] = createContextProvider(
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["get", "/batches"] });
-          alert("Cập nhật khóa đào tạo thành công");
+          toast.success("Cập nhật khóa đào tạo thành công");
         },
       },
     );

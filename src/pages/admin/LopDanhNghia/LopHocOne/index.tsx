@@ -24,6 +24,8 @@ import { useLopHocOneContext } from "./LopHocOneProvider";
 import { downloadFromBlob } from "../../../../util/download";
 import { useAppContext } from "../../../../AppProvider";
 import { LoadingWrapper } from "../../../../components/ui/LoadingWrapper";
+import { $api } from "../../../../api/client";
+import { toast } from "sonner";
 
 const LopHocOne = () => {
   return <Inner />;
@@ -39,6 +41,7 @@ const Inner = () => {
     setIsOpenModalAddStudent,
     isOpenModalSinhLopHocPhan,
     setIsOpenModalSinhLopHocPhan,
+    refetchLopHocDetail,
   } = useLopHocContext();
   const { hocKysData } = useAppContext();
   const { exportExcel, isExportingExcel, classSubjects, selectedSemesterId } =
@@ -46,6 +49,51 @@ const Inner = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"hoc-sinh" | "mon-hoc">("mon-hoc");
   const hocKySelected = hocKysData?.find((hk) => hk.id === selectedSemesterId);
+
+  // Lấy danh sách giáo viên
+  const { data: teachers, isLoading: isLoadingTeachers } = $api.useQuery(
+    "get",
+    "/staffs",
+    {
+      params: {
+        query: {
+          employeeRole: "TEACHER",
+        },
+      },
+    },
+  );
+
+  // Phân bổ giáo viên chủ nhiệm cho lớp
+  const {
+    mutate: updateClassFormTeacher,
+    isPending: isLoadingUpdateFormTeacher,
+  } = $api.useMutation("patch", "/classes/{id}");
+  const handleUpdateClassFormTeacher = (formTeacherId: number | null) => {
+    if (!LopHocDetail?.id) {
+      alert("Không tìm thấy thông tin lớp học. Vui lòng thử lại sau.");
+      return;
+    }
+
+    updateClassFormTeacher(
+      {
+        body: {
+          formTeacherId,
+          status: LopHocDetail?.status,
+        },
+        params: {
+          path: {
+            id: LopHocDetail?.id,
+          },
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success("Cập nhật giáo viên chủ nhiệm thành công");
+          refetchLopHocDetail();
+        },
+      },
+    );
+  };
 
   // 1. Chuẩn hóa dữ liệu thông tin cơ bản
   const dataHienThi = useMemo(
@@ -172,16 +220,38 @@ const Inner = () => {
                 </div>
               </div>
 
-              {/* 2. Giáo viên chủ nhiệm */}
+              {/* 2. Giáo viên chủ nhiệm (Dropdown Select) */}
               <div className="flex items-start gap-3 col-span-2 md:col-span-1">
-                <User className="h-5 w-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">
+                <User className="h-5 w-5 text-gray-400 mt-1" />
+                <div className="flex-1">
+                  <p className="text-xs text-gray-400 font-medium uppercase tracking-wider mb-1">
                     Giáo viên chủ nhiệm
                   </p>
-                  <p className="text-sm font-semibold text-gray-700 mt-0.5">
-                    {dataHienThi.giaoVien}
-                  </p>
+                  {isLoadingTeachers ? (
+                    <div className="text-sm text-gray-400 italic animate-pulse">
+                      Đang tải danh sách...
+                    </div>
+                  ) : (
+                    <select
+                      value={LopHocDetail?.formTeacher?.id || ""}
+                      disabled={isLoadingUpdateFormTeacher}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        // Nếu chọn tùy chọn trống "", truyền null, ngược lại ép kiểu về số (number)
+                        handleUpdateClassFormTeacher(
+                          value ? Number(value) : null,
+                        );
+                      }}
+                      className="w-full text-sm font-semibold text-gray-700 bg-transparent border-b border-gray-200 py-0.5 focus:outline-none focus:border-blue-500 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      <option value="">Chưa phân bổ</option>
+                      {teachers?.map((teacher: any) => (
+                        <option key={teacher.id} value={teacher.id}>
+                          {teacher.fullName}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
               </div>
 

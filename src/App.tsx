@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 
@@ -7,6 +7,9 @@ import { AppProvider } from "./AppProvider";
 import ProtectedRoute from "./features/auth/components/ProtectedRoute";
 import { Loader2 } from "lucide-react";
 import PhongHocIndex from "./pages/admin/PhongHoc";
+import DiemRenLuyenIndex from "./pages/admin/DiemRenLuyen";
+import DiemRenLuyen_TieuChiDanhGiaIndex from "./pages/admin/DiemRenLuyen_TieuChiDanhGia";
+import { Toaster } from "sonner";
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -90,7 +93,7 @@ const PhanLopLayout = lazy(() => import("./pages/admin/PhanLop/PhanLopLayout"));
 const PhanLop = lazy(() => import("./pages/admin/PhanLop/PhanLop"));
 const KhoaIndex = lazy(() => import("./pages/admin/Khoa/KhoaIndex"));
 const KhoaList = lazy(() => import("./pages/admin/Khoa/KhoaList"));
-const KhoaDaoTao = lazy(() => import("./features/khoaHoc/KhoaDaoTaoIndex"));
+const KhoaDaoTao = lazy(() => import("./pages/admin/khoaHoc/KhoaDaoTaoIndex"));
 const NganhIndex = lazy(() => import("./features/Nganh/NganhIndex"));
 const MonHocIndex = lazy(() => import("./features/MonHoc/MonHocIndex"));
 const HocSinhLayout = lazy(
@@ -303,6 +306,12 @@ function App() {
               <Route path="mon-hoc" element={<MonHocIndex />} />
               <Route path="phong-hoc" element={<PhongHocIndex />} />
 
+              <Route path="diem-ren-luyen" element={<DiemRenLuyenIndex />} />
+              <Route
+                path="diem-ren-luyen/tieu-chi-danh-gia"
+                element={<DiemRenLuyen_TieuChiDanhGiaIndex />}
+              />
+
               {/* Công tác học sinh */}
               <Route element={<HocSinhLayout />}>
                 <Route
@@ -383,6 +392,7 @@ function App() {
           </Routes>
         </Suspense>
       </AppProvider>
+      <Toaster position="top-right" richColors closeButton />
     </QueryClientProvider>
   );
 }

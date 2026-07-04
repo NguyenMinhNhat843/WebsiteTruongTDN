@@ -52,21 +52,24 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
   /**
    * Lấy lớp học theo id
    */
-  const { data: LopHocDetail, isLoading: isLoadingLopHocDetail } =
-    $api.useQuery(
-      "get",
-      `/classes/{id}`,
-      {
-        params: {
-          path: {
-            id: idLopHocNumber!,
-          },
+  const {
+    data: LopHocDetail,
+    isLoading: isLoadingLopHocDetail,
+    refetch: refetchLopHocDetail,
+  } = $api.useQuery(
+    "get",
+    `/classes/{id}`,
+    {
+      params: {
+        path: {
+          id: idLopHocNumber!,
         },
       },
-      {
-        enabled: !!idLopHocNumber,
-      },
-    );
+    },
+    {
+      enabled: !!idLopHocNumber,
+    },
+  );
 
   /**
    * Tạo lớp học
@@ -191,6 +194,7 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     setFilterClass,
     exportStudentGrade,
     isExportingStudentGrade,
+    refetchLopHocDetail,
 
     //state
     isOpenModalCreate,
