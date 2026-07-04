@@ -1,9 +1,9 @@
-import { BookOpen, Edit3, PlusIcon, Trash2 } from "lucide-react";
+import { BookOpen, PlusIcon, Trash2 } from "lucide-react";
 import PageShell from "../../../components/ui/PageShell";
 import { MonHocProvider, useMonHocContext } from "./MonHocProvider";
-import MonHocTable from "./TableMonHoc";
 import CreateMonHocModal from "./CreateMonHoc";
 import UpdateMonHoc from "./UpdateMonHoc";
+import MonHocList from "./MonHocList";
 
 const MonHocIndex = () => {
   return (
@@ -40,41 +40,7 @@ const Inner = () => {
         </button>
       }
     >
-      <MonHocTable
-        data={monHocs || []}
-        isLoading={isMonHocsLoading}
-        onClickRow={(id) => setMonHocIdSelected(id)}
-        columns={[
-          {
-            header: "Thao tác",
-            cell: (info) => {
-              const rowId = Number(info.row.original.id);
-
-              return (
-                <div className="flex items-center justify-end gap-1">
-                  <button
-                    onClick={() =>
-                      deleteMonHoc({
-                        params: {
-                          path: {
-                            id: rowId,
-                          },
-                        },
-                      })
-                    }
-                    type="button"
-                    className={`p-2.5 rounded-xl transition-colors 
-                  hover:bg-rose-50 text-slate-400 hover:text-rose-600 disabled:opacity-40"
-                `}
-                  >
-                    <Trash2 size={18} />
-                  </button>
-                </div>
-              );
-            },
-          },
-        ]}
-      />
+      <MonHocList />
 
       <CreateMonHocModal
         isOpen={isOpenModalCreateMonHoc}
