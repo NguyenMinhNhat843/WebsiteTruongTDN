@@ -3207,12 +3207,20 @@ export interface components {
             classSubjectId: number;
             grades?: components["schemas"]["UpdateCourseRegistrationDto"][];
         };
+        CreateDocumentItemPayloadDto: {
+            name: string;
+            required: boolean | null;
+            sortOrder: number | null;
+        };
         CreateDocumentConfigDto: {
             name: string;
+            startDate: string;
+            items: components["schemas"]["CreateDocumentItemPayloadDto"][];
         };
         DocumentConfigResponseDto: {
             id: number;
             name: string;
+            startDate: string;
         };
         DocumentConfigItemDto: {
             id: number;
@@ -3224,6 +3232,7 @@ export interface components {
         DocumentConfigWithItemsResponseDto: {
             id: number;
             name: string;
+            startDate: string;
             items: components["schemas"]["DocumentConfigItemDto"][];
         };
         CreateDocumentConfigItemDto: {
@@ -6378,9 +6387,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["DocumentConfigResponseDto"];
-                };
+                content?: never;
             };
         };
     };

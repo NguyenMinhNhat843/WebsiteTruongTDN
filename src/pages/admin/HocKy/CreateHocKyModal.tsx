@@ -199,7 +199,7 @@ export const CreateHocKyModal = ({
             <button
               type="submit"
               disabled={isCreateHocKyPending}
-              className="flex-[2] py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 transition-all"
+              className="flex-2 py-3 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-300 text-white rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 flex items-center justify-center gap-2 transition-all"
             >
               {isCreateHocKyPending ? (
                 <Loader2 size={18} className="animate-spin" />

@@ -10,6 +10,7 @@ import PhongHocIndex from "./pages/admin/PhongHoc";
 import DiemRenLuyenIndex from "./pages/admin/DiemRenLuyen";
 import DiemRenLuyen_TieuChiDanhGiaIndex from "./pages/admin/DiemRenLuyen_TieuChiDanhGia";
 import { Toaster } from "sonner";
+import CauHinhChung from "./pages/admin/CauHinhHeThong";
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -102,7 +103,7 @@ const DanhSachHoSoHocSinh = lazy(
   () => import("./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoHocSinhList"),
 );
 const CreateStudent = lazy(
-  () => import("./pages/admin/HoSoHocSinh/CreateHoSoHocSinh/Create"),
+  () => import("./pages/admin/HoSoHocSinh/Create/Create"),
 );
 const HoSoHocSinhOne = lazy(
   () => import("./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne"),
@@ -361,6 +362,7 @@ function App() {
                 element={<PhanQuyenNguoiDung />}
               />
               <Route path="nhat-ky-he-thong" element={<SystemLogPage />} />
+              <Route path="cai-dat/cau-hinh-chung" element={<CauHinhChung />} />
             </Route>
 
             {/* ========================= Giáo viên ============================= */}
