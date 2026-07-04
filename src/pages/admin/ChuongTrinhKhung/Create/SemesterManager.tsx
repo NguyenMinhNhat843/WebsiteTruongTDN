@@ -5,7 +5,7 @@ import {
   getCoreRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import type { MonHocResponse } from "../../../../features/MonHoc/MonHocProvider";
+import type { MonHocResponse } from "../../MonHoc/MonHocProvider";
 import { useTaoChuongTrinhKhungContext } from "./CreateProgramProvider";
 import { Trash, PlusCircle, BookOpen, AlertCircle } from "lucide-react";
 import SelectSearchInput from "../../../../components/ui/Form/SelectInput";

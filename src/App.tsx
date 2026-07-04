@@ -71,8 +71,7 @@ const ChuongTrinhKhung = lazy(
   () => import("./pages/admin/ChuongTrinhKhung/ChuongTrinhKhungIndex"),
 );
 const TaoChuongTrinhKhung = lazy(
-  () =>
-    import("./pages/admin/ChuongTrinhKhung/CreateChuongTrinh/TaoChuongTrinhKhung"),
+  () => import("./pages/admin/ChuongTrinhKhung/Create/TaoChuongTrinhKhung"),
 );
 const LopHocLayout = lazy(
   () => import("./pages/admin/LopDanhNghia/LopHocLayout"),
@@ -94,8 +93,8 @@ const PhanLop = lazy(() => import("./pages/admin/PhanLop/PhanLop"));
 const KhoaIndex = lazy(() => import("./pages/admin/Khoa/KhoaIndex"));
 const KhoaList = lazy(() => import("./pages/admin/Khoa/KhoaList"));
 const KhoaDaoTao = lazy(() => import("./pages/admin/khoaHoc/KhoaDaoTaoIndex"));
-const NganhIndex = lazy(() => import("./features/Nganh/NganhIndex"));
-const MonHocIndex = lazy(() => import("./features/MonHoc/MonHocIndex"));
+const NganhIndex = lazy(() => import("./pages/admin/Nganh/NganhIndex"));
+const MonHocIndex = lazy(() => import("./pages/admin/MonHoc/MonHocIndex"));
 const HocSinhLayout = lazy(
   () => import("./pages/admin/HoSoHocSinh/HocSinhLayout"),
 );

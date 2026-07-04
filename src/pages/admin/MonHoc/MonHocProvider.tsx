@@ -1,10 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { $api } from "../../api/client";
-import type { components } from "../../api/v1";
-import { createContextProvider } from "../../util/createContextProvider";
+import { $api } from "../../../api/client";
+import type { components } from "../../../api/v1";
+import { createContextProvider } from "../../../util/createContextProvider";
 import { useState } from "react";
 
-export type MonHocResponse = components["schemas"]["SubjectResponseDto"];
+export type MonHocResponse = components["schemas"]["ResponseSubjectDto"];
 export type CreatemonHocDto = components["schemas"]["CreateSubjectDto"];
 export type UpdateMonHocDto = components["schemas"]["UpdateSubjectDto"];
 

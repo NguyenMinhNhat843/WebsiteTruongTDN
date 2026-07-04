@@ -1,5 +1,5 @@
 import { BookOpen, Edit3, PlusIcon, Trash2 } from "lucide-react";
-import PageShell from "../../components/ui/PageShell";
+import PageShell from "../../../components/ui/PageShell";
 import { MonHocProvider, useMonHocContext } from "./MonHocProvider";
 import MonHocTable from "./TableMonHoc";
 import CreateMonHocModal from "./CreateMonHoc";
@@ -52,12 +52,6 @@ const Inner = () => {
 
               return (
                 <div className="flex items-center justify-end gap-1">
-                  <button
-                    type="button"
-                    className="p-2.5 hover:bg-slate-100 text-slate-400 hover:text-blue-600 rounded-xl transition-colors"
-                  >
-                    <Edit3 size={18} />
-                  </button>
                   <button
                     onClick={() =>
                       deleteMonHoc({

@@ -45,7 +45,6 @@ export const [TaoChuongTrinhKhungProvider, useTaoChuongTrinhKhungContext] =
         append({
           subjectId: subjectData.id,
           semesterNumber: semesterNumber ?? 1,
-          isMandatory: true,
           minGrade: 4,
         });
       }
@@ -79,6 +78,13 @@ export const [TaoChuongTrinhKhungProvider, useTaoChuongTrinhKhungContext] =
     const { mutate: createCurriculum, isPending: isCreatingCurriculum } =
       $api.useMutation("post", "/curriculums");
 
+    const totalCreditsComputed =
+      monhocs && allSubjects.length > 0
+        ? monhocs
+            .filter((sub) => allSubjects.some((s) => s.subjectId === sub.id))
+            .reduce((sum, sub) => sum + (sub.credits || 0), 0)
+        : 0;
+
     return {
       //form
       register,
@@ -90,6 +96,7 @@ export const [TaoChuongTrinhKhungProvider, useTaoChuongTrinhKhungContext] =
       allSubjects,
       watch,
       setValue,
+      totalCredits: totalCreditsComputed,
 
       monhocs,
       isLoadingMonHoc,

@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { $api } from "../../api/client";
+import { $api } from "../../../api/client";
 
 export const useGetMonHocDetail = (idSelected: number | undefined | null) => {
   const {

@@ -532,23 +532,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/curriculums/curriculum-subjects/by-semester": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy danh sách môn học theo học kỳ của 1 chương trình khung */
-        get: operations["getSubjectsBySemester"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/curriculums/{id}": {
         parameters: {
             query?: never;
@@ -1824,76 +1807,16 @@ export interface components {
             status: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
             admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
         };
-        DepartmentResponseDto: {
-            /** @example 1 */
+        MajorDto: {
             id: number;
-            /**
-             * @description Mã định danh duy nhất của khoa/phòng
-             * @example IT01
-             */
-            deptCode: string;
-            /** @example Khoa Công nghệ thông tin */
-            deptName: string;
-            /** @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống */
-            description?: string | null;
-            /**
-             * @description ID của nhân viên làm trưởng khoa
-             * @example 1
-             */
-            headOfDepartmentId?: number | null;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            updatedAt: string;
-            /**
-             * @description Số lượng ngành học trực thuộc
-             * @example 5
-             */
-            majorCount?: number;
-            /**
-             * @description Số lượng môn học trực thuộc
-             * @example 20
-             */
-            subjectCount?: number;
-        };
-        MajorResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example CNTT */
-            majorCode: string;
-            /** @example Công nghệ thông tin */
-            majorName: string;
-            /** @example 1 */
             deptId: number;
-            /** @example 90 */
-            totalCredits: number;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
+            description?: Record<string, never> | null;
+            majorCode: string;
+            majorName: string;
+            /** Format: date-time */
             createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
+            /** Format: date-time */
             updatedAt: string;
-            department?: components["schemas"]["DepartmentResponseDto"];
-            /**
-             * @description Số lượng lớp học thuộc ngành này
-             * @example 10
-             */
-            classCount?: number;
-            /**
-             * @description Mô tả chi tiết về ngành học
-             * @example Ngành học tập trung vào phát triển phần mềm
-             */
-            description?: Record<string, never>;
         };
         BatchResponseDto: {
             id: number;
@@ -1910,127 +1833,22 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            major: components["schemas"]["MajorResponseDto"] | null;
-        };
-        UserResponseDto: {
-            /** @example 1 */
-            id: number;
-            staffId?: number;
-            studentId?: number;
-            /** @example u_9b1deb4d */
-            userId: string;
-            /** @example johndoe */
-            username: string;
-            /** @enum {string} */
-            role: "admin" | "teacher" | "student" | "staff";
-            isActive: boolean;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** @example 2024-01-01T12:00:00Z */
-            lastLoginAt?: Record<string, never>;
-        };
-        ResponseSubjectDto: {
-            id: number;
-            departmentId: number | null;
-            subjectCode: string;
-            subjectName: string;
-            credits: number;
-            description: string | null;
-            practiceHours: number;
-            testHours: number | null;
-            theoryHours: number;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        TeacherSubjectResponseDto: {
-            /**
-             * @description ID tự tăng của bảng trung gian
-             * @example 12
-             */
-            id?: number;
-            /**
-             * @description ID của Giáo viên
-             * @example 1
-             */
-            teacherId: number;
-            /**
-             * @description ID của Môn học
-             * @example 5
-             */
-            subjectId: number;
-            /**
-             * Format: date-time
-             * @description Thời gian tạo bản ghi
-             * @example 2026-05-23T08:30:00.000Z
-             */
-            createdAt?: string;
-            /** @description Thông tin giáo viên (nếu có) */
-            teacher?: components["schemas"]["StaffResponseDto"];
-            /** @description Thông tin môn học (nếu có) */
-            subject?: components["schemas"]["ResponseSubjectDto"];
-        };
-        StaffResponseDto: {
-            id?: number;
-            /** @example Nguyễn Văn C */
-            fullName: string;
-            /**
-             * Format: date-time
-             * @example 1990-01-01
-             */
-            dob: string;
-            /** @enum {string} */
-            EmployeeRole?: "STAFF" | "TEACHER";
-            /** @example staff@school.edu.vn */
-            email?: string;
-            /** @example 0901234567 */
-            phone?: string;
-            /** @example 0251369874 */
-            identityNumber?: string;
-            /** @description true: Nam, false: Nữ */
-            gender?: boolean;
-            /** @description Mã số nhân viên (duy nhất) */
-            staffCode?: string;
-            userId?: number | null;
-            position?: Record<string, never> | null;
-            address?: string | null;
-            avatarUrl?: string | null;
-            contractType?: string | null;
-            departmentId?: number | null;
-            isTeacher?: boolean | null;
-            salaryCoefficient?: number | null;
-            hireDate?: string | null;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-            user?: components["schemas"]["UserResponseDto"];
-            teacherSubjects?: components["schemas"]["TeacherSubjectResponseDto"][];
+            major: components["schemas"]["MajorDto"] | null;
         };
         ClassResponseDto: {
             id: number;
             classCode: string;
             className: string;
             majorId: number;
-            courseYear: number;
-            formTeacherId?: number;
+            batchId?: number | null;
+            formTeacherId?: number | null;
+            currentSize: number;
             maxStudents: number;
-            /** @example active */
             status: string;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            batchId?: Record<string, never>;
-            currentSize?: number;
-            major?: components["schemas"]["MajorResponseDto"];
-            formTeacher?: components["schemas"]["StaffResponseDto"];
-            studentCount?: number;
-            /** @description Thông tin khóa học (batch) */
-            batch?: components["schemas"]["BatchResponseDto"];
         };
         DocumentProgressDto: {
             current: number;
@@ -2215,6 +2033,25 @@ export interface components {
             /** @default true */
             isActive: boolean;
         };
+        UserResponseDto: {
+            /** @example 1 */
+            id: number;
+            staffId?: number;
+            studentId?: number;
+            /** @example u_9b1deb4d */
+            userId: string;
+            /** @example johndoe */
+            username: string;
+            /** @enum {string} */
+            role: "admin" | "teacher" | "student" | "staff";
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @example 2024-01-01T12:00:00Z */
+            lastLoginAt?: Record<string, never>;
+        };
         CreateStaffDto: {
             id?: number;
             /** @example Nguyễn Văn C */
@@ -2295,6 +2132,85 @@ export interface components {
             updatedAt?: string;
             isActive?: boolean;
         };
+        StaffResponseDto: {
+            id?: number;
+            /** @example Nguyễn Văn C */
+            fullName: string;
+            /**
+             * Format: date-time
+             * @example 1990-01-01
+             */
+            dob: string;
+            /** @enum {string} */
+            EmployeeRole?: "STAFF" | "TEACHER";
+            /** @example staff@school.edu.vn */
+            email?: string;
+            /** @example 0901234567 */
+            phone?: string;
+            /** @example 0251369874 */
+            identityNumber?: string;
+            /** @description true: Nam, false: Nữ */
+            gender?: boolean;
+            /** @description Mã số nhân viên (duy nhất) */
+            staffCode?: string;
+            userId?: number | null;
+            position?: Record<string, never> | null;
+            address?: string | null;
+            avatarUrl?: string | null;
+            contractType?: string | null;
+            departmentId?: number | null;
+            isTeacher?: boolean | null;
+            salaryCoefficient?: number | null;
+            hireDate?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+            user?: components["schemas"]["UserResponseDto"];
+            teacherSubjects?: components["schemas"]["TeacherSubjectResponseDto"][];
+        };
+        ResponseSubjectDto: {
+            id: number;
+            departmentId: number | null;
+            subjectCode: string;
+            subjectName: string;
+            credits: number;
+            description: string | null;
+            practiceHours: number;
+            testHours: number | null;
+            theoryHours: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        TeacherSubjectResponseDto: {
+            /**
+             * @description ID tự tăng của bảng trung gian
+             * @example 12
+             */
+            id?: number;
+            /**
+             * @description ID của Giáo viên
+             * @example 1
+             */
+            teacherId: number;
+            /**
+             * @description ID của Môn học
+             * @example 5
+             */
+            subjectId: number;
+            /**
+             * Format: date-time
+             * @description Thời gian tạo bản ghi
+             * @example 2026-05-23T08:30:00.000Z
+             */
+            createdAt?: string;
+            /** @description Thông tin giáo viên (nếu có) */
+            teacher?: components["schemas"]["StaffResponseDto"];
+            /** @description Thông tin môn học (nếu có) */
+            subject?: components["schemas"]["ResponseSubjectDto"];
+        };
         CreateTeacherSubjectDto: {
             teacherId: number;
             subjectId: number;
@@ -2343,83 +2259,53 @@ export interface components {
             username: string;
         };
         CreateDepartmentDto: {
-            /**
-             * @description Mã định danh duy nhất của phòng ban/khoa
-             * @example IT01
-             */
+            headOfDepartmentId?: Record<string, never> | null;
             deptCode: string;
-            /**
-             * @description Tên đầy đủ của phòng ban/khoa
-             * @example Khoa Công nghệ thông tin
-             */
             deptName: string;
-            /**
-             * @description Mô tả chi tiết về phòng ban
-             * @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống
-             */
-            description?: string;
-            /**
-             * @description ID của nhân viên (Staff) làm trưởng khoa
-             * @example 1
-             */
-            headOfDepartmentId?: number;
+            description?: Record<string, never> | null;
+        };
+        DepartmentDto: {
+            id: number;
+            headOfDepartmentId?: Record<string, never> | null;
+            deptCode: string;
+            deptName: string;
+            description?: Record<string, never> | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         UpdateDepartmentDto: {
-            /**
-             * @description Mã định danh duy nhất của phòng ban/khoa
-             * @example IT01
-             */
+            headOfDepartmentId?: Record<string, never> | null;
             deptCode?: string;
-            /**
-             * @description Tên đầy đủ của phòng ban/khoa
-             * @example Khoa Công nghệ thông tin
-             */
             deptName?: string;
-            /**
-             * @description Mô tả chi tiết về phòng ban
-             * @example Chuyên đào tạo lập trình viên và kỹ sư hệ thống
-             */
-            description?: string;
-            /**
-             * @description ID của nhân viên (Staff) làm trưởng khoa
-             * @example 1
-             */
-            headOfDepartmentId?: number;
+            description?: Record<string, never> | null;
         };
         CreateMajorDto: {
-            /**
-             * @description Mã ngành đào tạo
-             * @example CNTT
-             */
+            deptId: number;
+            description?: Record<string, never> | null;
             majorCode: string;
-            /** @example Công nghệ thông tin */
             majorName: string;
-            /**
-             * @description ID của phòng ban/khoa trực thuộc
-             * @example 1
-             */
-            deptId?: number;
-            /** @example Ngành học tập trung vào phát triển phần mềm */
-            description?: string;
+        };
+        MajorResponseWithRelationDto: {
+            id: number;
+            deptId: number;
+            description?: Record<string, never> | null;
+            majorCode: string;
+            majorName: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            department?: components["schemas"]["DepartmentDto"];
         };
         UpdateMajorDto: {
-            /**
-             * @description Mã ngành đào tạo
-             * @example CNTT
-             */
-            majorCode?: string;
-            /** @example Công nghệ thông tin */
-            majorName?: string;
-            /**
-             * @description ID của phòng ban/khoa trực thuộc
-             * @example 1
-             */
             deptId?: number;
-            /** @example Ngành học tập trung vào phát triển phần mềm */
-            description?: string;
+            description?: Record<string, never> | null;
+            majorCode?: string;
+            majorName?: string;
         };
         CreateBatchDto: {
-            id: number;
             batchCode: string;
             batchName: string;
             majorId: number;
@@ -2429,13 +2315,8 @@ export interface components {
             endYear: number;
             startYear: number;
             status: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
         };
         UpdateBatchDto: {
-            id?: number;
             batchCode?: string;
             batchName?: string;
             majorId?: number;
@@ -2445,188 +2326,59 @@ export interface components {
             endYear?: number;
             startYear?: number;
             status?: string;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
         };
-        CreateCurriculumSubjectDto: {
-            /**
-             * @description ID của chương trình khung
-             * @example 1
-             */
-            curriculumId?: number;
-            /**
-             * @description ID của môn học
-             * @example 1
-             */
-            subjectId: number;
-            /**
-             * @description Học kỳ gợi ý (Ví dụ: kỳ 1, kỳ 2...)
-             * @example 1
-             */
+        CurriculumSubjectPayload: {
             semesterNumber: number;
-            /**
-             * @default true
-             * @example true
-             */
-            isMandatory: boolean;
-            /**
-             * @description Điểm tối thiểu qua môn
-             * @default 5
-             * @example 5
-             */
             minGrade: number;
+            subjectId: number;
         };
         CreateCurriculumDto: {
-            /**
-             * @description Mã chương trình khung duy nhất
-             * @example CTK-CNTT-2023
-             */
-            curriculumCode: string;
-            /** @example Chương trình khung Công nghệ thông tin 2023 */
-            curriculumName: string;
-            /**
-             * @description ID của ngành đào tạo
-             * @example 1
-             */
             majorId: number;
-            /**
-             * @default 1
-             * @example 1
-             */
-            version: number;
-            /**
-             * @default 0
-             * @example 120
-             */
-            totalCredits: number;
-            /**
-             * @description Ngày bắt đầu áp dụng
-             * @example 2023-09-01
-             */
-            effectiveFrom?: string;
-            /**
-             * @description Ngày kết thúc áp dụng
-             * @example 2027-09-01
-             */
-            effectiveTo?: string;
-            /**
-             * @default true
-             * @example true
-             */
-            isActive: boolean;
-            /** @description Danh sách các môn học thuộc chương trình khung */
-            curriculumSubjects: components["schemas"]["CreateCurriculumSubjectDto"][];
-        };
-        CurriculumSubjectResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example 1 */
-            curriculumId: number;
-            /** @example 1 */
-            subjectId: number;
-            /** @example 1 */
-            semesterNumber: number;
-            /** @example true */
-            isMandatory: boolean;
-            /** @example 5 */
-            minGrade: number;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
-            createdAt: string;
-            /** @description Thông tin chi tiết môn học */
-            subject?: components["schemas"]["ResponseSubjectDto"];
-            /** @description Thông tin chương trình khung */
-            curriculum?: Record<string, never>;
-        };
-        CurriculumResponseDto: {
-            /** @example 1 */
-            id: number;
-            /** @example CTK-CNTT-2023 */
             curriculumCode: string;
-            /** @example Chương trình khung Công nghệ thông tin 2023 */
             curriculumName: string;
-            /** @example 1 */
-            majorId: number;
-            /** @example 1 */
-            version: number;
-            /** @example 120 */
-            totalCredits: number;
-            /**
-             * Format: date-time
-             * @example 2023-09-01
-             */
-            effectiveFrom?: string | null;
-            /**
-             * Format: date-time
-             * @example 2027-09-01
-             */
-            effectiveTo?: string | null;
-            /** @example true */
             isActive: boolean;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
+            totalCredits: number;
+            curriculumSubjects: components["schemas"]["CurriculumSubjectPayload"][];
+        };
+        CurriculumDto: {
+            id: number;
+            majorId: number;
+            curriculumCode: string;
+            curriculumName: string;
+            isActive: boolean;
+            totalCredits: number;
+            /** Format: date-time */
             createdAt: string;
-            /**
-             * Format: date-time
-             * @example 2024-04-25T10:00:00Z
-             */
+            /** Format: date-time */
             updatedAt: string;
-            /** @description Thông tin ngành đào tạo */
-            major?: components["schemas"]["MajorResponseDto"];
-            /**
-             * @description Số lượng môn học trong chương trình
-             * @example 40
-             */
-            subjectCount?: number;
-            /** @description Danh sách chi tiết các môn học trong chương trình */
-            curriculumSubjects: components["schemas"]["CurriculumSubjectResponseDto"][];
+        };
+        CreateCurriculumSubjectDto: {
+            semesterNumber: number;
+            curriculumId: number;
+            minGrade: number;
+            subjectId: number;
+        };
+        CurriculumResponseDtoWithRelation: {
+            id: number;
+            majorId: number;
+            curriculumCode: string;
+            curriculumName: string;
+            isActive: boolean;
+            totalCredits: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            curriculumSubjects: components["schemas"]["CreateCurriculumSubjectDto"][];
+            major: components["schemas"]["MajorDto"];
         };
         UpdateCurriculumDto: {
-            /**
-             * @description Mã chương trình khung duy nhất
-             * @example CTK-CNTT-2023
-             */
-            curriculumCode?: string;
-            /** @example Chương trình khung Công nghệ thông tin 2023 */
-            curriculumName?: string;
-            /**
-             * @description ID của ngành đào tạo
-             * @example 1
-             */
             majorId?: number;
-            /**
-             * @default 1
-             * @example 1
-             */
-            version: number;
-            /**
-             * @default 0
-             * @example 120
-             */
-            totalCredits: number;
-            /**
-             * @description Ngày bắt đầu áp dụng
-             * @example 2023-09-01
-             */
-            effectiveFrom?: string;
-            /**
-             * @description Ngày kết thúc áp dụng
-             * @example 2027-09-01
-             */
-            effectiveTo?: string;
-            /**
-             * @default true
-             * @example true
-             */
-            isActive: boolean;
-            /** @description Danh sách các môn học thuộc chương trình khung */
-            curriculumSubjects?: components["schemas"]["CreateCurriculumSubjectDto"][];
+            curriculumCode?: string;
+            curriculumName?: string;
+            isActive?: boolean;
+            totalCredits?: number;
+            curriculumSubjects?: components["schemas"]["CurriculumSubjectPayload"][];
         };
         CreateSemesterDto: {
             /**
@@ -4370,7 +4122,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DepartmentResponseDto"][];
+                    "application/json": components["schemas"]["DepartmentDto"][];
                 };
             };
         };
@@ -4420,7 +4172,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DepartmentResponseDto"];
+                    "application/json": components["schemas"]["DepartmentDto"][];
                 };
             };
         };
@@ -4464,9 +4216,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["DepartmentResponseDto"];
-                };
+                content?: never;
             };
         };
     };
@@ -4484,7 +4234,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MajorResponseDto"][];
+                    "application/json": components["schemas"]["MajorDto"][];
                 };
             };
         };
@@ -4507,7 +4257,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MajorResponseDto"];
+                    "application/json": components["schemas"]["MajorDto"];
                 };
             };
         };
@@ -4528,7 +4278,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MajorResponseDto"];
+                    "application/json": components["schemas"]["MajorResponseWithRelationDto"];
                 };
             };
         };
@@ -4572,7 +4322,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["MajorResponseDto"];
+                    "application/json": components["schemas"]["MajorDto"];
                 };
             };
         };
@@ -4722,7 +4472,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CurriculumResponseDto"][];
+                    "application/json": components["schemas"]["CurriculumDto"][];
                 };
             };
         };
@@ -4744,9 +4494,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["CurriculumResponseDto"];
-                };
+                content?: never;
             };
         };
     };
@@ -4767,29 +4515,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CurriculumResponseDto"] | null;
-                };
-            };
-        };
-    };
-    getSubjectsBySemester: {
-        parameters: {
-            query: {
-                classId: number;
-                semesterId: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CurriculumSubjectResponseDto"][];
+                    "application/json": components["schemas"]["CurriculumResponseDtoWithRelation"] | null;
                 };
             };
         };
@@ -4810,7 +4536,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CurriculumResponseDto"];
+                    "application/json": components["schemas"]["CurriculumResponseDtoWithRelation"];
                 };
             };
         };
@@ -4854,9 +4580,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["CurriculumResponseDto"];
-                };
+                content?: never;
             };
         };
     };
@@ -5129,7 +4853,14 @@ export interface operations {
     };
     SubjectController_findAll: {
         parameters: {
-            query?: never;
+            query?: {
+                id?: number;
+                departmentId?: number | null;
+                subjectCode?: string;
+                subjectName?: string;
+                keyword?: string;
+                majorId?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;

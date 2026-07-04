@@ -3,7 +3,7 @@ import {
   ChuongTrinhKhungProvider,
   useChuongTrinhKhungContext,
 } from "./ChuongTrinhKhungProvider";
-import ChuongTrinhKhungList from "./ChươngTrinhKhungList/ChuongTrinhKhungList";
+import ChuongTrinhKhungList from "./List/ChuongTrinhKhungList";
 import PageShell from "../../../components/ui/PageShell";
 import ChuongTrinhKhungOne from "./ChuongTrinhKhungOne/ChuongTrinhKhungOne";
 import { useNavigate } from "react-router-dom";

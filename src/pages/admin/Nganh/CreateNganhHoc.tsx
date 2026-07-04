@@ -8,9 +8,9 @@ import {
   FileText,
 } from "lucide-react";
 import { useNganhContext, type createNganhDto } from "./NganhProvider";
-import Input from "../../components/ui/Form/Input";
-import { SelectOption } from "../../components/ui/Form/SelectOption";
-import ButtonAction from "../../components/ui/ButtonAction";
+import Input from "../../../components/ui/Form/Input";
+import { SelectOption } from "../../../components/ui/Form/SelectOption";
+import ButtonAction from "../../../components/ui/ButtonAction";
 
 interface Props {
   isOpen: boolean;

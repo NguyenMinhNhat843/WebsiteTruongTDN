@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { $api } from "../../api/client";
-import type { components } from "../../api/v1";
-import { createContextProvider } from "../../util/createContextProvider";
+import { $api } from "../../../api/client";
+import type { components } from "../../../api/v1";
+import { createContextProvider } from "../../../util/createContextProvider";
 import { useQueryClient } from "@tanstack/react-query";
 
 export type createNganhDto = components["schemas"]["CreateMajorDto"];

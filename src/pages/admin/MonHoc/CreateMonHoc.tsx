@@ -1,10 +1,10 @@
 import { useForm, Controller } from "react-hook-form";
 import type { CreatemonHocDto } from "./MonHocProvider";
 import { BookOpen, Layers, Code, Type, Hash, Clock } from "lucide-react";
-import { useAppContext } from "../../AppProvider";
-import Input from "../../components/ui/Form/Input";
-import SelectSearchInput from "../../components/ui/Form/SelectInput";
-import ButtonAction from "../../components/ui/ButtonAction";
+import { useAppContext } from "../../../AppProvider";
+import Input from "../../../components/ui/Form/Input";
+import SelectSearchInput from "../../../components/ui/Form/SelectInput";
+import ButtonAction from "../../../components/ui/ButtonAction";
 
 interface Props {
   isOpen: boolean;
@@ -155,34 +155,6 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
               />
             </div>
 
-            {/* Hàng 2: Chọn Khoa/Bộ môn (Department) */}
-            <div className="grid grid-cols-1 gap-4">
-              <Controller
-                name="departmentId"
-                control={control}
-                render={({ field: { onChange, value, name, ref } }) => (
-                  <SelectSearchInput
-                    ref={ref}
-                    name={name}
-                    label="Khoa / Bộ môn quản lý"
-                    placeholder={
-                      isDepartmentsLoading
-                        ? "Đang tải danh sách khoa..."
-                        : "--- Chọn khoa / bộ môn ---"
-                    }
-                    isLoading={isDepartmentsLoading}
-                    options={departmentOptions}
-                    value={value ?? ""}
-                    error={errors.departmentId?.message}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      onChange(val ? Number(val) : null);
-                    }}
-                  />
-                )}
-              />
-            </div>
-
             {/* Hàng 3: Cấu hình Tín chỉ / Số giờ */}
             <div className="grid grid-cols-4 gap-4">
               <Input
@@ -218,6 +190,34 @@ const CreateMonHocModal = ({ isOpen, onClose, onSubmit, isPending }: Props) => {
                 icon={Clock}
                 error={errors.testHours?.message}
                 {...register("testHours", { valueAsNumber: true })}
+              />
+            </div>
+
+            {/* Hàng 2: Chọn Khoa/Bộ môn (Department) */}
+            <div className="grid grid-cols-1 gap-4">
+              <Controller
+                name="departmentId"
+                control={control}
+                render={({ field: { onChange, value, name, ref } }) => (
+                  <SelectSearchInput
+                    ref={ref}
+                    name={name}
+                    label="Khoa / Bộ môn quản lý"
+                    placeholder={
+                      isDepartmentsLoading
+                        ? "Đang tải danh sách khoa..."
+                        : "--- Chọn khoa / bộ môn ---"
+                    }
+                    isLoading={isDepartmentsLoading}
+                    options={departmentOptions}
+                    value={value ?? ""}
+                    error={errors.departmentId?.message}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      onChange(val ? Number(val) : null);
+                    }}
+                  />
+                )}
               />
             </div>
           </div>
