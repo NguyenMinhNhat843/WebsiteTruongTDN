@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useAppContext } from "../../../../AppProvider";
 import { useLopHocOneContext } from "./LopHocOneProvider";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
@@ -14,45 +13,12 @@ const TabMonHoc = () => {
     isClassSubjectsLoading,
     isGiaoViensLoading,
     dataGiaoViens,
-    updateClassSubject,
-    isPendingUpdateClassSubject,
-    refetchClassSubjects,
   } = useLopHocOneContext();
-
-  // State cục bộ để lưu ID của classSubject nào đang được bấm cập nhật giảng viên
-  const [updatingSubjectId, setUpdatingSubjectId] = useState<number | null>(
-    null,
-  );
 
   const dataGiaoVienHienThi = dataGiaoViens?.map((gv) => ({
     id: gv.id,
     fullName: gv.fullName,
   }));
-
-  const phanGiaoVienGiangDay = (
-    classSubjectId: number,
-    teacherId: number | null,
-  ) => {
-    // Đánh dấu hàng này đang trong quá trình update để kích hoạt hiệu ứng xoay
-    setUpdatingSubjectId(classSubjectId);
-
-    updateClassSubject(
-      {
-        params: { path: { id: classSubjectId } },
-        body: { teacherId: teacherId ?? undefined },
-      },
-      {
-        onSuccess: () => {
-          refetchClassSubjects();
-          setUpdatingSubjectId(null); // Reset sau khi thành công
-        },
-        onError: () => {
-          alert("Có lỗi xảy ra khi cập nhật giáo viên giảng dạy.");
-          setUpdatingSubjectId(null); // Reset sau khi lỗi
-        },
-      },
-    );
-  };
 
   const dataHienThi = classSubjects?.map((cs) => ({
     id: cs.id,
@@ -143,10 +109,6 @@ const TabMonHoc = () => {
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm text-slate-600 bg-white">
               {dataHienThi?.map((item) => {
-                // Xác định chính xác hàng nào đang thực hiện hành động cập nhật dữ liệu
-                const isThisRowUpdating =
-                  isPendingUpdateClassSubject && updatingSubjectId === item.id;
-
                 return (
                   <tr
                     key={item.id}
@@ -192,74 +154,21 @@ const TabMonHoc = () => {
                     </td>
 
                     {/* Giáo viên giảng dạy */}
-                    <td className="px-6 py-4 align-middle min-w-50">
+                    <td className="px-6 py-4 align-middle min-w-50 text-sm font-medium">
                       {isGiaoViensLoading ? (
-                        <div className="inline-flex items-center gap-2 text-slate-400 text-xs bg-slate-50/50 px-2.5 py-1.5 rounded-xl border border-slate-200/60 font-medium">
-                          <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
-                          Đang tải...
-                        </div>
-                      ) : isThisRowUpdating ? (
-                        <div
-                          className="inline-flex items-center gap-2 text-blue-600 text-xs 
-                        bg-blue-50/50 px-2.5 py-1.5 rounded-xl border border-blue-100 font-medium"
-                        >
-                          <div
-                            className="animate-spin rounded-full h-3.5 w-3.5 border-2 
-                          border-slate-200 border-t-blue-600"
-                          ></div>
-                          Đang lưu...
-                        </div>
+                        <span className="text-slate-400 text-xs italic animate-pulse">
+                          Đang tải dữ liệu...
+                        </span>
+                      ) : item.giaoVienId ? (
+                        <span className="text-slate-700">
+                          {dataGiaoVienHienThi?.find(
+                            (gv) => gv.id === item.giaoVienId,
+                          )?.fullName || "Không tìm thấy giáo viên"}
+                        </span>
                       ) : (
-                        <div className="relative max-w-55">
-                          <select
-                            value={item.giaoVienId || ""}
-                            disabled={isPendingUpdateClassSubject}
-                            onChange={(e) => {
-                              const val = e.target.value;
-                              phanGiaoVienGiangDay(
-                                item.id,
-                                val ? Number(val) : null,
-                              );
-                            }}
-                            className={`w-full pl-3 pr-8 py-1.5 bg-white border rounded-xl text-sm font-medium transition-all appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500/10 disabled:opacity-60 disabled:cursor-not-allowed ${
-                              item.giaoVienId
-                                ? "text-slate-700 border-slate-200 focus:border-indigo-500"
-                                : "text-slate-400 border-slate-200 bg-slate-50/30 italic"
-                            }`}
-                          >
-                            <option
-                              value=""
-                              className="text-slate-400 not-italic"
-                            >
-                              -- Chọn giáo viên giảng dạy --
-                            </option>
-                            {dataGiaoVienHienThi?.map((gv) => (
-                              <option
-                                key={gv.id}
-                                value={gv.id}
-                                className="text-slate-700 not-italic font-medium"
-                              >
-                                {gv.fullName}
-                              </option>
-                            ))}
-                          </select>
-
-                          <div className="absolute inset-y-0 right-0 flex items-center pr-2.5 pointer-events-none text-slate-400">
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M19 9l-7 7-7-7"
-                              />
-                            </svg>
-                          </div>
-                        </div>
+                        <span className="text-slate-400 italic font-normal">
+                          Chưa phân công
+                        </span>
                       )}
                     </td>
                   </tr>

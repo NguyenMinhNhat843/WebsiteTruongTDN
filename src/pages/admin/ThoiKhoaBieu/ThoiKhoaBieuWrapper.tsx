@@ -23,7 +23,7 @@ const InnerLayout = () => {
     hocKysData,
     setSemesterId,
     setClassId,
-    studySchedule,
+    scheduleItems,
   } = useThoiKhoaBieuContext();
 
   const semester = hocKysData?.find((hk) => hk.id === semesterId);
@@ -69,7 +69,7 @@ const InnerLayout = () => {
         </div>
 
         {/* ================= BẢNG NHẬN DATA THỜI KHÓA BIỂU ================= */}
-        <ThoiKhoaBieuTable scheduleData={studySchedule} semester={semester} />
+        <ThoiKhoaBieuTable scheduleData={scheduleItems} semester={semester} />
       </div>
     </PageShell>
   );

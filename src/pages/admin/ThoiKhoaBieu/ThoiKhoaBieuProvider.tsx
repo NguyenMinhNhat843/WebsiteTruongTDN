@@ -3,7 +3,6 @@ import { $api } from "../../../api/client";
 import { createContextProvider } from "../../../util/createContextProvider";
 import type { components } from "../../../api/v1";
 
-export type ScheduleItemDto = components["schemas"]["StudyScheduleResponseDto"];
 export type SemesterDto = components["schemas"]["SemesterResponseDto"];
 
 export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
@@ -48,7 +47,7 @@ export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
     const { data: studySchedule, isLoading: isLoadingStudySchedule } =
       $api.useQuery(
         "get",
-        "/schedule",
+        "/class-subject-session/plan-training",
         {
           params: {
             query: {
@@ -61,6 +60,26 @@ export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
           enabled: !!semesterId && !!classId,
         },
       );
+    const scheduleItems =
+      studySchedule
+        ?.map((item) => {
+          const classSubjectSessions = item.classSubjectSessions;
+          return classSubjectSessions.map((session) => {
+            return session.schedules.map((schedule) => ({
+              ...schedule,
+              startPeriod: session.startPeriod,
+              endPeriod: session.endPeriod,
+              shift: session.shift,
+              dayOfWeek: session.dayOfWeek,
+              room: session.roomId,
+              teacher: item.teacher.fullName,
+              subjectName: item.subject.subjectName,
+            }));
+          });
+        })
+        .flat(2) || [];
+
+    console.log("scheduleItems", scheduleItems);
 
     return {
       semesterId,
@@ -68,6 +87,7 @@ export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
       classId,
       setClassId,
       studySchedule,
+      scheduleItems,
       isLoadingStudySchedule,
       hocKysData,
       isHocKysLoading,

@@ -80,14 +80,6 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       });
 
     /**
-     * Cập nhật thông tin classSubject
-     */
-    const {
-      mutate: updateClassSubject,
-      isPending: isPendingUpdateClassSubject,
-    } = $api.useMutation("patch", "/course-offers/{id}");
-
-    /**
      * Export excel
      */
     const { mutate: exportExcel, isPending: isExportingExcel } =
@@ -105,8 +97,6 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       isClassSubjectsLoading,
       dataGiaoViens,
       isGiaoViensLoading,
-      updateClassSubject,
-      isPendingUpdateClassSubject,
       refetchClassSubjects,
       exportExcel,
       isExportingExcel,

@@ -10,24 +10,24 @@ import {
 import ButtonAction from "../../../components/ui/ButtonAction";
 import { SelectOption } from "../../../components/ui/Form/SelectOption";
 import DateInput from "../../../components/ui/Form/DateInput";
-import type { ScheduleItemDto, SemesterDto } from "./ThoiKhoaBieuProvider";
+import type { SemesterDto } from "./ThoiKhoaBieuProvider";
 import { useState } from "react";
 import { getWeeksInRange } from "../TienDoGiangDay/tableTienDoDaoTao/helpers";
 
 interface ThoiKhoaBieuTableProps {
-  scheduleData?: ScheduleItemDto[];
+  scheduleData?: any[];
   semester?: SemesterDto;
 }
 
 // Cấu hình cố định cho Thứ và Ca học
 const daysOfWeek = [
-  { key: "MONDAY", label: "Thứ Hai" },
-  { key: "TUESDAY", label: "Thứ Ba" },
-  { key: "WEDNESDAY", label: "Thứ Tư" },
-  { key: "THURSDAY", label: "Thứ Năm" },
-  { key: "FRIDAY", label: "Thứ Sáu" },
-  { key: "SATURDAY", label: "Thứ Bảy" },
-  { key: "SUNDAY", label: "Chủ Nhật" },
+  { key: "MONDAY", label: "Thứ Hai", offset: 0 },
+  { key: "TUESDAY", label: "Thứ Ba", offset: 1 },
+  { key: "WEDNESDAY", label: "Thứ Tư", offset: 2 },
+  { key: "THURSDAY", label: "Thứ Năm", offset: 3 },
+  { key: "FRIDAY", label: "Thứ Sáu", offset: 4 },
+  { key: "SATURDAY", label: "Thứ Bảy", offset: 5 },
+  { key: "SUNDAY", label: "Chủ Nhật", offset: 6 },
 ];
 
 const shifts: Array<{
@@ -85,6 +85,17 @@ export const ThoiKhoaBieuTable = ({
   const fullDateString = year ? `${year}-${month}-${day}` : "";
   const weeksCount = weeks.length || 1;
 
+  const formatDateForDay = (offset: number) => {
+    if (!currentWeekData?.start) return "";
+    const baseDate = new Date(currentWeekData.start);
+    baseDate.setDate(baseDate.getDate() + offset); // Cộng dồn ngày theo thứ
+
+    const d = String(baseDate.getDate()).padStart(2, "0");
+    const m = String(baseDate.getMonth() + 1).padStart(2, "0");
+    const y = baseDate.getFullYear();
+    return `${d}/${m}/${y}`;
+  };
+
   // Hàm điều hướng tuần
   const handlePrevWeek = () => {
     if (currentWeek > 1) setCurrentWeek((prev) => prev - 1);
@@ -138,14 +149,26 @@ export const ThoiKhoaBieuTable = ({
               <th className="sticky left-0 z-20 w-20 min-w-20 p-3 text-xs font-bold uppercase tracking-wider text-slate-400 border-r border-slate-200 text-center bg-slate-50">
                 Ca
               </th>
-              {daysOfWeek.map((day) => (
-                <th
-                  key={day.key}
-                  className="p-3 text-xs font-extrabold uppercase tracking-wider text-slate-700 border-r border-slate-200 text-center last:border-r-0"
-                >
-                  {day.label}
-                </th>
-              ))}
+              {daysOfWeek.map((day) => {
+                const specificDateStr = formatDateForDay(day.offset);
+                return (
+                  <th
+                    key={day.key}
+                    className="p-3 text-xs border-r border-slate-200 text-center last:border-r-0"
+                  >
+                    <div className="flex flex-col items-center gap-0.5">
+                      <span className="font-extrabold uppercase tracking-wider text-slate-700">
+                        {day.label}
+                      </span>
+                      {specificDateStr && (
+                        <span className="text-[11px] font-medium text-slate-400 normal-case">
+                          ({specificDateStr})
+                        </span>
+                      )}
+                    </div>
+                  </th>
+                );
+              })}
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-200">
@@ -160,7 +183,6 @@ export const ThoiKhoaBieuTable = ({
                   key={shift.key}
                   className="hover:bg-slate-50/30 transition-colors group"
                 >
-                  {/* SỬA: Chuẩn hóa lại độ rộng cố định và tăng z-index để không bị đè */}
                   <td
                     className="p-2 border-r border-slate-200 font-medium align-middle 
               text-center bg-slate-50 sticky left-0 z-10 w-[80px] min-w-[80px]"
@@ -192,11 +214,13 @@ export const ThoiKhoaBieuTable = ({
                       >
                         {cellSchedule ? (
                           <div className="rounded-lg bg-slate-100 w-full p-2.5 flex flex-col gap-2 text-left group/card hover:border-slate-300 hover:shadow transition-all">
+                            {/* Môn học */}
                             <p className="text-[13px] font-semibold text-slate-900 leading-snug break-words whitespace-normal">
-                              {cellSchedule.classSubject?.subject
-                                ?.subjectName ||
+                              {cellSchedule.subjectName ||
                                 `Môn học # ${cellSchedule.classSubjectId}`}
                             </p>
+
+                            {/* Lớp học */}
                             <p className="text-[13px] font-semibold text-slate-900 leading-snug break-words whitespace-normal">
                               {cellSchedule.classSubject?.baseClass
                                 ?.className ||
@@ -217,8 +241,7 @@ export const ThoiKhoaBieuTable = ({
                                   GV:
                                 </span>
                                 <span className="text-slate-700 font-semibold break-words whitespace-normal">
-                                  {cellSchedule.classSubject?.teacher
-                                    ?.fullName || "Chưa phân công"}
+                                  {cellSchedule.teacher || "Chưa phân công"}
                                 </span>
                               </div>
                               <div className="flex items-center gap-1">

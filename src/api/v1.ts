@@ -2515,6 +2515,24 @@ export interface components {
             /** @default active */
             status: string;
         };
+        ClassResponseWithRelationsDto: {
+            id: number;
+            classCode: string;
+            className: string;
+            majorId: number;
+            batchId?: number | null;
+            formTeacherId?: number | null;
+            currentSize: number;
+            maxStudents: number;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            major?: components["schemas"]["MajorDto"];
+            batch?: components["schemas"]["BatchResponseDto"];
+            formTeacher?: components["schemas"]["StaffResponseDto"];
+        };
         UpdateClassDto: {
             classCode?: string;
             className?: string;
@@ -4809,7 +4827,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ClassResponseDto"];
+                    "application/json": components["schemas"]["ClassResponseWithRelationsDto"];
                 };
             };
         };

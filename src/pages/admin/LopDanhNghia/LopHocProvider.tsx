@@ -8,8 +8,6 @@ import { useQueryClient } from "@tanstack/react-query";
 
 export type LopHocResponseDto = components["schemas"]["ClassResponseDto"];
 export type CreateLopHocDto = components["schemas"]["CreateClassDto"];
-export type CurriculumSubjectResponseDto =
-  components["schemas"]["CurriculumSubjectResponseDto"];
 export type SearchClassDto = paths["/classes"]["get"]["parameters"]["query"];
 
 export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
