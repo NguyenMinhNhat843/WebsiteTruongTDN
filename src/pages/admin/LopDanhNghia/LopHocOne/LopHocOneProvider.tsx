@@ -10,7 +10,7 @@ export type ClassSubjectGrade =
 
 export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
   () => {
-    const { currentSemester } = useAppContext();
+    const { currentSemester, isHocKysLoading } = useAppContext();
     const [selectedSemesterId, setselectedSemesterId] = useState<number | null>(
       currentSemester ? currentSemester.id : null,
     );
@@ -18,17 +18,19 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
     const idLopHocNumber = Number(idLopHoc);
 
     useEffect(() => {
-      if (currentSemester) {
+      if (currentSemester && !isHocKysLoading) {
         setselectedSemesterId(currentSemester.id);
       }
-    }, [currentSemester]);
+    }, [currentSemester, isHocKysLoading]);
 
+    console.log("selectedSemesterId", selectedSemesterId);
+    console.log("currentSemester", currentSemester);
     /**
      * Lấy danh sách môn theo học kỳ đã chọn, lấy từ chương trình khung
      */
     const { data: dataMonHocs, isLoading: isMonHocsLoading } = $api.useQuery(
       "get",
-      "/curriculums/curriculum-subjects/by-semester",
+      "/course-offers",
       {
         params: {
           query: {

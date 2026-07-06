@@ -4,6 +4,9 @@ import { useTienDoDaoTaoContext } from "../TienDoDaoTaoProvider";
 import { useEffect, useMemo, useState } from "react";
 import { getWeeksInRange } from "./helpers";
 import { formatDateToString } from "../../../../util/formatDate";
+import type { components } from "../../../../api/v1";
+import { $api } from "../../../../api/client";
+import { toast } from "sonner";
 
 interface DataRow {
   monHocId: number;
@@ -20,6 +23,9 @@ interface DataRow {
     [week: string]: any;
   }[];
 }
+
+export type UpsertPlanTrainingDto =
+  components["schemas"]["UpsertTrainingPlanDto"];
 
 const TableTienDoDaoTao = () => {
   const { trainingPlan, isLoadingTrainingPlan, classes, semesterId, teachers } =
@@ -235,8 +241,101 @@ const TableTienDoDaoTao = () => {
     );
   };
 
+  const { mutate: upsertPlanTraining, isPending: isPendingUpsertPlanTraining } =
+    $api.useMutation("post", "/class-subject-session/upsert-plan-training");
+
+  // "S1-3" -> { shift: "S", startPeriod: 1, endPeriod: 3 }
+  function parseTiet(tiet: string): {
+    shift: string;
+    startPeriod: number;
+    endPeriod: number;
+  } {
+    const match = tiet.match(/^([A-Za-z]*)(\d+)-(\d+)$/);
+    if (!match) return { shift: "", startPeriod: 0, endPeriod: 0 };
+    const [, shift, start, end] = match;
+    return { shift, startPeriod: Number(start), endPeriod: Number(end) };
+  }
+
+  const DAY_OFFSET: Record<string, number> = {
+    MONDAY: 0,
+    TUESDAY: 1,
+    WEDNESDAY: 2,
+    THURSDAY: 3,
+    FRIDAY: 4,
+    SATURDAY: 5,
+    SUNDAY: 6,
+  };
+
+  // ⚠️ Giả định week.start (trả về từ getWeeksInRange) là ngày Thứ 2 của tuần đó.
+  function getStudyDate(weekStart: Date | string, dayOfWeek: string): string {
+    const offset = DAY_OFFSET[dayOfWeek] ?? 0;
+
+    // Nếu weekStart là string (hoặc Date), new Date() đều sẽ xử lý mượt mà
+    const date = new Date(weekStart);
+
+    date.setDate(date.getDate() + offset);
+    return date.toISOString();
+  }
+
   const handleSubmit = () => {
-    console.log("Table state:", table);
+    if (!classIdParam || !semesterIdParam) {
+      alert("Vui lòng chọn lớp học và học kỳ trước khi lưu.");
+      return;
+    }
+
+    const items: UpsertPlanTrainingDto["items"] = table.map((item) => {
+      const sessions = item.sessions
+        // Bỏ qua các buổi chưa cấu hình đầy đủ Thứ/Tiết
+        .filter((session) => session.thu && session.tiet)
+        .map((session) => {
+          const { shift, startPeriod, endPeriod } = parseTiet(session.tiet);
+
+          const schedules = weekList
+            .filter((week) => !!session[`week_${week.weekNumber}`])
+            .map((week) => ({
+              roomId: (session.idPhongHoc || null) as any,
+              studyDate: getStudyDate(week.start, session.thu),
+              weekNumber: week.weekNumber,
+            }));
+
+          return {
+            roomId: (session.idPhongHoc || null) as any,
+            countPeriod: (endPeriod - startPeriod + 1) as any,
+            dayOfWeek:
+              session.thu as UpsertPlanTrainingDto["items"][number]["sessions"][number]["dayOfWeek"],
+            endPeriod,
+            shift,
+            startPeriod,
+            schedules,
+          };
+        });
+
+      return {
+        subjectId: item.monHocId,
+        teacherId: (item.giaoVienGiangDayId || null) as any,
+        sessions,
+      };
+    }) as UpsertPlanTrainingDto["items"];
+
+    const payload: UpsertPlanTrainingDto = {
+      classId: Number(classIdParam),
+      semesterId: Number(semesterIdParam),
+      items,
+    };
+
+    upsertPlanTraining(
+      {
+        body: payload,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Lưu kế hoạch đào tạo thành công!");
+        },
+        onError: () => {
+          toast.error("Có lỗi xảy ra khi lưu kế hoạch đào tạo!");
+        },
+      },
+    );
   };
 
   return (
@@ -309,9 +408,7 @@ const TableTienDoDaoTao = () => {
                   <th className="px-6 min-w-60 py-3 border border-gray-200">
                     Giáo viên giảng dạy
                   </th>
-                  <th className="px-4 py-3 text-center border border-gray-200">
-                    Tín chỉ
-                  </th>
+
                   <th className="px-4 py-3 text-center border border-gray-200">
                     Tổng số tiết
                   </th>
@@ -393,14 +490,6 @@ const TableTienDoDaoTao = () => {
                                   </option>
                                 ))}
                               </select>
-                            </td>
-
-                            {/* Số tín chỉ */}
-                            <td
-                              rowSpan={totalSessions}
-                              className="px-4 py-4 text-center border-r border-gray-200 align-middle"
-                            >
-                              {item.tinChi ?? "0"}
                             </td>
 
                             {/* Tổng số tiết */}
@@ -551,16 +640,16 @@ const TableTienDoDaoTao = () => {
                 })}
               </tbody>
             </table>
-            <div className="flex justify-end mt-4">
-              <button
-                onClick={handleSubmit}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow-sm"
-              >
-                Lưu tiến độ đào tạo
-              </button>
-            </div>
           </div>
         )}
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={handleSubmit}
+            className="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-4 py-2 rounded-md shadow-sm"
+          >
+            Lưu tiến độ đào tạo
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -1031,6 +1031,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/class-subject-session/upsert-plan-training": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tạo hoặc Cập nhật kế hoạch đào tạo cho môn học */
+        post: operations["ClassSubjectSessionController_upsertTrainingPlan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/class-subject-session/plan-training": {
         parameters: {
             query?: never;
@@ -1065,23 +1082,6 @@ export interface paths {
         post?: never;
         /** Delete a class subject session */
         delete: operations["ClassSubjectSessionController_remove"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/class-subject-session/upsert": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Tạo hoặc Cập nhật kế hoạch đào tạo cho môn học */
-        post: operations["ClassSubjectSessionController_upsertTrainingPlan"];
-        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -2840,6 +2840,32 @@ export interface components {
             shift: string;
             startPeriod: number;
         };
+        SchedulesPayload: {
+            roomId?: Record<string, never> | null;
+            /** Format: date-time */
+            studyDate?: string | null;
+            weekNumber: number;
+        };
+        SessionPayload: {
+            roomId?: Record<string, never> | null;
+            countPeriod?: Record<string, never> | null;
+            /** @enum {string} */
+            dayOfWeek: "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY" | "SATURDAY" | "SUNDAY";
+            endPeriod: number;
+            shift: string;
+            startPeriod: number;
+            schedules: components["schemas"]["SchedulesPayload"][];
+        };
+        UpsertTrainingPlanDtoItem: {
+            subjectId: number;
+            teacherId?: Record<string, never> | null;
+            sessions: components["schemas"]["SessionPayload"][];
+        };
+        UpsertTrainingPlanDto: {
+            classId: number;
+            semesterId: number;
+            items: components["schemas"]["UpsertTrainingPlanDtoItem"][];
+        };
         Object: Record<string, never>;
         ClassSubjectDto: {
             id: number;
@@ -2903,13 +2929,6 @@ export interface components {
             endPeriod?: number;
             shift?: string;
             startPeriod?: number;
-        };
-        UpsertTrainingPlanDto: {
-            classId: number;
-            semesterId: number;
-            subjectId: number;
-            teacherId?: Record<string, never> | null;
-            sessions: components["schemas"]["ClassSubjectSessionWithRelationDto"][];
         };
         CreateClassSubjectScheduleDetailDto: {
             roomId?: Record<string, never> | null;
@@ -5639,6 +5658,27 @@ export interface operations {
             };
         };
     };
+    ClassSubjectSessionController_upsertTrainingPlan: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpsertTrainingPlanDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     ClassSubjectSessionController_getTrainingPlan: {
         parameters: {
             query: {
@@ -5719,27 +5759,6 @@ export interface operations {
         requestBody?: never;
         responses: {
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ClassSubjectSessionController_upsertTrainingPlan: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpsertTrainingPlanDto"];
-            };
-        };
-        responses: {
-            201: {
                 headers: {
                     [name: string]: unknown;
                 };

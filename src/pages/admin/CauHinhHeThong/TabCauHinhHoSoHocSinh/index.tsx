@@ -12,18 +12,14 @@ import {
 } from "lucide-react";
 
 const CauHinhHoSoHocSinh = () => {
-  // Giữ nguyên State quản lý đóng/mở Modal tạo mới
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-  // 2. Thêm State quản lý đóng/mở Modal chi tiết và ID đang chọn
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedConfigId, setSelectedConfigId] = useState<number | null>(null);
 
-  // Giữ nguyên useQuery lấy danh sách
   const { data: documentConfigs, isLoading: isLoadingDocumentConfigs } =
     $api.useQuery("get", "/document-configs");
 
-  // 3. Thay đổi logic useQuery chi tiết theo ID đang chọn một cách linh hoạt
   const { data: documentConfigDetail, isLoading: isLoadingDetail } =
     $api.useQuery(
       "get",
@@ -31,24 +27,20 @@ const CauHinhHoSoHocSinh = () => {
       {
         params: {
           path: {
-            // Ép kiểu hoặc fallback về giá trị mặc định để tránh lỗi compile nếu selectedConfigId là null
             id: selectedConfigId || 0,
           },
         },
       },
       {
-        // Chỉ tự động gọi API khi selectedConfigId có giá trị thực tế và modal đang mở
         enabled: !!selectedConfigId && isDetailModalOpen,
       },
     );
 
-  // Hàm xử lý khi click vào Card để xem chi tiết
   const handleOpenDetail = (id: number) => {
     setSelectedConfigId(id);
     setIsDetailModalOpen(true);
   };
 
-  // Hàm xử lý khi đóng Modal chi tiết
   const handleCloseDetail = () => {
     setIsDetailModalOpen(false);
     setSelectedConfigId(null);
