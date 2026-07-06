@@ -79,8 +79,6 @@ export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
         })
         .flat(2) || [];
 
-    console.log("scheduleItems", scheduleItems);
-
     return {
       semesterId,
       setSemesterId,

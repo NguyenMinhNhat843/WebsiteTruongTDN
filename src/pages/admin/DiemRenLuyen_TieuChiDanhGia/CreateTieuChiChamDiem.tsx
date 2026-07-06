@@ -70,9 +70,7 @@ const CreateTieuChiChamDiem = ({
         maxScore: Number(maxScore),
         // Nếu người dùng không nhập hoặc nhập rỗng thì bỏ qua sortOrder để backend dùng default
         sortOrder:
-          sortOrder !== undefined && !isNaN(sortOrder)
-            ? Number(sortOrder)
-            : undefined,
+          sortOrder !== undefined && !isNaN(sortOrder) ? Number(sortOrder) : 0,
       },
     });
   };

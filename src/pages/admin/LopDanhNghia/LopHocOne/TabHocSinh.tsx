@@ -1,5 +1,4 @@
-import { useMemo } from "react";
-// Đổi lại hook useLopHocOneContext nếu provider của bạn export tên này
+import { useMemo, useState } from "react";
 import { useLopHocContext } from "../LopHocProvider";
 import {
   useReactTable,
@@ -7,11 +6,11 @@ import {
   flexRender,
   type ColumnDef,
 } from "@tanstack/react-table";
-import { Loader2, Trash2, FileDown } from "lucide-react"; // Thêm icon FileDown
+import { Loader2, Trash2, FileDown, Paperclip } from "lucide-react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
+import CreateBangDiemRenLuyenModal from "../../DiemRenLuyen/Create/CreateBangDiemRenLuyen";
 
 const TableDanhSachHocSinh = () => {
-  // Lấy thêm hàm mutation và trạng thái loading từ Provider context xuống
   const {
     studentsInLopHoc,
     isLoadingStudentsInLopHoc,
@@ -20,7 +19,17 @@ const TableDanhSachHocSinh = () => {
     isExportingStudentGrade,
   } = useLopHocContext();
 
-  // 1. Chuẩn hóa dữ liệu danh sách học sinh cho TanStack Table [cite: 14]
+  // State quản lý học sinh đang chọn để mở modal điểm rèn luyện
+  const [selectedStudentForPoint, setSelectedStudentForPoint] = useState<{
+    id: number;
+    periodId: number; // Bạn hãy truyền periodId thực tế từ context hoặc props lớp học vào đây
+  } | null>(null);
+
+  // Giả định bạn có periodId (Kỳ học) từ dữ liệu lớp học, ví dụ: studentsInLopHoc?.periodId hoặc truyền từ cha xuống.
+  // Ở đây mình tạm lấy ví dụ là 1, bạn hãy thay đổi cho đúng logic dự án.
+  const currentPeriodId = 1;
+
+  // 1. Chuẩn hóa dữ liệu danh sách học sinh
   const dataDanhSachHocSinh = useMemo(() => {
     return (studentsInLopHoc?.students || []).map((student, index) => ({
       stt: index + 1,
@@ -38,25 +47,17 @@ const TableDanhSachHocSinh = () => {
     exportStudentGrade(
       {
         parseAs: "blob",
-        params: {
-          path: { id: studentId },
-        },
+        params: { path: { id: studentId } },
       },
       {
         onSuccess: (blobData) => {
-          // Khởi tạo link ảo để trình duyệt trigger hành động tải file xuống máy
           const url = window.URL.createObjectURL(blobData as unknown as Blob);
           const link = document.createElement("a");
           link.href = url;
-
-          // Định dạng tên file sạch khi lưu về máy học sinh
           const safeName = studentName.replace(/\s+/g, "_");
           link.setAttribute("download", `Bang_Diem_${safeName}.xlsx`);
-
           document.body.appendChild(link);
           link.click();
-
-          // Thu dọn bộ nhớ sau khi hoàn tất tải file
           link.parentNode?.removeChild(link);
           window.URL.revokeObjectURL(url);
         },
@@ -70,13 +71,10 @@ const TableDanhSachHocSinh = () => {
     );
   };
 
-  // 2. Định nghĩa các cột cho TanStack Table [cite: 26]
+  // 2. Định nghĩa các cột cho TanStack Table
   const columns = useMemo<ColumnDef<(typeof dataDanhSachHocSinh)[0]>[]>(
     () => [
-      {
-        header: "STT",
-        accessorKey: "stt",
-      },
+      { header: "STT", accessorKey: "stt" },
       {
         header: "Mã Sinh Viên",
         accessorKey: "maSinhVien",
@@ -95,56 +93,65 @@ const TableDanhSachHocSinh = () => {
           </span>
         ),
       },
-      {
-        header: "Ngày sinh",
-        accessorKey: "dob",
-      },
+      { header: "Ngày sinh", accessorKey: "dob" },
       {
         id: "actions",
         header: "Hành động",
         cell: (info) => {
-          const student = info.row.original; // Lấy dữ liệu dòng hiện tại
+          const student = info.row.original;
           return (
             <div className="flex items-center gap-2">
-              {/* Nút Xuất Bảng Điểm Mới Thêm Vào */}
+              {/* Nút Xuất Bảng Điểm */}
               <ButtonAction
                 title="Xuất bảng điểm Excel"
-                variant="outline"
+                variant="export"
                 disabled={isExportingStudentGrade}
                 onClick={() =>
-                  handleExportGrade(student!.id!, student.tenHocSinh)
+                  handleExportGrade(student.id!, student.tenHocSinh)
                 }
                 icon={
                   isExportingStudentGrade ? (
-                    <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
-                    <FileDown className="h-4 w-4 hover:text-blue-500" />
+                    <FileDown className="h-4 w-4" />
                   )
                 }
               />
 
-              {/* Nút Xóa Gốc Giữ Nguyên [cite: 60-65] */}
+              {/* Nút Xóa Gốc Giữ Nguyên */}
               <ButtonAction
                 title="Xóa học sinh khỏi lớp học"
-                variant="outline"
-                icon={<Trash2 className="h-4 w-4 hover:text-red-500" />}
+                variant="danger"
+                icon={<Trash2 className="h-4 w-4" />}
+              />
+
+              {/* Nút Điểm rèn luyện -> Click để set state mở modal */}
+              <ButtonAction
+                title="Điểm rèn luyện"
+                variant="primary"
+                icon={<Paperclip className="h-4 w-4" />}
+                onClick={() =>
+                  setSelectedStudentForPoint({
+                    id: student.id!,
+                    periodId: currentPeriodId, // Truyền periodId tương ứng vào đây
+                  })
+                }
               />
             </div>
           );
         },
       },
     ],
-    [isExportingStudentGrade], // Nạp loading state vào dependency để cập nhật trạng thái icon xoay
+    [isExportingStudentGrade, currentPeriodId], // Nạp thêm currentPeriodId vào dependency
   );
 
-  // 3. Khởi tạo TanStack Table [cite: 71]
+  // 3. Khởi tạo TanStack Table
   const table = useReactTable({
     data: dataDanhSachHocSinh,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
 
-  // Trạng thái Loading toàn trang [cite: 77]
   if (isLoadingLopHocDetail || isLoadingStudentsInLopHoc) {
     return (
       <div className="flex h-64 items-center justify-center gap-2 text-gray-500">
@@ -157,10 +164,7 @@ const TableDanhSachHocSinh = () => {
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
       <div className="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-        <h2 className="font-bold text-gray-800 text-lg">
-          {" "}
-          Danh sách học sinh{" "}
-        </h2>
+        <h2 className="font-bold text-gray-800 text-lg">Danh sách học sinh</h2>
       </div>
 
       <div className="overflow-x-auto">
@@ -218,6 +222,16 @@ const TableDanhSachHocSinh = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Gọi Modal ở cuối Component */}
+      {selectedStudentForPoint && (
+        <CreateBangDiemRenLuyenModal
+          isOpen={!!selectedStudentForPoint}
+          userId={selectedStudentForPoint.id}
+          periodId={selectedStudentForPoint.periodId}
+          onClose={() => setSelectedStudentForPoint(null)} // Reset về null để đóng modal
+        />
+      )}
     </div>
   );
 };

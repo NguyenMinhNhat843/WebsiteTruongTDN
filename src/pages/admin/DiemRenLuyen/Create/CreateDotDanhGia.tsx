@@ -17,7 +17,7 @@ const CreateDotDanhGia = ({
   onClose,
   onSuccess,
 }: CreateDotDanhGiaProps) => {
-  const {hocKysOptions}  = useAppContext();
+  const { hocKysOptions } = useAppContext();
   const [name, setName] = useState("");
   const [error, setError] = useState("");
 
@@ -38,20 +38,6 @@ const CreateDotDanhGia = ({
       },
     },
   );
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!name.trim()) {
-      setError("Vui lòng nhập tên đợt đánh giá");
-      return;
-    }
-
-    setError("");
-    createDotDanhGiaDiemRenLuyen({
-      body: { name: name.trim() },
-    });
-  };
 
   if (!isOpen) return null;
 
@@ -86,7 +72,7 @@ const CreateDotDanhGia = ({
         </div>
 
         {/* Form nhập liệu */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
               Tên đợt đánh giá <span className="text-red-500">*</span>

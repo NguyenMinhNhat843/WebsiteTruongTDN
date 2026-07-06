@@ -1,10 +1,31 @@
 import { useState } from "react";
-import { Plus, Award, Loader2, RefreshCw } from "lucide-react";
+import {
+  Plus,
+  Award,
+  Loader2,
+  RefreshCw,
+  Trash2,
+  Edit2,
+  X,
+} from "lucide-react";
 import { $api } from "../../../api/client";
-import CreateTieuChiChamDiem from "./CreateTieuChiChamDiem"; // Điều chỉnh lại đường dẫn cho đúng cấu trúc của bạn
+import CreateTieuChiChamDiem from "./CreateTieuChiChamDiem";
+
+export type UpdateCriterionDto = {
+  maxScore: number;
+  sortOrder: number;
+  title: string;
+};
 
 const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // State quản lý tiêu chí đang được chọn để chỉnh sửa (nếu null nghĩa là modal đang đóng)
+  const [editingItem, setEditingItem] = useState<{
+    id: number;
+    title: string;
+    maxScore: number;
+    sortOrder: number;
+  } | null>(null);
 
   // Lấy dữ liệu danh sách tiêu chí từ API
   const {
@@ -19,6 +40,58 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
+    });
+  };
+
+  // API Xóa
+  const { mutate: deleteTieuChiChamDiem, isPending: isDeleting } =
+    $api.useMutation("delete", "/assessment/criteria/{id}", {
+      onSuccess: () => {
+        alert("Xóa tiêu chí thành công!");
+        refetch();
+      },
+      onError: (error) => {
+        alert("Xóa thất bại: " + (error as any)?.message);
+      },
+    });
+
+  // API Sửa
+  const { mutate: updateTieuChiChamDiem, isPending: isUpdating } =
+    $api.useMutation("patch", "/assessment/criteria/{id}", {
+      onSuccess: () => {
+        alert("Cập nhật tiêu chí thành công!");
+        setEditingItem(null); // Đóng modal sửa
+        refetch(); // Tải lại danh sách
+      },
+      onError: (error) => {
+        alert("Cập nhật thất bại: " + (error as any)?.message);
+      },
+    });
+
+  // Xử lý khi nhấn nút Xóa
+  const handleDelete = (id: number, title: string) => {
+    if (
+      window.confirm(`Bạn có chắc chắn muốn xóa tiêu chí: "${title}" không?`)
+    ) {
+      deleteTieuChiChamDiem({ params: { path: { id } } });
+    }
+  };
+
+  // Xử lý khi Submit form chỉnh sửa
+  const handleUpdateSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!editingItem) return;
+
+    const formData = new FormData(e.currentTarget);
+    const body: UpdateCriterionDto = {
+      title: formData.get("title") as string,
+      maxScore: Number(formData.get("maxScore")),
+      sortOrder: Number(formData.get("sortOrder")),
+    };
+
+    updateTieuChiChamDiem({
+      params: { path: { id: editingItem.id } },
+      body: body as any, // Ép kiểu nếu đặc tả openapi client yêu cầu wrapper
     });
   };
 
@@ -75,7 +148,7 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
                   <th className="px-6 py-3.5">Nội dung tiêu chí đánh giá</th>
                   <th className="px-6 py-3.5 w-32 text-center">Điểm tối đa</th>
                   <th className="px-6 py-3.5 w-40">Ngày cấu hình</th>
-                  <th className="px-6 py-3.5 w-24 text-right">Thao tác</th>
+                  <th className="px-6 py-3.5 w-36 text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200 text-sm text-gray-700">
@@ -110,16 +183,29 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
                       {formatDate(item.updatedAt || item.createdAt)}
                     </td>
 
-                    {/* Thao tác nhanh */}
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-xs font-medium">
+                    {/* Thao tác Sửa / Xóa */}
+                    <td className="px-6 py-4 whitespace-nowrap text-center text-xs font-medium space-x-3">
                       <button
                         type="button"
-                        className="text-emerald-600 hover:text-emerald-800 transition-colors bg-transparent border-0 cursor-pointer"
-                        onClick={() => {
-                          alert(`Chỉnh sửa tiêu chí ID: ${item.id}`);
-                        }}
+                        onClick={() =>
+                          setEditingItem({
+                            id: item.id,
+                            title: item.title,
+                            maxScore: item.maxScore,
+                            sortOrder: item.sortOrder,
+                          })
+                        }
+                        className="inline-flex items-center gap-1 text-amber-600 hover:text-amber-800 transition-colors bg-transparent border-0 cursor-pointer"
                       >
-                        Sửa
+                        <Edit2 className="h-3 w-3" /> Sửa
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isDeleting}
+                        onClick={() => handleDelete(item.id, item.title)}
+                        className="inline-flex items-center gap-1 text-rose-600 hover:text-rose-800 transition-colors bg-transparent border-0 cursor-pointer disabled:opacity-50"
+                      >
+                        <Trash2 className="h-3 w-3" /> Xóa
                       </button>
                     </td>
                   </tr>
@@ -149,9 +235,91 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={() => {
-          refetch(); // Tự động cập nhật lại danh sách ngay sau khi thêm mới thành công
+          refetch();
         }}
       />
+
+      {/* 4. Modal cập nhật tiêu chí (Render inline để code tinh gọn) */}
+      {editingItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-xl shadow-xl border border-gray-100 max-w-md w-full overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+              <h3 className="text-base font-bold text-gray-900">
+                Cập nhật tiêu chí
+              </h3>
+              <button
+                onClick={() => setEditingItem(null)}
+                className="text-gray-400 hover:text-gray-600 transition-colors p-1 rounded-lg hover:bg-gray-100"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            <form onSubmit={handleUpdateSubmit} className="p-6 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">
+                  Nội dung tiêu chí
+                </label>
+                <textarea
+                  name="title"
+                  required
+                  defaultValue={editingItem.title}
+                  rows={3}
+                  className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-shadow"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">
+                    Điểm tối đa
+                  </label>
+                  <input
+                    type="number"
+                    name="maxScore"
+                    required
+                    min={0}
+                    defaultValue={editingItem.maxScore}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-shadow"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-gray-600 uppercase tracking-wider mb-1.5">
+                    Thứ tự hiển thị
+                  </label>
+                  <input
+                    type="number"
+                    name="sortOrder"
+                    required
+                    min={0}
+                    defaultValue={editingItem.sortOrder}
+                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-shadow"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-gray-100 mt-6">
+                <button
+                  type="button"
+                  onClick={() => setEditingItem(null)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  Hủy
+                </button>
+                <button
+                  type="submit"
+                  disabled={isUpdating}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors disabled:opacity-50"
+                >
+                  {isUpdating && <Loader2 className="h-3 w-3 animate-spin" />}
+                  Lưu thay đổi
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

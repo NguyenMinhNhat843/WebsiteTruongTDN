@@ -1608,24 +1608,6 @@ export interface paths {
         patch: operations["AdmissionProfileController_update"];
         trace?: never;
     };
-    "/assessment/periods": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy danh sách các đợt đánh giá */
-        get: operations["AssessmentController_getPeriods"];
-        put?: never;
-        /** Phòng CTHS: Khởi tạo đợt đánh giá mới */
-        post: operations["AssessmentController_createPeriod"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/assessment/criteria": {
         parameters: {
             query?: never;
@@ -1633,18 +1615,18 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Lấy danh sách tiêu chí chấm điểm chuẩn */
-        get: operations["AssessmentController_getCriteria"];
+        /** Lấy danh sách tiêu chí chấm điểm */
+        get: operations["AssessmentController_getAllCriteria"];
         put?: never;
-        /** Phòng CTHS: Tạo tiêu chí chấm điểm chuẩn */
-        post: operations["AssessmentController_createCriterion"];
+        /** Tạo tiêu chí chấm điểm */
+        post: operations["AssessmentController_createCriteria"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/assessment/periods/{id}/freeze": {
+    "/assessment/criteria/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1653,97 +1635,13 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Phòng CTHS: Khóa đợt đánh giá & công bố kết quả (Tính toán xếp loại tự động) */
-        post: operations["AssessmentController_freezePeriod"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assessment/student/my-assessment": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Học sinh: Lấy phiếu điểm rèn luyện cá nhân trong đợt */
-        get: operations["AssessmentController_getMyAssessment"];
-        put?: never;
         post?: never;
-        delete?: never;
+        /** Xóa tiêu chí chấm điểm */
+        delete: operations["AssessmentController_deleteCriteria"];
         options?: never;
         head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assessment/student/submit": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Học sinh: Tự đánh giá và nộp phiếu rèn luyện (Trạng thái chuyển sang PENDING) */
-        post: operations["AssessmentController_submitAssessment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assessment/teacher/class-students": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** GVCN: Xem danh sách học sinh của lớp mình chủ nhiệm kèm trạng thái phiếu rèn luyện */
-        get: operations["AssessmentController_getClassStudentsAssessments"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assessment/teacher/student-assessment/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** GVCN: Xem chi tiết phiếu rèn luyện của một học sinh trong lớp */
-        get: operations["AssessmentController_getStudentAssessmentForTeacher"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/assessment/teacher/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** GVCN: Chấm điểm điều chỉnh, nhận xét và Duyệt phiếu rèn luyện (APPROVED) */
-        post: operations["AssessmentController_approveAssessment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
+        /** Cập nhật tiêu chí chấm điểm */
+        patch: operations["AssessmentController_updateCriteria"];
         trace?: never;
     };
 }
@@ -3349,41 +3247,10 @@ export interface components {
             gpa8?: number;
             gpa9?: number;
         };
-        CreatePeriodDto: {
-            /**
-             * @description Tên đợt đánh giá
-             * @example HK1-2026-2027
-             */
-            name: string;
-            semesterId: number;
-        };
         CreateCriterionDto: {
-            /**
-             * @description Nội dung tiêu chí
-             * @example Ý thức học tập (Đi học đầy đủ, đúng giờ)
-             */
-            title: string;
-            /**
-             * @description Điểm tối đa của tiêu chí này
-             * @example 30
-             */
             maxScore: number;
-            /**
-             * @description Thứ tự sắp xếp hiển thị
-             * @example 1
-             */
-            sortOrder?: number;
-        };
-        EvaluationPeriodDto: {
-            id: number;
-            isActive: boolean;
-            semesterId: number;
-            isFrozen: boolean;
-            name: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
+            sortOrder: number;
+            title: string;
         };
         CriterionDto: {
             id: number;
@@ -3394,78 +3261,6 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-        };
-        AssessmentDetailDtoWithRelation: {
-            id: number;
-            assessmentId: number;
-            criterionId: number;
-            studentScore: number;
-            teacherScore: number;
-            criterion: components["schemas"]["CriterionDto"];
-        };
-        AssessmentDtoWithRelation: {
-            id: number;
-            periodId: number;
-            studentId: number;
-            /** @enum {string} */
-            status: "NOT_SUBMITTED" | "PENDING" | "APPROVED";
-            totalStudentScore: number;
-            totalTeacherScore: number;
-            /** @enum {string|null} */
-            finalGrade: "EXCELLENT" | "GOOD" | "FAIR" | "AVERAGE" | "POOR" | null;
-            teacherComment: Record<string, never> | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            details: components["schemas"]["AssessmentDetailDtoWithRelation"][];
-        };
-        AssessmentDetailInput: {
-            /**
-             * @description ID tiêu chí
-             * @example 1
-             */
-            criterionId: number;
-            /**
-             * @description Điểm học sinh tự chấm
-             * @example 25
-             */
-            studentScore: number;
-        };
-        SubmitAssessmentDto: {
-            /**
-             * @description ID đợt đánh giá
-             * @example 1
-             */
-            periodId: number;
-            /** @description Chi tiết điểm tự chấm theo tiêu chí */
-            details: components["schemas"]["AssessmentDetailInput"][];
-        };
-        TeacherAssessmentDetailInput: {
-            /**
-             * @description ID tiêu chí
-             * @example 1
-             */
-            criterionId: number;
-            /**
-             * @description Điểm GVCN duyệt cuối cùng
-             * @example 24
-             */
-            teacherScore: number;
-        };
-        ApproveAssessmentDto: {
-            /**
-             * @description ID phiếu điểm cần duyệt
-             * @example 1
-             */
-            assessmentId: number;
-            /**
-             * @description Nhận xét của GVCN
-             * @example Học sinh tích cực tham gia các hoạt động
-             */
-            teacherComment?: string;
-            /** @description Chi tiết điểm GVCN chấm theo tiêu chí */
-            details: components["schemas"]["TeacherAssessmentDetailInput"][];
         };
     };
     responses: never;
@@ -6794,47 +6589,7 @@ export interface operations {
             };
         };
     };
-    AssessmentController_getPeriods: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["EvaluationPeriodDto"][];
-                };
-            };
-        };
-    };
-    AssessmentController_createPeriod: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreatePeriodDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AssessmentController_getCriteria: {
+    AssessmentController_getAllCriteria: {
         parameters: {
             query?: never;
             header?: never;
@@ -6853,7 +6608,7 @@ export interface operations {
             };
         };
     };
-    AssessmentController_createCriterion: {
+    AssessmentController_createCriteria: {
         parameters: {
             query?: never;
             header?: never;
@@ -6866,15 +6621,18 @@ export interface operations {
             };
         };
         responses: {
+            /** @description Tiêu chí chấm điểm được tạo thành công */
             201: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["CriterionDto"];
+                };
             };
         };
     };
-    AssessmentController_freezePeriod: {
+    AssessmentController_deleteCriteria: {
         parameters: {
             query?: never;
             header?: never;
@@ -6885,78 +6643,18 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AssessmentController_getMyAssessment: {
-        parameters: {
-            query: {
-                /** @description ID đợt đánh giá */
-                periodId: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
+            /** @description Tiêu chí chấm điểm được xóa thành công */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AssessmentDtoWithRelation"];
+                    "application/json": components["schemas"]["CriterionDto"];
                 };
             };
         };
     };
-    AssessmentController_submitAssessment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SubmitAssessmentDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AssessmentController_getClassStudentsAssessments: {
-        parameters: {
-            query: {
-                /** @description ID đợt đánh giá */
-                periodId: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AssessmentController_getStudentAssessmentForTeacher: {
+    AssessmentController_updateCriteria: {
         parameters: {
             query?: never;
             header?: never;
@@ -6965,34 +6663,20 @@ export interface operations {
             };
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCriterionDto"];
+            };
+        };
         responses: {
+            /** @description Tiêu chí chấm điểm được cập nhật thành công */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
-            };
-        };
-    };
-    AssessmentController_approveAssessment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApproveAssessmentDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
+                content: {
+                    "application/json": components["schemas"]["CriterionDto"];
                 };
-                content?: never;
             };
         };
     };
