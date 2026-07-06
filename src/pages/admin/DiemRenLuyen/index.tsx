@@ -7,12 +7,15 @@ import {
   Loader2,
   FileText,
   ArrowUpRight,
+  Trash2,
 } from "lucide-react";
 import { $api } from "../../../api/client";
 import CreateDotDanhGia from "./Create/CreateDotDanhGia";
+import DetailDotDanhGiaModal from "./One/DetailDotDanhGiaModal";
 
 const DiemRenLuyenIndex = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedPeriodId, setSelectedPeriodId] = useState<number | null>(null);
 
   // Lấy dữ liệu danh sách đợt đánh giá
   const {
@@ -21,6 +24,23 @@ const DiemRenLuyenIndex = () => {
     refetch,
   } = $api.useQuery("get", "/assessment/periods");
 
+  // Hook Mutation Xóa đợt đánh giá
+  const { mutate: deletePeriod, isPending: isDeleting } = $api.useMutation(
+    "delete",
+    "/assessment/periods/{id}",
+    {
+      onSuccess: () => {
+        alert("Xóa đợt đánh giá thành công!");
+        refetch();
+      },
+      onError: (err) => {
+        alert(
+          "Xóa thất bại: " + ((err as any)?.message || "Lỗi kết nối server"),
+        );
+      },
+    },
+  );
+
   // Hàm định dạng ngày tháng hiển thị trực quan
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("vi-VN", {
@@ -28,6 +48,16 @@ const DiemRenLuyenIndex = () => {
       month: "short",
       day: "numeric",
     });
+  };
+
+  const handleDelete = (id: number, name: string) => {
+    if (
+      window.confirm(
+        `Bạn có chắc chắn muốn xóa đợt đánh giá: "${name}" không?\nHành động này sẽ xóa toàn bộ liên kết tiêu chí liên quan.`,
+      )
+    ) {
+      deletePeriod({ params: { path: { id } } });
+    }
   };
 
   return (
@@ -76,7 +106,6 @@ const DiemRenLuyenIndex = () => {
           </p>
         </div>
       ) : (
-        // Responsive Grid layout: 1 cột trên mobile, 2 cột trên tablet, 3 cột trên desktop lớn
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
           {periods.map((period) => (
             <div
@@ -86,7 +115,6 @@ const DiemRenLuyenIndex = () => {
               <div>
                 {/* Phần Trạng thái (Badges) */}
                 <div className="flex items-center justify-between gap-2 mb-4">
-                  {/* Trạng thái Hoạt động */}
                   {period.isActive ? (
                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-green-50 text-green-700 border border-green-200/60">
                       <span className="h-1.5 w-1.5 rounded-full bg-green-600 animate-pulse" />
@@ -98,18 +126,30 @@ const DiemRenLuyenIndex = () => {
                     </span>
                   )}
 
-                  {/* Trạng thái Khóa điểm */}
-                  {period.isFrozen ? (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200/60">
-                      <ShieldAlert className="h-3.5 w-3.5 text-amber-600" />
-                      Đã khóa điểm
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200/60">
-                      <Shield className="h-3.5 w-3.5 text-blue-600" />
-                      Đang mở nhập
-                    </span>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {period.isFrozen ? (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200/60">
+                        <ShieldAlert className="h-3.5 w-3.5 text-amber-600" />
+                        Đã khóa
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200/60">
+                        <Shield className="h-3.5 w-3.5 text-blue-600" />
+                        Mở nhập
+                      </span>
+                    )}
+
+                    {/* Nút xóa nhanh */}
+                    <button
+                      type="button"
+                      disabled={isDeleting}
+                      onClick={() => handleDelete(period.id, period.name)}
+                      className="text-gray-400 hover:text-red-600 transition-colors bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-gray-50 disabled:opacity-50"
+                      title="Xóa đợt đánh giá"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
 
                 {/* Tên đợt đánh giá */}
@@ -127,7 +167,7 @@ const DiemRenLuyenIndex = () => {
 
                 <button
                   type="button"
-                  onClick={() => alert(`Xem chi tiết đợt ID: ${period.id}`)}
+                  onClick={() => setSelectedPeriodId(period.id)}
                   className="inline-flex items-center gap-1 font-medium text-blue-600 hover:text-blue-800 transition-colors bg-transparent border-0 cursor-pointer"
                 >
                   Chi tiết
@@ -143,9 +183,14 @@ const DiemRenLuyenIndex = () => {
       <CreateDotDanhGia
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSuccess={() => {
-          refetch(); // Reload danh sách sau khi thêm mới
-        }}
+        onSuccess={() => refetch()}
+      />
+
+      {/* 4. Modal Chi tiết & Chỉnh sửa tích hợp */}
+      <DetailDotDanhGiaModal
+        periodId={selectedPeriodId}
+        onClose={() => setSelectedPeriodId(null)}
+        onSuccess={() => refetch()}
       />
     </div>
   );

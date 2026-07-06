@@ -1644,6 +1644,43 @@ export interface paths {
         patch: operations["AssessmentController_updateCriteria"];
         trace?: never;
     };
+    "/assessment/periods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách tất cả các đợt đánh giá kèm quan hệ */
+        get: operations["AssessmentController_findAll"];
+        put?: never;
+        /** Tạo mới một đợt đánh giá kèm các tiêu chí */
+        post: operations["AssessmentController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assessment/periods/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết một đợt đánh giá */
+        get: operations["AssessmentController_findDetail"];
+        put?: never;
+        post?: never;
+        /** Xóa đợt đánh giá và các liên kết tiêu chí liên quan */
+        delete: operations["AssessmentController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin đợt đánh giá và đồng bộ lại tiêu chí */
+        patch: operations["AssessmentController_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3261,6 +3298,46 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+        };
+        CreatePeriodDto: {
+            semesterId: number;
+            name: string;
+            criterionIds: number[];
+        };
+        EvaluationPeriodDto: {
+            id: number;
+            isActive: boolean;
+            semesterId: number;
+            isFrozen: boolean;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ResponseEvaluationPeriodCriterionDtoWithRelation: {
+            id: number;
+            criterionId: number;
+            periodId: number;
+            maxScoreSnapshot: number;
+            criterion: components["schemas"]["CriterionDto"];
+        };
+        ResponseEvaluationPeriodDtoWithRelation: {
+            id: number;
+            isActive: boolean;
+            semesterId: number;
+            isFrozen: boolean;
+            name: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            periodCriteria: components["schemas"]["ResponseEvaluationPeriodCriterionDtoWithRelation"][];
+        };
+        UpdatePeriodDto: {
+            semesterId?: number;
+            name?: string;
+            criterionIds?: number[];
         };
     };
     responses: never;
@@ -6677,6 +6754,111 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["CriterionDto"];
                 };
+            };
+        };
+    };
+    AssessmentController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluationPeriodDto"][];
+                };
+            };
+        };
+    };
+    AssessmentController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePeriodDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AssessmentController_findDetail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseEvaluationPeriodDtoWithRelation"];
+                };
+            };
+        };
+    };
+    AssessmentController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của đợt đánh giá */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AssessmentController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của đợt đánh giá */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePeriodDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
