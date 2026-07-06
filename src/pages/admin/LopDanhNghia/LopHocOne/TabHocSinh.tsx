@@ -8,7 +8,8 @@ import {
 } from "@tanstack/react-table";
 import { Loader2, Trash2, FileDown, Paperclip } from "lucide-react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
-import CreateBangDiemRenLuyenModal from "../../DiemRenLuyen/Create/CreateBangDiemRenLuyen";
+import ModalPhieuDiemRenLuyen from "./ModalPhieuDiemRenLuyen";
+import { useLopHocOneContext } from "./LopHocOneProvider";
 
 const TableDanhSachHocSinh = () => {
   const {
@@ -18,6 +19,8 @@ const TableDanhSachHocSinh = () => {
     exportStudentGrade,
     isExportingStudentGrade,
   } = useLopHocContext();
+
+  const { selectedSemesterId } = useLopHocOneContext();
 
   // State quản lý học sinh đang chọn để mở modal điểm rèn luyện
   const [selectedStudentForPoint, setSelectedStudentForPoint] = useState<{
@@ -223,13 +226,13 @@ const TableDanhSachHocSinh = () => {
         </table>
       </div>
 
-      {/* Gọi Modal ở cuối Component */}
       {selectedStudentForPoint && (
-        <CreateBangDiemRenLuyenModal
+        <ModalPhieuDiemRenLuyen
           isOpen={!!selectedStudentForPoint}
-          userId={selectedStudentForPoint.id}
-          periodId={selectedStudentForPoint.periodId}
-          onClose={() => setSelectedStudentForPoint(null)} // Reset về null để đóng modal
+          onClose={() => setSelectedStudentForPoint(null)}
+          studentId={selectedStudentForPoint.id}
+          semesterId={selectedSemesterId!}
+          isTeacher={true} // Bật giao diện cho Giáo viên xem/chấm điểm
         />
       )}
     </div>

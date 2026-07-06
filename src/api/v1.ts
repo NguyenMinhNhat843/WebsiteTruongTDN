@@ -1681,6 +1681,40 @@ export interface paths {
         patch: operations["AssessmentController_update"];
         trace?: never;
     };
+    "/assessment/load": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy hoặc tạo phiếu điểm rèn luyện cho học sinh trong học kỳ */
+        get: operations["AssessmentController_loadAssessment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/assessment/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Cập nhật phiếu điểm rèn luyện cho học sinh */
+        post: operations["AssessmentController_updateAssessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3338,6 +3372,44 @@ export interface components {
             semesterId?: number;
             name?: string;
             criterionIds?: number[];
+        };
+        AssessmentDetailDtoWithRelation: {
+            id: number;
+            periodCriterionId: number;
+            assessmentId: number;
+            criterionId: number;
+            studentScore: number;
+            teacherScore: number;
+            periodCriterion: components["schemas"]["ResponseEvaluationPeriodCriterionDtoWithRelation"];
+        };
+        ResponseAssessmentDtoWithRelation: {
+            id: number;
+            periodId: number;
+            studentId: number;
+            /** @enum {string} */
+            status: "NOT_SUBMITTED" | "PENDING" | "APPROVED";
+            totalStudentScore: number;
+            totalTeacherScore: number;
+            /** @enum {string|null} */
+            finalGrade: "EXCELLENT" | "GOOD" | "FAIR" | "AVERAGE" | "POOR" | null;
+            teacherComment: Record<string, never> | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            details: components["schemas"]["AssessmentDetailDtoWithRelation"][];
+        };
+        AssessmentDetailUpdateDto: {
+            id: number;
+            studentScore: number;
+            teacherScore: number;
+        };
+        UpdateAssessmentDto: {
+            assessmentId: number;
+            /** @enum {string} */
+            status: "NOT_SUBMITTED" | "PENDING" | "APPROVED";
+            teacherComment: string | null;
+            details: components["schemas"]["AssessmentDetailUpdateDto"][];
         };
     };
     responses: never;
@@ -6859,6 +6931,51 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    AssessmentController_loadAssessment: {
+        parameters: {
+            query: {
+                studentId: number;
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseAssessmentDtoWithRelation"];
+                };
+            };
+        };
+    };
+    AssessmentController_updateAssessment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAssessmentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseAssessmentDtoWithRelation"];
+                };
             };
         };
     };

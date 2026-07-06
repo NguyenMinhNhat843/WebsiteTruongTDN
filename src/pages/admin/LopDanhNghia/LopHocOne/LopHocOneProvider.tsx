@@ -23,8 +23,6 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       }
     }, [currentSemester, isHocKysLoading]);
 
-    console.log("selectedSemesterId", selectedSemesterId);
-    console.log("currentSemester", currentSemester);
     /**
      * Lấy danh sách môn theo học kỳ đã chọn, lấy từ chương trình khung
      */
