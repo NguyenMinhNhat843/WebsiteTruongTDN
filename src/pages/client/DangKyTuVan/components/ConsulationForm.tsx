@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { CheckCircle } from "lucide-react";
 import type { Option } from "../../../../components/ui/SelectOption";
-import SelectOption from "../../../../components/ui/SelectOption";
 import Input from "../../../../components/ui/Form/Input";
+import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 
 interface FormState {
   fullName: string;
@@ -115,10 +115,12 @@ export default function ConsultationForm() {
                   label={field.label}
                   name={field.name}
                   value={form[field.name as keyof typeof form]}
-                  onChange={() => {}}
-                  options={field.options || []} // Truyền JSON vào đây
-                  required={field.required}
-                  placeholder="Chọn ngành bạn quan tâm"
+                  onChange={(e) => {}}
+                  options={(field.options || []).map((opt) => ({
+                    value: opt.value,
+                    label: opt.label,
+                  }))}
+                  require={field.required}
                 />
               );
             }

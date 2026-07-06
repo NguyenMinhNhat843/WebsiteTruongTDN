@@ -14,7 +14,6 @@ import {
 } from "lucide-react";
 import ModelThemHocSinh from "../ModelThemHocSinh";
 import { useNavigate } from "react-router-dom";
-import ModalSinhLopHocPhan from "../ModalCreateClassSubject";
 import TableDanhSachHocSinh from "./TabHocSinh";
 import Tabs from "../../../../components/ui/Tabs";
 import TabMonHoc from "./TabMonHoc";
@@ -39,8 +38,6 @@ const Inner = () => {
     isLoadingLopHocDetail,
     isOpenModalAddStudent,
     setIsOpenModalAddStudent,
-    isOpenModalSinhLopHocPhan,
-    setIsOpenModalSinhLopHocPhan,
     refetchLopHocDetail,
   } = useLopHocContext();
   const { hocKysData } = useAppContext();
@@ -158,15 +155,6 @@ const Inner = () => {
               </div>
 
               <div className="flex items-center gap-2 self-start sm:self-center w-full sm:w-auto">
-                <ButtonAction
-                  label="Đồng bộ chương trình khung"
-                  variant="outline"
-                  icon={<Layers className="h-4 w-4 text-gray-500" />}
-                  onClick={() => {
-                    setIsOpenModalSinhLopHocPhan(true);
-                  }}
-                />
-
                 <ButtonAction
                   label="Thêm học sinh"
                   onClick={() => {
@@ -310,11 +298,6 @@ const Inner = () => {
         <ModelThemHocSinh
           isOpen={isOpenModalAddStudent}
           onClose={() => setIsOpenModalAddStudent(false)}
-        />
-
-        <ModalSinhLopHocPhan
-          isOpen={isOpenModalSinhLopHocPhan}
-          onClose={() => setIsOpenModalSinhLopHocPhan(false)}
         />
       </LoadingWrapper>
     </div>

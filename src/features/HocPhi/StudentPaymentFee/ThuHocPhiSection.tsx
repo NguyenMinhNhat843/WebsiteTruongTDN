@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { useHocphisContext } from "../HocPhiProvider";
 import { StudentTuitionTable } from "./StudentTuitionTable";
-import { BadgeStudentStatus } from "../../../components/enum/StudentStatusBadge";
+import { BadgeStudentStatus } from "../../../components/ui/StudentStatusBadge";
 import LichSuThanhToan from "./LichSuThanhToan";
 import { useState } from "react";
 

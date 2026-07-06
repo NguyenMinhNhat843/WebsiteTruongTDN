@@ -1,9 +1,9 @@
 import { usePostListContext, type Filters } from "../../hooks/usePostList";
-import SelectFilter from "../../../../components/ui/SelectFilter";
 import {
   AUDIENCE_META,
   CATEGORY_META,
 } from "../../constants/postList.constant";
+import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 
 const PostListFilterPanel = () => {
   const { activeFilterCount, resetFilters, filters, setFilter } =
@@ -45,10 +45,12 @@ const PostListFilterPanel = () => {
 
       <div className="grid grid-cols-2 gap-4 p-6 md:grid-cols-3 lg:grid-cols-4">
         {/* Category */}
-        <SelectFilter
+        <SelectOption
           label="Danh mục"
           value={filters.category}
-          onChange={(v) => setFilter("category", v as Filters["category"])}
+          onChange={(e) =>
+            setFilter("category", e.target.value as Filters["category"])
+          }
           options={[
             { value: "all", label: "Tất cả danh mục" },
             ...Object.entries(CATEGORY_META).map(([k, v]) => ({
@@ -59,10 +61,12 @@ const PostListFilterPanel = () => {
         />
 
         {/* Audience */}
-        <SelectFilter
+        <SelectOption
           label="Đối tượng"
           value={filters.audience}
-          onChange={(v) => setFilter("audience", v as Filters["audience"])}
+          onChange={(e) =>
+            setFilter("audience", e.target.value as Filters["audience"])
+          }
           options={[
             { value: "all", label: "Tất cả đối tượng" },
             ...Object.entries(AUDIENCE_META).map(([k, v]) => ({
@@ -73,10 +77,12 @@ const PostListFilterPanel = () => {
         />
 
         {/* Status */}
-        <SelectFilter
+        <SelectOption
           label="Trạng thái"
           value={filters.status}
-          onChange={(v) => setFilter("status", v as Filters["status"])}
+          onChange={(e) =>
+            setFilter("status", e.target.value as Filters["status"])
+          }
           options={[
             { value: "all", label: "Tất cả trạng thái" },
             { value: "da-duyet", label: "✅ Đã duyệt" },

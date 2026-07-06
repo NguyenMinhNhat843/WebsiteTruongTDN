@@ -16,8 +16,6 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
   const [semesterIdSelected, setSemesterIdSelected] = useState<number | null>(
     null,
   );
-  const [isOpenModalSinhLopHocPhan, setIsOpenModalSinhLopHocPhan] =
-    useState(false);
   const { idLopHoc } = useParams();
   const idLopHocNumber = Number(idLopHoc);
   const { currentSemester } = useAppContext();
@@ -199,7 +197,5 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     setIsOpenModalCreate,
     isOpenModalAddStudent,
     setIsOpenModalAddStudent,
-    isOpenModalSinhLopHocPhan,
-    setIsOpenModalSinhLopHocPhan,
   };
 });

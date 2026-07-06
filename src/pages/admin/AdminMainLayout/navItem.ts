@@ -154,11 +154,6 @@ const navItems: NavItem[] = [
         label: "Tạo bài viết",
         href: "/admin/truyen-thong-bao-chi/tao-bai-viet",
       },
-      {
-        id: "quan-ly-media",
-        label: "Thư viện ảnh/video",
-        href: "/admin/truyen-thong-bao-chi/media",
-      },
     ],
   },
   {
@@ -178,12 +173,6 @@ const navItems: NavItem[] = [
         label: "Quản lý tài khoản",
         icon: "🔐",
         href: "/admin/account",
-      },
-      {
-        id: "phan-cong-giang-day",
-        label: "Phân công giảng dạy",
-        icon: "📖",
-        href: "/admin/phan-cong-giang-day",
       },
     ],
   },

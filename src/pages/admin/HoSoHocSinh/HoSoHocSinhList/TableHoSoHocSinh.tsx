@@ -1,7 +1,7 @@
 import RowActions from "./components/RowAction";
 import { useHocSinhContext } from "../HocSinhProvider";
 import { formatDate } from "../../../../util/formatDate";
-import { BadgeStudentStatus } from "../../../../components/enum/StudentStatusBadge";
+import { BadgeStudentStatus } from "../../../../components/ui/StudentStatusBadge";
 import { $api } from "../../../../api/client";
 import type { components } from "../../../../api/v1";
 import {

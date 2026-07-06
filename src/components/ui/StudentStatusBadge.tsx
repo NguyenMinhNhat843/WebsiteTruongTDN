@@ -23,6 +23,11 @@ export const BadgeStudentStatus: React.FC<BadgeStudentStatusProps> = ({
     StudentStatusEnum,
     { label: string; classes: string; icon: React.ReactNode }
   > = {
+    failed: {
+      label: "Trượt",
+      classes: "bg-red-50 text-red-700 border-red-200/60",
+      icon: <XCircle size={13} className="text-red-500" />,
+    },
     pending: {
       label: "Chờ duyệt",
       classes: "bg-yellow-50 text-yellow-700 border-yellow-200/60",

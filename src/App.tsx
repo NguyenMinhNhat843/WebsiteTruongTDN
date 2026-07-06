@@ -65,9 +65,6 @@ const UpdatePost = lazy(
 const PostList = lazy(
   () => import("./pages/admin/QuanLyBaiViet/list/PostList"),
 );
-const MediaLibrary = lazy(
-  () => import("./pages/admin/QuanLyMedia/QuanLyMedia"),
-);
 const ChuongTrinhKhung = lazy(
   () => import("./pages/admin/ChuongTrinhKhung/ChuongTrinhKhungIndex"),
 );
@@ -120,9 +117,6 @@ const ExemptionManagement = lazy(
 );
 const NhanVienLayout = lazy(
   () => import("./pages/admin/QuanLyNhanVien/NhanVienLayout"),
-);
-const PhanCongGiangDay = lazy(
-  () => import("./pages/admin/PhanCongGiangDay/PhanCongGiangDay"),
 );
 const QuanLyTaiKhoan = lazy(() => import("./pages/admin/QuanLyAccount"));
 const QuanLyNhanVien = lazy(
@@ -250,10 +244,6 @@ function App() {
                   path="truyen-thong-bao-chi/bai-viet"
                   element={<PostList />}
                 />
-                <Route
-                  path="truyen-thong-bao-chi/media"
-                  element={<MediaLibrary />}
-                />
               </Route>
 
               {/* Quản lý đào tạo */}
@@ -347,10 +337,6 @@ function App() {
 
               {/* Quản trị nhân sự */}
               <Route element={<NhanVienLayout />}>
-                <Route
-                  path="phan-cong-giang-day"
-                  element={<PhanCongGiangDay />}
-                />
                 <Route path="account" element={<QuanLyTaiKhoan />} />
                 <Route path="users" element={<QuanLyNhanVien />} />
                 <Route path="users/:staffCode" element={<NhanVienOne />} />

@@ -1087,6 +1087,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/class-subject-session/training-plan/export-excel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Xuất file Excel kế hoạch đào tạo của lớp học */
+        get: operations["ClassSubjectSessionController_exportExcel"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/class-subject-schedule-detail": {
         parameters: {
             query?: never;
@@ -1114,23 +1131,6 @@ export interface paths {
         };
         /** Load study schedule of a class, teacher, or semester */
         get: operations["ClassSubjectScheduleDetailController_loadStudySchedule"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/class-subject-schedule-detail/export-excel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Export excel study schedule of a class in a semester */
-        get: operations["ClassSubjectScheduleDetailController_exportStudyScheduleToExcel"];
         put?: never;
         post?: never;
         delete?: never;
@@ -5728,6 +5728,26 @@ export interface operations {
             };
         };
     };
+    ClassSubjectSessionController_exportExcel: {
+        parameters: {
+            query: {
+                classId: number;
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     ClassSubjectScheduleDetailController_findAll: {
         parameters: {
             query?: {
@@ -5783,26 +5803,6 @@ export interface operations {
                 semesterId: string;
                 teacherId: string;
                 weekNumber: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ClassSubjectScheduleDetailController_exportStudyScheduleToExcel: {
-        parameters: {
-            query: {
-                classId: string;
-                semesterId: string;
             };
             header?: never;
             path?: never;
