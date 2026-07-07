@@ -1,96 +1,183 @@
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
-import type { Post } from "../../features/posts/types/Post.types";
-import PostCard from "../../features/posts/components/PostCard";
+import { Loader2, Calendar, Eye, User } from "lucide-react";
+import { $api } from "../../api/client"; // OpenAPI Client của bạn
 
 const NewsList = () => {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingMore, setLoadingMore] = useState(false);
+  const [posts, setPosts] = useState<any[]>([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
   const ITEMS_PER_PAGE = 5;
 
-  const fetchPosts = async (
-    currentPage: number,
-    isLoadMore: boolean = false,
-  ) => {
-    try {
-      if (isLoadMore) setLoadingMore(true);
-      else setLoading(true);
+  /**
+   * Gọi API thật bằng OpenAPI React Query
+   */
+  const { data, isPending, isFetching } = $api.useQuery("get", "/posts", {
+    params: {
+      query: {
+        page: page,
+        limit: ITEMS_PER_PAGE,
+        status: "PUBLISHED", // Chỉ lấy bài viết đã xuất bản
+      },
+    },
+  });
 
-      const response = await fetch(
-        `https://69b11335adac80b427c3e8a9.mockapi.io/news?page=${currentPage}&limit=${ITEMS_PER_PAGE}`,
-      );
-      const data = await response.json();
-
-      if (data.length < ITEMS_PER_PAGE) {
-        setHasMore(false);
+  // Hợp nhất dữ liệu khi phân trang (Xem thêm)
+  useEffect(() => {
+    if (data?.data) {
+      if (page === 1) {
+        setPosts(data.data);
+      } else {
+        setPosts((prev) => [...prev, ...data.data]);
       }
 
-      setPosts((prev) => (isLoadMore ? [...prev, ...data] : data));
-    } catch (error) {
-      console.error("Lỗi khi lấy danh sách tin tức:", error);
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
+      if (
+        data.data.length < ITEMS_PER_PAGE ||
+        posts.length + data.data.length >= (data.meta?.total || 0)
+      ) {
+        setHasMore(false);
+      } else {
+        setHasMore(true);
+      }
+    }
+  }, [data, page]);
+
+  const handleLoadMore = () => {
+    if (!isFetching && hasMore) {
+      setPage((prev) => prev + 1);
     }
   };
 
-  useEffect(() => {
-    fetchPosts(1);
-  }, []);
-
-  const handleLoadMore = () => {
-    const nextPage = page + 1;
-    setPage(nextPage);
-    fetchPosts(nextPage, true);
+  // Hàm helper format ngày tháng thân thiện
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    return date.toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
   };
 
+  // Hàm chuyển đổi nhãn Danh mục (Type) sang Tiếng Việt
+  const getCategoryLabel = (type: string) => {
+    const categories: Record<string, string> = {
+      NEWS: "Tin tức",
+      ADMISSION: "Tuyển sinh",
+      EVENT: "Sự kiện",
+      INTERNAL: "Tin nội bộ",
+      ACHIEVEMENT: "Thành tích",
+      MENU: "Thực đơn",
+      RECRUITMENT: "Tuyển dụng",
+    };
+    return categories[type] || "Tin tức";
+  };
+
+  const isInitialLoading = isPending && page === 1;
+  const isLoadingMore = isFetching && page > 1;
+
   return (
-    <section className="py-12 bg-white">
+    <section className="py-12 bg-slate-50">
       <div className="container mx-auto px-4">
         <h1 className="text-3xl font-bold text-blue-800 mb-10 text-center uppercase tracking-wider">
           Tin tức & Sự kiện
         </h1>
 
-        {/* Grid Layout: 5 cột trên màn hình lớn */}
+        {/* Grid Layout: 5 cột hiển thị bài viết */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-          {loading
+          {isInitialLoading
             ? [...Array(ITEMS_PER_PAGE)].map((_, n) => (
                 <div
                   key={n}
-                  className="bg-white rounded-xl h-72 animate-pulse border border-gray-100 shadow-sm"
+                  className="bg-white rounded-xl h-80 animate-pulse border border-slate-100 shadow-sm overflow-hidden"
                 >
-                  <div className="bg-gray-200 h-40 rounded-t-xl"></div>
-                  <div className="p-3 space-y-2">
-                    <div className="h-4 bg-gray-200 rounded w-full"></div>
-                    <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                  <div className="bg-slate-200 h-40"></div>
+                  <div className="p-4 space-y-3">
+                    <div className="h-4 bg-slate-200 rounded w-1/3"></div>
+                    <div className="h-5 bg-slate-200 rounded w-full"></div>
+                    <div className="h-4 bg-slate-200 rounded w-2/3"></div>
                   </div>
                 </div>
               ))
             : posts.map((post) => (
-                <div
+                <article
                   key={post.id}
-                  className="transition-transform duration-300 hover:-translate-y-1"
+                  className="bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-md flex flex-col justify-between"
                 >
-                  <PostCard post={post} />
-                </div>
+                  {/* Khối Trên: Hình ảnh & Nội dung tóm tắt */}
+                  <div>
+                    {/* Phần Ảnh bìa */}
+                    <div className="relative h-40 bg-slate-100 overflow-hidden group">
+                      <img
+                        src={
+                          post.coverImage ||
+                          "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?q=80&w=600&auto=format&fit=crop"
+                        } // Ảnh fallback khi bài viết không có coverImage
+                        alt={post.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <span className="absolute top-2 left-2 bg-blue-600/90 backdrop-blur-sm text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">
+                        {getCategoryLabel(post.type)}
+                      </span>
+                    </div>
+
+                    {/* Phần Thông tin chữ */}
+                    <div className="p-4">
+                      {/* Meta: Ngày đăng & Lượt xem */}
+                      <div className="flex items-center gap-3 text-slate-400 text-xs mb-2">
+                        <span className="flex items-center gap-1">
+                          <Calendar size={13} />
+                          {formatDate(post.publishedAt || post.createdAt)}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Eye size={13} />
+                          {post.viewCount}
+                        </span>
+                      </div>
+
+                      {/* Tiêu đề bài viết */}
+                      <h3
+                        className="font-bold text-slate-800 text-sm line-clamp-2 hover:text-blue-600 transition-colors mb-2"
+                        title={post.title}
+                      >
+                        <a href={`/tin-tuc/${post.slug || post.id}`}>
+                          {post.title}
+                        </a>
+                      </h3>
+
+                      {/* Đoạn mô tả tóm tắt ngắn (summary) */}
+                      <p className="text-slate-500 text-xs line-clamp-2 leading-relaxed">
+                        {post.summary ||
+                          "Bấm để xem chi tiết nội dung bài viết..."}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Khối Dưới: Tác giả (Ghim chặt ở đáy card) */}
+                  <div className="px-4 py-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+                    <div className="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-slate-500 overflow-hidden">
+                      <User size={12} />
+                    </div>
+                    <span className="text-slate-600 text-xs font-medium truncate">
+                      {post.author?.staff?.fullName || "Ban Quản Trị"}
+                    </span>
+                  </div>
+                </article>
               ))}
         </div>
 
-        {/* Nút Xem Thêm */}
-        {hasMore && (
+        {/* Nút Tải Thêm Dữ Liệu */}
+        {hasMore && posts.length > 0 && (
           <div className="mt-12 flex justify-center">
             <button
               onClick={handleLoadMore}
-              disabled={loadingMore}
-              className="px-8 py-3 bg-blue-600 text-white font-semibold rounded-full shadow-lg hover:bg-blue-700 transition-all disabled:bg-gray-400 flex items-center gap-2 cursor-pointer"
+              disabled={isLoadingMore}
+              className="px-8 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-full shadow-md hover:bg-blue-700 transition-all disabled:bg-slate-300 flex items-center gap-2 cursor-pointer"
             >
-              {loadingMore ? (
+              {isLoadingMore ? (
                 <>
-                  <Loader2 className="animate-spin" size={20} /> Đang tải...
+                  <Loader2 className="animate-spin" size={16} /> Đang tải...
                 </>
               ) : (
                 "Xem thêm tin tức"
@@ -99,8 +186,9 @@ const NewsList = () => {
           </div>
         )}
 
-        {!loading && posts.length === 0 && (
-          <div className="text-center py-20 text-gray-500">
+        {/* Trạng thái trống */}
+        {!isInitialLoading && posts.length === 0 && (
+          <div className="text-center py-20 text-slate-400 text-sm">
             Không tìm thấy bài viết nào.
           </div>
         )}

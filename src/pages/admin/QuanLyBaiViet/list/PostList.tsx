@@ -1,15 +1,7 @@
 import { PostListProvider, usePostListContext } from "./PostListProvider";
 import PageShell from "../../../../components/ui/PageShell";
 import ButtonAction from "../../../../components/ui/ButtonAction";
-import {
-  BookOpen,
-  Eye,
-  PlusIcon,
-  Calendar,
-  User,
-  ImageIcon,
-  Pen,
-} from "lucide-react";
+import { BookOpen, Eye, Calendar, User, ImageIcon, Pen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getCategoryBadge, getStatusBadge } from "./helpers";
 
@@ -30,12 +22,6 @@ const Inner = () => {
       title="Quản lý bài viết"
       sub={`Tổng ${total} bài viết`}
       icon={BookOpen}
-      renderRight={
-        <ButtonAction
-          label="Tạo bài viết mới"
-          icon={<PlusIcon className="w-4 h-4" />}
-        />
-      }
     >
       <div className="relative min-h-75">
         {/* Hiệu ứng Loading bao phủ khi đang tải dữ liệu */}
@@ -102,7 +88,7 @@ const Inner = () => {
                         <span className="truncate">
                           Tác giả:{" "}
                           <strong className="text-gray-700 font-medium">
-                            {post.author?.fullName || "Ẩn danh"}
+                            {post.author?.staff?.fullName || "Ẩn danh"}
                           </strong>
                         </span>
                       </div>

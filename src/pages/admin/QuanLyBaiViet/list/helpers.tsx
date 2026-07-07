@@ -31,8 +31,8 @@ const CATEGORY_CONFIG: Record<
     label: "Thực đơn",
     classes: "bg-pink-50 text-pink-700 border-pink-200",
   },
-  POLICY: {
-    label: "Chính sách",
+  RECRUITMENT: {
+    label: "Tuyển dụng",
     classes: "bg-cyan-50 text-cyan-700 border-cyan-200",
   },
 };

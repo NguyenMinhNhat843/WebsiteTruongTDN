@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import type { components } from "../../../../api/v1";
 import { createContextProvider } from "../../../../util/createContextProvider";
 import { $api } from "../../../../api/client";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type CreatePostDto = components["schemas"]["CreatePostDto"];
 export type PostResponseDto = components["schemas"]["PostResponseDto"];
@@ -19,24 +20,29 @@ export const POST_CATEGORIES: Options<PostCategoryType>[] = [
   { value: "ACHIEVEMENT", label: "Thành tích", icon: "🏆" },
   { value: "ADMISSION", label: "Tuyển sinh", icon: "🎓" },
   { value: "INTERNAL", label: "Tin nội bộ", icon: "👥" },
-  { value: "POLICY", label: "Chính sách", icon: "📜" },
+  { value: "RECRUITMENT", label: "Tuyển dụng", icon: "💼" },
 ];
 
 export const POST_STATUSES: Options<PostStatus>[] = [
   { value: "DRAFT", label: "Bản nháp", icon: "📝" },
-  { value: "PUBLISHED", label: "Đã đăng", icon: "✅" },
-  { value: "ARCHIVED", label: "Lưu trữ", icon: "📦" },
-  { value: "PENDING", label: "Hẹn giờ", icon: "⏰" },
+  { value: "PUBLISHED", label: "Đăng bài", icon: "✅" },
 ];
 
 export const [CreatePostProvider, useCreatePostContext] = createContextProvider(
   (props: { defaultValues?: PostResponseDto }) => {
+    const queryClient = useQueryClient();
+
     /**
      * Create Post
      */
     const { mutate: createPost, isPending: isCreatingPost } = $api.useMutation(
       "post",
       "/posts",
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["get", "/posts"] });
+        },
+      },
     );
 
     /**
@@ -45,6 +51,11 @@ export const [CreatePostProvider, useCreatePostContext] = createContextProvider(
     const { mutate: updatePost, isPending: isUpdatingPost } = $api.useMutation(
       "patch",
       "/posts/{id}",
+      {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["get", "/posts"] });
+        },
+      },
     );
 
     /**

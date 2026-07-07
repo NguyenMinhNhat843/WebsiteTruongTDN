@@ -1176,6 +1176,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/posts/related-posts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách bài viết */
+        get: operations["PostController_findRelatedPosts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/posts/{id}": {
         parameters: {
             query?: never;
@@ -1942,7 +1959,6 @@ export interface components {
             lastLoginAt?: Record<string, never>;
         };
         CreateStaffDto: {
-            id?: number;
             /** @example Nguyễn Văn C */
             fullName: string;
             /**
@@ -1971,10 +1987,6 @@ export interface components {
             isTeacher?: boolean | null;
             salaryCoefficient?: number | null;
             hireDate?: string | null;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
         };
         TeacherDashboardStatsResponseDto: {
             id: number;
@@ -1986,7 +1998,6 @@ export interface components {
             totalSubjects: number;
         };
         UpdateStaffDto: {
-            id?: number;
             /** @example Nguyễn Văn C */
             fullName?: string;
             /**
@@ -2015,10 +2026,6 @@ export interface components {
             isTeacher?: boolean | null;
             salaryCoefficient?: number | null;
             hireDate?: string | null;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
             isActive?: boolean;
         };
         StaffResponseDto: {
@@ -2851,6 +2858,13 @@ export interface components {
             studyDate?: string | null;
             weekNumber?: number;
         };
+        PostStatsResponseDto: {
+            totalPosts: number;
+            draftPosts: number;
+            typeCounts: {
+                [key: string]: number;
+            };
+        };
         CreatePostDto: {
             authorId: number;
             content: string;
@@ -2861,9 +2875,68 @@ export interface components {
             status: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
             title: string;
             /** @enum {string} */
-            type: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
+            type: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "RECRUITMENT";
+            seoDescription?: string;
+            seoTitle?: string;
+            summary?: string;
             /** Format: binary */
             coverImage?: string;
+        };
+        ResponseStaffDto: {
+            id?: number;
+            /** @example Nguyễn Văn C */
+            fullName: string;
+            /**
+             * Format: date-time
+             * @example 1990-01-01
+             */
+            dob: string;
+            /** @enum {string} */
+            EmployeeRole?: "STAFF" | "TEACHER";
+            /** @example staff@school.edu.vn */
+            email?: string;
+            /** @example 0901234567 */
+            phone?: string;
+            /** @example 0251369874 */
+            identityNumber?: string;
+            /** @description true: Nam, false: Nữ */
+            gender?: boolean;
+            /** @description Mã số nhân viên (duy nhất) */
+            staffCode?: string;
+            userId?: number | null;
+            position?: Record<string, never> | null;
+            address?: string | null;
+            avatarUrl?: string | null;
+            contractType?: string | null;
+            departmentId?: number | null;
+            isTeacher?: boolean | null;
+            salaryCoefficient?: number | null;
+            hireDate?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        ResponseUserWithRelationDto: {
+            /** @example 1 */
+            id: number;
+            staffId?: number;
+            studentId?: number;
+            /** @example u_9b1deb4d */
+            userId: string;
+            /** @example johndoe */
+            username: string;
+            /** @enum {string} */
+            role: "admin" | "teacher" | "student" | "staff";
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @example 2024-01-01T12:00:00Z */
+            lastLoginAt?: Record<string, never>;
+            student?: components["schemas"]["StudentResponseDto"];
+            staff?: components["schemas"]["ResponseStaffDto"];
         };
         PostResponseDto: {
             id?: number;
@@ -2878,13 +2951,16 @@ export interface components {
             status: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
             title: string;
             /** @enum {string} */
-            type: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
+            type: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "RECRUITMENT";
             viewCount: number;
+            seoDescription?: string;
+            seoTitle?: string;
+            summary?: string;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            author: components["schemas"]["StaffResponseDto"];
+            author: components["schemas"]["ResponseUserWithRelationDto"];
         };
         PaginationMetaDto: {
             total: number;
@@ -2903,7 +2979,10 @@ export interface components {
             status?: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
             title?: string;
             /** @enum {string} */
-            type?: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
+            type?: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "RECRUITMENT";
+            seoDescription?: string;
+            seoTitle?: string;
+            summary?: string;
             /** Format: binary */
             coverImage?: string;
         };
@@ -5688,12 +5767,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Thống kê bài viết. */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["PostStatsResponseDto"];
+                };
             };
         };
     };
@@ -5702,7 +5782,7 @@ export interface operations {
             query?: {
                 status?: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
                 title?: string;
-                type?: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "POLICY";
+                type?: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "RECRUITMENT";
                 createdAt?: string;
                 limit?: number;
                 page?: number;
@@ -5742,6 +5822,32 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PostResponseDto"];
+                };
+            };
+        };
+    };
+    PostController_findRelatedPosts: {
+        parameters: {
+            query?: {
+                status?: "DRAFT" | "PENDING" | "PUBLISHED" | "ARCHIVED";
+                title?: string;
+                type?: "NEWS" | "ADMISSION" | "EVENT" | "INTERNAL" | "ACHIEVEMENT" | "MENU" | "RECRUITMENT";
+                createdAt?: string;
+                limit?: number;
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PostResponseDtoPagination"];
                 };
             };
         };

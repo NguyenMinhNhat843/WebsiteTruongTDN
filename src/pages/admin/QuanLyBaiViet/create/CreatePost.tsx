@@ -3,7 +3,6 @@ import ContentEditor, {
 } from "../../../../components/ui/ContentEditor";
 import PostCategoryPicker from "./components/PostCategoryPicker";
 import PostCoverImage from "./components/PostCoverImage";
-import PostPublishSetting from "../../../../features/posts/components/PostPublishSetting";
 import PageShell from "../../../../components/ui/PageShell";
 import { Eye, Newspaper, Save, Send, X } from "lucide-react";
 import {
@@ -16,6 +15,7 @@ import {
 import { useRef } from "react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
+import { toast } from "sonner";
 
 interface CreatePostProps {
   defaultValues?: PostResponseDto;
@@ -76,10 +76,10 @@ const Inner = () => {
         },
         {
           onSuccess: () => {
-            alert("Cập nhật thành công");
+            toast.success("Cập nhật thành công");
           },
-          onError: (error: any) => {
-            alert("Failed to create post: " + JSON.stringify(error));
+          onError: () => {
+            toast.error("Cập nhật thất bại, vui lòng thử lại sau");
           },
         },
       );
@@ -90,10 +90,10 @@ const Inner = () => {
         },
         {
           onSuccess: () => {
-            alert("Đăng bài thành công");
+            toast.success("Đăng bài thành công");
           },
-          onError: (error: any) => {
-            alert("Failed to create post: " + JSON.stringify(error));
+          onError: () => {
+            toast.error("Đăng bài thất bại, vui lòng thử lại sau");
           },
         },
       );
@@ -107,35 +107,6 @@ const Inner = () => {
       icon={Newspaper}
       renderRight={
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            title="Hủy bỏ"
-            className="p-2.5 text-slate-500 rounded-xl transition-all
-              cursor-pointer hover:text-white hover:bg-red-500
-            "
-          >
-            <X className="w-5 h-5" />
-          </button>
-
-          <button
-            type="button"
-            title="Lưu nháp"
-            className="p-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl 
-            transition-all shadow-sm cursor-pointer hover:bg-slate-500 hover:text-white"
-          >
-            <Save className="w-5 h-5" />
-          </button>
-
-          <button
-            type="button"
-            title="Xem trước"
-            className="p-2.5 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-blue-500 hover:text-white transition-all shadow-sm
-              cursor-pointer
-            "
-          >
-            <Eye className="w-5 h-5" />
-          </button>
-
           <SelectOption
             {...register("status")}
             options={POST_STATUSES}
@@ -143,7 +114,7 @@ const Inner = () => {
           />
 
           <ButtonAction
-            title={defaultValue ? "Cập nhật" : "Đăng bài"}
+            title={defaultValue ? "Cập nhật" : "Xác nhận gửi"}
             icon={<Send className="w-4 h-4" />}
             type="submit"
             form="create-post-form"
@@ -207,8 +178,6 @@ const Inner = () => {
           {/* ── Sidebar ── */}
           <div className="flex flex-col gap-6">
             <PostCategoryPicker />
-
-            <PostPublishSetting />
 
             {/* Info card */}
             <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4">

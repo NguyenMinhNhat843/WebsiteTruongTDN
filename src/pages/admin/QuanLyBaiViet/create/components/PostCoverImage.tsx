@@ -23,8 +23,6 @@ const PostCoverImage = () => {
       coverPreview = coverImageValue;
     }
   }
-  console.log("Current coverImage value:", coverImageValue);
-  console.log("Derived coverPreview URL:", coverPreview);
 
   const handleRemoveCoverImage = () => {
     // Khi xóa, set về undefined (hoặc "" chuỗi rỗng tùy thuộc backend của bạn nhận gì)
