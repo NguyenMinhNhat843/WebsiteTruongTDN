@@ -13,6 +13,7 @@ import ButtonExport from "../../../../../components/ui/ButtonExport";
 import { calculateGrades, getStickyClass, handleKeyDown } from "./helper";
 import { downloadFromBlob } from "../../../../../util/download";
 import { NhapDiemProvider, useNhapDiemContext } from "./NhapDiemProvider";
+import { toast } from "sonner";
 
 // Định nghĩa kiểu dữ liệu chuẩn cho hàng trong bảng
 export interface GradeRow {
@@ -68,8 +69,8 @@ const Inner = () => {
 
   // Đồng bộ hóa dữ liệu từ Context vào State
   useEffect(() => {
-    if (classSubject?.registrations) {
-      const initialData = classSubject.registrations.map(
+    if (classSubject?.gradeStudents) {
+      const initialData = classSubject.gradeStudents.map(
         (regis: ClassSubjectGrade, index: number) => {
           const baseRow = {
             stt: index + 1,
@@ -316,10 +317,10 @@ const Inner = () => {
       {
         onSuccess: () => {
           refetchClassSubject();
-          alert("Lưu bảng điểm thành công!");
+          toast.success("Lưu bảng điểm thành công!");
         },
         onError: () => {
-          alert("Đã có lỗi xảy ra khi lưu bảng điểm. Vui lòng thử lại.");
+          toast.error("Đã có lỗi xảy ra khi lưu bảng điểm. Vui lòng thử lại.");
         },
       },
     );

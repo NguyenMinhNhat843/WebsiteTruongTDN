@@ -108,12 +108,8 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
   /**
    * Thêm học sinh vào 1 lớp học
    */
-  const { mutate: addStudentToLopHoc, isPending: isAddingStudentToLopHoc } =
-    $api.useMutation("post", "/classes/{classId}/add-student", {
-      onSuccess: () => {
-        refetchStudentsInLopHoc();
-      },
-    });
+  const { mutate: addStudent, isPending: isAddStudentPending } =
+    $api.useMutation("patch", "/students/{id}");
 
   /**
    * Tìm học sinh theo mã sinh viên
@@ -174,8 +170,6 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     studentsInLopHoc,
     isLoadingStudentsInLopHoc,
     idLopHocNumber,
-    addStudentToLopHoc,
-    isAddingStudentToLopHoc,
     findStudentByMssv,
     isFindingStudentByMssv,
     studentFound,
@@ -191,6 +185,8 @@ export const [LopHocProvider, useLopHocContext] = createContextProvider(() => {
     exportStudentGrade,
     isExportingStudentGrade,
     refetchLopHocDetail,
+    addStudent,
+    isAddStudentPending,
 
     //state
     isOpenModalCreate,

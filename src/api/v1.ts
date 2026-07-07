@@ -641,23 +641,6 @@ export interface paths {
         patch: operations["ClassController_update"];
         trace?: never;
     };
-    "/classes/{classId}/add-student": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Thêm một sinh viên vào lớp học */
-        post: operations["ClassController_addStudentToClass"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/subjects": {
         parameters: {
             query?: never;
@@ -1245,23 +1228,6 @@ export interface paths {
         patch: operations["ClassSubjectController_updateClassSubject"];
         trace?: never;
     };
-    "/course-offers/gen-classSubject": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Tự động tạo classSubject cho toàn bộ lớp học */
-        post: operations["ClassSubjectController_generateClassSubject"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/course-offers/gen-classSubject-grades": {
         parameters: {
             query?: never;
@@ -1273,23 +1239,6 @@ export interface paths {
         put?: never;
         /** Tự động tạo classSubject cho một lớp hành chính */
         post: operations["ClassSubjectController_generateSectionsForClass"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/course-offers/assign-teacher": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Phân công giáo viên giảng dạy cho từng lớp */
-        post: operations["ClassSubjectController_assignTeacher"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1428,23 +1377,6 @@ export interface paths {
         head?: never;
         /** Lưu bảng điểm cho một ClassSubject */
         patch: operations["CourseRegistrationController_saveGrades"];
-        trace?: never;
-    };
-    "/academy/open-semester": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Mở học kỳ mới cho toàn trường */
-        post: operations["AcademyController_openNewSemester"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
         trace?: never;
     };
     "/document-configs": {
@@ -1769,11 +1701,8 @@ export interface components {
             guardianJob?: string | null;
             batchId?: number | null;
             classId?: number | null;
-            /**
-             * @default approved
-             * @enum {string}
-             */
-            status: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            /** @enum {string} */
+            status?: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
             admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
         };
         MajorDto: {
@@ -1858,11 +1787,8 @@ export interface components {
             guardianJob?: string | null;
             batchId?: number | null;
             classId?: number | null;
-            /**
-             * @default approved
-             * @enum {string}
-             */
-            status: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            /** @enum {string} */
+            status?: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
             admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
             batch?: components["schemas"]["BatchResponseDto"] | null;
             class?: components["schemas"]["ClassResponseDto"] | null;
@@ -1906,11 +1832,8 @@ export interface components {
             guardianJob?: string | null;
             batchId?: number | null;
             classId?: number | null;
-            /**
-             * @default approved
-             * @enum {string}
-             */
-            status: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            /** @enum {string} */
+            status?: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
             admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
             batch?: components["schemas"]["BatchResponseDto"] | null;
             class?: components["schemas"]["ClassResponseDto"] | null;
@@ -1977,11 +1900,8 @@ export interface components {
             guardianJob?: string | null;
             batchId?: number | null;
             classId?: number | null;
-            /**
-             * @default approved
-             * @enum {string}
-             */
-            status: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            /** @enum {string} */
+            status?: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         };
         CreateUserDto: {
             /**
@@ -2998,18 +2918,6 @@ export interface components {
             semesterId?: number;
             subjectId?: number;
         };
-        SearchClassSubjectDto: {
-            id?: number;
-            teacherId?: number | null;
-            classId?: number | null;
-            semesterId?: number;
-            subjectId?: number;
-            /** Format: date-time */
-            createdAt?: string;
-            /** Format: date-time */
-            updatedAt?: string;
-            majorId?: number;
-        };
         ExportGradeTableDto: {
             classSubjectIds: number[];
             haveTongKetSheet?: boolean;
@@ -3036,7 +2944,7 @@ export interface components {
             credits: number;
             isExisted: boolean;
         };
-        CourseOfferRegisResponseDto: {
+        GradeStudentDto: {
             id: number;
             kttx1?: number;
             kttx2?: number;
@@ -3074,103 +2982,36 @@ export interface components {
             student: components["schemas"]["StudentResponseDto"];
         };
         CourseOfferDetailResponseDto: {
-            /**
-             * @description ID duy nhất của lớp học phần
-             * @example 1
-             */
             id: number;
-            /**
-             * @description Mã lớp học phần (thường gồm mã môn + số thứ tự lớp)
-             * @example COMP1411_02
-             */
             courseCode: string;
-            /**
-             * @description Tên hiển thị tùy chỉnh của lớp học phần
-             * @example Lớp kỹ thuật lập trình - Nhóm 2
-             */
             courseName?: string | null;
-            /**
-             * @description ID của giảng viên phụ trách lớp học phần
-             * @example 12
-             */
             teacherId?: number | null;
-            /**
-             * @description ID của lớp sinh viên hành chính (nếu mở riêng cho lớp cố định)
-             * @example 5
-             */
             classId?: number | null;
-            /**
-             * @description ID của học kỳ mở lớp học phần này
-             * @example 2
-             */
             semesterId: number;
-            /**
-             * @description ID của môn học gốc
-             * @example 104
-             */
             subjectId: number;
-            /**
-             * @description Số lượng sinh viên tối đa của lớp học phần
-             * @example 40
-             */
+            /** @example 40 */
             maxStudents: number;
-            /**
-             * @description Số lượng sinh viên hiện tại đã đăng ký thành công
-             * @example 35
-             */
+            /** @example 35 */
             currentStudents: number;
-            /**
-             * @description Trạng thái hiện tại của lớp học phần
-             * @example OPEN
-             * @enum {string}
-             */
+            /** @enum {string} */
             status: "planned" | "open" | "closed" | "cancelled";
-            /**
-             * Format: date-time
-             * @description Ngày bắt đầu học
-             * @example 2026-06-01T00:00:00.000Z
-             */
+            /** Format: date-time */
             startDate?: string | null;
-            /**
-             * Format: date-time
-             * @description Ngày kết thúc học phần
-             * @example 2026-10-15T00:00:00.000Z
-             */
+            /** Format: date-time */
             endDate?: string | null;
-            /**
-             * Format: date-time
-             * @description Thời gian bắt đầu mở cổng đăng ký
-             * @example 2026-05-15T00:00:00.000Z
-             */
+            /** Format: date-time */
             registrationStart?: string | null;
-            /**
-             * Format: date-time
-             * @description Thời gian đóng cổng đăng ký
-             * @example 2026-05-25T23:59:59.000Z
-             */
+            /** Format: date-time */
             registrationEnd?: string | null;
-            /**
-             * Format: date-time
-             * @description Thời điểm tạo bản ghi lớp học phần
-             * @example 2026-05-16T02:15:00.000Z
-             */
+            /** Format: date-time */
             createdAt: string;
-            /**
-             * Format: date-time
-             * @description Thời điểm cập nhật bản ghi gần nhất
-             * @example 2026-05-16T03:00:00.000Z
-             */
+            /** Format: date-time */
             updatedAt: string;
-            /** @description Thông tin lớp hành chính liên kết */
             baseClass?: components["schemas"]["ClassResponseDto"] | null;
-            /** @description Thông tin chi tiết của môn học */
             subject?: components["schemas"]["ResponseSubjectDto"] | null;
-            /** @description Thông tin chi tiết của học kỳ */
             semester?: components["schemas"]["SemesterResponseDto"] | null;
-            /** @description Thông tin chi tiết của giảng viên phụ trách */
             teacher?: components["schemas"]["StaffResponseDto"] | null;
-            /** @description Danh sách các đơn đăng ký của sinh viên vào lớp học phần này */
-            registrations?: components["schemas"]["CourseOfferRegisResponseDto"][] | null;
+            gradeStudents?: components["schemas"]["GradeStudentDto"][] | null;
         };
         UpdateCourseRegistrationDto: {
             id?: number;
@@ -4352,15 +4193,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Tạo thành công. */
             201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Mã khóa học đã tồn tại. */
-            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4398,15 +4231,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Xóa thành công. */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Không tìm thấy khóa. */
-            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4429,15 +4254,7 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Cập nhật thành công. */
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Không tìm thấy khóa. */
-            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4817,27 +4634,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ClassResponseDto"];
                 };
-            };
-        };
-    };
-    ClassController_addStudentToClass: {
-        parameters: {
-            query: {
-                studentId: number;
-            };
-            header?: never;
-            path: {
-                classId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
@@ -6081,25 +5877,6 @@ export interface operations {
             };
         };
     };
-    ClassSubjectController_generateClassSubject: {
-        parameters: {
-            query: {
-                semesterId: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     ClassSubjectController_generateSectionsForClass: {
         parameters: {
             query: {
@@ -6113,27 +5890,6 @@ export interface operations {
         requestBody?: never;
         responses: {
             201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    ClassSubjectController_assignTeacher: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SearchClassSubjectDto"];
-            };
-        };
-        responses: {
-            200: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6304,27 +6060,6 @@ export interface operations {
         };
         responses: {
             200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AcademyController_openNewSemester: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateSemesterDto"];
-            };
-        };
-        responses: {
-            201: {
                 headers: {
                     [name: string]: unknown;
                 };

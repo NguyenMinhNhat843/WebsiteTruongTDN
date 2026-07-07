@@ -12,7 +12,7 @@ import {
   Layers,
   FileText,
 } from "lucide-react";
-import ModelThemHocSinh from "../ModelThemHocSinh";
+import ModelThemHocSinh from "./ModelThemHocSinh";
 import { useNavigate } from "react-router-dom";
 import TableDanhSachHocSinh from "./TabHocSinh";
 import Tabs from "../../../../components/ui/Tabs";

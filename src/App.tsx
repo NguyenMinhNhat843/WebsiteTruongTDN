@@ -107,14 +107,8 @@ const HoSoHocSinhOne = lazy(
 );
 const HocKyLayout = lazy(() => import("./pages/admin/HocKy/HocKyLayout"));
 const HocKyList = lazy(() => import("./pages/admin/HocKy/HocKyList"));
-const AdmissionDetail = lazy(
-  () => import("./features/DotTuyenSinh/DotTuyenSinhOne"),
-);
 const HocPhiLayout = lazy(() => import("./features/HocPhi/HocPhiLayout"));
 const QuanLyDotHocPhi = lazy(() => import("./features/HocPhi/QuanLyDotHocPhi"));
-const ExemptionManagement = lazy(
-  () => import("./pages/admin/MienGiamHocPhi/MienGiamHocPhi"),
-);
 const NhanVienLayout = lazy(
   () => import("./pages/admin/QuanLyNhanVien/NhanVienLayout"),
 );
@@ -128,9 +122,6 @@ const NhanVienOne = lazy(
 const PhanQuyenNguoiDung = lazy(
   () =>
     import("./pages/admin/CaiDatHeThong/PhanQuyenNguoiDung/PhanQuyenNguoiDung"),
-);
-const SystemLogPage = lazy(
-  () => import("./pages/admin/NhatKyHeThong/NhatKyHeThong"),
 );
 
 // Teacher (Member) Pages
@@ -329,10 +320,6 @@ function App() {
                   path="tai-chinh/thu-hoc-phi"
                   element={<QuanLyDotHocPhi />}
                 />
-                <Route
-                  path="tai-chinh/mien-giam"
-                  element={<ExemptionManagement />}
-                />
               </Route>
 
               {/* Quản trị nhân sự */}
@@ -347,7 +334,6 @@ function App() {
                 path="cai-dat/phan-quyen"
                 element={<PhanQuyenNguoiDung />}
               />
-              <Route path="nhat-ky-he-thong" element={<SystemLogPage />} />
               <Route path="cai-dat/cau-hinh-chung" element={<CauHinhChung />} />
             </Route>
 
@@ -379,7 +365,7 @@ function App() {
           </Routes>
         </Suspense>
       </AppProvider>
-      <Toaster position="top-right" richColors closeButton />
+      <Toaster position="top-center" richColors closeButton />
     </QueryClientProvider>
   );
 }

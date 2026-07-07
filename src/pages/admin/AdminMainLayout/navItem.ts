@@ -130,11 +130,6 @@ const navItems: NavItem[] = [
         label: "Thu học phí",
         href: "/admin/tai-chinh/thu-hoc-phi",
       },
-      {
-        id: "mien-giam-hoc-phi",
-        label: "Miễn giảm & Học bổng",
-        href: "/admin/tai-chinh/mien-giam",
-      },
     ],
   },
   // --- TRUYỀN THÔNG & TIN TỨC ---
@@ -192,12 +187,6 @@ const navItems: NavItem[] = [
         id: "cau-hinh-chung",
         label: "Cấu hình chung",
         href: "/admin/cai-dat/cau-hinh-chung",
-        roles: ["admin"],
-      },
-      {
-        id: "nhat-ky-hoat-dong",
-        label: "Nhật ký hệ thống",
-        href: "/admin/nhat-ky-he-thong",
         roles: ["admin"],
       },
     ],

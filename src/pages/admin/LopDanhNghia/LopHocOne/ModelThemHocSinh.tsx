@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useLopHocContext } from "./LopHocProvider";
+import { useLopHocContext } from "../LopHocProvider";
 import {
   Search,
   Loader2,
@@ -9,6 +9,7 @@ import {
   Calendar,
   Hash,
 } from "lucide-react";
+import { toast } from "sonner";
 
 interface ModelThemHocSinhProps {
   isOpen: boolean;
@@ -17,12 +18,12 @@ interface ModelThemHocSinhProps {
 
 const ModelThemHocSinh = ({ isOpen, onClose }: ModelThemHocSinhProps) => {
   const {
-    addStudentToLopHoc,
-    isAddingStudentToLopHoc,
     findStudentByMssv,
     isFindingStudentByMssv,
     studentFound,
     idLopHocNumber,
+    addStudent,
+    isAddStudentPending,
   } = useLopHocContext();
 
   const [mssvInput, setMssvInput] = useState<string>("");
@@ -56,22 +57,28 @@ const ModelThemHocSinh = ({ isOpen, onClose }: ModelThemHocSinhProps) => {
   const handleAdd = async (studentId: number) => {
     if (!studentId) return;
 
-    addStudentToLopHoc(
+    addStudent(
       {
         params: {
           path: {
-            classId: idLopHocNumber,
+            id: studentId,
           },
-          query: {
-            studentId,
-          },
+        },
+        body: {
+          classId: idLopHocNumber,
         },
       },
       {
-        // Callback nếu hook của bạn hỗ trợ (ví dụ: react-query)
         onSuccess: () => {
-          setMssvInput(""); // Reset ô nhập
-          onClose(); // Đóng modal
+          toast.success("Thêm học sinh vào lớp thành công!");
+          setMssvInput("");
+          onClose();
+        },
+        onError: (error: any) => {
+          toast.error(
+            error?.response?.data?.message ||
+              "Đã xảy ra lỗi khi thêm học sinh vào lớp.",
+          );
         },
       },
     );
@@ -121,7 +128,7 @@ const ModelThemHocSinh = ({ isOpen, onClose }: ModelThemHocSinhProps) => {
                 placeholder="Ví dụ: SV10234..."
                 value={mssvInput}
                 onChange={(e) => setMssvInput(e.target.value)}
-                disabled={isFindingStudentByMssv || isAddingStudentToLopHoc}
+                disabled={isFindingStudentByMssv || isAddStudentPending}
                 className="w-full rounded-xl border border-gray-200 py-2.5 pl-10 pr-4 text-sm outline-none transition-all placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-50 disabled:text-gray-400"
               />
             </div>
@@ -177,10 +184,10 @@ const ModelThemHocSinh = ({ isOpen, onClose }: ModelThemHocSinhProps) => {
               <button
                 type="button"
                 onClick={() => handleAdd(Number(dataHienThi.id))}
-                disabled={isAddingStudentToLopHoc || !dataHienThi.id}
+                disabled={isAddStudentPending || !dataHienThi.id}
                 className="w-full inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm py-2.5 rounded-xl shadow-sm shadow-blue-100 transition-all active:scale-[0.99] disabled:bg-gray-300 disabled:shadow-none"
               >
-                {isAddingStudentToLopHoc ? (
+                {isAddStudentPending ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span>Đang thêm vào lớp...</span>
