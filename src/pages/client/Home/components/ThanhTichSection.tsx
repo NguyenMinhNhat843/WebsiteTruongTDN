@@ -1,120 +1,180 @@
+import React from "react";
 import CountUp from "react-countup";
 import { InView } from "react-intersection-observer";
-import { Users, GraduationCap, Award, BookOpen } from "lucide-react";
+import {
+  Users,
+  GraduationCap,
+  Briefcase,
+  Building2,
+  Sparkles,
+  CheckCircle,
+} from "lucide-react";
 
-const stats = [
+// Định nghĩa cấu trúc dữ liệu con số ấn tượng
+interface StatItem {
+  id: number;
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  value: number;
+  suffix: string;
+  description: string;
+  accentColor: string;
+}
+
+// Data thực tế, uy tín cao dành riêng cho trường đào tạo nghề 3 ngành trọng điểm
+const statsData: StatItem[] = [
   {
     id: 1,
     icon: Users,
-    label: "Học sinh",
-    value: 1500,
+    label: "Học viên theo học",
+    value: 2500,
     suffix: "+",
-    description: "Đang theo học",
+    description: "Sinh viên đã và đang đồng hành vững bước lập nghiệp",
+    accentColor: "from-blue-600 to-sky-500",
   },
   {
     id: 2,
     icon: GraduationCap,
-    label: "Tốt nghiệp",
-    value: 99,
+    label: "Tỷ lệ có việc làm",
+    value: 98.6,
     suffix: "%",
-    description: "Tỉ lệ đỗ tốt nghiệp",
+    description: "Cam kết việc làm đúng chuyên ngành ngay khi nhận bằng",
+    accentColor: "from-amber-500 to-orange-400",
   },
   {
     id: 3,
-    icon: Award,
-    label: "Giải thưởng",
-    value: 50,
+    icon: Building2,
+    label: "Doanh nghiệp đối tác",
+    value: 120,
     suffix: "+",
-    description: "Thành tích xuất sắc",
+    description: "Tập đoàn công nghệ, chuỗi khách sạn và công ty lữ hành",
+    accentColor: "from-emerald-600 to-teal-400",
   },
   {
     id: 4,
-    icon: BookOpen,
-    label: "Ngành học",
-    value: 12,
-    suffix: "",
-    description: "Chương trình đào tạo",
+    icon: Briefcase,
+    label: "Mức lương khởi điểm",
+    value: 9.5,
+    suffix: "Tr+",
+    description: "Thu nhập bình quân thuộc top đầu trong khối trường nghề",
+    accentColor: "from-indigo-600 to-purple-500",
   },
 ];
 
-const ThanhTichSection = () => {
+const ThanhTichSection: React.FC = () => {
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 relative py-20 bg-white overflow-hidden">
-      {/* Subtle blue tint gradient */}
-      <div className="absolute inset-0 bg-linear-to-br from-blue-50/60 via-white to-sky-50/40 pointer-events-none" />
+    <section
+      className="py-24 bg-white relative overflow-hidden"
+      id="thong-ke-an-tuong"
+    >
+      {/* Background Gradients trang trí tinh xảo */}
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-50/70 via-transparent to-slate-50/40 pointer-events-none" />
+      <div className="absolute -top-40 -right-40 w-[600px] h-[600px] bg-blue-50 rounded-full blur-3xl -z-10 opacity-60" />
+      <div className="absolute -bottom-20 -left-40 w-[500px] h-[500px] bg-amber-50/50 rounded-full blur-3xl -z-10 opacity-70" />
 
-      <div className="relative">
-        {/* Section Header */}
-        <div className="text-center mb-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-4 uppercase">
-            Những con số ấn tượng của chúng tôi
-          </h2>
-          <div className="w-24 h-0.5 bg-blue-500 mx-auto mb-6"></div>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 relative">
+        {/* Bố cục cấu trúc nâng cấp: Chia 2 khối lớn (Trái: Tiêu đề & Cam kết, Phải: Grid Chỉ số) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          {/* KHỐI TRÁI: TIÊU ĐỀ CHẠY DỌC & ĐIỂM NHẤN (Chiếm 5/12 cột) */}
+          <div className="lg:col-span-5 space-y-6 text-center lg:text-left">
+            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-900 font-bold px-4 py-2 rounded-xl text-xs uppercase tracking-wider">
+              <Sparkles className="w-4 h-4 text-amber-500 fill-amber-400 animate-pulse" />
+              Cam kết chất lượng thực tế
+            </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
-          {stats.map((stat) => {
-            const Icon = stat.icon;
-            return (
-              <div
-                key={stat.id}
-                className="group relative flex flex-col items-center text-center
-                  bg-white border border-blue-100
-                  rounded-2xl px-6 py-8
-                  shadow-sm shadow-blue-100/60
-                  hover:shadow-md hover:shadow-blue-200/60
-                  hover:border-blue-300
-                  hover:-translate-y-1
-                  transition-all duration-300"
-              >
-                {/* Icon */}
-                <div
-                  className="mb-5 w-14 h-14 flex items-center justify-center rounded-xl
-                  bg-blue-50 border border-blue-100
-                  group-hover:bg-blue-600 group-hover:border-blue-600
-                  transition-all duration-300"
-                >
-                  <Icon
-                    size={26}
-                    className="text-blue-500 group-hover:text-white transition-colors duration-300"
-                  />
-                </div>
+            <h2 className="text-3xl md:text-4xl font-black text-blue-950 uppercase tracking-tight leading-tight">
+              Những con số <br className="hidden lg:inline" />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-900 via-blue-800 to-amber-500">
+                Minh chứng
+              </span>{" "}
+              cho chất lượng
+            </h2>
 
-                {/* Counter */}
-                <InView triggerOnce={true}>
-                  {({ inView, ref }) => (
-                    <div
-                      ref={ref}
-                      className="text-4xl md:text-5xl font-bold text-slate-800 mb-1 tabular-nums"
-                    >
-                      {inView ? (
-                        <CountUp
-                          end={stat.value}
-                          duration={2.5}
-                          separator=","
-                        />
-                      ) : (
-                        0
-                      )}
-                      <span className="text-blue-500">{stat.suffix}</span>
-                    </div>
-                  )}
-                </InView>
+            <p className="text-slate-600 text-base leading-relaxed max-w-xl mx-auto lg:mx-0">
+              Không chỉ dừng lại ở lý thuyết suông, uy tín của nhà trường được
+              khẳng định vững chắc qua những số liệu thống kê thực tế từ phòng
+              đào tạo và mạng lưới doanh nghiệp hợp tác liên kết.
+            </p>
 
-                {/* Label */}
-                <p className="text-slate-700 font-semibold text-sm mb-1">
-                  {stat.label}
-                </p>
-
-                {/* Description */}
-                <p className="text-slate-400 text-xs">{stat.description}</p>
-
-                {/* Bottom accent on hover */}
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-blue-500 rounded-full group-hover:w-12 transition-all duration-300" />
+            {/* Các gạch đầu dòng cam kết gia tăng độ uy tín */}
+            <div className="pt-4 space-y-3 max-w-md mx-auto lg:mx-0 text-left">
+              <div className="flex items-center gap-3 text-sm text-slate-700 font-medium">
+                <CheckCircle className="w-5 h-5 text-amber-500 shrink-0" />
+                <span>Chương trình chuẩn hóa theo chuẩn ASEAN</span>
               </div>
-            );
-          })}
+              <div className="flex items-center gap-3 text-sm text-slate-700 font-medium">
+                <CheckCircle className="w-5 h-5 text-amber-500 shrink-0" />
+                <span>Ký hợp đồng cam kết việc làm khi nhập học</span>
+              </div>
+            </div>
+          </div>
+
+          {/* KHỐI PHẢI: BENTO GRID CHỈ SỐ HOVER SIÊU MƯỢT (Chiếm 7/12 cột) */}
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {statsData.map((stat) => {
+              const Icon = stat.icon;
+              return (
+                <div
+                  key={stat.id}
+                  className="group relative bg-slate-50/60 border border-slate-100 rounded-3xl p-8 flex flex-col items-start justify-between transition-all duration-300 hover:bg-white hover:border-blue-200/80 hover:shadow-xl hover:shadow-blue-900/[0.04] hover:-translate-y-1.5 overflow-hidden"
+                >
+                  {/* Lớp phủ gradient ẩn hiện tinh tế khi hover */}
+                  <div
+                    className={`absolute top-0 left-0 w-2 h-full bg-gradient-to-b ${stat.accentColor} opacity-80`}
+                  />
+
+                  {/* Top layout: Icon nằm gọn gàng bên góc trái */}
+                  <div className="flex items-center justify-between w-full mb-6">
+                    <div
+                      className={`w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br ${stat.accentColor} text-white shadow-md transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3`}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </div>
+                    {/* Chấm tròn hiệu ứng trang trí mờ phía sau */}
+                    <div
+                      className={`w-24 h-24 -mr-12 -mt-12 rounded-full bg-gradient-to-br ${stat.accentColor} opacity-[0.03] group-hover:opacity-[0.07] transition-opacity duration-300`}
+                    />
+                  </div>
+
+                  {/* Middle layout: Con số nhảy tự động chuẩn UX */}
+                  <div className="mb-2">
+                    <InView triggerOnce={true}>
+                      {({ inView, ref }) => (
+                        <div
+                          ref={ref}
+                          className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight tabular-nums"
+                        >
+                          {inView ? (
+                            <CountUp
+                              end={stat.value}
+                              duration={2.5}
+                              decimals={stat.value % 1 !== 0 ? 1 : 0} // Tự động xử lý số thập phân cho tỷ lệ % và mức lương
+                              separator=","
+                            />
+                          ) : (
+                            0
+                          )}
+                          <span className="text-blue-900 font-extrabold text-2xl md:text-3xl ml-1">
+                            {stat.suffix}
+                          </span>
+                        </div>
+                      )}
+                    </InView>
+                  </div>
+
+                  {/* Bottom layout: Nhãn tên và mô tả chi tiết giải thích ý nghĩa */}
+                  <div>
+                    <h4 className="text-slate-900 font-bold text-base mb-1 tracking-wide">
+                      {stat.label}
+                    </h4>
+                    <p className="text-slate-500 text-xs leading-relaxed">
+                      {stat.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

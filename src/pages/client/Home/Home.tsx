@@ -1,9 +1,11 @@
+import CamNhanSection from "./components/CamNhanSection";
 import ChuongTrinhDaoTao from "./components/ChuongTrinhDaoTao";
 import MainBanner from "./components/MainBanner";
-import MediaSection from "./components/MediaTabs";
 import NewsSection from "./components/NewsSection";
+import QuyTrinhSection from "./components/QuyTrinhSection";
 import ThanhTichSection from "./components/ThanhTichSection";
 import TuyenSinhSection from "./components/TuyenSinhSection";
+import ViSaoChonSection from "./components/ViSaoChonSection";
 
 const Home = () => {
   return (
@@ -12,8 +14,10 @@ const Home = () => {
       <ChuongTrinhDaoTao />
       <TuyenSinhSection />
       <ThanhTichSection />
+      <QuyTrinhSection />
+      <CamNhanSection />
       <NewsSection />
-      <MediaSection />
+      <ViSaoChonSection />
     </div>
   );
 };

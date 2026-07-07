@@ -11,6 +11,9 @@ import DiemRenLuyenIndex from "./pages/admin/DiemRenLuyen";
 import DiemRenLuyen_TieuChiDanhGiaIndex from "./pages/admin/DiemRenLuyen_TieuChiDanhGia";
 import { Toaster } from "sonner";
 import CauHinhChung from "./pages/admin/CauHinhHeThong";
+import TinHocUngDung from "./pages/client/ChuongTrinhDaoTao/TinHocUngDung";
+import DichVuDuLichChiTiet from "./pages/client/ChuongTrinhDaoTao/DichVuDuLich";
+import TiengAnhChiTiet from "./pages/client/ChuongTrinhDaoTao/TienhAnhChiTiet";
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -188,6 +191,18 @@ function App() {
               <Route path="/hop-tac-quoc-te" element={<HopTacQuocTe />} />
               <Route path="/lien-he-cong-tac" element={<LienHe />} />
               <Route path="/dang-ky-tuyen-sinh" element={<DangKyTuVan />} />
+              <Route
+                path="/chuong-trinh-dao-tao/tin-hoc-ung-dung"
+                element={<TinHocUngDung />}
+              />
+              <Route
+                path="/chuong-trinh-dao-tao/dich-vu-du-lich"
+                element={<DichVuDuLichChiTiet />}
+              />
+              <Route
+                path="/chuong-trinh-dao-tao/tieng-anh-thuong-mai"
+                element={<TiengAnhChiTiet />}
+              />
               <Route path="/chuong-trinh-dao-tao">
                 <Route
                   path=":heDaoTaoSlug"
