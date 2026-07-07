@@ -6,115 +6,118 @@ const navItems: NavItem[] = [
     label: "Home",
     icon: "⬡",
     href: "/admin/home",
-    roles: ["admin", "teacher", "student"],
+    roles: ["admin", "teacher", "student", "staff"], // Tất cả mọi người đều xem được trang Home
   },
   // --- NHÓM ĐÀO TẠO & HỌC TẬP ---
   {
     id: "quan-ly-dao-tao",
     label: "Quản lý Đào tạo",
     icon: "📚",
-    roles: ["admin", "teacher"],
     children: [
       {
         id: "chuong-trinh-khung",
         label: "Chương trình khung",
         href: "/admin/dao-tao/chuong-trinh-khung",
-        roles: ["admin"],
+        roles: ["admin", "staff"], // Chỉ Admin và Staff Đào tạo được cấu hình gốc
       },
       {
         id: "tao-chuong-trinh-khung",
         label: "Tạo chương trình khung",
         href: "/admin/dao-tao/tao-chuong-trinh-khung",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff"],
       },
       {
         id: "mon-hoc",
         label: "Môn học",
         href: "/admin/mon-hoc",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff", "teacher"], // Giáo viên cần vào xem danh sách môn được phân công
       },
       {
         id: "lop-hoc",
         label: "Lớp học",
         href: "/admin/dao-tao/lop-hoc",
+        roles: ["admin", "staff", "teacher"], // Giáo viên cần vào quản lý lớp chủ nhiệm/bộ môn
       },
       {
         id: "khoa",
         label: "Khoa",
         href: "/admin/dao-tao/khoa",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff"],
       },
-
       {
         id: "khoa-dao-tao",
         label: "Khóa đào tạo",
         href: "/admin/khoa-dao-tao",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff"],
       },
       {
         id: "nganh",
         label: "Ngành học",
         href: "/admin/nganh-hoc",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff"],
       },
       {
         id: "phong-hoc",
         label: "Phòng học",
         href: "/admin/phong-hoc",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff"],
       },
       {
         id: "hoc-ky",
         label: "Học kỳ",
         href: "/admin/hoc-ky",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff"],
       },
       {
         id: "diem-ren-luyen",
         label: "Điểm rèn luyện",
         href: "/admin/diem-ren-luyen",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff", "teacher"], // Giáo viên chủ nhiệm chấm điểm rèn luyện
       },
       {
         id: "tieu-chi-danh-gia-diem-ren-luyen",
         label: "Tiêu chí đánh giá điểm rèn luyện",
         href: "/admin/diem-ren-luyen/tieu-chi-danh-gia",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff"], // Chỉ Admin/Staff ban hành tiêu chí cứng
       },
       {
         id: "tien-do-dao-tao",
         label: "Tiến độ đào tạo",
         href: "/admin/dao-tao/tien-do-dao-tao",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff", "teacher"],
       },
       {
         id: "thoi-khoa-bieu",
         label: "Thời khóa biểu",
         href: "/admin/dao-tao/thoi-khoa-bieu",
-        roles: ["admin", "teacher"],
+        roles: ["admin", "staff", "teacher"], // Giáo viên xem lịch dạy
       },
     ],
   },
-  // --- NHÓM CÔNG TÁC HỌC SINH ---
+  // --- NHÓM CÔNG TÁC HỌC SINH & TUYỂN SINH ---
   {
     id: "quan-ly-hoc-sinh",
     label: "Công tác Học sinh",
     icon: "🎓",
+    roles: ["admin", "staff", "teacher"],
     children: [
       {
         id: "ho-so-hoc-sinh",
         label: "Hồ sơ học sinh",
         href: "/admin/hoc-sinh/ho-so",
+        roles: ["admin", "staff", "teacher"], // Giáo viên xem hồ sơ học sinh lớp mình
       },
       {
         id: "ho-so-hoc-sinh/create",
         label: "Tạo hồ sơ học sinh",
         href: "/admin/hoc-sinh/ho-so/create",
+        roles: ["admin", "staff"], // Chỉ tuyển sinh/đào tạo tạo mới hồ sơ học sinh
       },
       {
         id: "phan-lop",
         label: "Phân lớp",
         href: "/admin/hoc-sinh/phan-lop",
+        roles: ["admin", "staff"], // Công tác xếp lớp đầu năm của Staff phòng đào tạo
       },
     ],
   },
@@ -123,12 +126,13 @@ const navItems: NavItem[] = [
     id: "tai-chinh",
     label: "Tài chính & Học phí",
     icon: "💳",
-    roles: ["admin"],
+    roles: ["admin", "staff"], // Staff kế toán được vào
     children: [
       {
         id: "thu-hoc-phi",
         label: "Thu học phí",
         href: "/admin/tai-chinh/thu-hoc-phi",
+        roles: ["admin", "staff"],
       },
     ],
   },
@@ -137,45 +141,51 @@ const navItems: NavItem[] = [
     id: "truyen-thong-bao-chi",
     label: "Truyền thông",
     icon: "📰",
-    href: "/admin/truyen-thong-bao-chi",
+    roles: ["admin", "staff"], // Thường giao cho Staff phòng tuyển sinh/truyền thông phụ trách bài viết tuyển sinh website
     children: [
       {
         id: "bai-viet",
         label: "Bài viết",
         href: "/admin/truyen-thong-bao-chi/bai-viet",
+        roles: ["admin", "staff"],
       },
       {
         id: "tao-bai-viet",
         label: "Tạo bài viết",
         href: "/admin/truyen-thong-bao-chi/tao-bai-viet",
+        roles: ["admin", "staff"],
       },
     ],
   },
+  // --- QUẢN TRỊ NHÂN SỰ ---
   {
     id: "quan-tri-nhan-su",
     label: "Quản trị nhân sự",
     icon: "👔",
-    roles: ["admin"],
+    roles: ["admin"], // Chặn cứng chỉ cho siêu quản trị (Admin)
     children: [
       {
         id: "quan-ly-nguoi-dung",
-        label: "Cán bộ & Nhân viênssss",
+        label: "Cán bộ & Nhân viên",
         icon: "👥",
         href: "/admin/users",
+        roles: ["admin"],
       },
       {
         id: "quan-ly-tai-khoan",
         label: "Quản lý tài khoản",
         icon: "🔐",
         href: "/admin/account",
+        roles: ["admin"],
       },
     ],
   },
+  // --- HỆ THỐNG ---
   {
     id: "he-thong",
     label: "Cài đặt hệ thống",
     icon: "⚙",
-    roles: ["admin"],
+    roles: ["admin"], // Chặn cứng chỉ cho siêu quản trị (Admin)
     children: [
       {
         id: "phan-quyen",

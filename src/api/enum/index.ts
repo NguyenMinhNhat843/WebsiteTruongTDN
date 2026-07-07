@@ -2,7 +2,10 @@ import type { components } from "../v1";
 
 export type StudentStatusEnum =
   components["schemas"]["StudentResponseDto"]["status"];
-export const STUDENT_STATUS_MAP: Record<StudentStatusEnum, string> = {
+export const STUDENT_STATUS_MAP: Record<
+  NonNullable<StudentStatusEnum>,
+  string
+> = {
   pending: "Chờ xét tuyển",
   approved: "Đã đậu / Chờ nhập học",
   failed: "Không đậu",
@@ -21,3 +24,5 @@ export const STUDENT_STATUS_TABS = Object.entries(STUDENT_STATUS_MAP).map(
 
 export type EnumDayOfWeek =
   components["schemas"]["ClassSubjectSessionDto"]["dayOfWeek"];
+
+export type EnumRoleUser = components["schemas"]["UserResponseDto"]["role"];

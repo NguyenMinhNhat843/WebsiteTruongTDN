@@ -10,8 +10,11 @@ import { Loader2, Trash2, FileDown, Paperclip } from "lucide-react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import ModalPhieuDiemRenLuyen from "./ModalPhieuDiemRenLuyen";
 import { useLopHocOneContext } from "./LopHocOneProvider";
+import { useAppContext } from "../../../../AppProvider";
 
 const TableDanhSachHocSinh = () => {
+  const { userRole } = useAppContext();
+
   const {
     studentsInLopHoc,
     isLoadingStudentsInLopHoc,
@@ -25,11 +28,9 @@ const TableDanhSachHocSinh = () => {
   // State quản lý học sinh đang chọn để mở modal điểm rèn luyện
   const [selectedStudentForPoint, setSelectedStudentForPoint] = useState<{
     id: number;
-    periodId: number; // Bạn hãy truyền periodId thực tế từ context hoặc props lớp học vào đây
+    periodId: number;
   } | null>(null);
 
-  // Giả định bạn có periodId (Kỳ học) từ dữ liệu lớp học, ví dụ: studentsInLopHoc?.periodId hoặc truyền từ cha xuống.
-  // Ở đây mình tạm lấy ví dụ là 1, bạn hãy thay đổi cho đúng logic dự án.
   const currentPeriodId = 1;
 
   // 1. Chuẩn hóa dữ liệu danh sách học sinh
@@ -102,9 +103,13 @@ const TableDanhSachHocSinh = () => {
         header: "Hành động",
         cell: (info) => {
           const student = info.row.original;
+
+          // Nếu là học sinh (student) -> Ẩn toàn bộ nút hành động
+          if (userRole === "student") return null;
+
           return (
             <div className="flex items-center gap-2">
-              {/* Nút Xuất Bảng Điểm */}
+              {/* Nút Xuất Bảng Điểm (Hiện cho admin, teacher, staff) */}
               <ButtonAction
                 title="Xuất bảng điểm Excel"
                 variant="export"
@@ -121,14 +126,16 @@ const TableDanhSachHocSinh = () => {
                 }
               />
 
-              {/* Nút Xóa Gốc Giữ Nguyên */}
-              <ButtonAction
-                title="Xóa học sinh khỏi lớp học"
-                variant="danger"
-                icon={<Trash2 className="h-4 w-4" />}
-              />
+              {/* Nút Xóa Học Sinh (Chỉ hiển thị khi là admin) */}
+              {userRole === "admin" && (
+                <ButtonAction
+                  title="Xóa học sinh khỏi lớp học"
+                  variant="danger"
+                  icon={<Trash2 className="h-4 w-4" />}
+                />
+              )}
 
-              {/* Nút Điểm rèn luyện -> Click để set state mở modal */}
+              {/* Nút Điểm rèn luyện (Hiện cho admin, teacher, staff) */}
               <ButtonAction
                 title="Điểm rèn luyện"
                 variant="primary"
@@ -136,7 +143,7 @@ const TableDanhSachHocSinh = () => {
                 onClick={() =>
                   setSelectedStudentForPoint({
                     id: student.id!,
-                    periodId: currentPeriodId, // Truyền periodId tương ứng vào đây
+                    periodId: currentPeriodId,
                   })
                 }
               />
@@ -145,7 +152,7 @@ const TableDanhSachHocSinh = () => {
         },
       },
     ],
-    [isExportingStudentGrade, currentPeriodId], // Nạp thêm currentPeriodId vào dependency
+    [isExportingStudentGrade, currentPeriodId, userRole], // Thêm userRole vào dependency array
   );
 
   // 3. Khởi tạo TanStack Table
@@ -232,7 +239,7 @@ const TableDanhSachHocSinh = () => {
           onClose={() => setSelectedStudentForPoint(null)}
           studentId={selectedStudentForPoint.id}
           semesterId={selectedSemesterId!}
-          isTeacher={true} // Bật giao diện cho Giáo viên xem/chấm điểm
+          isTeacher={true}
         />
       )}
     </div>

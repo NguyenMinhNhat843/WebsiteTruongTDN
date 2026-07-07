@@ -2,6 +2,7 @@ import { useState, useCallback, useMemo } from "react";
 import NavNode from "./NavNode";
 import { useLocation, useNavigate } from "react-router-dom";
 import type { NavItem } from "./navTree.type";
+import type { EnumRoleUser } from "../../api/enum";
 
 export interface SidebarProps {
   items: NavItem[];
@@ -33,6 +34,36 @@ const findActiveAndParents = (
   return { activeId: null, parentIds: [] };
 };
 
+const filterItemsByRole = (
+  nodes: NavItem[],
+  role: string | null,
+): NavItem[] => {
+  return (
+    nodes
+      .filter((node) => {
+        // Nếu node yêu cầu roles mà user không có -> Loại bỏ
+        if (node.roles && node.roles.length > 0) {
+          return role && node.roles.includes(role as EnumRoleUser);
+        }
+        return true; // Không yêu cầu role thì ai cũng xem được
+      })
+      .map((node) => {
+        // Nếu có con, tiếp tục đệ quy lọc các con bên trong
+        if (node.children) {
+          return {
+            ...node,
+            children: filterItemsByRole(node.children, role),
+          };
+        }
+        return node;
+      })
+      // Xóa luôn menu cha nếu sau khi lọc, menu đó không có href và cũng chẳng còn menu con nào
+      .filter(
+        (node) => node.href || (node.children && node.children.length > 0),
+      )
+  );
+};
+
 export default function Sidebar({
   items,
   defaultOpenIds = [],
@@ -46,14 +77,18 @@ export default function Sidebar({
     : null;
   const userRole = user?.role || null;
 
+  const allowedItems = useMemo(() => {
+    return filterItemsByRole(items, userRole);
+  }, [items, userRole]);
+
   // 2. Tính toán active và parents ngay khi render
   const { activeId, autoParentIds } = useMemo(() => {
     const { activeId, parentIds } = findActiveAndParents(
-      items,
+      allowedItems, // Thay 'items' thành 'allowedItems'
       location.pathname,
     );
     return { activeId, autoParentIds: parentIds };
-  }, [location.pathname, items]);
+  }, [location.pathname, allowedItems]);
 
   const [internalCollapsed, setInternalCollapsed] = useState(false);
   const [userOpenIds, setUserOpenIds] = useState<Set<string>>(
@@ -140,7 +175,7 @@ export default function Sidebar({
       {/* Nav - Tối ưu thanh cuộn */}
       <nav className="relative flex-1 overflow-y-auto px-3 py-6 custom-scrollbar">
         <ul className="space-y-1.5">
-          {items.map((item) => {
+          {allowedItems.map((item) => {
             const rolesAccessed = item.roles;
 
             // Nếu item có quy định roles VÀ role của user không nằm trong danh sách đó thì ẩn đi

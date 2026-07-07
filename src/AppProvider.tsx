@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { $api, setAccessToken } from "./api/client";
 import { createContextProvider } from "./util/createContextProvider";
+import type { EnumRoleUser } from "./api/enum";
 
 export const [AppProvider, useAppContext] = createContextProvider(() => {
   /**
@@ -69,6 +70,7 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
   const curentUserRaw = localStorage.getItem("user");
   const currentUser = curentUserRaw ? JSON.parse(curentUserRaw) : null;
   const profile = currentUser?.profile || null;
+  const userRole: EnumRoleUser = currentUser?.role || null;
 
   return {
     hocKysData,
@@ -86,5 +88,6 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
     profile,
     isPendingRefreshToken,
     isAppInitialized: isInitialized,
+    userRole,
   };
 });

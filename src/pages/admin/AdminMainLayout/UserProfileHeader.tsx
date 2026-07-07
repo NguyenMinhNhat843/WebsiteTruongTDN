@@ -1,32 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import { USER_ROLE } from "../../../features/users/types/User.types";
-import { Bell, Globe, LogOut, GraduationCap } from "lucide-react";
+import { Bell, Globe, LogOut, GraduationCap, User } from "lucide-react";
 import { useAppContext } from "../../../AppProvider";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import { $api } from "../../../api/client";
+import type { EnumRoleUser } from "../../../api/enum";
 
 const UserProfileHeader = () => {
   const navigate = useNavigate();
-  const { currentSemester } = useAppContext();
+  const { currentSemester, userRole, profile } = useAppContext();
 
   // Chuỗi hiển thị tên học kỳ
   const semesterName =
     currentSemester?.name +
     (currentSemester?.isCurrent ? " (Học kỳ hiện tại)" : "");
-
-  // Lấy dữ liệu và ép kiểu an toàn
-  const getUserData = () => {
-    try {
-      const data = localStorage.getItem("user");
-      return data ? JSON.parse(data) : null;
-    } catch (error) {
-      console.error("Lỗi parse user data:", error);
-      return null;
-    }
-  };
-
-  const user = getUserData();
-  console.log("user: ", user);
 
   /**
    * logout
@@ -52,11 +39,52 @@ const UserProfileHeader = () => {
     );
   };
 
-  if (!user) return null;
+  // Hàm helper dịch Role sang Tiếng Việt và trả về màu sắc tương ứng
+  const getRoleBadgeConfig = (role: EnumRoleUser) => {
+    switch (role?.toLowerCase()) {
+      case "admin":
+        return {
+          text: "Quản trị viên",
+          className: "bg-rose-50 text-rose-600 border-rose-100",
+        };
+      case "teacher":
+        return {
+          text: "Giáo viên",
+          className: "bg-indigo-50 text-indigo-600 border-indigo-100",
+        };
+      case "staff":
+        return {
+          text: "Nhân viên",
+          className: "bg-amber-50 text-amber-600 border-amber-100",
+        };
+      case "student":
+        return {
+          text: "Học sinh",
+          className: "bg-emerald-50 text-emerald-600 border-emerald-100",
+        };
+      default:
+        return {
+          text: role || "Người dùng",
+          className: "bg-slate-50 text-slate-600 border-slate-100",
+        };
+    }
+  };
+
+  // Lấy tên hiển thị ưu tiên từ profile.fullName, nếu chưa có thì fallback về userRole
+  const displayName = profile?.fullName || "Chưa cập nhật tên";
+  const roleConfig = getRoleBadgeConfig(userRole || "");
+
+  // Lấy chữ cái đầu tiên của từ cuối cùng (Tên chính) để làm Avatar đại diện
+  const getAvatarLetter = (name: string) => {
+    if (!name) return "?";
+    const words = name.trim().split(/\s+/);
+    return words[words.length - 1].charAt(0).toUpperCase();
+  };
 
   return (
     <div className="flex items-center justify-between gap-6 p-3 border-b border-slate-200 bg-white shadow-xs">
       <div className="flex items-center gap-4">
+        {/* Khối Avatar */}
         <div className="relative group cursor-pointer">
           <div
             className="absolute -inset-0.5 bg-linear-to-r from-indigo-500 
@@ -64,37 +92,41 @@ const UserProfileHeader = () => {
           ></div>
           <div
             className="relative w-10 h-10 rounded-full bg-white flex items-center 
-          justify-center border border-slate-200"
+          justify-center border border-slate-200 overflow-hidden"
           >
-            <div
-              className="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center 
-            text-white text-xs font-black"
-            >
-              {user?.name?.charAt(0).toUpperCase()}
-            </div>
+            {profile?.avatar ? (
+              <img
+                src={profile.avatar}
+                alt={displayName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div
+                className="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center 
+              text-white text-sm font-bold"
+              >
+                {getAvatarLetter(displayName)}
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Họ tên & Vai trò */}
+        {/* Họ tên & Vai trò đã được dịch */}
         <div className="flex flex-col items-start">
           <span className="text-sm font-bold text-slate-800 leading-tight">
-            {user.name}
+            {displayName}
           </span>
           <span
-            className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider mt-1 ${
-              user.role === USER_ROLE.ADMIN
-                ? "bg-rose-50 text-rose-500"
-                : "bg-indigo-50 text-indigo-600"
-            }`}
+            className={`text-[10px] font-bold px-2 py-0.5 border rounded-full uppercase tracking-wider mt-1 ${roleConfig.className}`}
           >
-            {user.role}
+            {roleConfig.text}
           </span>
         </div>
 
         {/* Thanh chia tách nhẹ giữa User và Nút nhanh */}
         <div className="h-6 w-[1px] bg-slate-200 mx-1"></div>
 
-        {/* Các nút hành động nhanh sử dụng ButtonAction [cite: 177, 338] */}
+        {/* Các nút hành động nhanh sử dụng ButtonAction */}
         <div className="flex items-center gap-1">
           <ButtonAction
             variant="outline"
@@ -119,7 +151,7 @@ const UserProfileHeader = () => {
         </div>
       </div>
 
-      {/* 2. KHỐI BÊN PHẢI: Nút thông báo nằm BÊN TRÁI Học kỳ hiện tại */}
+      {/* KHỐI BÊN PHẢI: Nút thông báo nằm BÊN TRÁI Học kỳ hiện tại */}
       <div className="flex items-center gap-4">
         <div className="relative">
           <ButtonAction
@@ -135,12 +167,12 @@ const UserProfileHeader = () => {
           ></div>
         </div>
 
-        {/* Học kỳ hiện tại: Làm to hơn, nổi bật hơn với badge cao cấp */}
+        {/* Học kỳ hiện tại */}
         {currentSemester && (
           <div
             className="flex items-center gap-2.5 bg-linear-to-r 
           from-blue-50 to-indigo-50 border border-blue-100 px-4 py-2 rounded-xl 
-          text-indigo-900 shadow-xs animate-pulse-slow"
+          text-indigo-900 shadow-xs"
           >
             <GraduationCap
               size={18}

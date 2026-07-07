@@ -15,13 +15,10 @@ const MonHocIndex = () => {
 
 const Inner = () => {
   const {
-    monHocs,
-    deleteMonHoc,
     isOpenModalCreateMonHoc,
     setIsOpenModalCreateMonHoc,
     createMonHoc,
     isCreateMonHocPending,
-    isMonHocsLoading,
     monHocIdSelected,
     setMonHocIdSelected,
   } = useMonHocContext();
