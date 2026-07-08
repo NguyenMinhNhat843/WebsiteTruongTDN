@@ -47,6 +47,22 @@ const Inner = () => {
     "personal" | "family" | "admission" | "documents"
   >("personal");
 
+  // Lấy các khóa đào tạo của ngành
+  const { data: batches } = $api.useQuery(
+    "get",
+    "/batches",
+    {
+      params: {
+        query: {
+          majorId: studentDetail?.majorId!,
+        },
+      },
+    },
+    {
+      enabled: !!studentDetail?.majorId && !isGettingStudentDetail,
+    },
+  );
+
   const handleSave = () => {
     if (!studentDetail?.id) return;
 
@@ -95,19 +111,18 @@ const Inner = () => {
         },
       },
     );
-
-    // Trạng thái Loading
-    if (isGettingStudentDetail) {
-      return (
-        <div className="flex h-screen items-center justify-center bg-gray-50">
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
-          <span className="ml-3 text-lg font-medium text-gray-600">
-            Đang tải thông tin học sinh...
-          </span>
-        </div>
-      );
-    }
   };
+  // Trạng thái Loading
+  if (isGettingStudentDetail) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-gray-50">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+        <span className="ml-3 text-lg font-medium text-gray-600">
+          Đang tải thông tin học sinh...
+        </span>
+      </div>
+    );
+  }
 
   // Trường hợp không có dữ liệu
   if (!studentDetail) {
@@ -209,22 +224,6 @@ const Inner = () => {
       value: value,
       label,
     }),
-  );
-
-  // Lấy các khóa đào tạo của ngành
-  const { data: batches } = $api.useQuery(
-    "get",
-    "/batches",
-    {
-      params: {
-        query: {
-          majorId: studentDetail?.majorId!,
-        },
-      },
-    },
-    {
-      enabled: !!studentDetail?.majorId && !isGettingStudentDetail,
-    },
   );
 
   return (

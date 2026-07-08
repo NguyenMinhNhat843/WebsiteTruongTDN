@@ -1664,6 +1664,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/analytics/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy số liệu thống kê tổng quan hệ thống */
+        get: operations["AnalyticsController_getOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analytics/growth-charts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy dữ liệu biểu đồ tăng trưởng học sinh theo thời gian (Tháng) */
+        get: operations["AnalyticsController_getGrowthCharts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3345,6 +3379,51 @@ export interface components {
             status: "NOT_SUBMITTED" | "PENDING" | "APPROVED";
             teacherComment: string | null;
             details: components["schemas"]["AssessmentDetailUpdateDto"][];
+        };
+        OverviewStatsResponseDto: {
+            /**
+             * @description Tổng số học sinh hệ thống
+             * @example 150
+             */
+            totalStudents: number;
+            /**
+             * @description Tổng số giáo viên
+             * @example 25
+             */
+            totalTeachers: number;
+            /**
+             * @description Số học sinh đang học chính thức
+             * @example 90
+             */
+            studyingStudents: number;
+            /**
+             * @description Số học sinh đang chờ xét tuyển
+             * @example 15
+             */
+            pendingStudents: number;
+            /**
+             * @description Số học sinh mới đăng ký tư vấn
+             * @example 20
+             */
+            registerStudents: number;
+        };
+        ChartPointDto: {
+            /**
+             * @description Tháng thống kê (Định dạng YYYY-MM)
+             * @example 2026-06
+             */
+            month: string;
+            /**
+             * @description Số lượng học sinh
+             * @example 12
+             */
+            count: number;
+        };
+        GrowthChartsResponseDto: {
+            /** @description Dữ liệu tăng trưởng học sinh đăng ký mới tư vấn */
+            registerGrowth: components["schemas"]["ChartPointDto"][];
+            /** @description Dữ liệu tăng trưởng học sinh nhập học thành công (đang học) */
+            studyingGrowth: components["schemas"]["ChartPointDto"][];
         };
     };
     responses: never;
@@ -6831,6 +6910,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResponseAssessmentDtoWithRelation"];
+                };
+            };
+        };
+    };
+    AnalyticsController_getOverview: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Thống kê tổng quan thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverviewStatsResponseDto"];
+                };
+            };
+        };
+    };
+    AnalyticsController_getGrowthCharts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lấy dữ liệu biểu đồ thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrowthChartsResponseDto"];
                 };
             };
         };
