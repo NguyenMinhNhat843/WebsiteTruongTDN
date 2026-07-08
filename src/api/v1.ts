@@ -732,270 +732,6 @@ export interface paths {
         patch: operations["RoomController_update"];
         trace?: never;
     };
-    "/tuition-fee/delete-all": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /**
-         * Xóa tất cả dữ liệu học phí
-         * @description Dùng cho mục đích testing, xóa tất cả feeInvoice và feeInvoiceItem
-         */
-        delete: operations["TuitionFeeController_deleteAll"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/tuition-fee/preview": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Xem trước thông số học phí dự kiến */
-        get: operations["TuitionFeeController_getPreview"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/tuition-fee/create-semester-fees": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Tạo các khoản phí học kỳ cho sinh viên */
-        post: operations["TuitionFeeController_createSemesterFees"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/tuition-fee/fees/{studentId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Lấy danh sách các hóa đơn của sinh viên
-         * @description Dựa trên ID sinh viên, lấy danh sách các khoản phí học kỳ đã tạo.
-         */
-        get: operations["TuitionFeeController_getTuitionFees"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/tuition-fee/invoices/{studentCode}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Lấy danh sách hóa đơn học phí của sinh viên
-         * @description Dựa trên mã sinh viên, lấy danh sách các hóa đơn học phí đã tạo.
-         */
-        get: operations["TuitionFeeController_getTuitionInvoiceByStudentCode"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/tuition-fee/fees": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Lấy tất cả các khoản phí học kỳ của tất cả sinh viên
-         * @description Lấy danh sách tất cả các khoản phí học kỳ đã tạo.
-         */
-        get: operations["TuitionFeeController_getAllTuitionFees"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/tuition-fee/student-tuition": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Lấy thông tin học phí của sinh viên
-         * @description Dựa trên các tiêu chí tìm kiếm, lấy thông tin học phí của sinh viên.
-         */
-        get: operations["TuitionFeeController_getStudentTuition"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/tuition-fee/pay": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Thanh toán học phí
-         * @description Sinh viên thực hiện thanh toán học phí dựa trên danh sách các khoản phí đã tạo.
-         */
-        post: operations["TuitionFeeController_payTuitionFee"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/fees": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy danh sách tất cả các loại phí */
-        get: operations["FeeController_findAll"];
-        put?: never;
-        /** Tạo mới một danh mục phí */
-        post: operations["FeeController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/fees/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy chi tiết một loại phí theo ID */
-        get: operations["FeeController_findOne"];
-        put?: never;
-        post?: never;
-        /** Xóa một loại phí */
-        delete: operations["FeeController_remove"];
-        options?: never;
-        head?: never;
-        /** Cập nhật thông tin loại phí */
-        patch: operations["FeeController_update"];
-        trace?: never;
-    };
-    "/fee-catalogs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy toàn bộ danh sách cấu hình phí */
-        get: operations["FeeCatalogController_findAll"];
-        put?: never;
-        /** Tạo mới cấu hình phí cho đối tượng cụ thể */
-        post: operations["FeeCatalogController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/fee-catalogs/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy chi tiết một cấu hình phí */
-        get: operations["FeeCatalogController_findOne"];
-        put?: never;
-        post?: never;
-        /** Xóa một cấu hình phí */
-        delete: operations["FeeCatalogController_remove"];
-        options?: never;
-        head?: never;
-        /** Cập nhật cấu hình phí */
-        patch: operations["FeeCatalogController_update"];
-        trace?: never;
-    };
-    "/credit-prices": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy danh sách tất cả các thiết lập giá tín chỉ */
-        get: operations["CreditPriceController_findAll"];
-        put?: never;
-        /** Tạo mới thiết lập giá tín chỉ */
-        post: operations["CreditPriceController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/credit-prices/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy chi tiết một thiết lập giá theo ID */
-        get: operations["CreditPriceController_findOne"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Cập nhật thiết lập giá tín chỉ */
-        patch: operations["CreditPriceController_update"];
-        trace?: never;
-    };
     "/class-subject-session": {
         parameters: {
             query?: never;
@@ -1696,6 +1432,126 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/fee-invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Tìm kiếm hoặc Lấy danh sách hóa đơn học phí theo bộ lọc */
+        get: operations["FeeInvoiceController_findAll"];
+        put?: never;
+        /**
+         * Tạo mới hóa đơn học phí
+         * @description Tạo hóa đơn học phí cho sinh viên. Hệ thống tự động ghi nhận 1 giao dịch (Payment) ban đầu nếu số tiền đã đóng (paidAmount) lớn hơn 0.
+         */
+        post: operations["FeeInvoiceController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/fee-invoices/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin chi tiết một hóa đơn học phí theo ID */
+        get: operations["FeeInvoiceController_findOne"];
+        put?: never;
+        post?: never;
+        /**
+         * Xóa hóa đơn học phí theo ID
+         * @description Xóa hóa đơn học phí đồng thời dọn sạch các lịch sử giao dịch (Payments) liên quan tới hóa đơn này.
+         */
+        delete: operations["FeeInvoiceController_remove"];
+        options?: never;
+        head?: never;
+        /**
+         * Cập nhật thông tin hóa đơn học phí
+         * @description Cập nhật các trường dữ liệu của hóa đơn. Nếu số tiền đã đóng (paidAmount) tăng lên so với trước, hệ thống tự tạo thêm 1 lịch sử giao dịch (Payment) tương ứng với phần chênh lệch.
+         */
+        patch: operations["FeeInvoiceController_update"];
+        trace?: never;
+    };
+    "/tuition-periods": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách đợt thu học phí (có lọc theo tên) */
+        get: operations["TuitionPeriodController_findAll"];
+        put?: never;
+        /** Tạo mới một đợt thu học phí */
+        post: operations["TuitionPeriodController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-periods/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin chi tiết một đợt thu học phí */
+        get: operations["TuitionPeriodController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa một đợt thu học phí */
+        delete: operations["TuitionPeriodController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin đợt thu học phí */
+        patch: operations["TuitionPeriodController_update"];
+        trace?: never;
+    };
+    "/tuition-configs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách hoặc Tìm kiếm cấu hình học phí theo bộ lọc */
+        get: operations["TuitionConfigController_findAll"];
+        put?: never;
+        /** Tạo mới cấu hình học phí kèm danh sách các khoản mục (items) */
+        post: operations["TuitionConfigController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-configs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết cấu hình học phí theo ID */
+        get: operations["TuitionConfigController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa cấu hình học phí theo ID */
+        delete: operations["TuitionConfigController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật cấu hình học phí và đồng bộ lại danh sách items */
+        patch: operations["TuitionConfigController_update"];
         trace?: never;
     };
 }
@@ -2542,246 +2398,6 @@ export interface components {
              */
             type?: "Lý thuyết" | "Thực hành" | "Phòng Lab/Máy tính" | "Xưởng thực tập" | "Phòng chức năng";
         };
-        TuitionPreviewResponseDto: {
-            /**
-             * @description Tên học kỳ hiện tại dùng để tính toán preview
-             * @example HK1 - 2026
-             */
-            semesterName: string;
-            /**
-             * @description Tổng số sinh viên dự kiến sẽ được lập hóa đơn
-             * @example 1284
-             */
-            totalStudents: number;
-            /**
-             * @description Tổng số tín chỉ của tất cả sinh viên trong đợt này
-             * @example 14220
-             */
-            totalCredits: number;
-            /**
-             * @description Tổng số tiền dự kiến thu được (VND)
-             * @example 12800000000
-             */
-            estimatedTotalAmount: number;
-            /**
-             * @description Số tiền học phí trung bình trên mỗi sinh viên
-             * @example 10000000
-             */
-            averagePerStudent: number;
-            /**
-             * Format: date-time
-             * @description Thời điểm tạo thông số xem trước
-             * @example 2026-05-14T10:58:00.000Z
-             */
-            generatedAt: string;
-        };
-        /**
-         * @description Trạng thái thanh toán
-         * @enum {string}
-         */
-        FeeInvoiceItemStatus: "paid" | "unpaid";
-        TuitionFeeItemsDto: {
-            /**
-             * @description ID của payment
-             * @example 1
-             */
-            id: number;
-            /**
-             * @description Trạng thái thanh toán
-             * @example paid
-             */
-            status: components["schemas"]["FeeInvoiceItemStatus"];
-            /**
-             * @description Tên khoản thanh toán
-             * @example Học phí học kỳ 1
-             */
-            name: string;
-            /**
-             * @description Số tiền
-             * @example 3500000
-             */
-            amount: number;
-            /**
-             * @description ID sinh viên
-             * @example 101
-             */
-            studentId?: number | null;
-            /**
-             * @description ID hóa đơn
-             * @example 5001
-             */
-            invoiceId?: number | null;
-            /**
-             * @description ID học kỳ
-             * @example 2
-             */
-            semesterId?: number | null;
-        };
-        InvoiceDto: {
-            /**
-             * @description ID của sinh viên thuộc hóa đơn này
-             * @example 1
-             */
-            studentId: number;
-            /**
-             * @description ID của học kỳ áp dụng hóa đơn
-             * @example 2
-             */
-            semesterId: number;
-            /**
-             * @description Tổng số tiền phải đóng của cả kỳ
-             * @example 15500000.5
-             */
-            totalAmount: number;
-            /**
-             * @description Trạng thái thanh toán của hóa đơn
-             * @default unpaid
-             * @example unpaid
-             * @enum {string}
-             */
-            status: "unpaid" | "partial" | "paid";
-            /**
-             * Format: date-time
-             * @description Thời điểm tạo hóa đơn
-             * @example 2026-05-14T10:58:00.000Z
-             */
-            createdAt: string;
-        };
-        PayTuitionFeeDto: {
-            /**
-             * @description ID của sinh viên thực hiện thanh toán
-             * @example 123
-             */
-            studentId: number;
-            /**
-             * @description Danh sách ID của các mục thanh toán (ví dụ: ID đăng ký học phần)
-             * @example [
-             *       1,
-             *       2,
-             *       5
-             *     ]
-             */
-            itemsPaymented: number[];
-            /**
-             * @description ID của học kỳ thực hiện thanh toán
-             * @example 1
-             */
-            semesterId: number;
-        };
-        CreateFeeDto: {
-            /**
-             * @description Tên của loại phí hoặc danh mục thu
-             * @example Bảo hiểm y tế
-             */
-            name: string;
-        };
-        UpdateFeeDto: {
-            /**
-             * @description Tên của loại phí hoặc danh mục thu
-             * @example Bảo hiểm y tế
-             */
-            name?: string;
-        };
-        CreateFeeCatalogDto: {
-            /**
-             * @description ID của danh mục phí (từ bảng Fee)
-             * @example 1
-             */
-            feeId: number;
-            /**
-             * @description Số tiền
-             * @example 500000
-             */
-            amount: number;
-            /**
-             * @description Có áp dụng cho toàn bộ sinh viên không?
-             * @example false
-             */
-            isGlobal: boolean;
-            /**
-             * @description Áp dụng riêng cho ngành này (nếu có)
-             * @example 1
-             */
-            majorId?: number;
-            /**
-             * @description Áp dụng riêng cho khóa này (nếu có)
-             * @example 2
-             */
-            batchId?: number;
-            /**
-             * @description Áp dụng cho học kỳ cụ thể
-             * @example 1
-             */
-            semester?: number;
-        };
-        UpdateFeeCatalogDto: {
-            /**
-             * @description ID của danh mục phí (từ bảng Fee)
-             * @example 1
-             */
-            feeId?: number;
-            /**
-             * @description Số tiền
-             * @example 500000
-             */
-            amount?: number;
-            /**
-             * @description Có áp dụng cho toàn bộ sinh viên không?
-             * @example false
-             */
-            isGlobal?: boolean;
-            /**
-             * @description Áp dụng riêng cho ngành này (nếu có)
-             * @example 1
-             */
-            majorId?: number;
-            /**
-             * @description Áp dụng riêng cho khóa này (nếu có)
-             * @example 2
-             */
-            batchId?: number;
-            /**
-             * @description Áp dụng cho học kỳ cụ thể
-             * @example 1
-             */
-            semester?: number;
-        };
-        CreateCreditPriceDto: {
-            /** @description ID của ngành học (nếu áp dụng riêng cho ngành) */
-            majorId?: number;
-            /** @description ID của khóa học/batch (nếu áp dụng riêng cho khóa) */
-            batchId?: number;
-            /** @description Học kỳ áp dụng */
-            semester?: number;
-            /**
-             * @description Áp dụng chung cho toàn bộ trường
-             * @default false
-             */
-            isGlobal: boolean;
-            /**
-             * @description Giá tiền trên mỗi tín chỉ
-             * @example 500000
-             */
-            price: number;
-        };
-        UpdateCreditPriceDto: {
-            /** @description ID của ngành học (nếu áp dụng riêng cho ngành) */
-            majorId?: number;
-            /** @description ID của khóa học/batch (nếu áp dụng riêng cho khóa) */
-            batchId?: number;
-            /** @description Học kỳ áp dụng */
-            semester?: number;
-            /**
-             * @description Áp dụng chung cho toàn bộ trường
-             * @default false
-             */
-            isGlobal: boolean;
-            /**
-             * @description Giá tiền trên mỗi tín chỉ
-             * @example 500000
-             */
-            price?: number;
-        };
         CreateClassSubjectSessionDto: {
             classSubjectId: number;
             roomId?: Record<string, never> | null;
@@ -3424,6 +3040,97 @@ export interface components {
             registerGrowth: components["schemas"]["ChartPointDto"][];
             /** @description Dữ liệu tăng trưởng học sinh nhập học thành công (đang học) */
             studyingGrowth: components["schemas"]["ChartPointDto"][];
+        };
+        CreateFeeInvoiceDto: {
+            studentId: number;
+            periodId: number;
+            totalAmount: number;
+            minRequiredAmount: number;
+            paidAmount: number;
+            remainingAmount: number;
+        };
+        FeeInvoiceDto: {
+            id: number;
+            studentId: number;
+            periodId: number;
+            totalAmount: number;
+            minRequiredAmount: number;
+            paidAmount: number;
+            remainingAmount: number;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateFeeInvoiceDto: {
+            studentId?: number;
+            periodId?: number;
+            totalAmount?: number;
+            minRequiredAmount?: number;
+            paidAmount?: number;
+            remainingAmount?: number;
+        };
+        CreateTuitionPeriodDto: {
+            name: string;
+            semesterId: number;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+        };
+        TuitionPeriodDto: {
+            id: number;
+            name: string;
+            semesterId: number;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        UpdateTuitionPeriodDto: {
+            name?: string;
+            semesterId?: number;
+            /** Format: date-time */
+            startDate?: string;
+            /** Format: date-time */
+            endDate?: string;
+        };
+        CreateTuitionConfigDto: {
+            periodId: number;
+            majorId?: Record<string, never> | null;
+            batchId?: Record<string, never> | null;
+            totalAmount: number;
+            minRequiredAmount: number;
+        };
+        TuitionConfigItemDto: {
+            id: number;
+            configId: number;
+            name: string;
+            amount: number;
+        };
+        TuitionConfigWithItemsDto: {
+            id: number;
+            periodId: number;
+            majorId?: Record<string, never> | null;
+            batchId?: Record<string, never> | null;
+            totalAmount: number;
+            minRequiredAmount: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            items: components["schemas"]["TuitionConfigItemDto"][];
+        };
+        UpdateTuitionConfigDto: {
+            periodId?: number;
+            majorId?: Record<string, never> | null;
+            batchId?: Record<string, never> | null;
+            totalAmount?: number;
+            minRequiredAmount?: number;
         };
     };
     responses: never;
@@ -5062,482 +4769,6 @@ export interface operations {
             };
         };
     };
-    TuitionFeeController_deleteAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    TuitionFeeController_getPreview: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Thông số học phí dự kiến cho đợt học phí sắp mở. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TuitionPreviewResponseDto"];
-                };
-            };
-        };
-    };
-    TuitionFeeController_createSemesterFees: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Tạo các khoản phí thành công. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    TuitionFeeController_getTuitionFees: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                studentId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Danh sách các khoản phí học kỳ của sinh viên. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TuitionFeeItemsDto"][];
-                };
-            };
-        };
-    };
-    TuitionFeeController_getTuitionInvoiceByStudentCode: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                studentCode: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            default: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InvoiceDto"][];
-                };
-            };
-        };
-    };
-    TuitionFeeController_getAllTuitionFees: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Danh sách tất cả các khoản phí học kỳ. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    TuitionFeeController_getStudentTuition: {
-        parameters: {
-            query?: {
-                studentCode?: string;
-                semesterId?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    TuitionFeeController_payTuitionFee: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayTuitionFeeDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    FeeController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    FeeController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateFeeDto"];
-            };
-        };
-        responses: {
-            /** @description Tạo thành công. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Dữ liệu đầu vào không hợp lệ. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    FeeController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    FeeController_remove: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    FeeController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateFeeDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    FeeCatalogController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    FeeCatalogController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateFeeCatalogDto"];
-            };
-        };
-        responses: {
-            /** @description Tạo cấu hình thành công. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Không tìm thấy Fee ID tương ứng. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    FeeCatalogController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    FeeCatalogController_remove: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    FeeCatalogController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateFeeCatalogDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditPriceController_findAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Trả về danh sách thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditPriceController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCreditPriceDto"];
-            };
-        };
-        responses: {
-            /** @description Tạo thành công. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Dữ liệu đầu vào không hợp lệ. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditPriceController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Không tìm thấy ID. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    CreditPriceController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateCreditPriceDto"];
-            };
-        };
-        responses: {
-            /** @description Cập nhật thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Không tìm thấy ID. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
     ClassSubjectSessionController_findAll: {
         parameters: {
             query?: {
@@ -6951,6 +6182,458 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["GrowthChartsResponseDto"];
                 };
+            };
+        };
+    };
+    FeeInvoiceController_findAll: {
+        parameters: {
+            query: {
+                studentId: number;
+                periodId: number;
+                status: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Trả về danh sách hóa đơn học phí phù hợp với bộ lọc. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeeInvoiceDto"][];
+                };
+            };
+        };
+    };
+    FeeInvoiceController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFeeInvoiceDto"];
+            };
+        };
+        responses: {
+            /** @description Tạo hóa đơn học phí thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeeInvoiceDto"];
+                };
+            };
+            /** @description Dữ liệu đầu vào không hợp lệ hoặc sai định dạng. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeInvoiceController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tìm thấy hóa đơn học phí. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeeInvoiceDto"];
+                };
+            };
+            /** @description Hóa đơn học phí không tồn tại. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeInvoiceController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công hóa đơn học phí. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example Xóa thành công hóa đơn học phí và toàn bộ lịch sử thanh toán của ID 1 */
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Hóa đơn học phí cần xóa không tồn tại. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    FeeInvoiceController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateFeeInvoiceDto"];
+            };
+        };
+        responses: {
+            /** @description Cập nhật thông tin hóa đơn học phí thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeeInvoiceDto"];
+                };
+            };
+            /** @description Dữ liệu cập nhật không hợp lệ. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Hóa đơn học phí cần cập nhật không tồn tại. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionPeriodController_findAll: {
+        parameters: {
+            query?: {
+                name?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Trả về danh sách các đợt thu học phí thỏa mãn điều kiện. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionPeriodDto"][];
+                };
+            };
+        };
+    };
+    TuitionPeriodController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTuitionPeriodDto"];
+            };
+        };
+        responses: {
+            /** @description Tạo đợt thu học phí thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionPeriodDto"];
+                };
+            };
+        };
+    };
+    TuitionPeriodController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tìm thấy thông tin chi tiết đợt thu học phí. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionPeriodDto"];
+                };
+            };
+            /** @description Không tìm thấy ID yêu cầu. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionPeriodController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa đợt thu học phí thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example Deleted tuition period with ID 1 successfully */
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Không tìm thấy ID yêu cầu. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionPeriodController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTuitionPeriodDto"];
+            };
+        };
+        responses: {
+            /** @description Cập nhật thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionPeriodDto"];
+                };
+            };
+            /** @description Không tìm thấy ID yêu cầu. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionConfigController_findAll: {
+        parameters: {
+            query?: {
+                periodId?: number;
+                majorId?: components["schemas"]["Object"];
+                batchId?: components["schemas"]["Object"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Trả về danh sách cấu hình học phí phù hợp. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionConfigWithItemsDto"][];
+                };
+            };
+        };
+    };
+    TuitionConfigController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTuitionConfigDto"];
+            };
+        };
+        responses: {
+            /** @description Tạo mới cấu hình học phí thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionConfigWithItemsDto"];
+                };
+            };
+            /** @description Dữ liệu đầu vào không hợp lệ. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionConfigController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tìm thấy cấu hình học phí. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionConfigWithItemsDto"];
+                };
+            };
+            /** @description Không tìm thấy cấu hình học phí với ID cung cấp. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionConfigController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công cấu hình học phí. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example Xóa thành công Tuition Config có ID 1 */
+                        message?: string;
+                    };
+                };
+            };
+            /** @description Không tìm thấy cấu hình học phí cần xóa. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionConfigController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTuitionConfigDto"];
+            };
+        };
+        responses: {
+            /** @description Cập nhật cấu hình học phí thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionConfigWithItemsDto"];
+                };
+            };
+            /** @description Dữ liệu cập nhật không hợp lệ. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Không tìm thấy cấu hình học phí cần cập nhật. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

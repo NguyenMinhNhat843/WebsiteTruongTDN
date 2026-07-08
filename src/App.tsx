@@ -107,8 +107,6 @@ const HoSoHocSinhOne = lazy(
 );
 const HocKyLayout = lazy(() => import("./pages/admin/HocKy/HocKyLayout"));
 const HocKyList = lazy(() => import("./pages/admin/HocKy/HocKyList"));
-const HocPhiLayout = lazy(() => import("./features/HocPhi/HocPhiLayout"));
-const QuanLyDotHocPhi = lazy(() => import("./features/HocPhi/QuanLyDotHocPhi"));
 const NhanVienLayout = lazy(
   () => import("./pages/admin/QuanLyNhanVien/NhanVienLayout"),
 );
@@ -314,14 +312,6 @@ function App() {
               {/* Học kỳ */}
               <Route element={<HocKyLayout />}>
                 <Route path="hoc-ky" element={<HocKyList />} />
-              </Route>
-
-              {/* Tài chính */}
-              <Route element={<HocPhiLayout />}>
-                <Route
-                  path="tai-chinh/thu-hoc-phi"
-                  element={<QuanLyDotHocPhi />}
-                />
               </Route>
 
               {/* Quản trị nhân sự */}

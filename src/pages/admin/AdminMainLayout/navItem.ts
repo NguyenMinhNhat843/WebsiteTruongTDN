@@ -121,21 +121,6 @@ const navItems: NavItem[] = [
       },
     ],
   },
-  // --- NHÓM TÀI CHÍNH ---
-  {
-    id: "tai-chinh",
-    label: "Tài chính & Học phí",
-    icon: "💳",
-    roles: ["admin", "staff"], // Staff kế toán được vào
-    children: [
-      {
-        id: "thu-hoc-phi",
-        label: "Thu học phí",
-        href: "/admin/tai-chinh/thu-hoc-phi",
-        roles: ["admin", "staff"],
-      },
-    ],
-  },
   // --- TRUYỀN THÔNG & TIN TỨC ---
   {
     id: "truyen-thong-bao-chi",
