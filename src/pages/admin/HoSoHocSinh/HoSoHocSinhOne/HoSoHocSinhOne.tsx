@@ -20,6 +20,7 @@ import TabThongTinNguoiGiamHo from "./Tabs/TabThongTinNguoiGiamHo";
 import TabHoSoXetTuyen from "./Tabs/TabHoSoXetTuyen";
 import { toast } from "sonner";
 import { STUDENT_STATUS_MAP } from "../../../../api/enum";
+import { $api } from "../../../../api/client";
 
 const HoSoHocSinhOne = () => {
   return (
@@ -39,6 +40,7 @@ const Inner = () => {
     updateStudent,
     isUpdatingStudent,
     studentDetail,
+    handleChangeFormUpdate,
   } = useHoSoHocSinhOneContext();
   const { isGettingStudentDetail } = useHocSinhContext();
   const [activeTab, setActiveTab] = useState<
@@ -50,6 +52,7 @@ const Inner = () => {
 
     // Loại bỏ các field không được phép gửi lên DTO theo Prisma Model yêu cầu
     const dtoData = formData;
+    console.log("dtoData trước khi gửi lên backend: ", dtoData);
 
     // Ép kiểu các trường Number cho đúng DTO đầu vào backend
     if (dtoData.fatherYearOfBirth)
@@ -209,6 +212,20 @@ const Inner = () => {
   );
 
   // Lấy các khóa đào tạo của ngành
+  const { data: batches } = $api.useQuery(
+    "get",
+    "/batches",
+    {
+      params: {
+        query: {
+          majorId: studentDetail?.majorId!,
+        },
+      },
+    },
+    {
+      enabled: !!studentDetail?.majorId && !isGettingStudentDetail,
+    },
+  );
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 sm:p-6 lg:p-8">
@@ -286,15 +303,37 @@ const Inner = () => {
                       "---"}
                   </span>
                 </p>
-                <p>
+                <p className="flex items-center gap-2">
                   Khóa đào tạo:{" "}
-                  <span className="font-semibold text-gray-700">
-                    {studentDetail.batch?.batchCode ||
-                      studentDetail.batchId ||
-                      "---"}
-                  </span>
+                  {isEditMode ? (
+                    <select
+                      className="rounded-xl border border-gray-200 bg-slate-50/50 p-1.5 px-2.5 text-sm font-semibold text-gray-700 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all"
+                      value={formData.batchId ?? ""}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        handleChangeFormUpdate(
+                          "batchId",
+                          val ? Number(val) : null,
+                        );
+                      }}
+                    >
+                      <option value="">-- Chọn khóa đào tạo --</option>
+                      {batches?.map((b) => (
+                        <option key={b.id} value={b.id}>
+                          {b.batchName} ({b.batchCode})
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span className="font-semibold text-gray-700">
+                      {batches?.find((b) => b.id === formData.batchId)
+                        ?.batchName ||
+                        studentDetail.batch?.batchName ||
+                        studentDetail.batch?.batchCode ||
+                        "---"}
+                    </span>
+                  )}
                 </p>
-
                 <p>
                   Lớp học:{" "}
                   <span className="font-semibold text-gray-700">

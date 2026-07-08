@@ -27,6 +27,7 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
       documentProgress,
       class: classData,
       batch,
+      major,
       ...studentDataForUpdate
     } = studentDetail ?? {};
 
@@ -177,6 +178,16 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
       }
     }, [studentDetail, isEditMode, admissionProfile]);
 
+    const handleChangeFormUpdate = (
+      key: keyof UpdateStudentDto,
+      value: any,
+    ) => {
+      setFormData((prev) => ({
+        ...prev,
+        [key]: value,
+      }));
+    };
+
     return {
       hoSoNhapHoc: configHoSoNhapHoc,
       isLoadingHoSoNhapHoc: isLoadingConfigHoSoNhapHoc,
@@ -196,5 +207,6 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
       setFormData,
       updateStudent,
       isUpdatingStudent,
+      handleChangeFormUpdate,
     };
   });
