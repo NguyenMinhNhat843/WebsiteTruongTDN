@@ -1,6 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -11,21 +11,26 @@ const BANNERS = [
   {
     id: 1,
     image:
-      "https://gcs.tripi.vn/public-tripi/tripi-feed/img/482784zKE/anh-mo-ta.png",
-    title: "Chào mừng đến với Trường của chúng tôi",
-    subtitle: "Nơi ươm mầm những tài năng tương lai với môi trường hiện đại.",
+      "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&q=80&w=1920", // Ảnh thực hành kỹ thuật/công nghệ chất lượng cao
+    tag: "Tuyển Sinh Học Bạ 2026",
+    title: "Vững Nghề Nghiệp - Sáng Tương Lai",
+    ctaText: "XEM CÁC NGÀNH ĐÀO TẠO",
+    ctaLink: "/nganh-dao-tao",
   },
   {
     id: 2,
-    image: "https://cdn-media.sforum.vn/storage/app/media/anh-dep-16.jpg",
-    title: "Tuyển sinh năm học 2026",
-    subtitle: "Đa dạng ngành nghề, cam kết việc làm sau khi tốt nghiệp.",
+    image:
+      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1920", // Ảnh sinh viên năng động trường học
+    tag: "Cam Kết Việc Làm",
+    title: "98% Sinh Viên Có Việc Làm Ngay",
+    ctaText: "ĐĂNG KÝ XÉT TUYỂN",
+    ctaLink: "/dang-ky-tuyen-sinh",
   },
 ];
 
 const MainBanner = () => {
   return (
-    <div className="relative group w-full h-[calc(100vh-138px)] overflow-hidden bg-slate-900">
+    <div className="relative group w-full h-[calc(100vh-138px)] min-h-[500px] overflow-hidden bg-slate-950">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         effect="fade"
@@ -33,12 +38,11 @@ const MainBanner = () => {
         slidesPerView={1}
         loop={true}
         autoplay={{
-          delay: 5000,
+          delay: 6000,
           disableOnInteraction: false,
         }}
         pagination={{
           clickable: true,
-          dynamicBullets: false, // Tắt cái này để các chấm không bị teo nhỏ bất thường
         }}
         navigation={{
           nextEl: ".button-next-slide",
@@ -48,71 +52,84 @@ const MainBanner = () => {
       >
         {BANNERS.map((banner) => (
           <SwiperSlide key={banner.id}>
-            <div className="relative w-full h-full">
-              {/* Image */}
+            <div className="relative w-full h-full select-none">
+              {/* Image with optimized overlay */}
               <img
                 src={banner.image}
                 alt={banner.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transform scale-100 transition-transform duration-[6000ms] cubic-bezier(0.25, 0.46, 0.45, 0.94)"
               />
 
-              {/* Overlay - Tăng nhẹ độ tối (bg-black/30) giúp text và pagination sáng rõ hơn */}
-              <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-white px-4 text-center">
-                <h2 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-up tracking-tight drop-shadow-md">
-                  {banner.title}
-                </h2>
-                <p className="text-lg md:text-xl max-w-2xl font-light opacity-90 drop-shadow-sm">
-                  {banner.subtitle}
-                </p>
+              {/* Gradient overlay to optimize contrast */}
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/40 to-slate-950/50" />
+
+              {/* Center Layout Content */}
+              <div className="absolute inset-0 flex items-center justify-center p-4">
+                <div className="max-w-3xl text-center flex flex-col items-center">
+                  {/* Small Badge */}
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-blue-500/20 border border-blue-400/30 text-blue-300 text-xs font-semibold tracking-wider uppercase mb-4 backdrop-blur-md animate-fade-in">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                    {banner.tag}
+                  </span>
+
+                  {/* Micro-text presentation header inside container */}
+                  <h2 className="text-3xl sm:text-4xl md:text-6xl font-black text-white leading-tight tracking-tight mb-8 max-w-2xl drop-shadow-xl uppercase">
+                    {banner.title}
+                  </h2>
+
+                  {/* Primary Call to Action Actionable Link */}
+                  <a
+                    href={banner.ctaLink}
+                    className="inline-flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-500 active:scale-[0.98] text-slate-950 px-6 py-3.5 rounded-xl font-bold text-sm tracking-wide shadow-lg shadow-amber-500/10 transition-all group/btn"
+                  >
+                    {banner.ctaText}
+                    <ArrowRight
+                      size={16}
+                      className="group-hover/btn:translate-x-1 transition-transform"
+                    />
+                  </a>
+                </div>
               </div>
             </div>
           </SwiperSlide>
         ))}
 
-        {/* Custom Navigation Buttons */}
-        <button className="button-prev-slide absolute left-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-black/15 hover:bg-black/30 text-white backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 border border-white/10 shadow-lg">
-          <ChevronLeft size={28} />
+        {/* Navigation Arrows for Desktop */}
+        <button className="button-prev-slide absolute left-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-slate-900/20 hover:bg-slate-900/60 text-white backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-xl hidden md:flex">
+          <ChevronLeft size={24} />
         </button>
-        <button className="button-next-slide absolute right-4 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-black/15 hover:bg-black/30 text-white backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 border border-white/10 shadow-lg">
-          <ChevronRight size={28} />
+        <button className="button-next-slide absolute right-6 top-1/2 -translate-y-1/2 z-10 w-12 h-12 flex items-center justify-center rounded-full bg-slate-900/20 hover:bg-slate-900/60 text-white backdrop-blur-md border border-white/10 opacity-0 group-hover:opacity-100 transition-all duration-300 shadow-xl hidden md:flex">
+          <ChevronRight size={24} />
         </button>
       </Swiper>
 
-      {/* Tối ưu hóa UI Hệ thống Pagination chuyển thành thanh kén (Capsule) cao cấp */}
+      {/* Styled Bullet Pagination System */}
       <style
         dangerouslySetInnerHTML={{
           __html: `
-            /* Container chứa các dấu chấm */
             .swiper-pagination {
-              bottom: 24px !important;
+              bottom: 32px !important;
               display: flex;
               justify-content: center;
               align-items: center;
               gap: 8px;
             }
-            
-            /* Cấu hình chấm mặc định (Chưa active) */
             .swiper-pagination-bullet {
-              background: rgba(255, 255, 255, 0.45) !important;
+              background: rgba(255, 255, 255, 0.35) !important;
               opacity: 1 !important;
-              width: 10px !important;
-              height: 6px !important;
-              border-radius: 9999px !important;
-              transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+              width: 12px !important;
+              height: 4px !important;
+              border-radius: 2px !important;
+              transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
               margin: 0 !important;
             }
-            
-            /* Hiệu ứng Hover lên các chấm */
             .swiper-pagination-bullet:hover {
-              background: rgba(255, 255, 255, 0.8) !important;
+              background: rgba(255, 255, 255, 0.7) !important;
             }
-
-            /* Cấu hình chấm khi được kích hoạt (Active) */
             .swiper-pagination-bullet-active {
-              background: #ffffff !important; /* Dùng màu trắng tinh khôi quý phái hơn màu xanh cũ trên nền ảnh này */
-              width: 32px !important; /* Kéo dài thành dạng thanh kén sang trọng */
-              height: 6px !important;
-              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+              background: #f59e0b !important; /* Thay màu trắng bằng màu vàng hổ phách đồng bộ thương hiệu */
+              width: 36px !important;
+              box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
             }
           `,
         }}

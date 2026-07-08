@@ -46,34 +46,19 @@ export const navData: MenuItem[] = [
     layout: "dropdown",
     children: [
       {
-        id: "trinh-do-trung-cap",
-        label: "Trình độ Trung cấp",
-        href: "/chuong-trinh-dao-tao/trinh-do-trung-cap",
+        id: "tin-hoc-ung-dung",
+        label: "Tin học ứng dụng",
+        href: "/chuong-trinh-dao-tao/tin-hoc-ung-dung",
       },
       {
-        id: "trinh-do-cao-dang",
-        label: "Trình độ Cao đẳng liên kết",
-        href: "/chuong-trinh-dao-tao/trinh-do-cao-dang-lien-ket",
+        id: "tieng-anh-thuong-mai",
+        label: "Tiếng Anh thương mại",
+        href: "/chuong-trinh-dao-tao/tieng-anh-thuong-mai",
       },
       {
-        id: "trinh-do-dai-hoc-lien-ket",
-        label: "Trình độ Đại học liên kết",
-        href: "/chuong-trinh-dao-tao/trinh-do-dai-hoc-lien-ket",
-      },
-      {
-        id: "trinh-do-so-cap",
-        label: "Trình độ sơ cấp",
-        href: "/chuong-trinh-dao-tao/trinh-do-so-cap",
-      },
-      {
-        id: "dao-tao-nghe-bo-doi-xuat-ngu",
-        label: "Đào tạo nghề cho bộ đội xuất ngũ",
-        href: "/chuong-trinh-dao-tao/dao-tao-nghe-bo-doi-xuat-ngu",
-      },
-      {
-        id: "boi-duong-ky-nang-nghiep-vu",
-        label: "Bồi dưỡng kỹ năng nghiệp vụ",
-        href: "/chuong-trinh-dao-tao/boi-duong-ky-nang-quan-ly",
+        id: "dich-vu-du-lich",
+        label: "Dịch vụ du lịch",
+        href: "/chuong-trinh-dao-tao/dich-vu-du-lich",
       },
     ],
   },
@@ -81,91 +66,6 @@ export const navData: MenuItem[] = [
     id: "tin-tuc",
     label: "TIN TỨC",
     href: "/tin-tuc",
-  },
-  // {
-  //   id: "thong-tin-hoc-sinh-sinh-vien",
-  //   label: "THÔNG TIN HỌC SINH - SINH VIÊN",
-  //   href: "#",
-  //   children: [
-  //     {
-  //       id: "thoi-khoa-bieu",
-  //       label: "Thời khóa biểu",
-  //       href: "#",
-  //     },
-  //     {
-  //       id: "thong-bao",
-  //       label: "Thông báo",
-  //       href: "#",
-  //     },
-  //     {
-  //       id: "lich-thi",
-  //       label: "Lịch thi",
-  //       href: "#",
-  //     },
-  //     {
-  //       id: "cuu-hoc-sinh-sinh-vien",
-  //       label: "Cứu học sinh - Sinh viên",
-  //       href: "#",
-  //     },
-  //     {
-  //       id: "hoat-dong-hs-sv",
-  //       label: "Hoạt động học sinh - Sinh viên",
-  //       href: "#",
-  //     },
-  //     {
-  //       id: "chia-se-kinh-nghiem",
-  //       label: "Chia sẻ kinh nghiệm",
-  //       href: "#",
-  //     },
-  //     {
-  //       id: "doanh-nghiep-viec-lam",
-  //       label: "Doanh nghiệp - Việc làm",
-  //       href: "#",
-  //     },
-  //   ],
-  // },
-  {
-    id: "tuyen-sinh",
-    label: "TUYỂN SINH",
-    href: "#",
-    layout: "dropdown", // Hiển thị 1 cột dọc
-    children: [
-      {
-        id: "tuyen-sinh-he-trung-cap-9+",
-        label: "Tuyển sinh hệ trung cấp 9+",
-        href: "#",
-      },
-      {
-        id: "tuyen-sinh-trung-cap-nghe",
-        label: "Tuyển sinh trung cấp nghề",
-        href: "#",
-      },
-      {
-        id: "tuyen-sinh-dai-hoc-e-learning",
-        label: "Tuyển sinh Đại học E-Learning (Học Online)",
-        href: "#",
-      },
-      {
-        id: "tuyen-sinh-cac-lop-nghe-ngan-han",
-        label: "Tuyển sinh các lớp nghề ngắn hạn",
-        href: "#",
-      },
-      {
-        id: "tuyen-sinh-dao-tao-nghe-cho-bo-doi-xuat-ngu",
-        label: "Tuyển sinh đào tạo nghề cho bộ đội xuất ngũ",
-        href: "#",
-      },
-      {
-        id: "tuyen-sinh-cao-dang-chinh-quy",
-        label: "Tuyển sinh cao đẳng chính quy (Bách khoa Sài Gòn)",
-        href: "#",
-      },
-      {
-        id: "tuyen-sinh-cao-dang-9+",
-        label: "Tuyển sinh cao đẳng 9+ (Bách Khoa Sài Gòn)",
-        href: "#",
-      },
-    ],
   },
   {
     id: "lien-he",
