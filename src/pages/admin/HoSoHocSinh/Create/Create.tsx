@@ -86,10 +86,10 @@ const Inner = () => {
 
         admissionProfile: {
           ...data.admissionProfile,
-          gpa6: Number(data.admissionProfile.gpa6),
-          gpa7: Number(data.admissionProfile.gpa7),
-          gpa8: Number(data.admissionProfile.gpa8),
-          gpa9: Number(data.admissionProfile.gpa9),
+          gpa6: Number(data.admissionProfile?.gpa6),
+          gpa7: Number(data.admissionProfile?.gpa7),
+          gpa8: Number(data.admissionProfile?.gpa8),
+          gpa9: Number(data.admissionProfile?.gpa9),
         },
       };
 

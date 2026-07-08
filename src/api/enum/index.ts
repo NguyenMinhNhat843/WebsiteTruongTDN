@@ -6,6 +6,7 @@ export const STUDENT_STATUS_MAP: Record<
   NonNullable<StudentStatusEnum>,
   string
 > = {
+  registered: "Đợi tư vấn",
   pending: "Chờ xét tuyển",
   approved: "Đã đậu / Chờ nhập học",
   failed: "Không đậu",
@@ -15,14 +16,21 @@ export const STUDENT_STATUS_MAP: Record<
   expelled: "Buộc thôi học",
   graduated: "Đã tốt nghiệp",
 };
-export const STUDENT_STATUS_TABS = Object.entries(STUDENT_STATUS_MAP).map(
-  ([value, label]) => ({
+export const STUDENT_STATUS_TABS = [
+  { value: "" as StudentStatusEnum, label: "Tất cả" },
+  ...Object.entries(STUDENT_STATUS_MAP).map(([value, label]) => ({
     value: value as StudentStatusEnum,
     label,
-  }),
-);
+  })),
+];
 
 export type EnumDayOfWeek =
   components["schemas"]["ClassSubjectSessionDto"]["dayOfWeek"];
 
 export type EnumRoleUser = components["schemas"]["UserResponseDto"]["role"];
+export const UserRoles: EnumRoleUser[] = [
+  "admin",
+  "teacher",
+  "staff",
+  "student",
+];

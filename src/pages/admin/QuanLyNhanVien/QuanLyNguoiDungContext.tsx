@@ -1,10 +1,5 @@
 import { useMemo, useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
-import { SAMPLE_USERS } from "../../../features/users/constants/user.dataTmp";
-import {
-  USER_ROLE,
-  type UserResponse,
-} from "../../../features/users/types/User.types";
 import { $api } from "../../../api/client";
 import type { components } from "../../../api/v1";
 import { useParams } from "react-router-dom";
@@ -12,14 +7,14 @@ import { useParams } from "react-router-dom";
 export type StaffDto = components["schemas"]["StaffResponseDto"];
 export type CreateStaffDto = components["schemas"]["CreateStaffDto"];
 export type StaffRole = CreateStaffDto["EmployeeRole"];
-export type SubjectResponseDto = components["schemas"]["SubjectResponseDto"];
+export type SubjectResponseDto = components["schemas"]["ResponseSubjectDto"];
 
 export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
   createContextProvider(() => {
     const [search, setSearch] = useState("");
     const [roleFilter, setRoleFilter] = useState("ALL");
     const [statusFilter, setStatusFilter] = useState("ALL");
-    const [selectedUser, setSelectedUser] = useState<UserResponse | null>(null);
+    const [selectedUser, setSelectedUser] = useState(null);
     const [sortBy, setSortBy] = useState("name");
     const [openModalCreate, setOpenModalCreate] = useState(false);
     const { staffCode } = useParams(); // Dùng cho xem chi tiết
@@ -27,14 +22,14 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
 
     const stats = useMemo(
       () => ({
-        total: SAMPLE_USERS.length,
-        byRole: Object.fromEntries(
-          Object.keys(USER_ROLE).map((r) => [
-            r,
-            SAMPLE_USERS.filter((u) => u.role === r).length,
-          ]),
-        ),
-        active: SAMPLE_USERS.filter((u) => u.status === "active").length,
+        total: 5,
+        byRole: {
+          ADMIN: 1,
+          TEACHER: 2,
+          STAFF: 1,
+          STUDENT: 1,
+        },
+        active: 4,
       }),
       [],
     );

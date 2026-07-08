@@ -1718,9 +1718,10 @@ export interface components {
             guardianJob?: string | null;
             batchId?: number | null;
             classId?: number | null;
+            majorId: number | null;
             /** @enum {string} */
-            status?: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
-            admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
+            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            admissionProfile?: components["schemas"]["CreateAdmissionProfileDto"];
         };
         MajorDto: {
             id: number;
@@ -1765,6 +1766,11 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        MajorSimpleDto: {
+            id: number;
+            majorCode: string;
+            majorName: string;
+        };
         DocumentProgressDto: {
             current: number;
             total: number;
@@ -1804,16 +1810,18 @@ export interface components {
             guardianJob?: string | null;
             batchId?: number | null;
             classId?: number | null;
+            majorId: number | null;
             /** @enum {string} */
-            status?: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
-            admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
+            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            admissionProfile?: components["schemas"]["CreateAdmissionProfileDto"];
             batch?: components["schemas"]["BatchResponseDto"] | null;
             class?: components["schemas"]["ClassResponseDto"] | null;
+            major?: components["schemas"]["MajorSimpleDto"] | null;
             /** @description Thông tin tiến độ nộp hồ sơ của học sinh */
             documentProgress: components["schemas"]["DocumentProgressDto"];
         };
         /** @enum {string} */
-        StudentStatus: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+        StudentStatus: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
         QualifiedStudentResponseDto: {
             id?: number;
             studentCode?: string;
@@ -1849,11 +1857,13 @@ export interface components {
             guardianJob?: string | null;
             batchId?: number | null;
             classId?: number | null;
+            majorId: number | null;
             /** @enum {string} */
-            status?: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
-            admissionProfile: components["schemas"]["CreateAdmissionProfileDto"];
+            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            admissionProfile?: components["schemas"]["CreateAdmissionProfileDto"];
             batch?: components["schemas"]["BatchResponseDto"] | null;
             class?: components["schemas"]["ClassResponseDto"] | null;
+            major?: components["schemas"]["MajorSimpleDto"] | null;
             /** @description Thông tin tiến độ nộp hồ sơ của học sinh */
             documentProgress: components["schemas"]["DocumentProgressDto"];
             /** @description Học sinh có đủ điều kiện xét tuyển ko */
@@ -1886,12 +1896,15 @@ export interface components {
             studentsPerClass: number;
         };
         UpdateStudentDto: {
+            id?: number;
             studentCode?: string;
             enrollmentDate?: string | null;
             graduationDate?: string | null;
             applicationId?: number | null;
             avatarUrl?: string | null;
             userId?: number | null;
+            createdAt?: string;
+            updatedAt?: string;
             fullName?: string;
             email?: string | null;
             gender?: boolean | null;
@@ -1917,8 +1930,10 @@ export interface components {
             guardianJob?: string | null;
             batchId?: number | null;
             classId?: number | null;
+            majorId?: number | null;
             /** @enum {string} */
-            status?: "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            admissionProfile?: components["schemas"]["CreateAdmissionProfileDto"];
         };
         CreateUserDto: {
             /**

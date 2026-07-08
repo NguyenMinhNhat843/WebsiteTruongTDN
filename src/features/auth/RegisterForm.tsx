@@ -3,8 +3,8 @@ import { User, Lock, Shield, X } from "lucide-react";
 import Input from "../../components/ui/Form/Input";
 import { SelectOption } from "../../components/ui/Form/SelectOption";
 import ButtonAction from "../../components/ui/ButtonAction";
-import { UserRoles, type UserRole } from "../../api/enum/UserEnum";
 import { $api } from "../../api/client";
+import { UserRoles, type EnumRoleUser } from "../../api/enum";
 
 interface RegisterModalProps {
   isOpen: boolean;
@@ -29,7 +29,7 @@ export default function RegisterModal({
   const [formData, setFormData] = useState<{
     username: string;
     password: string;
-    role: UserRole;
+    role: EnumRoleUser;
   }>({
     username: "",
     password: "",

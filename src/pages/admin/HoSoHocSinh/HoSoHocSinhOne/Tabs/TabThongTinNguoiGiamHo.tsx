@@ -1,36 +1,116 @@
-import InfoItemVertical from "../../components/InffoItemVertical";
-import { useHocSinhContext } from "../../HocSinhProvider";
+import { useHoSoHocSinhOneContext } from "../HoSoHocSinhOneProvider";
+
+// 1. Mang component phụ ra NGOÀI hẳn component chính
+const FormItemVertical = ({
+  label,
+  field,
+  type = "text",
+  isEditMode,
+  formData,
+  onChange,
+}: {
+  label: string;
+  field: string;
+  type?: string;
+  isEditMode: boolean;
+  formData: any;
+  onChange: (field: string, value: any) => void;
+}) => {
+  const inputClass =
+    "w-full rounded-xl border border-gray-200 bg-slate-50/50 p-2.5 text-sm text-gray-800 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all";
+  const labelClass =
+    "block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5";
+
+  return (
+    <div className="space-y-1">
+      <label className={labelClass}>{label}</label>
+      {isEditMode ? (
+        <input
+          type={type}
+          className={inputClass}
+          value={formData[field] ?? ""}
+          onChange={(e) =>
+            onChange(
+              field,
+              type === "number"
+                ? e.target.value
+                  ? Number(e.target.value)
+                  : null
+                : e.target.value,
+            )
+          }
+        />
+      ) : (
+        <div className="text-sm font-semibold text-gray-700 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2.5 min-h-[42px] flex items-center">
+          {formData[field] || "---"}
+        </div>
+      )}
+    </div>
+  );
+};
 
 const TabThongTinNguoiGiamHo = () => {
-  const { studentDetail } = useHocSinhContext();
+  const { isEditMode, formData, setFormData } = useHoSoHocSinhOneContext();
 
-  if (!studentDetail) return null;
+  if (!formData) return null;
+
+  const handleChange = (field: string, value: any) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const inputClass =
+    "w-full rounded-xl border border-gray-200 bg-slate-50/50 p-2.5 text-sm text-gray-800 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 transition-all";
+  const labelClass =
+    "block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5";
+
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
       {/* Khối Cha */}
       <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-2">
-          <div className="h-2 w-2 rounded-full bg-blue-500"></div>
+        <h2 className="mb-4 text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
+          <div className="h-2.5 w-2.5 rounded-full bg-blue-500"></div>
           Thông Tin Cha
         </h2>
-        <div className="space-y-3">
-          <InfoItemVertical
+        <div className="space-y-4">
+          <FormItemVertical
             label="Họ và tên"
-            value={studentDetail.fatherName}
+            field="fatherName"
+            isEditMode={isEditMode}
+            formData={formData}
+            onChange={handleChange}
           />
-          <InfoItemVertical
+          <FormItemVertical
             label="Số điện thoại"
-            value={studentDetail.fatherPhone}
+            field="fatherPhone"
+            isEditMode={isEditMode}
+            formData={formData}
+            onChange={handleChange}
           />
-          <InfoItemVertical label="Số CCCD" value={studentDetail.fatherCCCD} />
-          <div className="grid grid-cols-2 gap-2">
-            <InfoItemVertical
+          <FormItemVertical
+            label="Số CCCD"
+            field="fatherCCCD"
+            isEditMode={isEditMode}
+            formData={formData}
+            onChange={handleChange}
+          />
+          <div className="grid grid-cols-2 gap-3">
+            <FormItemVertical
               label="Năm sinh"
-              value={studentDetail.fatherYearOfBirth}
+              field="fatherYearOfBirth"
+              type="number"
+              isEditMode={isEditMode}
+              formData={formData}
+              onChange={handleChange}
             />
-            <InfoItemVertical
+            <FormItemVertical
               label="Nghề nghiệp"
-              value={studentDetail.fatherJob}
+              field="fatherJob"
+              isEditMode={isEditMode}
+              formData={formData}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -38,28 +118,47 @@ const TabThongTinNguoiGiamHo = () => {
 
       {/* Khối Mẹ */}
       <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-2">
-          <div className="h-2 w-2 rounded-full bg-pink-500"></div>
+        <h2 className="mb-4 text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
+          <div className="h-2.5 w-2.5 rounded-full bg-pink-500"></div>
           Thông Tin Mẹ
         </h2>
-        <div className="space-y-3">
-          <InfoItemVertical
+        <div className="space-y-4">
+          <FormItemVertical
             label="Họ và tên"
-            value={studentDetail.motherName}
+            field="motherName"
+            isEditMode={isEditMode}
+            formData={formData}
+            onChange={handleChange}
           />
-          <InfoItemVertical
+          <FormItemVertical
             label="Số điện thoại"
-            value={studentDetail.motherPhone}
+            field="motherPhone"
+            isEditMode={isEditMode}
+            formData={formData}
+            onChange={handleChange}
           />
-          <InfoItemVertical label="Số CCCD" value={studentDetail.motherCCCD} />
-          <div className="grid grid-cols-2 gap-2">
-            <InfoItemVertical
+          <FormItemVertical
+            label="Số CCCD"
+            field="motherCCCD"
+            isEditMode={isEditMode}
+            formData={formData}
+            onChange={handleChange}
+          />
+          <div className="grid grid-cols-2 gap-3">
+            <FormItemVertical
               label="Năm sinh"
-              value={studentDetail.motherYearOfBirth}
+              field="motherYearOfBirth"
+              type="number"
+              isEditMode={isEditMode}
+              formData={formData}
+              onChange={handleChange}
             />
-            <InfoItemVertical
+            <FormItemVertical
               label="Nghề nghiệp"
-              value={studentDetail.motherJob}
+              field="motherJob"
+              isEditMode={isEditMode}
+              formData={formData}
+              onChange={handleChange}
             />
           </div>
         </div>
@@ -67,34 +166,68 @@ const TabThongTinNguoiGiamHo = () => {
 
       {/* Khối Người giám hộ */}
       <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-        <h2 className="mb-4 text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-2">
-          <div className="h-2 w-2 rounded-full bg-teal-500"></div>
+        <h2 className="mb-4 text-base font-bold text-gray-900 flex items-center gap-2 border-b border-gray-100 pb-3">
+          <div className="h-2.5 w-2.5 rounded-full bg-teal-500"></div>
           Người Giám Hộ{" "}
-          {studentDetail.guardianRelationship
-            ? `(${studentDetail.guardianRelationship})`
-            : ""}
+          <span className="text-sm font-medium text-gray-400">
+            {formData.guardianRelationship
+              ? `(${formData.guardianRelationship})`
+              : ""}
+          </span>
         </h2>
-        <div className="space-y-3">
-          <InfoItemVertical
+        <div className="space-y-4">
+          <FormItemVertical
             label="Họ và tên"
-            value={studentDetail.guardianName}
+            field="guardianName"
+            isEditMode={isEditMode}
+            formData={formData}
+            onChange={handleChange}
           />
-          <InfoItemVertical
+
+          {isEditMode && (
+            <div className="space-y-1">
+              <label className={labelClass}>Mối quan hệ</label>
+              <input
+                type="text"
+                className={inputClass}
+                placeholder="Ví dụ: Ông, Bà, Cô, Chú..."
+                value={formData.guardianRelationship ?? ""}
+                onChange={(e) =>
+                  handleChange("guardianRelationship", e.target.value)
+                }
+              />
+            </div>
+          )}
+
+          <FormItemVertical
             label="Số điện thoại"
-            value={studentDetail.guardianPhone}
+            field="guardianPhone"
+            isEditMode={isEditMode}
+            formData={formData}
+            onChange={handleChange}
           />
-          <InfoItemVertical
+          <FormItemVertical
             label="Số CCCD"
-            value={studentDetail.guardianCCCD}
+            field="guardianCCCD"
+            isEditMode={isEditMode}
+            formData={formData}
+            onChange={handleChange}
           />
-          <div className="grid grid-cols-2 gap-2">
-            <InfoItemVertical
+          <div className="grid grid-cols-2 gap-3">
+            <FormItemVertical
               label="Năm sinh"
-              value={studentDetail.guardianYearOfBirth}
+              field="guardianYearOfBirth"
+              type="number"
+              isEditMode={isEditMode}
+              formData={formData}
+              onChange={handleChange}
             />
-            <InfoItemVertical
+            <FormItemVertical
               label="Nghề nghiệp"
-              value={studentDetail.guardianJob}
+              field="guardianJob"
+              isEditMode={isEditMode}
+              formData={formData}
+              onChange={handleChange}
             />
           </div>
         </div>

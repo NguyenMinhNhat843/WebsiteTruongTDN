@@ -1,105 +1,141 @@
 import React, { useState } from "react";
-import { CheckCircle } from "lucide-react";
-import type { Option } from "../../../../components/ui/SelectOption";
 import Input from "../../../../components/ui/Form/Input";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
+import { $api } from "../../../../api/client";
+import { DateInputv2 } from "../../../../components/ui/Form/DateInputv2";
+import { toast } from "sonner";
+import moment from "moment";
 
+// Khai báo state theo đúng các trường yêu cầu cho giai đoạn đăng ký tuyển sinh
 interface FormState {
   fullName: string;
-  address: string;
   phone: string;
   email: string;
-  major: string;
+  dob: string;
+  identityNumber: string;
+  majorId: string; // Vẫn giữ string ở state để quản lý thẻ <select> dễ dàng
 }
-
-const formFields = [
-  {
-    label: "Họ và tên",
-    name: "fullName",
-    placeholder: "Nguyễn Văn A",
-    required: true,
-  },
-  { label: "Địa chỉ", name: "address", placeholder: "Quận, Thành phố" },
-  {
-    label: "Điện thoại",
-    name: "phone",
-    type: "tel",
-    placeholder: "09xx xxx xxx",
-    required: true,
-  },
-  {
-    label: "Email",
-    name: "email",
-    type: "email",
-    placeholder: "email@domain.com",
-  },
-  {
-    label: "Ngành muốn xét tuyển",
-    name: "major",
-    type: "select",
-    required: true,
-    options: [
-      { label: "TC Hướng dẫn du lịch", value: "tc-huong-dan-du-lich" },
-      { label: "TC Kế toán doanh nghiệp", value: "tc-ke-toan-doanh-nghiep" },
-      { label: "ĐH Công nghệ thông tin", value: "dh-cong-nghe-thong-tin" },
-      { label: "ĐH Quản trị kinh doanh", value: "dh-quan-tri-kinh-doanh" },
-      { label: "CĐ Điều dưỡng", value: "cd-dieu-duong" },
-    ] as Option[],
-  },
-];
 
 export default function ConsultationForm() {
   const [form, setForm] = useState<FormState>({
     fullName: "",
-    address: "",
     phone: "",
     email: "",
-    major: "",
+    dob: "",
+    identityNumber: "",
+    majorId: "",
   });
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
 
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // 1. Lấy danh sách ngành học từ API thật
+  const { data: majorsData, isLoading: isLoadingMajors } = $api.useQuery(
+    "get",
+    "/majors",
+  );
+
+  // 2. Sử dụng hook Mutation từ OpenAPI React Query để call API POST /students
+  const { mutateAsync: createStudent, isPending: submitting } =
+    $api.useMutation("post", "/students");
+
+  // Đồng bộ dữ liệu khi user gõ/nhập/chọn
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors((prev) => ({ ...prev, [name]: "" })); // Xóa lỗi khi user sửa lại
+    }
   };
 
+  // Hàm validate dữ liệu phía Client
   const validate = () => {
     const errs: Record<string, string> = {};
-    if (!form.fullName.trim()) errs.fullName = "Vui lòng nhập họ tên";
+    if (!form.fullName.trim()) errs.fullName = "Vui lòng nhập họ và tên";
     if (!form.phone.trim()) errs.phone = "Vui lòng nhập số điện thoại";
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) errs.email = "Email không hợp lệ";
-    if (!form.major.trim()) errs.major = "Vui lòng nhập ngành muốn xét tuyển";
+    if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) {
+      errs.email = "Email không đúng định dạng";
+    }
+    if (form.identityNumber && !/^\d{9,12}$/.test(form.identityNumber)) {
+      errs.identityNumber = "Căn cước công dân không hợp lệ (9 - 12 chữ số)";
+    }
     return errs;
   };
 
+  // Xử lý gửi Form lên API
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const v = validate();
-    if (Object.keys(v).length > 0) return;
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
-    setSubmitting(true);
-    setSuccess(false);
+    // Chuyển đổi an toàn giá trị majorId sang kiểu Number/Integer trước khi gửi API
+    const parsedMajorId =
+      form.majorId && !isNaN(Number(form.majorId))
+        ? parseInt(form.majorId, 10)
+        : undefined;
 
-    // Giả lập call API
-    await new Promise((resolve) => setTimeout(resolve, 900));
+    if (!parsedMajorId) {
+      toast.error("Vui lòng chọn ngành muốn xét tuyển.");
+      return;
+    }
 
-    setSubmitting(false);
-    setSuccess(true);
-
-    // reset form after success (keeps minor delay for UX)
-    setTimeout(() => {
-      setForm({ fullName: "", address: "", phone: "", email: "", major: "" });
-      setSuccess(false);
-    }, 2200);
+    await createStudent(
+      {
+        body: {
+          fullName: form.fullName.trim(),
+          phone: form.phone.trim(),
+          email: form.email.trim() || undefined,
+          dob: form.dob
+            ? moment(form.dob, "DD/MM/YYYY").toISOString()
+            : undefined,
+          identityNumber: form.identityNumber.trim() || undefined,
+          status: "registered",
+          majorId: parsedMajorId!,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success(
+            "Đăng ký hồ sơ thành công! Ban tuyển sinh sẽ liên hệ sớm.",
+          );
+          // Reset form sau khi đăng ký thành công hoàn tất
+          setForm({
+            fullName: "",
+            phone: "",
+            email: "",
+            dob: "",
+            identityNumber: "",
+            majorId: "",
+          });
+        },
+        onError: () => {
+          toast.error("Đăng ký hồ sơ thất bại. Vui lòng thử lại sau.");
+        },
+      },
+    );
   };
+
+  const defaultOption = { value: "", label: "Chọn ngành nghề" };
+
+  const majorOptions = [
+    defaultOption,
+    ...(majorsData?.map((m) => ({
+      value: String(m.id),
+      label: m.majorName,
+    })) || []),
+  ];
 
   return (
     <div className="">
       <div className="bg-white rounded-xl p-4 md:p-6 border border-slate-100 shadow-sm">
         <h3 className="text-xl font-semibold text-slate-800">
-          Đăng ký xét tuyển
+          Đăng ký xét tuyển trực tuyến
         </h3>
 
         <form
@@ -107,57 +143,89 @@ export default function ConsultationForm() {
           onSubmit={handleSubmit}
           noValidate
         >
-          {formFields.map((field) => {
-            if (field.type === "select") {
-              return (
-                <SelectOption
-                  key={field.name}
-                  label={field.label}
-                  name={field.name}
-                  value={form[field.name as keyof typeof form]}
-                  onChange={(e) => {}}
-                  options={(field.options || []).map((opt) => ({
-                    value: opt.value,
-                    label: opt.label,
-                  }))}
-                  require={field.required}
-                />
-              );
-            }
+          {/* 1. Họ và tên */}
+          <div>
+            <Input
+              label="Họ và tên"
+              name="fullName"
+              type="text"
+              value={form.fullName}
+              onChange={handleChange}
+              placeholder="Nguyễn Văn A"
+              require={true}
+            />
+            {errors.fullName && (
+              <p className="text-xs text-red-500 mt-1">{errors.fullName}</p>
+            )}
+          </div>
 
-            // Ngược lại render FormInput bình thường
-            return (
-              <div>
-                <Input
-                  key={field.name}
-                  label={field.label}
-                  name={field.name}
-                  type={field.type || "text"}
-                  value={form[field.name as keyof typeof form]}
-                  onChange={handleChange}
-                  placeholder={field.placeholder}
-                  require={field.required}
-                />
-              </div>
-            );
-          })}
+          {/* 2. Số điện thoại */}
+          <div>
+            <Input
+              label="Điện thoại liên hệ"
+              name="phone"
+              type="tel"
+              value={form.phone}
+              onChange={handleChange}
+              placeholder="09xx xxx xxx"
+              require={true}
+            />
+            {errors.phone && (
+              <p className="text-xs text-red-500 mt-1">{errors.phone}</p>
+            )}
+          </div>
 
-          {/* Nút bấm và Trạng thái */}
+          {/* 3. Ngày sinh */}
+          <div>
+            <DateInputv2
+              label="Ngày sinh"
+              name="dob"
+              type="date"
+              value={form.dob}
+              onChange={handleChange}
+            />
+          </div>
+
+          {/* 5. Email */}
+          <div>
+            <Input
+              label="Địa chỉ Email"
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              placeholder="email@domain.com"
+            />
+            {errors.email && (
+              <p className="text-xs text-red-500 mt-1">{errors.email}</p>
+            )}
+          </div>
+
+          {/* 6. Ngành muốn xét tuyển */}
+          <div>
+            <SelectOption
+              label={
+                isLoadingMajors
+                  ? "Đang tải danh sách ngành..."
+                  : "Ngành muốn xét tuyển"
+              }
+              name="majorId"
+              value={form.majorId}
+              onChange={handleChange}
+              options={majorOptions}
+              require={false}
+            />
+          </div>
+
+          {/* Thanh trạng thái hành động */}
           <div className="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-4">
             <button
               type="submit"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-school-blue-600 hover:bg-school-700 text-white py-2.5 px-6 text-sm font-semibold transition shadow-md active:scale-95 disabled:opacity-70"
               disabled={submitting}
             >
-              {submitting ? "Đang gửi..." : "Gửi đăng ký"}
+              {submitting ? "Đang xử lý..." : "Gửi đăng ký"}
             </button>
-
-            {success && (
-              <div className="flex items-center gap-2 text-emerald-700 bg-emerald-50 border border-emerald-100 px-3 py-2 rounded-lg animate-in fade-in slide-in-from-left-2">
-                <CheckCircle className="w-5 h-5" />
-                <span className="text-sm font-medium">Gửi thành công!</span>
-              </div>
-            )}
           </div>
         </form>
       </div>

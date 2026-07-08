@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { User, Users, FileText, ClipboardList } from "lucide-react";
+import {
+  User,
+  Users,
+  FileText,
+  ClipboardList,
+  Edit3,
+  X,
+  Check,
+} from "lucide-react";
 import Breadcrumb from "../../../../components/ui/Breadcrum";
 import { useHocSinhContext, type StatusHocSinhEnum } from "../HocSinhProvider";
 import { StudentDocuments } from "./HoSoFile";
@@ -10,6 +18,8 @@ import {
 import TabThongTinCaNhan from "./Tabs/TabThongTinCaNhan";
 import TabThongTinNguoiGiamHo from "./Tabs/TabThongTinNguoiGiamHo";
 import TabHoSoXetTuyen from "./Tabs/TabHoSoXetTuyen";
+import { toast } from "sonner";
+import { STUDENT_STATUS_MAP } from "../../../../api/enum";
 
 const HoSoHocSinhOne = () => {
   return (
@@ -20,23 +30,81 @@ const HoSoHocSinhOne = () => {
 };
 
 const Inner = () => {
-  const { dataHoSoHocSinh } = useHoSoHocSinhOneContext();
-  const { studentDetail, isGettingStudentDetail } = useHocSinhContext();
+  const {
+    dataHoSoHocSinh,
+    isEditMode,
+    setIsEditMode,
+    formData,
+    setFormData,
+    updateStudent,
+    isUpdatingStudent,
+    studentDetail,
+  } = useHoSoHocSinhOneContext();
+  const { isGettingStudentDetail } = useHocSinhContext();
   const [activeTab, setActiveTab] = useState<
     "personal" | "family" | "admission" | "documents"
   >("personal");
 
-  // Trạng thái Loading
-  if (isGettingStudentDetail) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-gray-50">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
-        <span className="ml-3 text-lg font-medium text-gray-600">
-          Đang tải thông tin học sinh...
-        </span>
-      </div>
+  const handleSave = () => {
+    if (!studentDetail?.id) return;
+
+    // Loại bỏ các field không được phép gửi lên DTO theo Prisma Model yêu cầu
+    const dtoData = formData;
+
+    // Ép kiểu các trường Number cho đúng DTO đầu vào backend
+    if (dtoData.fatherYearOfBirth)
+      dtoData.fatherYearOfBirth = Number(dtoData.fatherYearOfBirth);
+    if (dtoData.motherYearOfBirth)
+      dtoData.motherYearOfBirth = Number(dtoData.motherYearOfBirth);
+    if (dtoData.guardianYearOfBirth)
+      dtoData.guardianYearOfBirth = Number(dtoData.guardianYearOfBirth);
+
+    if (dtoData.admissionProfile) {
+      dtoData.admissionProfile.gpa6 = Number(dtoData.admissionProfile.gpa6);
+      dtoData.admissionProfile.gpa7 = Number(dtoData.admissionProfile.gpa7);
+      dtoData.admissionProfile.gpa8 = Number(dtoData.admissionProfile.gpa8);
+      dtoData.admissionProfile.gpa9 = Number(dtoData.admissionProfile.gpa9);
+    }
+
+    const cleanedData = Object.fromEntries(
+      Object.entries(dtoData).filter(
+        ([_, value]) => value !== null && value !== undefined,
+      ),
     );
-  }
+
+    updateStudent(
+      {
+        params: {
+          path: {
+            id: studentDetail.id,
+          },
+        },
+        body: cleanedData,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Cập nhật thông tin học sinh thành công!");
+        },
+        onError: () => {
+          toast.error(
+            "Cập nhật thông tin học sinh thất bại. Vui lòng thử lại.",
+          );
+        },
+      },
+    );
+
+    // Trạng thái Loading
+    if (isGettingStudentDetail) {
+      return (
+        <div className="flex h-screen items-center justify-center bg-gray-50">
+          <div className="h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent"></div>
+          <span className="ml-3 text-lg font-medium text-gray-600">
+            Đang tải thông tin học sinh...
+          </span>
+        </div>
+      );
+    }
+  };
 
   // Trường hợp không có dữ liệu
   if (!studentDetail) {
@@ -56,8 +124,12 @@ const Inner = () => {
   };
 
   // Hàm hiển thị Badge trạng thái
-  const renderStatusBadge = (status: StatusHocSinhEnum) => {
+  const renderStatusBadge = (status: NonNullable<StatusHocSinhEnum>) => {
     const statusMap = {
+      registered: {
+        text: "Đợi tư vấn",
+        color: "bg-gray-100 text-gray-800 border-gray-200",
+      },
       pending: {
         text: "Chờ duyệt",
         color: "bg-gray-100 text-gray-800 border-gray-200",
@@ -129,6 +201,15 @@ const Inner = () => {
     },
   ] as const;
 
+  const STUDENT_STATUS_OPTIONS = Object.entries(STUDENT_STATUS_MAP).map(
+    ([value, label]) => ({
+      value: value,
+      label,
+    }),
+  );
+
+  // Lấy các khóa đào tạo của ngành
+
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 sm:p-6 lg:p-8">
       <Breadcrumb
@@ -160,17 +241,49 @@ const Inner = () => {
             {/* Thông tin chính */}
             <div className="flex-1 space-y-2">
               <div className="flex flex-col items-center gap-2 sm:flex-row sm:items-center">
+                {/* Họ tên */}
                 <h1 className="text-2xl font-bold text-gray-900">
                   {studentDetail.fullName || "Chưa cập nhật"}
                 </h1>
-                {renderStatusBadge(studentDetail.status)}
+
+                {/* Trạng thái */}
+                {isEditMode ? (
+                  <select
+                    value={formData.status || ""}
+                    onChange={(e) =>
+                      setFormData((prev: any) => ({
+                        ...prev,
+                        status: e.target.value,
+                      }))
+                    }
+                    className="rounded-lg border border-gray-300 bg-white px-2 py-1 text-xs font-semibold focus:border-blue-500 focus:outline-none"
+                  >
+                    {STUDENT_STATUS_OPTIONS.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  studentDetail.status &&
+                  renderStatusBadge(studentDetail.status)
+                )}
               </div>
 
+              {/* Thông tin phụ */}
               <div className="grid grid-cols-1 gap-x-4 gap-y-1 text-sm text-gray-500 sm:grid-cols-2 md:grid-cols-3">
                 <p>
                   Mã học sinh:{" "}
                   <span className="font-semibold text-gray-700">
                     {studentDetail.studentCode}
+                  </span>
+                </p>
+                <p>
+                  Ngành nghề:{" "}
+                  <span className="font-semibold text-gray-700">
+                    {studentDetail.major?.majorName ||
+                      studentDetail.majorId ||
+                      "---"}
                   </span>
                 </p>
                 <p>
@@ -181,6 +294,7 @@ const Inner = () => {
                       "---"}
                   </span>
                 </p>
+
                 <p>
                   Lớp học:{" "}
                   <span className="font-semibold text-gray-700">
@@ -191,11 +305,41 @@ const Inner = () => {
                 </p>
               </div>
             </div>
+
+            {/* --- KHỐI ACTIONS NUT BẤM UPDATE --- */}
+            <div className="flex gap-2 self-center sm:self-start">
+              {!isEditMode ? (
+                <button
+                  onClick={() => setIsEditMode(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-all shadow-sm"
+                >
+                  <Edit3 className="w-4 h-4" /> Chỉnh sửa hồ sơ
+                </button>
+              ) : (
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => setIsEditMode(false)}
+                    className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-sm font-medium transition-all"
+                    disabled={isUpdatingStudent}
+                  >
+                    <X className="w-4 h-4" /> Hủy
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl text-sm font-medium transition-all shadow-sm"
+                    disabled={isUpdatingStudent}
+                  >
+                    <Check className="w-4 h-4" />{" "}
+                    {isUpdatingStudent ? "Đang lưu..." : "Lưu thay đổi"}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
         {/* ================= NAVIGATION TABS ================= */}
-        <div className="flex border-b border-gray-200 bg-white px-4 pt-2 rounded-xl shadow-sm overflow-x-auto scrollbar-none">
+        <div className="flex border-b border-gray-200 bg-white px-4 pt-2 rounded-xl shadow-sm overflow-x-auto custom-scrollbar">
           <div className="flex space-x-6">
             {tabs.map((tab) => (
               <button

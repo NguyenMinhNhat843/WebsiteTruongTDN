@@ -45,9 +45,6 @@ const LienHe = lazy(() => import("./pages/client/LienHe/LienHe"));
 const DangKyTuVan = lazy(
   () => import("./pages/client/DangKyTuVan/DangKyTuVan"),
 );
-const ChuongTrinhDaoTaoDetail = lazy(
-  () => import("./pages/client/ChuongTrinhDaoTaoDetail"),
-);
 const NewsList = lazy(() => import("./pages/client/NewsList"));
 const UserPostDetail = lazy(
   () => import("./pages/client/PostDetail/UserPostDetail"),
@@ -203,16 +200,6 @@ function App() {
                 path="/chuong-trinh-dao-tao/tieng-anh-thuong-mai"
                 element={<TiengAnhChiTiet />}
               />
-              <Route path="/chuong-trinh-dao-tao">
-                <Route
-                  path=":heDaoTaoSlug"
-                  element={<ChuongTrinhDaoTaoDetail />}
-                />
-                <Route
-                  path=":heDaoTaoSlug/:nganhSlug"
-                  element={<UserPostDetail />}
-                />
-              </Route>
               <Route path="/tin-tuc" element={<NewsList />} />
               <Route element={<PostLayout />}>
                 <Route

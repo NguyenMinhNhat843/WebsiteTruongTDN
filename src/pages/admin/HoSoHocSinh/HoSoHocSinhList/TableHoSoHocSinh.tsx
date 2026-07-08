@@ -22,7 +22,9 @@ const TableHoSoHocSinh = () => {
     setFilters,
     total,
   } = useHocSinhContext();
-  const currentTab = filters.status || "pending";
+
+  // Thay đổi: Mặc định nếu filters.status không có thì tab active sẽ là "" (Tất cả)
+  const currentTab = filters.status || "";
   const queryClient = useQueryClient();
 
   /**
@@ -34,7 +36,6 @@ const TableHoSoHocSinh = () => {
   const handleApproveAll = () => {
     if (students.length === 0) return;
 
-    // Xác nhận lại với người dùng trước khi duyệt hàng loạt
     if (
       !window.confirm(
         "Bạn có chắc chắn muốn duyệt TOÀN BỘ học sinh trong trang này không?",
@@ -45,7 +46,6 @@ const TableHoSoHocSinh = () => {
 
     approveStudent(
       {
-        // Truyền body chứa trường quote = undefined theo yêu cầu của bạn
         body: {
           quote: undefined,
         },
@@ -56,7 +56,6 @@ const TableHoSoHocSinh = () => {
           queryClient.invalidateQueries({
             queryKey: ["get", "/students"],
           });
-          // Bạn có thể gọi thêm hàm làm mới dữ liệu từ context nếu có (ví dụ: fetchStudents())
         },
         onError: () => {
           alert("❌ Duyệt hàng loạt thất bại!");
@@ -74,7 +73,8 @@ const TableHoSoHocSinh = () => {
     setFilters((prev) => ({
       ...prev,
       page: 1,
-      status: status,
+      // Nếu chọn tab "Tất cả" (status = ""), ta truyền undefined hoặc "" tùy cấu trúc API xử lý của bạn
+      status: status || undefined,
     }));
   };
 
@@ -106,14 +106,13 @@ const TableHoSoHocSinh = () => {
     <div className="w-full flex flex-col gap-4">
       {/* THANH CHUYỂN TAB (TABS NAVIGATION) */}
       <div className="flex items-center justify-between border-b border-slate-200 px-2 pb-2 gap-4">
-        {/* Các Tab bên trái - Thêm flex-1 và min-w-0 để tối ưu scrollbar */}
         <div className="flex gap-6 overflow-x-auto custom-scrollbar flex-1 min-w-0">
           {STUDENT_STATUS_TABS.map((tab) => {
             const isActive = currentTab === tab.value;
 
             return (
               <button
-                key={tab.value}
+                key={tab.value || "all"} // fallback key nếu tab.value là chuỗi rỗng
                 onClick={() => handleTabChange(tab.value)}
                 className={`pb-2 text-sm font-medium transition-all relative whitespace-nowrap ${
                   isActive
@@ -130,7 +129,7 @@ const TableHoSoHocSinh = () => {
           })}
         </div>
 
-        {/* Nút Duyệt Tổng bên phải - Thêm shrink-0 để chống vỡ/xuống dòng */}
+        {/* Nút Duyệt Tổng bên phải - Chỉ hiển thị khi đang ở tab "Chờ xét tuyển" */}
         {currentTab === "pending" && students.length > 0 && (
           <button
             onClick={handleApproveAll}
@@ -185,7 +184,6 @@ const TableHoSoHocSinh = () => {
             </thead>
 
             <tbody className="divide-y divide-slate-100">
-              {/* 1. TRẠNG THÁI LOADING SKELETON */}
               {isLoadingStudents ? (
                 Array.from({ length: 5 }).map((_, idx) => (
                   <tr key={idx} className="animate-pulse">
@@ -197,7 +195,6 @@ const TableHoSoHocSinh = () => {
                   </tr>
                 ))
               ) : students.length > 0 ? (
-                /* 2. TRẠNG THÁI CÓ DỮ LIỆU */
                 students.map((student, index) => {
                   const stt = (currentPage - 1) * pageSize + index + 1;
                   const progress = student.documentProgress;
@@ -270,7 +267,7 @@ const TableHoSoHocSinh = () => {
                         )}
                       </td>
 
-                      {/* Đánh giá (QUALIFIED) */}
+                      {/* Đánh giá */}
                       <td className="px-5 py-3.5">
                         {isQualified ? (
                           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
@@ -310,7 +307,6 @@ const TableHoSoHocSinh = () => {
                   );
                 })
               ) : (
-                /* 3. TRẠNG THÁI TRỐNG */
                 <tr>
                   <td
                     colSpan={8}

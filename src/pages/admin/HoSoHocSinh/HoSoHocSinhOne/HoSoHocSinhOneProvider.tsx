@@ -3,13 +3,47 @@ import { $api } from "../../../../api/client";
 import type { components } from "../../../../api/v1";
 import { createContextProvider } from "../../../../util/createContextProvider";
 import { useHocSinhContext } from "../HocSinhProvider";
+import { useEffect, useState } from "react";
 
 export type StudentDocumentResponseDto =
   components["schemas"]["StudentDocumentResponseDto"];
+export type UpdateStudentDto = components["schemas"]["UpdateStudentDto"];
+
 export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
   createContextProvider(() => {
     const queryClient = useQueryClient();
     const { studentDetail, isGettingStudentDetail } = useHocSinhContext();
+
+    // Tính năng Update
+    const [isEditMode, setIsEditMode] = useState(false);
+    const [formData, setFormData] = useState<UpdateStudentDto>({});
+    // Đồng bộ data từ context hệ thống vào form local khi vào mode sửa
+    const {
+      id,
+      createdAt,
+      updatedAt,
+      graduationDate,
+      enrollmentDate,
+      documentProgress,
+      class: classData,
+      batch,
+      ...studentDataForUpdate
+    } = studentDetail ?? {};
+
+    const { mutate: updateStudent, isPending: isUpdatingStudent } =
+      $api.useMutation("patch", "/students/{id}", {
+        onSuccess: () => {
+          queryClient.invalidateQueries({ queryKey: ["get", "/students"] });
+          queryClient.invalidateQueries({
+            queryKey: ["get", "/students/search-by-code"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["get", "/admission-profiles"],
+          });
+          setIsEditMode(false);
+        },
+      });
+
     /**
      * Load cấu hình hồ sơ nhập học
      */
@@ -108,6 +142,41 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
       },
     });
 
+    useEffect(() => {
+      if (studentDetail) {
+        setFormData({
+          ...studentDataForUpdate,
+          // Ép kiểu date sang string định dạng YYYY-MM-DD để dùng cho input type="date"
+          dob: studentDetail.dob
+            ? new Date(studentDetail.dob).toISOString().split("T")[0]
+            : undefined,
+          admissionProfile: admissionProfile
+            ? {
+                gpa6: admissionProfile.gpa6,
+                gpa7: admissionProfile.gpa7,
+                gpa8: admissionProfile.gpa8,
+                gpa9: admissionProfile.gpa9,
+                conduct6: admissionProfile.conduct6,
+                conduct7: admissionProfile.conduct7,
+                conduct8: admissionProfile.conduct8,
+                conduct9: admissionProfile.conduct9,
+                studentId: studentDetail.id!,
+              }
+            : {
+                gpa6: 0,
+                gpa7: 0,
+                gpa8: 0,
+                gpa9: 0,
+                conduct6: "TOT",
+                conduct7: "TOT",
+                conduct8: "TOT",
+                conduct9: "TOT",
+                studentId: studentDetail.id!,
+              },
+        });
+      }
+    }, [studentDetail, isEditMode, admissionProfile]);
+
     return {
       hoSoNhapHoc: configHoSoNhapHoc,
       isLoadingHoSoNhapHoc: isLoadingConfigHoSoNhapHoc,
@@ -120,5 +189,12 @@ export const [HoSoHocSinhOneProvider, useHoSoHocSinhOneContext] =
       studentDetail,
       admissionProfile,
       isLoadingAdmissionProfile,
+
+      isEditMode,
+      setIsEditMode,
+      formData,
+      setFormData,
+      updateStudent,
+      isUpdatingStudent,
     };
   });

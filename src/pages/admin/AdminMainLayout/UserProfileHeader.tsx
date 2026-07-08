@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { USER_ROLE } from "../../../features/users/types/User.types";
-import { Bell, Globe, LogOut, GraduationCap, User } from "lucide-react";
+import { Bell, Globe, LogOut, GraduationCap } from "lucide-react";
 import { useAppContext } from "../../../AppProvider";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import { $api } from "../../../api/client";

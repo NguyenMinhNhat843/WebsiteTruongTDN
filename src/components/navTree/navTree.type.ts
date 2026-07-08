@@ -1,4 +1,4 @@
-import type { UserRole } from "../../api/enum/UserEnum";
+import type { EnumRoleUser } from "../../api/enum";
 
 export interface NavItem {
   id: string;
@@ -7,5 +7,5 @@ export interface NavItem {
   href?: string;
   badge?: string | number;
   children?: NavItem[];
-  roles?: UserRole[];
+  roles?: EnumRoleUser[];
 }

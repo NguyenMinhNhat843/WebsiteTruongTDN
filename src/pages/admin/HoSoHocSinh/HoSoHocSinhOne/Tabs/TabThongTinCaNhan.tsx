@@ -1,17 +1,18 @@
 import { ClipboardList, User } from "lucide-react";
-import InfoItem from "../../components/InfoItem";
-import { formatDate } from "../../../../../util/formatDate";
-import { useHocSinhContext } from "../../HocSinhProvider";
+import { useHoSoHocSinhOneContext } from "../HoSoHocSinhOneProvider";
 
 const TabThongTinCaNhan = () => {
-  const { studentDetail } = useHocSinhContext();
-  const renderGender = (gender: boolean | null | undefined) => {
-    if (gender === true) return "Nam";
-    if (gender === false) return "Nữ";
-    return "---";
+  const { isEditMode, formData, setFormData } = useHoSoHocSinhOneContext();
+
+  const handleChange = (field: string, value: any) => {
+    setFormData((prev: any) => ({ ...prev, [field]: value }));
   };
 
-  if (!studentDetail) return null;
+  // Đảm bảo dữ liệu đã được load/clone vào formData thành công
+  if (!formData) return null;
+
+  const inputClass =
+    "w-full rounded-lg border border-gray-300 p-2 text-sm focus:border-blue-500 focus:outline-none bg-white";
 
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -22,22 +23,162 @@ const TabThongTinCaNhan = () => {
           Thông Tin Cá Nhân
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <InfoItem label="Ngày sinh" value={formatDate(studentDetail.dob)} />
-          <InfoItem
-            label="Giới tính"
-            value={renderGender(studentDetail.gender)}
-          />
-          <InfoItem label="Số điện thoại" value={studentDetail.phone} />
-          <InfoItem label="Email" value={studentDetail.email} />
-          <InfoItem
-            label="Số CCCD/Định danh"
-            value={studentDetail.identityNumber}
-          />
-          <InfoItem
-            label="Địa chỉ hiện tại"
-            value={studentDetail.address}
-            className="sm:col-span-2"
-          />
+          {/* Họ và tên */}
+          <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              Họ và tên
+            </label>
+            {isEditMode ? (
+              <input
+                type="text"
+                className={inputClass}
+                value={formData.fullName || ""}
+                onChange={(e) => handleChange("fullName", e.target.value)}
+              />
+            ) : (
+              <span className="text-sm font-semibold text-gray-800">
+                {formData.fullName || "---"}
+              </span>
+            )}
+          </div>
+
+          {/* Ngày sinh */}
+          <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              Ngày sinh
+            </label>
+            {isEditMode ? (
+              <input
+                type="date"
+                className={inputClass}
+                value={formData.dob || ""}
+                onChange={(e) => handleChange("dob", e.target.value)}
+              />
+            ) : (
+              <span className="text-sm font-semibold text-gray-800">
+                {formData.dob
+                  ? new Date(formData.dob).toLocaleDateString("vi-VN")
+                  : "---"}
+              </span>
+            )}
+          </div>
+
+          {/* Giới tính */}
+          <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              Giới tính
+            </label>
+            {isEditMode ? (
+              <select
+                className={inputClass}
+                value={
+                  formData.gender === true
+                    ? "male"
+                    : formData.gender === false
+                      ? "female"
+                      : ""
+                }
+                onChange={(e) =>
+                  handleChange(
+                    "gender",
+                    e.target.value === "male"
+                      ? true
+                      : e.target.value === "female"
+                        ? false
+                        : null,
+                  )
+                }
+              >
+                <option value="">---</option>
+                <option value="male">Nam</option>
+                <option value="female">Nữ</option>
+              </select>
+            ) : (
+              <span className="text-sm font-semibold text-gray-800">
+                {formData.gender === true
+                  ? "Nam"
+                  : formData.gender === false
+                    ? "Nữ"
+                    : "---"}
+              </span>
+            )}
+          </div>
+
+          {/* Số điện thoại */}
+          <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              Số điện thoại
+            </label>
+            {isEditMode ? (
+              <input
+                type="text"
+                className={inputClass}
+                value={formData.phone || ""}
+                onChange={(e) => handleChange("phone", e.target.value)}
+              />
+            ) : (
+              <span className="text-sm font-semibold text-gray-800">
+                {formData.phone || "---"}
+              </span>
+            )}
+          </div>
+
+          {/* Email */}
+          <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              Email
+            </label>
+            {isEditMode ? (
+              <input
+                type="email"
+                className={inputClass}
+                value={formData.email || ""}
+                onChange={(e) => handleChange("email", e.target.value)}
+              />
+            ) : (
+              <span className="text-sm font-semibold text-gray-800">
+                {formData.email || "---"}
+              </span>
+            )}
+          </div>
+
+          {/* Số CCCD/Định danh */}
+          <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              Số CCCD/Định danh
+            </label>
+            {isEditMode ? (
+              <input
+                type="text"
+                className={inputClass}
+                value={formData.identityNumber || ""}
+                onChange={(e) => handleChange("identityNumber", e.target.value)}
+              />
+            ) : (
+              <span className="text-sm font-semibold text-gray-800">
+                {formData.identityNumber || "---"}
+              </span>
+            )}
+          </div>
+
+          {/* Địa chỉ hiện tại */}
+          <div className="sm:col-span-2">
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              Địa chỉ hiện tại
+            </label>
+            {isEditMode ? (
+              <input
+                type="text"
+                className={inputClass}
+                value={formData.address || ""}
+                onChange={(e) => handleChange("address", e.target.value)}
+              />
+            ) : (
+              <span className="text-sm font-semibold text-gray-800">
+                {formData.address || "---"}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 
@@ -48,26 +189,50 @@ const TabThongTinCaNhan = () => {
           Thông Tin Nhập Học & Hệ Thống
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <InfoItem
-            label="Ngày nhập học"
-            value={formatDate(studentDetail.enrollmentDate)}
-          />
-          <InfoItem
-            label="Ngày tốt nghiệp (Dự kiến)"
-            value={formatDate(studentDetail.graduationDate)}
-          />
-          <InfoItem
-            label="Mã hồ sơ tuyển sinh"
-            value={
-              studentDetail.applicationId
-                ? `#${studentDetail.applicationId}`
-                : "---"
-            }
-          />
-          <InfoItem
-            label="ID Tài khoản liên kết"
-            value={studentDetail.userId ? `#${studentDetail.userId}` : "---"}
-          />
+          {/* Ngày nhập học */}
+          <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              Ngày nhập học
+            </label>
+            <span className="text-sm font-semibold text-gray-800">
+              {formData.enrollmentDate
+                ? new Date(formData.enrollmentDate).toLocaleDateString("vi-VN")
+                : "---"}
+            </span>
+          </div>
+
+          {/* Ngày tốt nghiệp (Dự kiến) */}
+          <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              Ngày tốt nghiệp (Dự kiến)
+            </label>
+
+            <span className="text-sm font-semibold text-gray-800">
+              {formData.graduationDate
+                ? new Date(formData.graduationDate).toLocaleDateString("vi-VN")
+                : "---"}
+            </span>
+          </div>
+
+          {/* Mã hồ sơ tuyển sinh - Thường không cho phép sửa, hiển thị text tĩnh */}
+          <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              Mã hồ sơ tuyển sinh
+            </label>
+            <span className="text-sm font-semibold text-gray-800">
+              {formData.applicationId ? `#${formData.applicationId}` : "---"}
+            </span>
+          </div>
+
+          {/* ID Tài khoản liên kết - Thường không cho phép sửa, hiển thị text tĩnh */}
+          <div>
+            <label className="block text-xs font-medium text-gray-400 mb-1">
+              ID Tài khoản liên kết
+            </label>
+            <span className="text-sm font-semibold text-gray-800">
+              {formData.userId ? `#${formData.userId}` : "---"}
+            </span>
+          </div>
         </div>
       </div>
     </div>
