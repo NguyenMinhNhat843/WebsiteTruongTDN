@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route, Outlet } from "react-router-dom";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 
@@ -220,6 +220,7 @@ function App() {
                 </ProtectedRoute>
               }
             >
+              <Route index element={<Navigate to="/admin/home" replace />} />
               <Route path="home" element={<Dashboard />} />
 
               {/* Truyền thông */}

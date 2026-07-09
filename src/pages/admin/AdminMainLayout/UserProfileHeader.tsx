@@ -4,6 +4,7 @@ import { useAppContext } from "../../../AppProvider";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import { $api } from "../../../api/client";
 import type { EnumRoleUser } from "../../../api/enum";
+import { toast } from "sonner";
 
 const UserProfileHeader = () => {
   const navigate = useNavigate();
@@ -25,14 +26,11 @@ const UserProfileHeader = () => {
       {
         onSuccess: () => {
           localStorage.removeItem("user");
+          localStorage.removeItem("access_token");
           navigate("/admin/login");
         },
-        /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-        onError: (error: any) => {
-          alert(
-            "Đăng xuất thất bại: " +
-              (error?.response?.data?.message || JSON.stringify(error)),
-          );
+        onError: () => {
+          toast.error("Đăng xuất thất bại! Vui lòng thử lại sau.");
         },
       },
     );

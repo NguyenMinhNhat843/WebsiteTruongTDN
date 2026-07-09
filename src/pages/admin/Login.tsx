@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { $api, setAccessToken } from "../../api/client";
+import { toast } from "sonner";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -28,8 +29,13 @@ const LoginPage = () => {
       {
         /* eslint-disable @typescript-eslint/no-explicit-any */
         onSuccess: (data: any) => {
+          // 💡 Lưu token dài hạn vào localStorage thông qua hàm setAccessToken mới
           setAccessToken(data?.access_token);
           localStorage.setItem("user", JSON.stringify(data?.user));
+
+          toast.success("Đăng nhập thành công!"); // Thêm thông báo cho đẹp
+
+          // Điều hướng dựa trên vai trò (Role)
           if (data?.user?.role === "admin") {
             navigate("/admin/home");
             return;
@@ -37,13 +43,10 @@ const LoginPage = () => {
             navigate("/teacher/home");
             return;
           }
-          return;
         },
-        onError: (error: any) => {
-          console.log("Login error:", error);
-          alert(
-            "Đăng nhập thất bại: " +
-              (error?.response?.data?.message || JSON.stringify(error)),
+        onError: () => {
+          toast.error(
+            "Đăng nhập thất bại! Vui lòng kiểm tra lại tài khoản, mật khẩu.",
           );
         },
       },
@@ -56,7 +59,6 @@ const LoginPage = () => {
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-100">
         {/* Header Section */}
         <div className="bg-indigo-600 p-8 text-white text-center">
-          {/* Logo Container - Giữ nguyên hiệu ứng glassmorphism */}
           <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm p-1">
             <img
               src="/logo.png"
@@ -65,7 +67,6 @@ const LoginPage = () => {
             />
           </div>
 
-          {/* Tên trường - Dùng leading-tight để các dòng chữ sát nhau hơn khi xuống dòng */}
           <h1 className="text-lg font-medium uppercase tracking-wider opacity-90 mb-1">
             Trường Trung cấp Kinh tế - Kỹ thuật
           </h1>
@@ -73,7 +74,6 @@ const LoginPage = () => {
             Trần Đại Nghĩa
           </h2>
 
-          {/* Divider nhẹ để ngăn cách với tiêu đề hệ thống */}
           <div className="w-12 h-1 bg-white/30 mx-auto my-3 rounded-full"></div>
 
           <p className="text-indigo-100 text-sm font-light tracking-widest uppercase">
