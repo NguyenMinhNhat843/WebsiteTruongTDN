@@ -126,17 +126,14 @@ const UserProfileHeader = () => {
 
         {/* Các nút hành động nhanh sử dụng ButtonAction */}
         <div className="flex items-center gap-1">
-          <ButtonAction
-            variant="outline"
-            size="sm"
-            icon={<Globe size={16} />}
-            title="Ghé thăm website"
-            onClick={() =>
-              window.open("https://website-truong-tdn.vercel.app/", "_blank")
-            }
-            className="rounded-full text-slate-400 hover:text-indigo-600 
-            hover:bg-indigo-50 border-transparent hover:border-transparent shadow-none"
-          />
+          <a
+            href="https://website-truong-tdn.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-full text-slate-500 bg-transparent hover:text-indigo-600 hover:bg-indigo-50 transition-colors duration-200 ease-in-out w-9 h-9"
+          >
+            <Globe size={16} />
+          </a>
           <ButtonAction
             variant="outline"
             size="sm"
