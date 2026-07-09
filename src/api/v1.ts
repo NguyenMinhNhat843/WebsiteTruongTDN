@@ -1536,6 +1536,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/tuition-configs/unconfigured-majors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách các ngành chưa được thiết lập học phí của đợt này (Phục vụ ô Select Dropdown) */
+        get: operations["TuitionConfigController_getUnconfiguredMajors"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/tuition-configs/{id}": {
         parameters: {
             query?: never;
@@ -3097,12 +3114,17 @@ export interface components {
             /** Format: date-time */
             endDate?: string;
         };
+        CreateTuitionConfigItemDto: {
+            name: string;
+            amount: number;
+        };
         CreateTuitionConfigDto: {
             periodId: number;
-            majorId?: Record<string, never> | null;
-            batchId?: Record<string, never> | null;
+            majorId?: number | null;
+            batchId?: number | null;
             totalAmount: number;
             minRequiredAmount: number;
+            items: components["schemas"]["CreateTuitionConfigItemDto"][];
         };
         TuitionConfigItemDto: {
             id: number;
@@ -3113,8 +3135,8 @@ export interface components {
         TuitionConfigWithItemsDto: {
             id: number;
             periodId: number;
-            majorId?: Record<string, never> | null;
-            batchId?: Record<string, never> | null;
+            majorId?: number | null;
+            batchId?: number | null;
             totalAmount: number;
             minRequiredAmount: number;
             /** Format: date-time */
@@ -3122,13 +3144,15 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
             items: components["schemas"]["TuitionConfigItemDto"][];
+            major?: components["schemas"]["MajorDto"] | null;
         };
         UpdateTuitionConfigDto: {
             periodId?: number;
-            majorId?: Record<string, never> | null;
-            batchId?: Record<string, never> | null;
+            majorId?: number | null;
+            batchId?: number | null;
             totalAmount?: number;
             minRequiredAmount?: number;
+            items?: components["schemas"]["CreateTuitionConfigItemDto"][];
         };
     };
     responses: never;
@@ -6510,8 +6534,8 @@ export interface operations {
         parameters: {
             query?: {
                 periodId?: number;
-                majorId?: components["schemas"]["Object"];
-                batchId?: components["schemas"]["Object"];
+                majorId?: number | null;
+                batchId?: number | null;
             };
             header?: never;
             path?: never;
@@ -6558,6 +6582,28 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    TuitionConfigController_getUnconfiguredMajors: {
+        parameters: {
+            query: {
+                periodId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Trả về mảng danh sách ngành học hợp lệ có thể cấu hình. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MajorDto"][];
+                };
             };
         };
     };

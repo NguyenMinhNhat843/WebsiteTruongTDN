@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { X, Loader2 } from "lucide-react";
 import { $api } from "../../../../api/client";
+import { toast } from "sonner";
 
 interface ModalCreateDotHocPhiProps {
   isOpen: boolean;
@@ -105,8 +106,8 @@ const ModalCreateDotHocPhi = ({
     const payload = {
       name: formData.name,
       semesterId: Number(formData.semesterId),
-      startDate: new Date(formData.startDate).toISOString(),
-      endDate: new Date(formData.endDate).toISOString(),
+      startDate: new Date(formData.startDate),
+      endDate: new Date(formData.endDate),
       isActive: formData.isActive,
     };
 
@@ -120,6 +121,10 @@ const ModalCreateDotHocPhi = ({
           onSuccess: () => {
             onSuccess?.();
             onClose();
+            toast.success("Cập nhật đợt học phí thành công!");
+          },
+          onError: () => {
+            toast.error("Cập nhật đợt học phí thất bại! Vui lòng thử lại sau.");
           },
         },
       );
@@ -132,6 +137,10 @@ const ModalCreateDotHocPhi = ({
           onSuccess: () => {
             onSuccess?.();
             onClose();
+            toast.success("Tạo mới đợt học phí thành công!");
+          },
+          onError: () => {
+            toast.error("Tạo mới đợt học phí thất bại! Vui lòng thử lại sau.");
           },
         },
       );

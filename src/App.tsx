@@ -17,6 +17,7 @@ import TiengAnhChiTiet from "./pages/client/ChuongTrinhDaoTao/TiengAnhChiTiet";
 import DotHocPhiIndex from "./pages/admin/HocPhi";
 import CoSoVatChat from "./pages/client/CoSoVatChat";
 import DoiTacTuyenDung from "./pages/client/DoiTacDaoTaoVaTuyenDung";
+import DotHocPhiOne from "./pages/admin/HocPhi/One/DotHocPhiOne";
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -321,7 +322,9 @@ function App() {
                 <Route path="hoc-ky" element={<HocKyList />} />
               </Route>
 
+              {/* Học phí */}
               <Route path="hoc-phi" element={<DotHocPhiIndex />} />
+              <Route path="hoc-phi/:id" element={<DotHocPhiOne />} />
 
               {/* Quản trị nhân sự */}
               <Route element={<NhanVienLayout />}>

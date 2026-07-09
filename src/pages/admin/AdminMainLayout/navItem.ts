@@ -103,6 +103,12 @@ const navItems: NavItem[] = [
       },
     ],
   },
+  {
+    id: "hoc-phi",
+    label: "Học phí",
+    icon: "💰",
+    href: "/admin/hoc-phi",
+  },
   // --- NHÓM CÔNG TÁC HỌC SINH & TUYỂN SINH ---
   {
     id: "quan-ly-hoc-sinh",
