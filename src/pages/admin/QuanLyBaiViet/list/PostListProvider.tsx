@@ -9,10 +9,11 @@ export const [PostListProvider, usePostListContext] = createContextProvider(
     /**
      * Load danh sách bài viết
      */
-    const { data: postsData, isLoading: isLoadingPosts } = $api.useQuery(
-      "get",
-      "/posts",
-    );
+    const {
+      data: postsData,
+      isLoading: isLoadingPosts,
+      refetch: refetchPosts,
+    } = $api.useQuery("get", "/posts");
     const posts = postsData?.data || [];
     const total = postsData?.meta?.total || 0;
 
@@ -20,6 +21,7 @@ export const [PostListProvider, usePostListContext] = createContextProvider(
       posts: posts || [],
       total,
       isLoadingPosts,
+      refetchPosts,
     };
   },
 );

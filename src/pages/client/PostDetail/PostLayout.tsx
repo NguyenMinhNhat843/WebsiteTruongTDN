@@ -13,7 +13,9 @@ const PostLayout = () => {
     "get",
     "/posts/{id}",
     {
-      params: { path: { id: Number(id) } },
+      params: {
+        path: { id: Number(id) },
+      },
     },
     { enabled: !!id }, // Chỉ chạy khi có ID trên URL
   );

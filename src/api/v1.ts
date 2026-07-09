@@ -940,7 +940,8 @@ export interface paths {
         get: operations["PostController_findOne"];
         put?: never;
         post?: never;
-        delete?: never;
+        /** Xóa bài viết theo ID */
+        delete: operations["PostController_remove"];
         options?: never;
         head?: never;
         /** Cập nhật bài viết theo ID */
@@ -2627,12 +2628,9 @@ export interface components {
             updatedAt: string;
             author: components["schemas"]["ResponseUserWithRelationDto"];
         };
-        PaginationMetaDto: {
-            total: number;
-        };
         PostResponseDtoPagination: {
             data: components["schemas"]["PostResponseDto"][];
-            meta: components["schemas"]["PaginationMetaDto"];
+            total: number;
         };
         UpdatePostDto: {
             authorId?: number;
@@ -5195,6 +5193,33 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["PostResponseDto"];
                 };
+            };
+            /** @description Không tìm thấy bài viết. */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PostController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa bài viết thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
             /** @description Không tìm thấy bài viết. */
             404: {

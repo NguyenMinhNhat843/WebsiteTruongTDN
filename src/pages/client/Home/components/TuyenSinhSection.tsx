@@ -25,41 +25,41 @@ const admissionsData: AdmissionItem[] = [
   {
     id: 1,
     title: "Ngành Tin học ứng dụng",
-    subtitle: "Kỹ sư Thực hành Công nghệ thông tin",
+    subtitle: "Chuyên gia Thực hành Công nghệ số",
     description:
-      "Xét tuyển thẳng học sinh tốt nghiệp THCS/THPT. Lộ trình học 70% thực hành trực tiếp tại phòng máy cấu hình cao, cam kết 100% giới thiệu việc làm ngay khi ra trường.",
+      "Tập trung mài giũa tay nghề thực tế thông qua các mảng cực HOT: Lập trình, thiết kế Web, Đồ họa và Digital Marketing. Cam kết chuẩn đầu ra có việc làm ngay không nặng nề bằng cấp.",
     image:
       "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1000&q=80",
     icon: Monitor,
     slug: "tin-hoc-ung-dung",
-    badge: "Hot Tuyển Sinh",
-    target: "Học sinh Tốt nghiệp THCS / THPT",
+    badge: "Tay nghề vàng",
+    target: "Đảm bảo vững tay nghề thực tế",
   },
   {
     id: 2,
-    title: "Ngành Tiếng Anh thương mại",
-    subtitle: "Thành thạo Ngoại ngữ chuyên ngành",
+    title: "Ngành Tiếng Anh",
+    subtitle: "Bứt phá sự nghiệp toàn cầu",
     description:
-      "Đào tạo phản xạ giao tiếp quốc tế, tiếng Anh văn phòng và biên phiên dịch thương mại đáp ứng trực tiếp nhu cầu tập đoàn nước ngoài.",
+      "Xóa bỏ hoàn toàn lối học vẹt truyền thống. Lộ trình học bám sát môi trường công sở thực tế, tối ưu phản xạ ngôn ngữ tự nhiên giúp bạn tự tin hội nhập và làm việc trong các doanh nghiệp quốc tế.",
     image:
       "https://images.unsplash.com/photo-1546410531-bb4caa6b424d?w=800&q=80",
     icon: Languages,
-    slug: "tieng-anh-thuong-mai",
-    badge: "Mở rộng chỉ tiêu",
-    target: "Xét học bạ xét tuyển thẳng",
+    slug: "tieng-anh",
+    badge: "Chuẩn quốc tế",
+    target: "Giao tiếp tự tin - Sẵn sàng hội nhập",
   },
   {
     id: 3,
-    title: "Ngành Dịch vụ du lịch & Lữ hành",
-    subtitle: "Nghiệp vụ Hướng dẫn viên Chuyên nghiệp",
+    title: "Ngành Hướng dẫn du lịch",
+    subtitle: "Bản lĩnh Hướng dẫn viên Quốc tế",
     description:
-      "Chương trình liên kết doanh nghiệp lữ hành lớn, thực tập có lương từ năm nhất, cấp thẻ hướng dẫn viên ngay khi tốt nghiệp.",
+      "Đào tạo toàn diện từ thuyết minh tuyến điểm đến kỹ năng làm MC sự kiện, thiết kế Gameshow, Team Building bãi biển. Sẵn sàng cầm thẻ hướng dẫn viên làm việc khắp Đông Nam Á.",
     image:
       "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
     icon: Compass,
-    slug: "dich-vu-du-lich-va-lu-hanh",
-    badge: "Cam kết việc làm",
-    target: "Thực tập hưởng lương",
+    slug: "huong-dan-du-lich",
+    badge: "Học nhanh - Làm ngay",
+    target: "Cọ xát dẫn tour thực tế tại điểm",
   },
 ];
 
@@ -134,7 +134,8 @@ const TuyenSinhSection: React.FC = () => {
               </p>
 
               <Link
-                to={`/tuyen-sinh/${admissionsData[0].slug}`}
+                to={`/dang-ky-tuyen-sinh`}
+                target="__blank"
                 className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-slate-950 font-bold px-5 py-3 rounded-xl transition-all duration-200 shadow-md active:scale-[0.98]"
               >
                 <span>Nộp hồ sơ xét tuyển</span>
@@ -179,7 +180,8 @@ const TuyenSinhSection: React.FC = () => {
                     </p>
 
                     <Link
-                      to={`/tuyen-sinh/${item.slug}`}
+                      to={`/dang-ky-tuyen-sinh`}
+                      target="__blank"
                       className="inline-flex items-center gap-1.5 text-xs text-amber-400 font-bold hover:text-amber-300 transition-colors duration-200"
                     >
                       <span>Chi tiết tuyển sinh</span>
@@ -205,13 +207,14 @@ const TuyenSinhSection: React.FC = () => {
           </div>
           <div className="flex flex-wrap justify-center gap-4 shrink-0 w-full md:w-auto">
             <a
-              href="tel:1900xxxx"
+              href="tel:081 4393 535"
               className="w-full sm:w-auto text-center bg-transparent border border-white text-white font-bold px-6 py-3 rounded-xl text-sm hover:bg-white/10 transition-colors"
             >
-              Hotline: 1900.XXXX
+              Hotline: 081 4393 535
             </a>
             <Link
               to="/dang-ky-tuyen-sinh"
+              target="__blank"
               className="w-full sm:w-auto text-center bg-amber-400 hover:bg-amber-500 text-slate-950 font-extrabold px-6 py-3 rounded-xl text-sm transition-all shadow-sm active:scale-95"
             >
               Đăng ký xét tuyển trực tuyến

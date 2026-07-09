@@ -40,6 +40,7 @@ const Inner = () => {
     updatePost,
     isUpdatingPost,
     isUploadingImage,
+    reset,
   } = useCreatePostContext();
   const editorRef = useRef<ContentEditorRef>(null);
 
@@ -77,6 +78,7 @@ const Inner = () => {
         {
           onSuccess: () => {
             toast.success("Cập nhật thành công");
+            window.location.reload();
           },
           onError: () => {
             toast.error("Cập nhật thất bại, vui lòng thử lại sau");
@@ -91,6 +93,7 @@ const Inner = () => {
         {
           onSuccess: () => {
             toast.success("Đăng bài thành công");
+            window.location.reload();
           },
           onError: () => {
             toast.error("Đăng bài thất bại, vui lòng thử lại sau");

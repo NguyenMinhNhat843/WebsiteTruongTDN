@@ -77,6 +77,7 @@ export const [CreatePostProvider, useCreatePostContext] = createContextProvider(
       watch,
       setValue,
       formState: { errors },
+      reset,
     } = useForm<CreatePostDto>({
       defaultValues: defaultValue ?? {
         content: "",
@@ -93,6 +94,7 @@ export const [CreatePostProvider, useCreatePostContext] = createContextProvider(
       defaultValue,
       updatePost,
       isUpdatingPost,
+      reset,
 
       watch,
       setValue,

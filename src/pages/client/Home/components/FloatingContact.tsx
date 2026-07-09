@@ -22,14 +22,6 @@ const contacts = [
     ),
   },
   {
-    id: "messenger",
-    label: "Messenger",
-    href: MESSENGER_URL,
-    bg: "bg-[#0084FF]",
-    shadow: "shadow-md",
-    icon: <MessageCircle className="w-5 h-5 text-white" fill="currentColor" />,
-  },
-  {
     id: "zalo",
     label: "Chat Zalo",
     href: `https://zalo.me/${ZALO_NUMBER}`,

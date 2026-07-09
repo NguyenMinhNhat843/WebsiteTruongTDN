@@ -13,8 +13,10 @@ import { Toaster } from "sonner";
 import CauHinhChung from "./pages/admin/CauHinhHeThong";
 import TinHocUngDung from "./pages/client/ChuongTrinhDaoTao/TinHocUngDung";
 import DichVuDuLichChiTiet from "./pages/client/ChuongTrinhDaoTao/DichVuDuLich";
-import TiengAnhChiTiet from "./pages/client/ChuongTrinhDaoTao/TienhAnhChiTiet";
+import TiengAnhChiTiet from "./pages/client/ChuongTrinhDaoTao/TiengAnhChiTiet";
 import DotHocPhiIndex from "./pages/admin/HocPhi";
+import CoSoVatChat from "./pages/client/CoSoVatChat";
+import DoiTacTuyenDung from "./pages/client/DoiTacDaoTaoVaTuyenDung";
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -41,7 +43,6 @@ const BoMayToChuc = lazy(
 );
 const TamNhinSuMang = lazy(() => import("./pages/client/TamNhinSuMang"));
 const SoDoToChuc = lazy(() => import("./pages/client/SoDoToChuc"));
-const HopTacQuocTe = lazy(() => import("./pages/client/HopTacQuocTe"));
 const LienHe = lazy(() => import("./pages/client/LienHe/LienHe"));
 const DangKyTuVan = lazy(
   () => import("./pages/client/DangKyTuVan/DangKyTuVan"),
@@ -184,28 +185,32 @@ function App() {
                 element={<TamNhinSuMang />}
               />
               <Route path="/so-do-to-chuc" element={<SoDoToChuc />} />
-              <Route path="/hop-tac-quoc-te" element={<HopTacQuocTe />} />
               <Route path="/lien-he-cong-tac" element={<LienHe />} />
               <Route path="/dang-ky-tuyen-sinh" element={<DangKyTuVan />} />
+              <Route path="/co-so-vat-chat" element={<CoSoVatChat />} />
+              <Route
+                path="/doi-tac-dao-tao-va-tuyen-dung"
+                element={<DoiTacTuyenDung />}
+              />
               <Route
                 path="/chuong-trinh-dao-tao/tin-hoc-ung-dung"
                 element={<TinHocUngDung />}
               />
               <Route
-                path="/chuong-trinh-dao-tao/dich-vu-du-lich"
+                path="/chuong-trinh-dao-tao/huong-dan-du-lich"
                 element={<DichVuDuLichChiTiet />}
               />
               <Route
-                path="/chuong-trinh-dao-tao/tieng-anh-thuong-mai"
+                path="/chuong-trinh-dao-tao/tieng-anh"
                 element={<TiengAnhChiTiet />}
               />
+              <Route path="/tuyen-dung" element={<NewsList />} />
               <Route path="/tin-tuc" element={<NewsList />} />
               <Route element={<PostLayout />}>
                 <Route
                   path="tin-tuc/xem-truoc"
                   element={<AdminPostPreview />}
                 />
-                <Route path="tuyen-dung/:slug" element={<UserPostDetail />} />
                 <Route path="tin-tuc/:slug" element={<UserPostDetail />} />
               </Route>
             </Route>

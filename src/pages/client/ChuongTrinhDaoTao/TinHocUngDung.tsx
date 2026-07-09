@@ -2,91 +2,97 @@ import ChiTietNganhHoc from "./component/ChuongTrinhDaoTaoDetailWrapper";
 
 const data = {
   tenNganh: "Tin học ứng dụng",
-  tagline: "Đón đầu xu hướng công nghệ 4.0",
-  badge: "Mũi nhọn công nghệ",
+  tagline: "Vững chắc tay nghề - Rút ngắn thời gian - Cơ hội mở rộng",
+  badge: "Hệ Trung Cấp",
   description:
-    "Chương trình đào tạo được thiết kế bám sát thực tiễn năng lực nghề nghiệp, giúp học sinh làm chủ kỹ năng phát triển phần mềm, quản trị mạng doanh nghiệp, thiết kế đồ họa truyền thông và thành thạo các ứng dụng CNTT văn phòng cao cấp.",
+    "Chương trình đào tạo Trung cấp Tin học ứng dụng chú trọng tối ưu hóa thời gian và tập trung hoàn toàn vào thực hành cọ xát. Với phương châm tuyển dụng cốt lõi của ngành CNTT là 'chỉ cần tay nghề vững vàng là được nhận', khóa học trang bị trọn vẹn từ tin học văn phòng, thiết kế đồ họa, phát triển web cho đến quản trị mạng doanh nghiệp.",
   anh: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=1200&q=80",
   thongSo: [
-    { label: "Mã ngành tuyển sinh", value: "5480203", iconName: "Terminal" },
-    { label: "Thời gian đào tạo", value: "1.5 - 2 Năm", iconName: "Clock" },
     {
-      label: "Tỷ lệ thực hành",
-      value: "70% Tổng thời lượng",
+      label: "Trình độ đào tạo",
+      value: "Trung cấp chính quy",
+      iconName: "Terminal",
+    },
+    { label: "Thời gian học ngắn", value: "1 - 1.5 Năm", iconName: "Clock" },
+    {
+      label: "Tiêu chí đào tạo",
+      value: "Trọng tâm 100% tay nghề",
       iconName: "Code",
     },
   ],
   diemNoiBat: [
-    "Học tập trực tiếp tại hệ thống phòng LAB hiện đại, máy cấu hình cao trang bị đầy đủ thiết bị mạng Cisco, Server chuyên dụng.",
-    "Đội ngũ giảng viên là các chuyên gia, kỹ sư CNTT có kinh nghiệm thực chiến từ các doanh nghiệp phần mềm lớn.",
-    "Nhà trường cam kết bằng văn bản ký kết giới thiệu việc làm đúng chuyên ngành tại các đối tác công nghệ ngay sau khi tốt nghiệp.",
-    "Chương trình tích hợp ôn luyện và cấp chứng chỉ nghề quốc gia cùng chứng chỉ Tin học văn phòng chuẩn quốc tế MOS.",
+    "Đặc thù ngành CNTT chỉ cần tay nghề vững vàng là được nhận làm việc ngay mà không quá quan tâm, đặt nặng bằng cấp.",
+    "Hồ sơ tốt nghiệp với tấm bằng Trung cấp chính quy là đủ điều kiện ký kết hợp đồng lao động cùng đầy đủ chế độ đãi ngộ, thưởng và bảo hiểm.",
+    "Chương trình đào tạo thực tế, lược bỏ lý thuyết hàn lâm, học viên được học trực tiếp kỹ năng chuyên môn từ cơ bản đến nâng cao.",
+    "Tích hợp chuỗi học phần kỹ năng mềm cực kỳ đa dạng giúp học viên tự tin giao tiếp, xử lý phàn nàn và tạo dựng mối quan hệ công việc.",
   ],
   chuongTrinhHoc: [
     {
-      tieuDe: "Học phần 1: Nền tảng kỹ thuật & Thiết kế giao diện (UI/UX)",
+      tieuDe: "Học phần 1: Module Đại cương & Tin học ứng dụng văn phòng",
       iconName: "Layout",
-      moTa: "Xây dựng tư duy logic máy tính cơ bản và làm chủ các công cụ đồ họa ứng dụng trong truyền thông thương hiệu doanh nghiệp.",
+      moTa: "Xây dựng nền tảng kiến thức pháp luật, chính trị cùng kỹ năng tin học ứng dụng và thuật toán cơ sở.",
       chiTiet: [
-        "Tin học văn phòng nâng cao: Thành thạo kỹ năng xử lý văn bản, bảng tính quản trị dữ liệu Excel nâng cao ứng dụng trong kế toán, hành chính doanh nghiệp.",
-        "Cấu trúc máy tính & Lắp ráp cài đặt phần cứng: Hiểu rõ cơ chế hoạt động của phần cứng, kỹ năng chẩn đoán, sửa chữa và tối ưu hóa hiệu năng máy vi tính.",
-        "Thiết kế đồ họa ứng dụng (Photoshop & Illustrator): Xử lý hình ảnh chuyên nghiệp, thiết kế bộ nhận diện thương hiệu, banner quảng cáo mạng xã hội.",
-        "Cơ sở mỹ thuật web & Thiết kế giao diện ứng dụng: Nguyên lý layout, cách phối màu sắc, phông chữ và tư duy bố cục trải nghiệm người dùng trực quan.",
+        "Các môn học chung bắt buộc: Chính trị, Pháp luật, Giáo dục thể chất, Giáo dục quốc phòng, Ngoại ngữ cơ bản.",
+        "Tin học đại cương & Tin học văn phòng nâng cao: Làm chủ các công cụ, ứng dụng phần mềm có sẵn trong Windows phục vụ quản lý dữ liệu.",
+        "Internet & Anh văn chuyên ngành: Kỹ năng khai thác tài nguyên số Internet, đọc hiểu thuật ngữ và tài liệu kỹ thuật CNTT.",
+        "Toán ứng dụng & An toàn vệ sinh công nghiệp: Xây dựng tư duy giải thuật máy tính kết hợp nguyên tắc bảo hộ, an toàn lao động.",
       ],
     },
     {
-      tieuDe: "Học phần 2: Tư duy lập trình & Quản trị cơ sở dữ liệu",
+      tieuDe: "Học phần 2: Thiết kế đồ họa ứng dụng & Phát triển giao diện Web",
       iconName: "Code",
-      moTa: "Bước chân vào thế giới mã nguồn. Học sinh được học cách viết mã, kiểm thử phần mềm và tổ chức lưu trữ dữ liệu an toàn.",
+      moTa: "Làm chủ các phần mềm đồ họa truyền thông đa phương tiện phổ biến và xây dựng trang web hoàn chỉnh.",
       chiTiet: [
-        "Nhập môn kỹ thuật lập trình: Xây dựng thuật toán logic cấu trúc dữ liệu nền tảng bằng các ngôn ngữ hiện đại (Python / C++ / Java).",
-        "Lập trình phát triển giao diện Web (HTML5, CSS3, JavaScript): Tự tay xây dựng các trang web landing page, website bán hàng tối ưu hiển thị đa thiết bị.",
-        "Cơ sở dữ liệu & Hệ quản trị SQL Server: Thiết kế mô hình dữ liệu, viết câu lệnh truy vấn dữ liệu lớn và tối ưu hóa hệ thống lưu trữ thông tin.",
-        "Phân tích thiết kế hệ thống phần mềm: Quy trình khảo sát yêu cầu khách hàng, sơ đồ hóa chức năng và quy trình phát triển một phần mềm hoàn chỉnh.",
+        "Xử lý ảnh chuyên nghiệp bằng Photoshop: Kỹ thuật chỉnh sửa, cắt ghép và tối ưu hóa hình ảnh truyền thông thương hiệu.",
+        "Thiết kế vector với Illustrator: Sáng tạo mẫu thiết kế vẽ phẳng, bộ nhận diện, logo quảng cáo thương mại.",
+        "Thiết kế bản vẽ kỹ thuật 2D với Autocad & Macromedia Flash MX: Xây dựng bản vẽ kỹ thuật cơ bản và tạo chuyển động ảnh động ứng dụng.",
+        "Thiết kế và phát triển Web chuyên nghiệp: Xây dựng, cấu hình giao diện web tối ưu, đáp ứng nhu cầu doanh nghiệp.",
       ],
     },
     {
-      tieuDe: "Học phần 3: Quản trị mạng doanh nghiệp & An ninh hệ thống",
+      tieuDe: "Học phần 3: Hạ tầng phần cứng, Quản trị mạng & An ninh hệ thống",
       iconName: "Database",
-      moTa: "Lĩnh vực cốt lõi giúp học sinh làm chủ hạ tầng kết nối, cấu hình phần cứng mạng và bảo vệ dữ liệu trước các nguy cơ tấn công mạng.",
+      moTa: "Nội dung trọng tâm về cấu trúc phần cứng máy tính và vận hành, triển khai hệ thống mạng LAN/WAN.",
       chiTiet: [
-        "Thiết kế và triểnkai mạng nội bộ (LAN/WAN): Kỹ thuật bấm cáp, phân chia dải IP, cấu hình thiết bị định tuyến Router và chuyển mạch Switch của Cisco.",
-        "Quản trị hệ điều hành mạng (Windows Server / Linux): Xây dựng hệ thống quản lý tài khoản người dùng, phân quyền chia sẻ tài liệu trong văn phòng.",
-        "An toàn và bảo mật thông tin: Cấu hình tường lửa (Firewall), thiết lập VPN kết nối từ xa an toàn, phòng chống mã độc và sao lưu dự phòng dữ liệu.",
-        "Thực hành Quản trị văn phòng điện tử: Triển khai vận hành các phần mềm quản lý nội bộ, mail server doanh nghiệp, hệ thống đám mây Cloud.",
+        "Lắp ráp và cài đặt máy tính: Hiểu rõ nguyên lý thiết bị ngoại vi, thành thạo lắp đặt, bảo trì máy tính PC và Laptop.",
+        "Vận hành đa hệ điều hành: Thực hành cấu hình hệ thống trên các môi trường Windows, Linux, MAC OS, Ubuntu.",
+        "Thiết kế xây dựng và Quản trị mạng LAN: Cấu hình thiết bị kết nối hạ tầng (Cisco, router, switch, bấm dây mạng, cấp địa chỉ IPv4/IPv6).",
+        "An toàn mạng & Dịch vụ mạng doanh nghiệp: Triển khai tường lửa (Firewall), hệ thống mã hóa, chống virus, quản trị Mail, HTTP, FTP, DNS, VPN.",
       ],
     },
     {
-      tieuDe: "Học phần 4: Đồ án tốt nghiệp thực tế & Thực tập doanh nghiệp",
+      tieuDe:
+        "Học phần 4: Module Kỹ năng bổ trợ & Thực tập thực tế doanh nghiệp",
       iconName: "Briefcase",
-      moTa: "Giai đoạn chuyển giao bản lề đưa học sinh tiếp cận môi trường làm việc thực tế tại các công ty đối tác chiến lược.",
+      moTa: "Trang bị các kỹ năng bổ trợ mềm và đưa học viên trải nghiệm môi trường làm việc thực chiến tại các đơn vị.",
       chiTiet: [
-        "Thực tập tốt nghiệp (3-5 tháng): Làm việc trực tiếp tại các phòng kỹ thuật, bộ phận IT của doanh nghiệp đối tác, cọ xát công việc thực tế.",
-        "Đồ án tốt nghiệp chuyên ngành: Tự chọn xây dựng một ứng dụng phần mềm, một website hoàn chỉnh hoặc thiết kế một hạ tầng mạng cho doanh nghiệp.",
-        "Kỹ năng mềm cho Kỹ sư CNTT: Phương pháp làm việc nhóm, kỹ năng phỏng vấn tuyển dụng, viết CV công nghệ và giao tiếp xử lý sự cố kỹ thuật.",
+        "Phát triển kỹ năng mềm xã hội: Kỹ năng sinh hoạt cộng đồng, múa hát tập thể, giao tiếp và kỹ năng ca hát.",
+        "Kỹ năng xử lý tình huống chuyên nghiệp: Kỹ năng giao tiếp khách hàng, giải quyết than phiền - phàn nàn trong công việc.",
+        "Kỹ năng quản trị công việc: Phương pháp nghiên cứu, kỹ năng tổ chức sắp xếp công việc, lên kế hoạch và quản trị dự án.",
+        "Thực hành & Thực tập thực tế tại doanh nghiệp: Làm việc trực tiếp tại các công ty để cọ xát năng lực thực tế trước khi tốt nghiệp.",
       ],
     },
   ],
   coHoiNgheNghiep: [
     {
-      chucDanh: "Kỹ thuật viên quản trị mạng",
+      chucDanh: "Chuyên viên Quản trị mạng & Hệ thống",
       noiLamViec:
-        "Bộ phận IT tại các công ty, xí nghiệp, trường học, bệnh viện.",
+        "Bộ phận IT, quản lý kỹ thuật phần cứng, hạ tầng mạng tại các cơ quan, xí nghiệp, trường học, bệnh viện.",
     },
     {
-      chucDanh: "Chuyên viên phát triển Website",
+      chucDanh: "Kỹ thuật viên Thiết kế và Phát triển Web",
       noiLamViec:
-        "Các công ty thiết kế web, đơn vị kinh doanh thương mại điện tử.",
+        "Các công ty phần mềm, đơn vị thiết kế website, agency hoặc các doanh nghiệp vận hành sàn thương mại điện tử.",
     },
     {
-      chucDanh: "Nhân viên đồ họa quảng cáo",
+      chucDanh: "Nhân viên Thiết kế đồ họa & Quảng cáo",
       noiLamViec:
-        "Các studio chụp ảnh, công ty truyền thông event, xưởng in ấn quảng cáo.",
+        "Cơ sở in ấn quảng cáo, studio ảnh, công ty truyền thông tổ chức sự kiện, phòng Marketing nội bộ.",
     },
     {
-      chucDanh: "Chuyên viên dữ liệu văn phòng",
+      chucDanh: "Chuyên viên Digital Marketing",
       noiLamViec:
-        "Vị trí thư ký tòa thị chính, hành chính nhân sự, quản lý kho bãi dữ liệu.",
+        "Đảm nhận các vị trí tối ưu hóa tìm kiếm SEO, quản trị chiến dịch Facebook Marketing, Google Adwords tại các doanh nghiệp thương mại.",
     },
   ],
 };

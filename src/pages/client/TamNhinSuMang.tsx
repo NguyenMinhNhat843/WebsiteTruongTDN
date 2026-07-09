@@ -1,167 +1,181 @@
-import {
-  Target,
-  Lightbulb,
-  Users,
-  Rocket,
-  ShieldCheck,
-  Zap,
-} from "lucide-react";
+import { Target, Users, Gem, CheckCircle2 } from "lucide-react";
 
 const VisionMissionPage = () => {
-  const coreValues = [
-    {
-      title: "NHIỆT HUYẾT",
-      icon: <Zap className="w-8 h-8 text-school-blue-600" />,
-      desc: "Đặt 100% năng lượng để theo đuổi mục tiêu. Đam mê và nỗ lực không ngừng để chạm đến vạch đích cuối cùng.",
-    },
-    {
-      title: "NĂNG ĐỘNG",
-      icon: <Rocket className="w-8 h-8 text-school-blue-600" />,
-      desc: "Chủ động, tích cực, dám nghĩ dám làm và thích nghi nhanh chóng với môi trường thay đổi.",
-    },
-    {
-      title: "SÁNG TẠO",
-      icon: <Lightbulb className="w-8 h-8 text-school-blue-600" />,
-      desc: "Luôn nghiên cứu và cải tiến để tạo ra giá trị khác biệt và bản sắc riêng trong mỗi chương trình đào tạo.",
-    },
-    {
-      title: "TRÁCH NHIỆM",
-      icon: <ShieldCheck className="w-8 h-8 text-school-blue-600" />,
-      desc: "Cam kết chất lượng đào tạo, lấy học viên làm trung tâm và coi sự hài lòng là thước đo thành công.",
-    },
-    {
-      title: "LINH HOẠT",
-      icon: <Users className="w-8 h-8 text-school-blue-600" />,
-      desc: "Phản ứng nhanh trước cơ hội và thách thức. Sàng lọc bộ máy, đặt đúng người vào đúng việc.",
-    },
-  ];
-
   return (
-    <div className="bg-slate-50 font-sans text-slate-900">
-      {/* Hero Section - Giới thiệu chung */}
-      <section className="relative h-75 md:h-100 flex items-center justify-center text-white bg-[url('/banner_header.png')] bg-cover bg-center">
-        {/* Lớp Overlay tối: Giúp chữ nổi bật tuyệt đối trên mọi nền ảnh */}
-        <div className="absolute inset-0 bg-black/50 md:bg-black/40 shadow-inner"></div>
+    <div className="bg-slate-50 font-sans text-slate-900 min-h-screen">
+      {/* 1. Hero Section - Full màn hình trừ 138px Header */}
+      <section className="relative min-h-[calc(100vh-138px)] flex items-center justify-center text-white bg-[url('/trandainghia_anh1.jpg')] bg-cover bg-center">
+        {/* Lớp Overlay tối: Giúp chữ nổi bật tuyệt đối */}
+        <div className="absolute inset-0 bg-black/60 shadow-inner"></div>
 
-        {/* Nội dung */}
-        <div className="relative z-10 text-center px-4">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+        {/* Nội dung Banner */}
+        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4 uppercase tracking-wider drop-shadow-xl">
             Tầm Nhìn & Sứ Mệnh
           </h1>
-
           {/* Đường kẻ phân cách nhỏ */}
-          <div className="w-20 h-1 bg-school-blue-700 mx-auto mb-4 rounded-full"></div>
-
-          <p className="text-school-blue-100 text-lg max-w-3xl mx-auto italic">
-            "Chất lượng vàng – Niềm tin vàng" – Đào tạo gắn liền với việc làm.
+          <div className="w-24 h-1.5 bg-yellow-400 mx-auto mb-6 rounded-full"></div>
+          <p className="text-slate-200 text-lg md:text-xl font-light tracking-wide max-w-2xl mx-auto italic drop-shadow-md">
+            "Chất lượng vàng – Niềm tin vàng" <br /> Đào tạo gắn liền với nền
+            móng sự nghiệp vững chắc tương lai.
           </p>
         </div>
       </section>
 
-      {/* Vision & Mission Section */}
-      <section className="py-16 container mx-auto px-6">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
-            <div className="bg-white p-8 rounded-2xl shadow-sm border-l-4 border-school-blue-600">
-              <h2 className="flex items-center text-2xl font-bold text-school-blue-700 mb-4">
-                <Target className="mr-3" /> TẦM NHÌN 2030
-              </h2>
-              <p className="text-slate-600 leading-relaxed">
-                Đến năm 2030, Trường Trung Cấp Kinh tế Kỹ thuật Trần Đại Nghĩa
-                trở thành trường có uy tín hàng đầu trong lĩnh vực đào tạo khu
-                vực Miền trung và Tây Nguyên Việt Nam.
-              </p>
-            </div>
-
-            <div className="bg-white p-8 rounded-2xl shadow-sm border-l-4 border-emerald-500">
-              <h2 className="flex items-center text-2xl font-bold text-emerald-600 mb-4">
-                <Users className="mr-3" /> SỨ MẠNG
-              </h2>
-              <p className="text-slate-600 leading-relaxed">
-                Xây dựng môi trường trường học gắn liền với doanh nghiệp và thực
-                tiễn đời sống xã hội. Giúp sinh viên có kiến thức chuyên môn
-                vững chắc và tác phong công nghiệp chuyên nghiệp.
-              </p>
-            </div>
-          </div>
-          <div className="rounded-2xl overflow-hidden shadow-xl">
-            <img
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1000"
-              alt="Students Learning"
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* Core Values Section */}
-      <section className="py-16 bg-school-blue-50">
-        <div className="container mx-auto px-6">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-school-blue-800">
-              GIÁ TRỊ CỐT LÕI
-            </h2>
-            <div className="w-24 h-1 bg-school-blue-600 mx-auto mt-4 rounded-full"></div>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {coreValues.map((value, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-xl shadow-md hover:-translate-y-2 transition-all duration-300"
-              >
-                <div className="mb-4 bg-school-blue-50 w-16 h-16 flex items-center justify-center rounded-lg">
-                  {value.icon}
-                </div>
-                <h3 className="text-xl font-bold text-slate-800 mb-3">
-                  {value.title}
-                </h3>
-                <p className="text-slate-600 text-sm leading-relaxed italic">
-                  {value.desc}
-                </p>
+      {/* 2. Main Content - 3 Cards Cân Bằng Đồng Bộ */}
+      <section className="py-20 container mx-auto px-4 max-w-7xl">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+          {/* CARD 1: SỨ MẠNG */}
+          <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col border border-slate-100">
+            <div className="h-48 overflow-hidden relative">
+              <img
+                src="/trandainghia_sumenh.png"
+                alt="Sứ mệnh Trần Đại Nghĩa"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute top-4 left-4 bg-blue-600 text-white p-2.5 rounded-xl shadow-lg">
+                <Users className="w-6 h-6" />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </div>
+            <div className="p-6 md:p-8 flex-1 flex flex-col justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-blue-900 uppercase tracking-wide mb-4 pb-2 border-b border-slate-100">
+                  Sứ Mạng Giáo Dục
+                </h2>
+                <p className="text-slate-600 text-sm leading-relaxed text-justify mb-5">
+                  Sứ mệnh cốt lõi của Trần Đại Nghĩa là giúp người học tự xây
+                  dựng một nền móng vững chắc lâu dài cho sự nghiệp thông qua
+                  các cam kết hành động cụ thể:
+                </p>
 
-      {/* Philosophy Section */}
-      <section className="py-16 container mx-auto px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold text-slate-800 mb-8 underline decoration-school-blue-500 underline-offset-8">
-            PHƯƠNG CHÂM HOẠT ĐỘNG
-          </h2>
-          <p className="text-slate-600 leading-loose mb-10">
-            Trường phát triển phương pháp{" "}
-            <span className="font-semibold text-school-blue-700">
-              “Học đi đôi với hành”
-            </span>
-            , nội dung giảng dạy bám sát thực tế. Chúng tôi không chỉ đào tạo
-            chuyên môn mà còn rèn luyện đạo đức, tác phong công nghiệp và kỹ
-            năng ngoại ngữ để sinh viên sẵn sàng làm việc trong môi trường quốc
-            tế.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <img
-              src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=400"
-              className="rounded-lg shadow aspect-video object-cover"
-              alt="Work 1"
-            />
-            <img
-              src="https://images.unsplash.com/photo-1573161559521-450cf10b6d21?auto=format&fit=crop&q=80&w=400"
-              className="rounded-lg shadow aspect-video object-cover"
-              alt="Work 2"
-            />
-            <img
-              src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&q=80&w=400"
-              className="rounded-lg shadow aspect-video object-cover"
-              alt="Work 3"
-            />
-            <img
-              src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=400"
-              className="rounded-lg shadow aspect-video object-cover"
-              alt="Work 4"
-            />
+                {/* List nội dung dưới của Card 1 */}
+                <ul className="space-y-3 pt-1 border-t border-slate-50">
+                  <li className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Nghiệp vụ tiên tiến:</strong> Tiếp cận và làm chủ
+                      những kỹ năng nghề nghiệp mới nhất hiện nay.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Nền tảng sâu sắc:</strong> Trang bị hệ thống lý
+                      luận vững chắc hỗ trợ học viên thăng tiến dài hạn.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Sức cạnh tranh cao:</strong> Đảm bảo năng lực
+                      thích ứng cao, không lo bị đào thải trong nền kinh tế số.
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* CARD 2: TẦM NHÌN */}
+          <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col border border-slate-100">
+            <div className="h-48 overflow-hidden relative">
+              <img
+                src="/trandainghia_tamnhin.png"
+                alt="Tầm nhìn Trần Đại Nghĩa"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute top-4 left-4 bg-emerald-600 text-white p-2.5 rounded-xl shadow-lg">
+                <Target className="w-6 h-6" />
+              </div>
+            </div>
+            <div className="p-6 md:p-8 flex-1 flex flex-col justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-emerald-700 uppercase tracking-wide mb-4 pb-2 border-b border-slate-100">
+                  Tầm Nhìn Chiến Lược
+                </h2>
+                <p className="text-slate-600 text-sm leading-relaxed text-justify mb-5">
+                  Nhà trường nỗ lực khẳng định niềm tin sâu sắc từ học viên và
+                  phụ huynh, hướng tới mục tiêu xây dựng thương hiệu giáo dục
+                  nghề nghiệp hàng đầu:
+                </p>
+
+                {/* List nội dung dưới của Card 2 */}
+                <ul className="space-y-3 pt-1 border-t border-slate-50">
+                  <li className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Chất lượng hàng đầu:</strong> Đặt ưu tiên tối cao
+                      cho việc cải tiến liên tục sản phẩm dịch vụ đào tạo.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Tiên phong Du lịch - Nhà hàng:</strong> Tập trung
+                      dẫn đầu khối ngành Du lịch – Khách sạn – Nhà hàng – Bếp.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Phát triển kỹ năng:</strong> Biến Trần Đại Nghĩa
+                      thành điểm đến lý tưởng để trau dồi tay nghề thực tế.
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* CARD 3: GIÁ TRỊ CỐT LÕI */}
+          <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col border border-slate-100">
+            <div className="h-48 overflow-hidden relative">
+              <img
+                src="/trandainghia_giatri.png"
+                alt="Giá trị cốt lõi Trần Đại Nghĩa"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute top-4 left-4 bg-amber-500 text-white p-2.5 rounded-xl shadow-lg">
+                <Gem className="w-6 h-6" />
+              </div>
+            </div>
+            <div className="p-6 md:p-8 flex-1 flex flex-col justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-amber-600 uppercase tracking-wide mb-4 pb-2 border-b border-slate-100">
+                  Giá Trị Cốt Lõi
+                </h2>
+                <p className="text-slate-600 text-sm leading-relaxed text-justify mb-5">
+                  Mọi hoạt động tại Trần Đại Nghĩa đều xoay quanh trục giá trị
+                  nhân văn và phát triển bền vững, nhằm kiến tạo môi trường học
+                  đường chất lượng cao:
+                </p>
+
+                {/* List nội dung dưới của Card 3 */}
+                <ul className="space-y-3 pt-1 border-t border-slate-50">
+                  <li className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Sinh viên là trọng tâm:</strong> Mọi lợi ích và sự
+                      thành công của người học luôn là kim chỉ nam.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Đổi mới và sáng tạo:</strong> Liên tục nghiên cứu
+                      cải tiến phương pháp giảng dạy để luôn dẫn đầu.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2.5 text-sm text-slate-700">
+                    <CheckCircle2 className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+                    <span>
+                      <strong>Cộng tác & Xuất sắc:</strong> Kết nối doanh nghiệp
+                      chặt chẽ kết hợp đội ngũ cán bộ giảng viên giỏi nghề.
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>

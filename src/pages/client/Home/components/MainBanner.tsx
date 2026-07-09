@@ -10,19 +10,25 @@ import "swiper/css/effect-fade";
 const BANNERS = [
   {
     id: 1,
-    image:
-      "https://images.unsplash.com/photo-1581092921461-eab62e97a780?auto=format&fit=crop&q=80&w=1920", // Ảnh thực hành kỹ thuật/công nghệ chất lượng cao
-    tag: "Tuyển Sinh Học Bạ 2026",
-    title: "Vững Nghề Nghiệp - Sáng Tương Lai",
-    ctaText: "XEM CÁC NGÀNH ĐÀO TẠO",
-    ctaLink: "/nganh-dao-tao",
+    image: "/Home/trandainghia_banner1.jpg",
+    tag: "Chào Mừng Đến Với Nhà Trường",
+    title: "Trường Trung Cấp Kinh Tế - Kỹ Thuật Trần Đại Nghĩa",
+    ctaText: "ĐĂNG KÝ XÉT TUYỂN",
+    ctaLink: "/dang-ky-tuyen-sinh",
   },
   {
     id: 2,
-    image:
-      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1920", // Ảnh sinh viên năng động trường học
-    tag: "Cam Kết Việc Làm",
-    title: "98% Sinh Viên Có Việc Làm Ngay",
+    image: "/Home/trandainghia_banner2.jpg",
+    tag: "Đào Tạo Chất Lượng",
+    title: "Học Tập Chủ Động - Vững Bước Thành Công",
+    ctaText: "KHÁM PHÁ NGAY",
+    ctaLink: "/dang-ky-tuyen-sinh",
+  },
+  {
+    id: 3,
+    image: "/Home/trandainghia_banner3.jpg",
+    tag: "Tương Lai Tươi Sáng",
+    title: "Đồng Hành Cùng Bạn Trên Con Đường Lập Nghiệp",
     ctaText: "ĐĂNG KÝ XÉT TUYỂN",
     ctaLink: "/dang-ky-tuyen-sinh",
   },
@@ -61,7 +67,7 @@ const MainBanner = () => {
               />
 
               {/* Gradient overlay to optimize contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/40 to-slate-950/50" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-950/10 to-slate-950/40" />
 
               {/* Center Layout Content */}
               <div className="absolute inset-0 flex items-center justify-center p-4">

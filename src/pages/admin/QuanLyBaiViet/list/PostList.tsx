@@ -1,9 +1,19 @@
 import { PostListProvider, usePostListContext } from "./PostListProvider";
 import PageShell from "../../../../components/ui/PageShell";
 import ButtonAction from "../../../../components/ui/ButtonAction";
-import { BookOpen, Eye, Calendar, User, ImageIcon, Pen } from "lucide-react";
+import {
+  BookOpen,
+  Eye,
+  Calendar,
+  User,
+  ImageIcon,
+  Pen,
+  Trash2,
+} from "lucide-react"; // 1. Thêm Trash2 icon ở đây
 import { useNavigate } from "react-router-dom";
 import { getCategoryBadge, getStatusBadge } from "./helpers";
+import { $api } from "../../../../api/client";
+import { toast } from "sonner";
 
 const PostList = () => {
   return (
@@ -14,8 +24,37 @@ const PostList = () => {
 };
 
 const Inner = () => {
-  const { posts, total, isLoadingPosts } = usePostListContext();
+  // Giả định context của bạn có hàm refetch hoặc tương đương (ví dụ: fetchPosts, mutate...) để tải lại danh sách.
+  // Bạn hãy kiểm tra lại file PostListProvider xem tên hàm chính xác là gì nhé (thường là refetchPosts hoặc refresh).
+  const { posts, total, isLoadingPosts, refetchPosts } = usePostListContext();
   const navigate = useNavigate();
+
+  // Khai báo hook mutation xóa từ openapi-react-query của bạn
+  const { mutate: deletePost } = $api.useMutation("delete", "/posts/{id}", {
+    onSuccess: () => {
+      toast.success("Xóa bài viết thành công!");
+      // Gọi hàm refetch từ context để cập nhật lại danh sách hiển thị phía client
+      if (refetchPosts) refetchPosts();
+    },
+    onError: () => {
+      toast.error("Xóa bài viết thất bại! Vui lòng thử lại sau.");
+    },
+  });
+
+  // Hàm xử lý khi click nút xóa
+  const handleDelete = (id: number, title: string) => {
+    if (
+      window.confirm(
+        `Bạn có chắc chắn muốn xóa bài viết "${title}" không? Hành động này không thể hoàn tác.`,
+      )
+    ) {
+      deletePost({
+        params: {
+          path: { id }, // Truyền id vào url route /posts/{id} theo chuẩn openapi-ts
+        },
+      });
+    }
+  };
 
   return (
     <PageShell
@@ -106,21 +145,29 @@ const Inner = () => {
                       <span className="text-xs font-medium text-gray-600 bg-gray-50 px-2 py-1 rounded">
                         {post.viewCount.toLocaleString()} lượt xem
                       </span>
-                      <div className="flex gap-2">
+                      <div className="flex gap-1.5">
                         <ButtonAction
                           title="Xem chi tiết"
-                          icon={<Eye size={16} />}
+                          icon={<Eye size={15} />}
                           variant="outline"
                         />
                         <ButtonAction
                           title="Chỉnh sửa"
-                          icon={<Pen size={16} />}
+                          icon={<Pen size={15} />}
                           variant="outline"
                           onClick={() =>
                             navigate(
                               `/admin/truyen-thong-bao-chi/${post.id}/edit`,
                             )
                           }
+                        />
+                        {/* Nút Xóa mới được thêm vào */}
+                        <ButtonAction
+                          title="Xóa bài viết"
+                          icon={<Trash2 size={15} />}
+                          className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300"
+                          variant="outline"
+                          onClick={() => handleDelete(post.id!, post.title)}
                         />
                       </div>
                     </div>

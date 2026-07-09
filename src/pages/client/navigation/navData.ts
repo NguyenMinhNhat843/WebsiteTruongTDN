@@ -27,15 +27,19 @@ export const navData: MenuItem[] = [
         href: "/tam-nhin-su-mang-gia-tri-cot-loi",
       },
       {
+        id: "co-so-vat-chat",
+        label: "Cơ sở vật chất",
+        href: "/co-so-vat-chat",
+      },
+      {
+        id: "doi-tac-dao-tao-va-tuyen-dung",
+        label: "Đối tác đào tạo và tuyển dụng",
+        href: "/doi-tac-dao-tao-va-tuyen-dung",
+      },
+      {
         id: "so-do-to-chuc",
         label: "Sơ đồ tổ chức",
         href: "/so-do-to-chuc",
-      },
-      {
-        id: "hop-tac-quoc-te",
-        label:
-          "Trung tâm Đào tạo, Hợp tác quốc tế và Phát triển nguồn nhân lực ASIA",
-        href: "/hop-tac-quoc-te",
       },
     ],
   },
@@ -51,14 +55,14 @@ export const navData: MenuItem[] = [
         href: "/chuong-trinh-dao-tao/tin-hoc-ung-dung",
       },
       {
-        id: "tieng-anh-thuong-mai",
-        label: "Tiếng Anh thương mại",
-        href: "/chuong-trinh-dao-tao/tieng-anh-thuong-mai",
+        id: "tieng-anh",
+        label: "Tiếng Anh",
+        href: "/chuong-trinh-dao-tao/tieng-anh",
       },
       {
-        id: "dich-vu-du-lich",
-        label: "Dịch vụ du lịch",
-        href: "/chuong-trinh-dao-tao/dich-vu-du-lich",
+        id: "huong-dan-du-lich",
+        label: "Hướng dẫn du lịch",
+        href: "/chuong-trinh-dao-tao/huong-dan-du-lich",
       },
     ],
   },
@@ -81,17 +85,5 @@ export const navData: MenuItem[] = [
     id: "tuyen-dung",
     label: "TUYỂN DỤNG",
     href: "/tuyen-dung",
-    children: [
-      {
-        id: "tuyen-dung-giao-vien",
-        label: "Tuyển dụng giáo viên",
-        href: "/tuyen-dung/giao-vien",
-      },
-      {
-        id: "tuyen-dung-can-bo-quan-ly",
-        label: "Tuyển dụng cán bộ quản lý",
-        href: "/tuyen-dung/can-bo-quan-ly",
-      },
-    ],
   },
 ];
