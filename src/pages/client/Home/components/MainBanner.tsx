@@ -67,7 +67,7 @@ const MainBanner = () => {
               />
 
               {/* Gradient overlay to optimize contrast */}
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-950/10 to-slate-950/40" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-950/60 to-slate-950/40" />
 
               {/* Center Layout Content */}
               <div className="absolute inset-0 flex items-center justify-center p-4">
