@@ -7,7 +7,7 @@ import type { EnumRoleUser } from "../../../api/enum";
 
 const UserProfileHeader = () => {
   const navigate = useNavigate();
-  const { currentSemester, userRole, profile } = useAppContext();
+  const { currentSemester, userRole, profile, currentUser } = useAppContext();
 
   // Chuỗi hiển thị tên học kỳ
   const semesterName =
@@ -70,7 +70,8 @@ const UserProfileHeader = () => {
   };
 
   // Lấy tên hiển thị ưu tiên từ profile.fullName, nếu chưa có thì fallback về userRole
-  const displayName = profile?.fullName || "Chưa cập nhật tên";
+  const displayName =
+    profile?.fullName || currentUser?.username || "Chưa cập nhật tên";
   const roleConfig = getRoleBadgeConfig(userRole || "");
 
   // Lấy chữ cái đầu tiên của từ cuối cùng (Tên chính) để làm Avatar đại diện

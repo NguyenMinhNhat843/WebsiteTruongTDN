@@ -1,11 +1,11 @@
 import { Navigate, useLocation } from "react-router-dom";
-import type { UserRole } from "../../users/types/User.types";
 import { getAccessToken } from "../../../api/client";
 import { useAppContext } from "../../../AppProvider";
+import type { EnumRoleUser } from "../../../api/enum";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  allowedRoles?: UserRole[];
+  allowedRoles?: EnumRoleUser[];
 }
 
 const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {

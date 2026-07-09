@@ -14,6 +14,7 @@ import CauHinhChung from "./pages/admin/CauHinhHeThong";
 import TinHocUngDung from "./pages/client/ChuongTrinhDaoTao/TinHocUngDung";
 import DichVuDuLichChiTiet from "./pages/client/ChuongTrinhDaoTao/DichVuDuLich";
 import TiengAnhChiTiet from "./pages/client/ChuongTrinhDaoTao/TienhAnhChiTiet";
+import DotHocPhiIndex from "./pages/admin/HocPhi";
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -313,6 +314,8 @@ function App() {
               <Route element={<HocKyLayout />}>
                 <Route path="hoc-ky" element={<HocKyList />} />
               </Route>
+
+              <Route path="hoc-phi" element={<DotHocPhiIndex />} />
 
               {/* Quản trị nhân sự */}
               <Route element={<NhanVienLayout />}>

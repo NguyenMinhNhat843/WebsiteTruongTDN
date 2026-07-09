@@ -71,6 +71,7 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
   const currentUser = curentUserRaw ? JSON.parse(curentUserRaw) : null;
   const profile = currentUser?.profile || null;
   const userRole: EnumRoleUser = currentUser?.role || null;
+  console.log("currentUser", currentUser);
 
   return {
     hocKysData,

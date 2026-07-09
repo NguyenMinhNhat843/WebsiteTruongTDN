@@ -41,7 +41,6 @@ client.use({
 
   async onResponse({ response, request }) {
     if (response.status === 401 && !request.url.includes("/auth/refresh")) {
-      console.log(response.status);
       /* eslint-disable @typescript-eslint/no-explicit-any */
       const refreshResponse: any = await client.POST("/auth/refresh");
       const newToken =

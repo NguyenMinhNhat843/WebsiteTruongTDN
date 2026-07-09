@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { X, Calendar, Loader2, CheckCircle2 } from "lucide-react";
+import { X, Loader2 } from "lucide-react";
 import { $api } from "../../../../api/client";
 
 interface ModalCreateDotHocPhiProps {
@@ -20,7 +20,7 @@ const ModalCreateDotHocPhi = ({
   // --- State quản lý Form ---
   const [formData, setFormData] = useState({
     name: "",
-    semesterId: "",
+    semesterId: "", // Lưu dạng string để quản lý thẻ <select> dễ dàng
     startDate: "",
     endDate: "",
     isActive: true,
@@ -37,6 +37,16 @@ const ModalCreateDotHocPhi = ({
     },
     {
       enabled: isUpdateMode && isOpen,
+    },
+  );
+
+  // Lấy danh sách học kỳ cho thẻ Select (Chỉ gọi khi modal mở)
+  const { data: semesters, isLoading: isLoadingSemesters } = $api.useQuery(
+    "get",
+    "/semesters",
+    {}, // Cần truyền object trống cho config/params nếu api ko yêu cầu, tùy thuộc bản api client của bạn
+    {
+      enabled: isOpen,
     },
   );
 
@@ -75,12 +85,16 @@ const ModalCreateDotHocPhi = ({
 
   if (!isOpen) return null;
 
-  // --- Xử lý thay đổi Input ---
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
+  // --- Xử lý thay đổi Input & Select ---
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
+    const { name, value, type } = e.target;
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]:
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
   };
 
@@ -100,7 +114,7 @@ const ModalCreateDotHocPhi = ({
       updateDotHocPhi(
         {
           params: { path: { id: tuitionId! } },
-          body: payload as any, // Type-safe tự nhận diện cấu trúc DTO nhờ openapi-typescript
+          body: payload as any,
         },
         {
           onSuccess: () => {
@@ -169,20 +183,46 @@ const ModalCreateDotHocPhi = ({
               />
             </div>
 
-            {/* Học kỳ (Semester ID) */}
+            {/* Chọn Học kỳ (Dropdown Select) */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Mã học kỳ (ID)
+                Chọn học kỳ
               </label>
-              <input
-                type="number"
-                name="semesterId"
-                required
-                value={formData.semesterId}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-slate-800"
-                placeholder="Nhập ID học kỳ"
-              />
+              <div className="relative">
+                <select
+                  name="semesterId"
+                  required
+                  value={formData.semesterId}
+                  onChange={handleChange}
+                  disabled={isLoadingSemesters}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-slate-800 bg-white disabled:bg-slate-50 disabled:text-slate-400 appearance-none"
+                >
+                  <option value="" disabled hidden>
+                    {isLoadingSemesters
+                      ? "Đang tải học kỳ..."
+                      : "-- Chọn học kỳ --"}
+                  </option>
+                  {semesters?.map((sem) => (
+                    <option key={sem.id} value={sem.id}>
+                      {sem.name}
+                    </option>
+                  ))}
+                </select>
+                {/* Custom arrow cho thẻ select nếu cần (hoặc dùng mặc định của trình duyệt) */}
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                  {isLoadingSemesters ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+                  ) : (
+                    <svg
+                      className="fill-current h-4 w-4"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                    </svg>
+                  )}
+                </div>
+              </div>
             </div>
 
             {/* Thời gian cấu hình */}
@@ -191,16 +231,14 @@ const ModalCreateDotHocPhi = ({
                 <label className="block text-sm font-medium text-slate-700 mb-1">
                   Ngày bắt đầu
                 </label>
-                <div className="relative">
-                  <input
-                    type="datetime-local"
-                    name="startDate"
-                    required
-                    value={formData.startDate}
-                    onChange={handleChange}
-                    className="w-full pl-3 pr-2 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-slate-800"
-                  />
-                </div>
+                <input
+                  type="datetime-local"
+                  name="startDate"
+                  required
+                  value={formData.startDate}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-slate-800"
+                />
               </div>
 
               <div>
@@ -213,12 +251,12 @@ const ModalCreateDotHocPhi = ({
                   required
                   value={formData.endDate}
                   onChange={handleChange}
-                  className="w-full pl-3 pr-2 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-slate-800"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-sm text-slate-800"
                 />
               </div>
             </div>
 
-            {/* Trạng thái Kích hoạt (Custom Tailwind Toggle) */}
+            {/* Trạng thái Kích hoạt */}
             <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-100">
               <div className="flex flex-col">
                 <span className="text-sm font-medium text-slate-700">
