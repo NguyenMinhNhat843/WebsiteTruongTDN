@@ -2022,33 +2022,6 @@ export interface components {
             user?: components["schemas"]["UserResponseDto"];
             teacherSubjects?: components["schemas"]["TeacherSubjectResponseDto"][];
         };
-        SubjectDto: {
-            id: number;
-            departmentId: number | null;
-            subjectCode: string;
-            /** @enum {string} */
-            knowledgeBlock: "GENERAL" | "BASE_MAJOR" | "SPECIALIZED";
-            subjectName: string;
-            credits: number;
-            description: string | null;
-            practiceHours: number;
-            testHours: number | null;
-            theoryHours: number;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        SubjectConditionDetailDto: {
-            id: number;
-            subjectId: number;
-            conditionSubjectId: number;
-            /** @enum {string} */
-            conditionType: "PREREQUISITE" | "COREQUISITE";
-            /** Format: date-time */
-            createdAt: string;
-            conditionSubject: components["schemas"]["SubjectDto"];
-        };
         ResponseSubjectDto: {
             id: number;
             departmentId: number | null;
@@ -2065,8 +2038,6 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            /** @description Danh sách các môn học điều kiện (tiên quyết / song hành) của môn này */
-            asSubject?: components["schemas"]["SubjectConditionDetailDto"][];
         };
         TeacherSubjectResponseDto: {
             /**
@@ -2215,9 +2186,6 @@ export interface components {
             semesterNumber: number;
             minGrade: number;
             subjectId: number;
-            /** @enum {string} */
-            enrollmentType: "COMPULSORY" | "ELECTIVE";
-            electiveGroupId: number | null;
         };
         ElectiveSubjectPayload: {
             subjectId: number;
@@ -2258,9 +2226,23 @@ export interface components {
             curriculumId: number;
             minGrade: number;
             subjectId: number;
+        };
+        SubjectDto: {
+            id: number;
+            departmentId: number | null;
+            subjectCode: string;
             /** @enum {string} */
-            enrollmentType: "COMPULSORY" | "ELECTIVE";
-            electiveGroupId: number | null;
+            knowledgeBlock: "GENERAL" | "BASE_MAJOR" | "SPECIALIZED";
+            subjectName: string;
+            credits: number;
+            description: string | null;
+            practiceHours: number;
+            testHours: number | null;
+            theoryHours: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         CurriculumSubjectResponseDtoWithRelation: {
             id: number;
@@ -2478,11 +2460,6 @@ export interface components {
             /** @default active */
             status: string;
         };
-        SubjectConditionPayload: {
-            conditionSubjectId: number;
-            /** @enum {string} */
-            conditionType: "PREREQUISITE" | "COREQUISITE";
-        };
         CreateSubjectDto: {
             departmentId: number | null;
             subjectCode: string;
@@ -2494,7 +2471,6 @@ export interface components {
             practiceHours: number;
             testHours: number | null;
             theoryHours: number;
-            subjectConditions?: components["schemas"]["SubjectConditionPayload"][];
         };
         UpdateSubjectDto: {
             departmentId?: number | null;
@@ -2507,7 +2483,6 @@ export interface components {
             practiceHours?: number;
             testHours?: number | null;
             theoryHours?: number;
-            subjectConditions?: components["schemas"]["SubjectConditionPayload"][];
         };
         CreateRoomDto: {
             building: string | null;

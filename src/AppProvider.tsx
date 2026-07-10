@@ -1,11 +1,14 @@
 import { $api } from "./api/client";
 import { createContextProvider } from "./util/createContextProvider";
 import type { EnumRoleUser } from "./api/enum";
+import { useState } from "react";
 
 export const [AppProvider, useAppContext] = createContextProvider(() => {
   // 💡 Lấy thông tin user hiện tại từ localStorage
-  const curentUserRaw = localStorage.getItem("user");
-  const currentUser = curentUserRaw ? JSON.parse(curentUserRaw) : null;
+  const [currentUser, setCurrentUser] = useState(() => {
+    const curentUserRaw = localStorage.getItem("user");
+    return curentUserRaw ? JSON.parse(curentUserRaw) : null;
+  });
   const profile = currentUser?.profile || null;
   const userRole: EnumRoleUser = currentUser?.role || null;
 
@@ -64,6 +67,7 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
     isDepartmentsLoading,
     departmentsError,
     currentUser,
+    setCurrentUser,
     profile,
     userRole,
   };

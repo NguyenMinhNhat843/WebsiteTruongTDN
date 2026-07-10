@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { $api, setAccessToken } from "../../api/client";
 import { toast } from "sonner";
+import { useAppContext } from "../../AppProvider";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("admin");
+  const { setCurrentUser } = useAppContext();
 
   /**
    * api login
@@ -32,6 +34,8 @@ const LoginPage = () => {
           // 💡 Lưu token dài hạn vào localStorage thông qua hàm setAccessToken mới
           setAccessToken(data?.access_token);
           localStorage.setItem("user", JSON.stringify(data?.user));
+
+          setCurrentUser(data?.user);
 
           toast.success("Đăng nhập thành công!"); // Thêm thông báo cho đẹp
 
