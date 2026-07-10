@@ -1456,6 +1456,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/fee-invoices/periods/{periodId}/students/{identifier}/debt": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết công nợ học phí của sinh viên theo đợt học phí */
+        get: operations["FeeInvoiceController_getStudentDebt"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/fee-invoices/{id}": {
         parameters: {
             query?: never;
@@ -1530,6 +1547,23 @@ export interface paths {
         put?: never;
         /** Tạo mới cấu hình học phí kèm danh sách các khoản mục (items) */
         post: operations["TuitionConfigController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-configs/{id}/sync-invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sinh công nợ thủ công (Đồng bộ hóa đơn học phí) cho sinh viên theo cấu hình */
+        post: operations["TuitionConfigController_syncInvoices"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1988,10 +2022,12 @@ export interface components {
             user?: components["schemas"]["UserResponseDto"];
             teacherSubjects?: components["schemas"]["TeacherSubjectResponseDto"][];
         };
-        ResponseSubjectDto: {
+        SubjectDto: {
             id: number;
             departmentId: number | null;
             subjectCode: string;
+            /** @enum {string} */
+            knowledgeBlock: "GENERAL" | "BASE_MAJOR" | "SPECIALIZED";
             subjectName: string;
             credits: number;
             description: string | null;
@@ -2002,6 +2038,35 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+        };
+        SubjectConditionDetailDto: {
+            id: number;
+            subjectId: number;
+            conditionSubjectId: number;
+            /** @enum {string} */
+            conditionType: "PREREQUISITE" | "COREQUISITE";
+            /** Format: date-time */
+            createdAt: string;
+            conditionSubject: components["schemas"]["SubjectDto"];
+        };
+        ResponseSubjectDto: {
+            id: number;
+            departmentId: number | null;
+            subjectCode: string;
+            /** @enum {string} */
+            knowledgeBlock: "GENERAL" | "BASE_MAJOR" | "SPECIALIZED";
+            subjectName: string;
+            credits: number;
+            description: string | null;
+            practiceHours: number;
+            testHours: number | null;
+            theoryHours: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @description Danh sách các môn học điều kiện (tiên quyết / song hành) của môn này */
+            asSubject?: components["schemas"]["SubjectConditionDetailDto"][];
         };
         TeacherSubjectResponseDto: {
             /**
@@ -2150,6 +2215,20 @@ export interface components {
             semesterNumber: number;
             minGrade: number;
             subjectId: number;
+            /** @enum {string} */
+            enrollmentType: "COMPULSORY" | "ELECTIVE";
+            electiveGroupId: number | null;
+        };
+        ElectiveSubjectPayload: {
+            subjectId: number;
+            semesterNumber: number;
+            minGrade?: number;
+        };
+        ElectiveGroupPayload: {
+            groupName: string;
+            minCredits: number;
+            minSubjects: number;
+            subjects: components["schemas"]["ElectiveSubjectPayload"][];
         };
         CreateCurriculumDto: {
             majorId: number;
@@ -2157,7 +2236,10 @@ export interface components {
             curriculumName: string;
             isActive: boolean;
             totalCredits: number;
+            /** @description Danh sách các môn học bắt buộc (hoặc tự chọn tự do không theo nhóm) */
             curriculumSubjects: components["schemas"]["CurriculumSubjectPayload"][];
+            /** @description Danh sách các nhóm môn tự chọn kèm môn học bên trong */
+            electiveGroups?: components["schemas"]["ElectiveGroupPayload"][];
         };
         CurriculumDto: {
             id: number;
@@ -2176,6 +2258,34 @@ export interface components {
             curriculumId: number;
             minGrade: number;
             subjectId: number;
+            /** @enum {string} */
+            enrollmentType: "COMPULSORY" | "ELECTIVE";
+            electiveGroupId: number | null;
+        };
+        CurriculumSubjectResponseDtoWithRelation: {
+            id: number;
+            semesterNumber: number;
+            curriculumId: number;
+            minGrade: number;
+            subjectId: number;
+            /** @enum {string} */
+            enrollmentType: "COMPULSORY" | "ELECTIVE";
+            electiveGroupId: number | null;
+            /** Format: date-time */
+            createdAt: string;
+            subject: components["schemas"]["SubjectDto"];
+        };
+        ElectiveGroupResponseDto: {
+            id: number;
+            curriculumId: number;
+            groupName: string;
+            minCredits: number;
+            minSubjects: number;
+            /** Format: date-time */
+            updatedAt: string;
+            /** Format: date-time */
+            createdAt: string;
+            curriculumSubjects: components["schemas"]["CurriculumSubjectResponseDtoWithRelation"][];
         };
         CurriculumResponseDtoWithRelation: {
             id: number;
@@ -2190,6 +2300,8 @@ export interface components {
             updatedAt: string;
             curriculumSubjects: components["schemas"]["CreateCurriculumSubjectDto"][];
             major: components["schemas"]["MajorDto"];
+            /** @description Danh sách các nhóm môn tự chọn, bên trong mỗi nhóm có danh sách môn riêng */
+            electiveGroups?: components["schemas"]["ElectiveGroupResponseDto"][];
         };
         UpdateCurriculumDto: {
             majorId?: number;
@@ -2197,7 +2309,10 @@ export interface components {
             curriculumName?: string;
             isActive?: boolean;
             totalCredits?: number;
+            /** @description Danh sách các môn học bắt buộc (hoặc tự chọn tự do không theo nhóm) */
             curriculumSubjects?: components["schemas"]["CurriculumSubjectPayload"][];
+            /** @description Danh sách các nhóm môn tự chọn kèm môn học bên trong */
+            electiveGroups?: components["schemas"]["ElectiveGroupPayload"][];
         };
         CreateSemesterDto: {
             /**
@@ -2363,25 +2478,36 @@ export interface components {
             /** @default active */
             status: string;
         };
+        SubjectConditionPayload: {
+            conditionSubjectId: number;
+            /** @enum {string} */
+            conditionType: "PREREQUISITE" | "COREQUISITE";
+        };
         CreateSubjectDto: {
             departmentId: number | null;
             subjectCode: string;
+            /** @enum {string} */
+            knowledgeBlock: "GENERAL" | "BASE_MAJOR" | "SPECIALIZED";
             subjectName: string;
             credits: number;
             description: string | null;
             practiceHours: number;
             testHours: number | null;
             theoryHours: number;
+            subjectConditions?: components["schemas"]["SubjectConditionPayload"][];
         };
         UpdateSubjectDto: {
             departmentId?: number | null;
             subjectCode?: string;
+            /** @enum {string} */
+            knowledgeBlock?: "GENERAL" | "BASE_MAJOR" | "SPECIALIZED";
             subjectName?: string;
             credits?: number;
             description?: string | null;
             practiceHours?: number;
             testHours?: number | null;
             theoryHours?: number;
+            subjectConditions?: components["schemas"]["SubjectConditionPayload"][];
         };
         CreateRoomDto: {
             building: string | null;
@@ -2470,21 +2596,6 @@ export interface components {
             classId: number | null;
             semesterId: number;
             subjectId: number;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        SubjectDto: {
-            id: number;
-            departmentId: number | null;
-            subjectCode: string;
-            subjectName: string;
-            credits: number;
-            description: string | null;
-            practiceHours: number;
-            testHours: number | null;
-            theoryHours: number;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -3063,6 +3174,12 @@ export interface components {
             minRequiredAmount: number;
             paidAmount: number;
             remainingAmount: number;
+            /** @description Phương thức thanh toán (nếu có) */
+            paymentMethod?: string;
+            /** @description Mã giao dịch thanh toán (nếu có) */
+            transactionRef?: string;
+            /** @description Tên nhân viên thực hiện giao dịch (nếu có) */
+            staffName?: string;
         };
         FeeInvoiceDto: {
             id: number;
@@ -3078,6 +3195,122 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        BatchDto: {
+            id: number;
+            batchCode: string;
+            batchName: string;
+            majorId: number;
+            curriculumId?: number | null;
+            description?: string | null;
+            endTerm?: number | null;
+            endYear: number;
+            startYear: number;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ClassDto: {
+            id: number;
+            classCode: string;
+            className: string;
+            majorId: number;
+            batchId?: number | null;
+            formTeacherId?: number | null;
+            currentSize: number;
+            maxStudents: number;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ResponseStudentDebtDto: {
+            id?: number;
+            studentCode?: string;
+            enrollmentDate?: string | null;
+            graduationDate?: string | null;
+            applicationId?: number | null;
+            avatarUrl?: string | null;
+            userId?: number | null;
+            createdAt?: string;
+            updatedAt?: string;
+            fullName: string;
+            email?: string | null;
+            gender?: boolean | null;
+            dob?: string | null;
+            phone?: string | null;
+            address?: string | null;
+            identityNumber?: string | null;
+            fatherName?: string | null;
+            fatherPhone?: string | null;
+            fatherCCCD?: string | null;
+            fatherYearOfBirth?: number | null;
+            fatherJob?: string | null;
+            motherName?: string | null;
+            motherPhone?: string | null;
+            motherCCCD?: string | null;
+            motherYearOfBirth?: number | null;
+            motherJob?: string | null;
+            guardianName?: string | null;
+            guardianRelationship?: string | null;
+            guardianPhone?: string | null;
+            guardianCCCD?: string | null;
+            guardianYearOfBirth?: number | null;
+            guardianJob?: string | null;
+            batchId?: number | null;
+            classId?: number | null;
+            majorId: number | null;
+            /** @enum {string} */
+            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            major: components["schemas"]["MajorDto"] | null;
+            batch: components["schemas"]["BatchDto"] | null;
+            class: components["schemas"]["ClassDto"] | null;
+        };
+        PaymentDto: {
+            id: number;
+            invoiceId: number;
+            studentId: number;
+            amountPaid: number;
+            /** Format: date-time */
+            paymentDate: string;
+            method: string;
+            transactionRef?: Record<string, never> | null;
+            status: string;
+            createdBy?: Record<string, never> | null;
+        };
+        FeeInvoiceWithStudentDto: {
+            id: number;
+            studentId: number;
+            periodId: number;
+            totalAmount: number;
+            minRequiredAmount: number;
+            paidAmount: number;
+            remainingAmount: number;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            student: components["schemas"]["ResponseStudentDebtDto"] | null;
+            payments: components["schemas"]["PaymentDto"][];
+        };
+        FeeInvoiceWithPaymentsDto: {
+            id: number;
+            studentId: number;
+            periodId: number;
+            totalAmount: number;
+            minRequiredAmount: number;
+            paidAmount: number;
+            remainingAmount: number;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            payments: components["schemas"]["PaymentDto"][];
+        };
         UpdateFeeInvoiceDto: {
             studentId?: number;
             periodId?: number;
@@ -3085,6 +3318,12 @@ export interface components {
             minRequiredAmount?: number;
             paidAmount?: number;
             remainingAmount?: number;
+            /** @description Phương thức thanh toán (nếu có) */
+            paymentMethod?: string;
+            /** @description Mã giao dịch thanh toán (nếu có) */
+            transactionRef?: string;
+            /** @description Tên nhân viên thực hiện giao dịch (nếu có) */
+            staffName?: string;
         };
         CreateTuitionPeriodDto: {
             name: string;
@@ -6289,6 +6528,29 @@ export interface operations {
             };
         };
     };
+    FeeInvoiceController_getStudentDebt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                periodId: number;
+                identifier: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Trả về chi tiết hóa đơn, thông tin sinh viên và lịch sử thanh toán lẻ. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeeInvoiceWithStudentDto"];
+                };
+            };
+        };
+    };
     FeeInvoiceController_findOne: {
         parameters: {
             query?: never;
@@ -6306,7 +6568,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FeeInvoiceDto"];
+                    "application/json": components["schemas"]["FeeInvoiceWithPaymentsDto"];
                 };
             };
             /** @description Hóa đơn học phí không tồn tại. */
@@ -6578,6 +6840,26 @@ export interface operations {
             };
             /** @description Dữ liệu đầu vào không hợp lệ. */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TuitionConfigController_syncInvoices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Đồng bộ thành công công nợ sinh viên. */
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };

@@ -2,28 +2,32 @@ import { useState } from "react";
 import { $api } from "../../../api/client";
 import type { components, paths } from "../../../api/v1";
 import { Trash2, Search, Loader2, Filter, Layers } from "lucide-react";
-import UpdateMonHoc from "./UpdateMonHoc";
+import CreateMonHocModal from "./CreateMonHoc";
 
 export type SubjectDto = components["schemas"]["SubjectDto"];
 export type QuerySubject = paths["/subjects"]["get"]["parameters"]["query"];
 
 const MonHocList = () => {
-  // 1. State quản lý bộ lọc
+  // State quản lý bộ lọc
   const [filters, setFilters] = useState({
     keyword: "",
     departmentId: "" as string | number,
   });
 
-  // State lưu id môn học đang được chọn để update
-  const [monHocIdSelected, setMonHocIdSelected] = useState<number | null>(null);
+  // 2. Chuyển state lưu ID thành lưu toàn bộ object Subject được chọn để Update
+  const [subjectSelected, setSubjectSelected] = useState<SubjectDto | null>(
+    null,
+  );
+  // State quản lý trạng thái đóng/mở modal
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // 2. Gọi API lấy danh sách phòng ban để đổ vào Bộ lọc
+  // Gọi API lấy danh sách phòng ban để đổ vào Bộ lọc
   const { data: departments, isLoading: isLoadingDepartments } = $api.useQuery(
     "get",
     "/departments",
   );
 
-  // 3. Fetch data môn học kèm điều kiện lọc
+  // Fetch data môn học kèm điều kiện lọc
   const queryParams: QuerySubject = {
     keyword: filters.keyword || undefined,
     departmentId: filters.departmentId
@@ -41,7 +45,7 @@ const MonHocList = () => {
     },
   });
 
-  // 4. API Xóa môn học
+  // API Xóa môn học
   const { mutate: deleteSubject, isPending: isDeletingSubject } =
     $api.useMutation("delete", "/subjects/{id}", {
       onSuccess: () => {
@@ -64,15 +68,57 @@ const MonHocList = () => {
     }
   };
 
-  // Hàm tìm tên phòng ban từ ID
-  const getDepartmentName = (id: number | null) => {
+  const getDepartmentName = (id: number | null | undefined) => {
     if (!id || !departments) return "---";
     const dept = departments.find((d: any) => d.id === id);
     return dept ? dept.deptName : "Không xác định";
   };
 
+  const renderSubjectType = (type: string | undefined) => {
+    if (!type) return <span className="text-gray-400">---</span>;
+
+    switch (type.toUpperCase()) {
+      case "GENERAL":
+        return (
+          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200">
+            Đại cương
+          </span>
+        );
+      case "BASE_MAJOR":
+        return (
+          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">
+            Cơ sở ngành
+          </span>
+        );
+      case "SPECIALIZED":
+        return (
+          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-purple-50 text-purple-700 border border-purple-100">
+            Chuyên ngành
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-600 border border-blue-100">
+            {type}
+          </span>
+        );
+    }
+  };
+
+  // 3. Hàm kích hoạt mở modal để Cập nhật
+  const handleOpenEditModal = (subject: SubjectDto) => {
+    setSubjectSelected(subject);
+    setIsModalOpen(true);
+  };
+
+  // 4. Hàm đóng modal và dọn dẹp state sạch sẽ
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSubjectSelected(null);
+  };
+
   return (
-    <div className="space-y-6 font-sans bg-[#f4f6f9] min-h-screen rounded-2xl text-base">
+    <div className="space-y-6 font-sans bg-[#f4f6f9] min-h-screen rounded-2xl text-base p-1">
       {/* --- Bộ Lọc --- */}
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
         <div className="flex items-center gap-2 font-bold text-gray-700 border-b pb-3 border-gray-100">
@@ -107,7 +153,7 @@ const MonHocList = () => {
               className="px-4 py-2.5 w-full text-base border border-gray-300 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-gray-700 disabled:opacity-60 appearance-none cursor-pointer"
             >
               <option value="">-- Tất cả phòng ban --</option>
-              {departments?.map((dept) => (
+              {departments?.map((dept: any) => (
                 <option key={dept.id} value={dept.id}>
                   {dept.deptName}
                 </option>
@@ -122,27 +168,25 @@ const MonHocList = () => {
 
       {/* --- Bảng Danh Sách Dữ Liệu --- */}
       <div className="overflow-hidden border border-gray-100 rounded-2xl bg-white shadow-sm">
-        {/* bọc class custom-scrollbar kèm overflow-x-auto để kích hoạt scroll khi màn hình hẹp */}
         <div className="overflow-x-auto custom-scrollbar">
-          {/* Thiết lập min-w để khi co màn hình, bảng giữ nguyên cấu trúc chuẩn kế toán không bị nén chữ */}
-          <table className="min-w-[1000px] w-full table-fixed divide-y divide-gray-100 text-left text-base">
+          <table className="min-w-[1150px] w-full table-fixed divide-y divide-gray-100 text-left text-base">
             <thead className="bg-gray-50 text-gray-600 font-bold uppercase tracking-wider text-sm border-b border-gray-200">
               <tr>
                 <th className="px-6 py-4 font-bold w-30">Mã môn học</th>
-                <th className="px-6 py-4 font-bold w-[250px]">Tên môn học</th>
-                <th className="px-6 py-4 font-bold text-center w-30">
+                <th className="px-6 py-4 font-bold w-[220px]">Tên môn học</th>
+                <th className="px-6 py-4 font-bold text-center w-28">
                   Tín chỉ
                 </th>
-
-                {/* 3 Cột Giờ được tách biệt */}
-                <th className="px-6 py-4 font-bold text-center w-28">
+                <th className="px-6 py-4 font-bold text-center w-36">
+                  Loại môn học
+                </th>
+                <th className="px-6 py-4 font-bold text-center w-24">
                   Lý thuyết
                 </th>
-                <th className="px-6 py-4 font-bold text-center w-28">
+                <th className="px-6 py-4 font-bold text-center w-24">
                   Thực hành
                 </th>
-                <th className="px-6 py-4 font-bold text-center w-28">Thi</th>
-
+                <th className="px-6 py-4 font-bold text-center w-24">Thi</th>
                 <th className="px-6 py-4 font-bold min-w-[180px]">
                   Đơn vị quản lý
                 </th>
@@ -155,7 +199,7 @@ const MonHocList = () => {
               {isLoadingSubjects ? (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={9}
                     className="px-6 py-16 text-center text-gray-400"
                   >
                     <div className="flex flex-col items-center justify-center gap-3">
@@ -169,7 +213,7 @@ const MonHocList = () => {
               ) : !subjects || subjects.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={9}
                     className="px-6 py-16 text-center text-gray-500 text-base"
                   >
                     Không tìm thấy bản ghi nào hợp lệ.
@@ -185,9 +229,10 @@ const MonHocList = () => {
                       {subject.subjectCode}
                     </td>
                     <td className="px-6 py-4.5">
+                      {/* 5. Sự kiện Click truyền nguyên object sang hàm xử lý mở Modal */}
                       <button
-                        onClick={() => setMonHocIdSelected(subject.id)}
-                        className="text-indigo-600 font-bold hover:text-indigo-800 hover:underline text-left transition-colors cursor-pointer text-base"
+                        onClick={() => handleOpenEditModal(subject)}
+                        className="text-indigo-600 font-bold hover:text-indigo-800 hover:underline text-left transition-colors cursor-pointer text-base focus:outline-none"
                       >
                         {subject.subjectName}
                       </button>
@@ -197,7 +242,9 @@ const MonHocList = () => {
                         {subject.credits} TC
                       </span>
                     </td>
-
+                    <td className="px-6 py-4.5 text-center">
+                      {renderSubjectType(subject.knowledgeBlock)}
+                    </td>
                     <td className="px-6 py-4.5 text-center font-medium text-gray-900">
                       {subject.theoryHours}h
                     </td>
@@ -207,7 +254,6 @@ const MonHocList = () => {
                     <td className="px-6 py-4.5 text-center font-medium text-gray-950">
                       {subject.testHours}h
                     </td>
-
                     <td className="px-6 py-4.5">
                       <div className="flex items-center gap-2 text-sm text-gray-800 font-medium">
                         <Layers className="w-4 h-4 text-gray-400" />
@@ -220,7 +266,7 @@ const MonHocList = () => {
                         onClick={() =>
                           handleDelete(subject.id, subject.subjectName)
                         }
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all inline-flex items-center disabled:opacity-40 group-hover:scale-105"
+                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all inline-flex items-center disabled:opacity-40 group-hover:scale-105 cursor-pointer"
                         title="Xóa dòng này"
                       >
                         <Trash2 className="w-5 h-5" />
@@ -234,13 +280,20 @@ const MonHocList = () => {
         </div>
       </div>
 
-      {/* --- Component cập nhật môn học --- */}
-      {monHocIdSelected !== null && (
-        <UpdateMonHoc
-          idSelected={monHocIdSelected}
-          onClose={() => setMonHocIdSelected(null)}
-        />
-      )}
+      {/* --- 6. Gọi Modal đồng bộ Tạo mới / Cập nhật --- */}
+      <CreateMonHocModal
+        isOpen={isModalOpen}
+        initialData={subjectSelected} // Truyền dữ liệu sang (null = Create, object = Update)
+        onClose={handleCloseModal}
+        isPending={false} // Hoặc logic loading thêm mới từ Provider nếu cần
+        onSubmit={(data, cleanResetForm) => {
+          // Logic xử lý tạo mới gốc từ cha (nếu có)
+          // Ví dụ: createMonHocApi(data)
+          cleanResetForm();
+          handleCloseModal();
+          refetch();
+        }}
+      />
     </div>
   );
 };

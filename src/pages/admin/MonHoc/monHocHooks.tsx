@@ -41,6 +41,7 @@ export const useUpdateMonHoc = () => {
   } = $api.useMutation("patch", "/subjects/{id}", {
     onSuccess: () => {
       // Làm mới danh sách môn học
+      // Có thể thay bằng refetch
       queryClient.invalidateQueries({
         queryKey: ["get", "/subjects"],
       });
