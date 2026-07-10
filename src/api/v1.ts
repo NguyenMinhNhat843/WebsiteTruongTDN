@@ -1606,6 +1606,117 @@ export interface paths {
         patch: operations["TuitionConfigController_update"];
         trace?: never;
     };
+    "/provinces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách hoặc tìm kiếm tỉnh/thành phố */
+        get: operations["ProvinceController_findAll"];
+        put?: never;
+        /** Tạo mới một tỉnh/thành phố */
+        post: operations["ProvinceController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/provinces/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin chi tiết một tỉnh bằng mã code */
+        get: operations["ProvinceController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa một tỉnh/thành phố */
+        delete: operations["ProvinceController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin tỉnh/thành phố */
+        patch: operations["ProvinceController_update"];
+        trace?: never;
+    };
+    "/wards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách hoặc tìm kiếm xã/phường (ví dụ: lọc theo provinceCode) */
+        get: operations["WardController_findAll"];
+        put?: never;
+        /** Tạo mới một xã/phường */
+        post: operations["WardController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/wards/{code}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết xã/phường bằng mã code */
+        get: operations["WardController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa một xã/phường */
+        delete: operations["WardController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin xã/phường */
+        patch: operations["WardController_update"];
+        trace?: never;
+    };
+    "/villages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách hoặc lọc thôn/xóm theo wardCode (Mã xã) */
+        get: operations["VillageController_findAll"];
+        put?: never;
+        /** Tạo mới một thôn/xóm/tổ dân phố */
+        post: operations["VillageController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/villages/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết thông tin thôn/xóm qua ID số */
+        get: operations["VillageController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa một thôn/xóm */
+        delete: operations["VillageController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin thôn/xóm */
+        patch: operations["VillageController_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3367,6 +3478,88 @@ export interface components {
             totalAmount?: number;
             minRequiredAmount?: number;
             items?: components["schemas"]["CreateTuitionConfigItemDto"][];
+        };
+        CreateProvinceDto: {
+            /** @description Mã tỉnh/thành phố (Ví dụ: '56') */
+            code: string;
+            /** @description Tên tỉnh (Ví dụ: 'Tỉnh Khánh Hòa') */
+            name: string;
+            /** @description Tên đầy đủ của tỉnh */
+            fullName: string;
+            /** @description Mã định danh dạng chữ (Ví dụ: 'khanh_hoa') */
+            codeName: string;
+        };
+        ProvinceDto: {
+            /** @description Mã tỉnh/thành phố (Ví dụ: '56') */
+            code: string;
+            /** @description Tên tỉnh (Ví dụ: 'Tỉnh Khánh Hòa') */
+            name: string;
+            /** @description Tên đầy đủ của tỉnh */
+            fullName: string;
+            /** @description Mã định danh dạng chữ (Ví dụ: 'khanh_hoa') */
+            codeName: string;
+        };
+        UpdateProvinceDto: {
+            /** @description Tên tỉnh (Ví dụ: 'Tỉnh Khánh Hòa') */
+            name?: string;
+            /** @description Tên đầy đủ của tỉnh */
+            fullName?: string;
+            /** @description Mã định danh dạng chữ (Ví dụ: 'khanh_hoa') */
+            codeName?: string;
+        };
+        CreateWardDto: {
+            /** @description Mã xã/phường/thị trấn */
+            code: string;
+            /** @description Tên xã/phường (Ví dụ: 'Phường Diên Khánh') */
+            name: string;
+            /** @description Tên đầy đủ của xã/phường */
+            fullName: string;
+            /** @description Mã định danh dạng chữ (Ví dụ: 'dien_khanh') */
+            codeName: string;
+            /** @description Khóa ngoại kết nối lên Tỉnh */
+            provinceCode: string;
+        };
+        WardDto: {
+            /** @description Mã xã/phường/thị trấn */
+            code: string;
+            /** @description Tên xã/phường (Ví dụ: 'Phường Diên Khánh') */
+            name: string;
+            /** @description Tên đầy đủ của xã/phường */
+            fullName: string;
+            /** @description Mã định danh dạng chữ (Ví dụ: 'dien_khanh') */
+            codeName: string;
+            /** @description Khóa ngoại kết nối lên Tỉnh */
+            provinceCode: string;
+        };
+        UpdateWardDto: {
+            /** @description Tên xã/phường (Ví dụ: 'Phường Diên Khánh') */
+            name?: string;
+            /** @description Tên đầy đủ của xã/phường */
+            fullName?: string;
+            /** @description Mã định danh dạng chữ (Ví dụ: 'dien_khanh') */
+            codeName?: string;
+            /** @description Khóa ngoại kết nối lên Tỉnh */
+            provinceCode?: string;
+        };
+        CreateVillageDto: {
+            /** @description Tên thôn/xóm/ấp/bản/tổ dân phố */
+            name: string;
+            /** @description Khóa ngoại kết nối lên Xã */
+            wardCode: string;
+        };
+        VillageDto: {
+            /** @description ID thôn/xóm tự tăng */
+            id: number;
+            /** @description Tên thôn/xóm/ấp/bản/tổ dân phố */
+            name: string;
+            /** @description Khóa ngoại kết nối lên Xã */
+            wardCode: string;
+        };
+        UpdateVillageDto: {
+            /** @description Tên thôn/xóm/ấp/bản/tổ dân phố */
+            name?: string;
+            /** @description Khóa ngoại kết nối lên Xã */
+            wardCode?: string;
         };
     };
     responses: never;
@@ -6962,6 +7155,355 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    ProvinceController_findAll: {
+        parameters: {
+            query?: {
+                /** @description Mã tỉnh/thành phố (Ví dụ: '56') */
+                code?: string;
+                /** @description Tên tỉnh (Ví dụ: 'Tỉnh Khánh Hòa') */
+                name?: string;
+                /** @description Tên đầy đủ của tỉnh */
+                fullName?: string;
+                /** @description Mã định danh dạng chữ (Ví dụ: 'khanh_hoa') */
+                codeName?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProvinceDto"][];
+                };
+            };
+        };
+    };
+    ProvinceController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateProvinceDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProvinceDto"];
+                };
+            };
+        };
+    };
+    ProvinceController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProvinceDto"];
+                };
+            };
+        };
+    };
+    ProvinceController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ProvinceController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProvinceDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProvinceDto"];
+                };
+            };
+        };
+    };
+    WardController_findAll: {
+        parameters: {
+            query?: {
+                /** @description Mã xã/phường/thị trấn */
+                code?: string;
+                /** @description Tên xã/phường (Ví dụ: 'Phường Diên Khánh') */
+                name?: string;
+                /** @description Tên đầy đủ của xã/phường */
+                fullName?: string;
+                /** @description Mã định danh dạng chữ (Ví dụ: 'dien_khanh') */
+                codeName?: string;
+                /** @description Khóa ngoại kết nối lên Tỉnh */
+                provinceCode?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WardDto"][];
+                };
+            };
+        };
+    };
+    WardController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWardDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WardDto"];
+                };
+            };
+        };
+    };
+    WardController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WardDto"];
+                };
+            };
+        };
+    };
+    WardController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    WardController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                code: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateWardDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WardDto"];
+                };
+            };
+        };
+    };
+    VillageController_findAll: {
+        parameters: {
+            query?: {
+                /** @description Tên thôn/xóm/ấp/bản/tổ dân phố */
+                name?: string;
+                /** @description Khóa ngoại kết nối lên Xã */
+                wardCode?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VillageDto"][];
+                };
+            };
+        };
+    };
+    VillageController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateVillageDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VillageDto"];
+                };
+            };
+        };
+    };
+    VillageController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VillageDto"];
+                };
+            };
+        };
+    };
+    VillageController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    VillageController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateVillageDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VillageDto"];
+                };
             };
         };
     };

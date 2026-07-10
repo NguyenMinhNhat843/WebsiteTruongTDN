@@ -96,6 +96,12 @@ const navItems: NavItem[] = [
         roles: ["admin", "staff"],
       },
       {
+        id: "dia-chi",
+        label: "Địa chỉ",
+        href: "/admin/dia-chi",
+        roles: ["admin", "staff"],
+      },
+      {
         id: "tieu-chi-danh-gia-diem-ren-luyen",
         label: "Tiêu chí đánh giá điểm rèn luyện",
         href: "/admin/diem-ren-luyen/tieu-chi-danh-gia",
