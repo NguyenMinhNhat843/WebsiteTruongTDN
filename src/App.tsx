@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./App.css";
 
@@ -30,9 +30,6 @@ const AdminMainLayout = lazy(
 );
 const MemberLayout = lazy(
   () => import("./pages/MembersDashboard/MemberSideBar/MemberLayout"),
-);
-const StudentLayout = lazy(
-  () => import("./pages/StudentDashboard/StudentLayout"),
 );
 
 // Client Pages
@@ -136,14 +133,6 @@ const BangDiem = lazy(
 );
 const ThoiKhoaBieu = lazy(
   () => import("./pages/MembersDashboard/ThoiKhoaBieu/ThoiKhoaBieu"),
-);
-
-// Student Pages
-const StudentDashboard = lazy(
-  () => import("./pages/StudentDashboard/Dashboard/Dashboard"),
-);
-const StudentLopHocPhan = lazy(
-  () => import("./pages/StudentDashboard/LopHocPhan/LopHocPhan"),
 );
 
 // --- CONFIGURATION ---
@@ -358,14 +347,6 @@ function App() {
               <Route path="lop-hoc" element={<LopHocGiangDay />} />
               <Route path="nhap-diem" element={<BangDiem />} />
               <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
-            </Route>
-
-            {/* ========================= Sinh viên ============================= */}
-            <Route path="/student/*" element={<StudentLayout />}>
-              <Route path="dashboard" element={<StudentDashboard />} />
-              <Route path="lop-hoc-phan" element={<StudentLopHocPhan />} />
-              <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
-              <Route path="chuong-trinh-khung" element={<ChuongTrinhKhung />} />
             </Route>
 
             {/* Route 404 */}

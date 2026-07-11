@@ -7,6 +7,7 @@ import {
   Edit3,
   X,
   Check,
+  UserPlus, // Thêm icon cho nút cấp tài khoản
 } from "lucide-react";
 import Breadcrumb from "../../../../components/ui/Breadcrum";
 import { useHocSinhContext, type StatusHocSinhEnum } from "../HocSinhProvider";
@@ -21,6 +22,8 @@ import TabHoSoXetTuyen from "./Tabs/TabHoSoXetTuyen";
 import { toast } from "sonner";
 import { STUDENT_STATUS_MAP } from "../../../../api/enum";
 import { $api } from "../../../../api/client";
+import RegisterModal from "../../../../features/auth/RegisterForm";
+// IMPORT RegisterModal của bạn vào đây (Sửa lại đường dẫn cho đúng cấu trúc thư mục của bạn)
 
 const HoSoHocSinhOne = () => {
   return (
@@ -47,6 +50,9 @@ const Inner = () => {
     "personal" | "family" | "admission" | "documents"
   >("personal");
 
+  // State quản lý việc đóng mở Modal cấp tài khoản
+  const [isOpenRegisterModal, setIsOpenRegisterModal] = useState(false);
+
   // Lấy các khóa đào tạo của ngành
   const { data: batches } = $api.useQuery(
     "get",
@@ -66,11 +72,9 @@ const Inner = () => {
   const handleSave = () => {
     if (!studentDetail?.id) return;
 
-    // Loại bỏ các field không được phép gửi lên DTO theo Prisma Model yêu cầu
     const dtoData = formData;
     console.log("dtoData trước khi gửi lên backend: ", dtoData);
 
-    // Ép kiểu các trường Number cho đúng DTO đầu vào backend
     if (dtoData.fatherYearOfBirth)
       dtoData.fatherYearOfBirth = Number(dtoData.fatherYearOfBirth);
     if (dtoData.motherYearOfBirth)
@@ -112,7 +116,7 @@ const Inner = () => {
       },
     );
   };
-  // Trạng thái Loading
+
   if (isGettingStudentDetail) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
@@ -124,7 +128,6 @@ const Inner = () => {
     );
   }
 
-  // Trường hợp không có dữ liệu
   if (!studentDetail) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50 text-gray-500">
@@ -135,13 +138,11 @@ const Inner = () => {
     );
   }
 
-  // Hàm helper định dạng ngày tháng
   const formatDate = (dateString: string | null | undefined) => {
     if (!dateString) return "---";
     return new Date(dateString).toLocaleDateString("vi-VN");
   };
 
-  // Hàm hiển thị Badge trạng thái
   const renderStatusBadge = (status: NonNullable<StatusHocSinhEnum>) => {
     const statusMap = {
       registered: {
@@ -195,7 +196,6 @@ const Inner = () => {
     );
   };
 
-  // Định nghĩa danh sách Tabs
   const tabs = [
     {
       id: "personal",
@@ -220,10 +220,7 @@ const Inner = () => {
   ] as const;
 
   const STUDENT_STATUS_OPTIONS = Object.entries(STUDENT_STATUS_MAP).map(
-    ([value, label]) => ({
-      value: value,
-      label,
-    }),
+    ([value, label]) => ({ value, label }),
   );
 
   return (
@@ -257,12 +254,10 @@ const Inner = () => {
             {/* Thông tin chính */}
             <div className="flex-1 space-y-2">
               <div className="flex flex-col items-center gap-2 sm:flex-row sm:items-center">
-                {/* Họ tên */}
                 <h1 className="text-2xl font-bold text-gray-900">
                   {studentDetail.fullName || "Chưa cập nhật"}
                 </h1>
 
-                {/* Trạng thái */}
                 {isEditMode ? (
                   <select
                     value={formData.status || ""}
@@ -286,7 +281,6 @@ const Inner = () => {
                 )}
               </div>
 
-              {/* Thông tin phụ */}
               <div className="grid grid-cols-1 gap-x-4 gap-y-1 text-sm text-gray-500 sm:grid-cols-2 md:grid-cols-3">
                 <p>
                   Mã học sinh:{" "}
@@ -344,15 +338,27 @@ const Inner = () => {
               </div>
             </div>
 
-            {/* --- KHỐI ACTIONS NUT BẤM UPDATE --- */}
-            <div className="flex gap-2 self-center sm:self-start">
+            {/* --- KHỐI ACTIONS NÚT BẤM --- */}
+            <div className="flex flex-wrap gap-2 self-center sm:self-start">
               {!isEditMode ? (
-                <button
-                  onClick={() => setIsEditMode(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-all shadow-sm"
-                >
-                  <Edit3 className="w-4 h-4" /> Chỉnh sửa hồ sơ
-                </button>
+                <>
+                  {/* CHỈ HIỂN THỊ NÚT CẤP TÀI KHOẢN NẾU HỌC SINH CHƯA CÓ userId */}
+                  {!studentDetail.userId && (
+                    <button
+                      onClick={() => setIsOpenRegisterModal(true)}
+                      className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-medium transition-all shadow-sm"
+                    >
+                      <UserPlus className="w-4 h-4" /> Cấp tài khoản
+                    </button>
+                  )}
+
+                  <button
+                    onClick={() => setIsEditMode(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-sm font-medium transition-all shadow-sm"
+                  >
+                    <Edit3 className="w-4 h-4" /> Chỉnh sửa hồ sơ
+                  </button>
+                </>
               ) : (
                 <div className="flex gap-2">
                   <button
@@ -398,27 +404,27 @@ const Inner = () => {
 
         {/* ================= TAB CONTENT RENDER ================= */}
         <div className="bg-transparent transition-all duration-200">
-          {/* TAB 1: THÔNG TIN CÁ NHÂN & NHẬP HỌC */}
           {activeTab === "personal" && <TabThongTinCaNhan />}
-
-          {/* TAB 2: THÔNG TIN NGƯỜI GIÁM HỘ (GIA ĐÌNH) */}
           {activeTab === "family" && <TabThongTinNguoiGiamHo />}
-
-          {/* TAB 3: HỒ SƠ XÉT TUYỂN (ĐIỂM SỐ & HẠNH KIỂM CẤP THCS) */}
           {activeTab === "admission" && <TabHoSoXetTuyen />}
-
-          {/* TAB 4: TÀI LIỆU ĐÍNH KÈM */}
           {activeTab === "documents" && (
             <StudentDocuments documents={dataHoSoHocSinh} />
           )}
         </div>
 
-        {/* Hệ thống Footprint thời gian */}
+        {/* Footprint thời gian */}
         <div className="text-right text-xs text-gray-400 space-x-4">
           <span>Ngày tạo hồ sơ: {formatDate(studentDetail.createdAt)}</span>
           <span>Cập nhật cuối: {formatDate(studentDetail.updatedAt)}</span>
         </div>
       </div>
+
+      {/* ================= CALL MODAL CẤP TÀI KHOẢN ================= */}
+      <RegisterModal
+        isOpen={isOpenRegisterModal}
+        onClose={() => setIsOpenRegisterModal(false)}
+        studentId={studentDetail.id}
+      />
     </div>
   );
 };

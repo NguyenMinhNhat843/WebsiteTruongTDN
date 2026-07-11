@@ -57,6 +57,23 @@ export interface paths {
         patch: operations["updateStudent"];
         trace?: never;
     };
+    "/students/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy profile của sinh viên hiện tại dựa trên token JWT */
+        get: operations["StudentController_getMe"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/students/search-by-code": {
         parameters: {
             query?: never;
@@ -877,6 +894,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/time-table/home/today-schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy profile của sinh viên hiện tại dựa trên token JWT */
+        get: operations["TimeTableController_getTodaySchedule"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/posts/stats": {
         parameters: {
             query?: never;
@@ -1065,7 +1099,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-registrations/{classSubjectId}": {
+    "/grades/{classSubjectId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1082,7 +1116,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-registrations": {
+    "/grades": {
         parameters: {
             query?: never;
             header?: never;
@@ -1099,7 +1133,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-registrations/{id}": {
+    "/grades/summary-widget/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin tổng quan học tập của học sinh */
+        get: operations["CourseRegistrationController_getAcademicSummaryWidget"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/grades/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1116,7 +1167,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-registrations/save-grades": {
+    "/grades/save-grades": {
         parameters: {
             query?: never;
             header?: never;
@@ -1328,6 +1379,23 @@ export interface paths {
         head?: never;
         /** Cập nhật tiêu chí chấm điểm */
         patch: operations["AssessmentController_updateCriteria"];
+        trace?: never;
+    };
+    "/assessment/home/evaluation-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy tóm tắt trạng thái chấm điểm rèn luyện của sinh viên hiện tại */
+        get: operations["AssessmentController_getEvaluationSummary"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/assessment/periods": {
@@ -1746,12 +1814,15 @@ export interface components {
             userId?: number | null;
             createdAt?: string;
             updatedAt?: string;
+            addressDetail?: string | null;
+            provinceCode?: string | null;
+            villageId?: number | null;
+            wardCode?: string | null;
             fullName: string;
             email?: string | null;
             gender?: boolean | null;
             dob?: string | null;
             phone?: string | null;
-            address?: string | null;
             identityNumber?: string | null;
             fatherName?: string | null;
             fatherPhone?: string | null;
@@ -1838,12 +1909,15 @@ export interface components {
             userId?: number | null;
             createdAt?: string;
             updatedAt?: string;
+            addressDetail?: string | null;
+            provinceCode?: string | null;
+            villageId?: number | null;
+            wardCode?: string | null;
             fullName: string;
             email?: string | null;
             gender?: boolean | null;
             dob?: string | null;
             phone?: string | null;
-            address?: string | null;
             identityNumber?: string | null;
             fatherName?: string | null;
             fatherPhone?: string | null;
@@ -1885,12 +1959,15 @@ export interface components {
             userId?: number | null;
             createdAt?: string;
             updatedAt?: string;
+            addressDetail?: string | null;
+            provinceCode?: string | null;
+            villageId?: number | null;
+            wardCode?: string | null;
             fullName: string;
             email?: string | null;
             gender?: boolean | null;
             dob?: string | null;
             phone?: string | null;
-            address?: string | null;
             identityNumber?: string | null;
             fatherName?: string | null;
             fatherPhone?: string | null;
@@ -1958,12 +2035,15 @@ export interface components {
             userId?: number | null;
             createdAt?: string;
             updatedAt?: string;
+            addressDetail?: string | null;
+            provinceCode?: string | null;
+            villageId?: number | null;
+            wardCode?: string | null;
             fullName?: string;
             email?: string | null;
             gender?: boolean | null;
             dob?: string | null;
             phone?: string | null;
-            address?: string | null;
             identityNumber?: string | null;
             fatherName?: string | null;
             fatherPhone?: string | null;
@@ -2320,24 +2400,6 @@ export interface components {
             /** @description Danh sách các nhóm môn tự chọn kèm môn học bên trong */
             electiveGroups?: components["schemas"]["ElectiveGroupPayload"][];
         };
-        CurriculumDto: {
-            id: number;
-            majorId: number;
-            curriculumCode: string;
-            curriculumName: string;
-            isActive: boolean;
-            totalCredits: number;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        CreateCurriculumSubjectDto: {
-            semesterNumber: number;
-            curriculumId: number;
-            minGrade: number;
-            subjectId: number;
-        };
         SubjectDto: {
             id: number;
             departmentId: number | null;
@@ -2391,7 +2453,7 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            curriculumSubjects: components["schemas"]["CreateCurriculumSubjectDto"][];
+            curriculumSubjects: components["schemas"]["CurriculumSubjectResponseDtoWithRelation"][];
             major: components["schemas"]["MajorDto"];
             /** @description Danh sách các nhóm môn tự chọn, bên trong mỗi nhóm có danh sách môn riêng */
             electiveGroups?: components["schemas"]["ElectiveGroupResponseDto"][];
@@ -2738,6 +2800,23 @@ export interface components {
             studyDate?: string | null;
             weekNumber?: number;
         };
+        TodayScheduleItemDto: {
+            scheduleId: number;
+            weekNumber: number;
+            /** Format: date-time */
+            studyDate: string;
+            subjectCode: string;
+            subjectName: string;
+            credits: number;
+            teacherName: string;
+            shift: string;
+            startPeriod: number;
+            endPeriod: number;
+            countPeriod: number;
+            roomCode: string;
+            building: string | null;
+            isRoomOverridden: boolean;
+        };
         PostStatsResponseDto: {
             totalPosts: number;
             draftPosts: number;
@@ -2969,6 +3048,24 @@ export interface components {
             teacher?: components["schemas"]["StaffResponseDto"] | null;
             gradeStudents?: components["schemas"]["GradeStudentDto"][] | null;
         };
+        AcademicSummaryDto: {
+            cumulativeGpa: number;
+            totalAccumulatedCredits: number;
+            completedSubjectsCount: number;
+        };
+        SemesterHistoryDto: {
+            semesterName: string;
+            gpa: number;
+            credits: number;
+        };
+        AcademicWidgetDataDto: {
+            summary: components["schemas"]["AcademicSummaryDto"];
+            chartData: components["schemas"]["SemesterHistoryDto"][];
+        };
+        AcademicSummaryResponseDto: {
+            success: boolean;
+            data: components["schemas"]["AcademicWidgetDataDto"];
+        };
         UpdateCourseRegistrationDto: {
             id?: number;
             kttx1?: number;
@@ -3129,6 +3226,29 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+        };
+        AssessmentDto: {
+            id: number;
+            periodId: number;
+            studentId: number;
+            /** @enum {string} */
+            status: "NOT_SUBMITTED" | "PENDING" | "APPROVED";
+            totalStudentScore: number;
+            totalTeacherScore: number;
+            /** @enum {string|null} */
+            finalGrade: "EXCELLENT" | "GOOD" | "FAIR" | "AVERAGE" | "POOR" | null;
+            teacherComment: Record<string, never> | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        EvaluationSummaryDataDto: {
+            hasActivePeriod: boolean;
+            message: string | null;
+            periodName: string | null;
+            isFrozen: boolean | null;
+            assessment: components["schemas"]["AssessmentDto"] | null;
         };
         CreatePeriodDto: {
             semesterId: number;
@@ -3322,12 +3442,15 @@ export interface components {
             userId?: number | null;
             createdAt?: string;
             updatedAt?: string;
+            addressDetail?: string | null;
+            provinceCode?: string | null;
+            villageId?: number | null;
+            wardCode?: string | null;
             fullName: string;
             email?: string | null;
             gender?: boolean | null;
             dob?: string | null;
             phone?: string | null;
-            address?: string | null;
             identityNumber?: string | null;
             fatherName?: string | null;
             fatherPhone?: string | null;
@@ -3686,6 +3809,25 @@ export interface operations {
                 "application/json": components["schemas"]["UpdateStudentDto"];
             };
         };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentResponseDto"];
+                };
+            };
+        };
+    };
+    StudentController_getMe: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             200: {
                 headers: {
@@ -4588,7 +4730,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CurriculumDto"][];
+                    "application/json": components["schemas"]["CurriculumResponseDtoWithRelation"][];
                 };
             };
         };
@@ -4853,7 +4995,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ClassResponseDto"][];
+                    "application/json": components["schemas"]["ClassResponseWithRelationsDto"][];
                 };
             };
         };
@@ -5512,6 +5654,25 @@ export interface operations {
             };
         };
     };
+    TimeTableController_getTodaySchedule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TodayScheduleItemDto"][];
+                };
+            };
+        };
+    };
     PostController_getStats: {
         parameters: {
             query?: never;
@@ -5910,6 +6071,28 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    CourseRegistrationController_getAcademicSummaryWidget: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của học sinh */
+                userId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AcademicSummaryResponseDto"];
+                };
             };
         };
     };
@@ -6447,6 +6630,25 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CriterionDto"];
+                };
+            };
+        };
+    };
+    AssessmentController_getEvaluationSummary: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EvaluationSummaryDataDto"];
                 };
             };
         };

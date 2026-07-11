@@ -116,10 +116,7 @@ const TableLopHocList = () => {
                   <td className="py-4 px-4 text-center">
                     <div className="flex flex-col items-center justify-center">
                       <span className="font-semibold text-slate-900">
-                        {lopHoc.studentCount ?? lopHoc.currentSize ?? 0}
-                      </span>
-                      <span className="text-[10px] text-slate-400">
-                        Tối đa: {lopHoc.maxStudents}
+                        {lopHoc.currentSize ?? 0} / {lopHoc.maxStudents}
                       </span>
                     </div>
                   </td>

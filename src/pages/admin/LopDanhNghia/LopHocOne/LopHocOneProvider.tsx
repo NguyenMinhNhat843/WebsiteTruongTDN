@@ -5,12 +5,12 @@ import { useParams } from "react-router-dom";
 import { useAppContext } from "../../../../AppProvider";
 import type { components } from "../../../../api/v1";
 
-export type ClassSubjectGrade =
-  components["schemas"]["CourseOfferRegisResponseDto"];
+export type ClassSubjectGrade = components["schemas"]["GradeStudentDto"];
 
 export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
   () => {
     const { currentSemester, isHocKysLoading } = useAppContext();
+    const [isOpenModalAddStudent, setIsOpenModalAddStudent] = useState(false);
     const [selectedSemesterId, setselectedSemesterId] = useState<number | null>(
       currentSemester ? currentSemester.id : null,
     );
@@ -22,6 +22,47 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
         setselectedSemesterId(currentSemester.id);
       }
     }, [currentSemester, isHocKysLoading]);
+
+    /**
+     * Lấy lớp học theo id
+     */
+    const {
+      data: LopHocDetail,
+      isLoading: isLoadingLopHocDetail,
+      refetch: refetchLopHocDetail,
+    } = $api.useQuery(
+      "get",
+      `/classes/{id}`,
+      {
+        params: {
+          path: {
+            id: idLopHocNumber!,
+          },
+        },
+      },
+      {
+        enabled: !!idLopHocNumber,
+      },
+    );
+
+    const {
+      data: studentsInLopHoc,
+      isLoading: isLoadingStudentsInLopHoc,
+      refetch: refetchStudentsInLopHoc,
+    } = $api.useQuery(
+      "get",
+      "/students",
+      {
+        params: {
+          query: {
+            classId: idLopHocNumber,
+          },
+        },
+      },
+      {
+        enabled: !!idLopHocNumber,
+      },
+    );
 
     /**
      * Lấy danh sách môn theo học kỳ đã chọn, lấy từ chương trình khung
@@ -87,6 +128,12 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       $api.useMutation("get", "/course-offers/student/{id}/export-excel");
 
     return {
+      LopHocDetail,
+      isLoadingLopHocDetail,
+      refetchLopHocDetail,
+      studentsInLopHoc,
+      isLoadingStudentsInLopHoc,
+      refetchStudentsInLopHoc,
       selectedSemesterId,
       setselectedSemesterId,
       dataMonHocs,
@@ -100,6 +147,8 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       isExportingExcel,
       exportStudentGrade,
       isExportingStudentGrade,
+      isOpenModalAddStudent,
+      setIsOpenModalAddStudent,
     };
   },
 );

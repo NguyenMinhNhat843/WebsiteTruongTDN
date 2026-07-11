@@ -18,6 +18,8 @@ import { cleanEmptyFields } from "../../../../util/cleanEmptyField";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { DateInputv2 } from "../../../../components/ui/Form/DateInputv2";
+import ModalSelectDiaChi from "../../../../components/ui/ModalSelectDiaChi";
+import { toast } from "sonner";
 
 const CreateStudent = () => {
   return (
@@ -31,12 +33,14 @@ const Inner = () => {
   const navigate = useNavigate();
   const { createStudent, isCreatingStudent } = useCreateContext();
   const [batchIdselected, setBatchIdSelected] = useState<number | null>(null);
+  const [isOpenAddressModal, setIsOpenAddressModal] = useState(false);
   const queryClient = useQueryClient();
 
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<createStudentDto>({
     defaultValues: {
@@ -99,13 +103,13 @@ const Inner = () => {
         },
         {
           onSuccess: () => {
-            alert("Tạo hồ sơ học sinh thành công!");
+            toast.success("Tạo hồ sơ học sinh thành công!");
             reset();
             queryClient.invalidateQueries({ queryKey: ["get", "/students"] });
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           onError: (error: any) => {
-            alert(error.message || "Tạo hồ sơ học sinh thất bại!");
+            toast.error(error.message || "Tạo hồ sơ học sinh thất bại!");
           },
         },
       );
@@ -210,13 +214,6 @@ const Inner = () => {
                     setValueAs: (value) => value === "true",
                   })}
                 />
-                {/* <Input
-                  type="date"
-                  label="Ngày sinh"
-                  require
-                  error={errors.dob?.message ?? undefined}
-                  {...register("dob")}
-                /> */}
 
                 <DateInputv2
                   label="Ngày sinh"
@@ -266,8 +263,38 @@ const Inner = () => {
                 <div className="md:col-span-2">
                   <Input
                     label="Địa chỉ thường trú"
-                    placeholder="Số nhà, tên đường, xã/phường, quận/huyện"
-                    {...register("address")}
+                    placeholder="Nhấp vào đây để chọn Tỉnh, Xã, Thôn..."
+                    readOnly // Ngăn người dùng gõ phím bừa bãi
+                    className="cursor-pointer" // Tạo hiệu ứng trỏ chuột cho giống nút bấm
+                    onClick={() => setIsOpenAddressModal(true)} // Click vào là mở Modal
+                    {...register("addressDetail")} // Vẫn giữ nguyên để hiển thị text địa chỉ đầy đủ sau khi chọn
+                  />
+
+                  {/* Đăng ký các trường ẩn để lưu ID/Code gửi lên Backend */}
+                  <input type="hidden" {...register("provinceCode")} />
+                  <input type="hidden" {...register("wardCode")} />
+                  <input type="hidden" {...register("villageId")} />
+
+                  {/* Gọi Modal bạn vừa code ở đây */}
+                  <ModalSelectDiaChi
+                    isOpen={isOpenAddressModal}
+                    onClose={() => setIsOpenAddressModal(false)}
+                    onSelect={(data) => {
+                      // 1. Chuỗi hiển thị đẹp đẽ ra ô Input cho người dùng thấy
+                      const textDiaChi = [
+                        data.village?.name,
+                        data.ward?.name,
+                        data.province?.name,
+                      ]
+                        .filter(Boolean)
+                        .join(", "); // Kết quả: "Thôn Trung, Xã Diên Toàn, Tỉnh Khánh Hòa"
+
+                      // 2. Set giá trị vào react-hook-form bằng hàm setValue (có sẵn từ useForm)
+                      setValue("addressDetail", textDiaChi);
+                      setValue("provinceCode", data.province?.code || null);
+                      setValue("wardCode", data.ward?.code || null);
+                      setValue("villageId", data.village?.id || null);
+                    }}
                   />
                 </div>
               </div>

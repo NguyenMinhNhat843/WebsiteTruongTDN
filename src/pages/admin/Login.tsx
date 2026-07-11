@@ -46,6 +46,9 @@ const LoginPage = () => {
           } else if (data?.user?.role === "teacher") {
             navigate("/teacher/home");
             return;
+          } else if (data?.user?.role === "student") {
+            navigate("/student/home");
+            return;
           }
         },
         onError: () => {

@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { useLopHocContext } from "../LopHocProvider";
 import {
   useReactTable,
   getCoreRowModel,
@@ -16,14 +15,13 @@ const TableDanhSachHocSinh = () => {
   const { userRole } = useAppContext();
 
   const {
+    selectedSemesterId,
     studentsInLopHoc,
     isLoadingStudentsInLopHoc,
     isLoadingLopHocDetail,
     exportStudentGrade,
     isExportingStudentGrade,
-  } = useLopHocContext();
-
-  const { selectedSemesterId } = useLopHocOneContext();
+  } = useLopHocOneContext();
 
   // State quản lý học sinh đang chọn để mở modal điểm rèn luyện
   const [selectedStudentForPoint, setSelectedStudentForPoint] = useState<{

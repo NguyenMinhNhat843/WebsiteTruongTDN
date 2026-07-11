@@ -5,9 +5,9 @@ import { $api } from "../../../api/client";
 import { useAppContext } from "../../../AppProvider";
 
 export type CuriculumResponseDto =
-  components["schemas"]["CurriculumResponseDto"];
+  components["schemas"]["CurriculumResponseDtoWithRelation"];
 export type CurriCulumSubjectDto =
-  components["schemas"]["CurriculumSubjectResponseDto"];
+  components["schemas"]["CurriculumSubjectResponseDtoWithRelation"];
 
 export const [ChuongTrinhKhungProvider, useChuongTrinhKhungContext] =
   createContextProvider(() => {
@@ -40,7 +40,6 @@ export const [ChuongTrinhKhungProvider, useChuongTrinhKhungContext] =
           selectedId !== null &&
           !isNaN(selectedId),
       });
-    console.log(curriculumOne);
 
     return {
       curriculums,

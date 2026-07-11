@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { useLopHocContext } from "../LopHocProvider";
 
 import {
   User,
@@ -9,7 +8,6 @@ import {
   Plus,
   ArrowLeft,
   Calendar,
-  Layers,
   FileText,
 } from "lucide-react";
 import ModelThemHocSinh from "./ModelThemHocSinh";
@@ -31,18 +29,20 @@ const LopHocOne = () => {
 };
 
 const Inner = () => {
+  const { hocKysData } = useAppContext();
   const {
-    studentsInLopHoc,
-    isLoadingStudentsInLopHoc,
+    exportExcel,
+    isExportingExcel,
+    classSubjects,
+    selectedSemesterId,
     LopHocDetail,
     isLoadingLopHocDetail,
+    refetchLopHocDetail,
+    studentsInLopHoc,
+    isLoadingStudentsInLopHoc,
     isOpenModalAddStudent,
     setIsOpenModalAddStudent,
-    refetchLopHocDetail,
-  } = useLopHocContext();
-  const { hocKysData } = useAppContext();
-  const { exportExcel, isExportingExcel, classSubjects, selectedSemesterId } =
-    useLopHocOneContext();
+  } = useLopHocOneContext();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"hoc-sinh" | "mon-hoc">("mon-hoc");
   const hocKySelected = hocKysData?.find((hk) => hk.id === selectedSemesterId);

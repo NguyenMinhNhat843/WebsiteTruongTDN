@@ -1,11 +1,11 @@
 import { useParams } from "react-router-dom";
 import NhapDiem from "./NhapDiem";
-import { useLopHocContext } from "../../LopHocProvider";
 import { LoadingWrapper } from "../../../../../components/ui/LoadingWrapper";
 import Breadcrumb from "../../../../../components/ui/Breadcrum";
+import { useLopHocOneContext } from "../LopHocOneProvider";
 
 const NhapDiemPage = () => {
-  const { LopHocDetail, isLoadingLopHocDetail } = useLopHocContext();
+  const { LopHocDetail, isLoadingLopHocDetail } = useLopHocOneContext();
   const { idClassSubject } = useParams<{ idClassSubject: string }>();
   const idNumber = idClassSubject ? Number(idClassSubject) : 0;
 
