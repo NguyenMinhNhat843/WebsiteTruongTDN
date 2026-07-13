@@ -16,7 +16,7 @@ import {
   Wallet, // Thêm icon ví tiền cho nút Thu học phí
 } from "lucide-react";
 import ModalConfigTuition from "../Create/ModalCreateConfigTuition";
-import ModalDongHocPhi from "../ModalDongHocPhi"; // <-- IMPORT MODAL THU HỌC PHÍ VỪA CODE
+import ModalDongHocPhi from "../DongHocPhi/ModalDongHocPhi"; // <-- IMPORT MODAL THU HỌC PHÍ VỪA CODE
 import { toast } from "sonner";
 
 const DotHocPhiOne = () => {

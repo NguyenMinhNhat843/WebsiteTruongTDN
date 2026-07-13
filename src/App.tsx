@@ -19,7 +19,7 @@ import CoSoVatChat from "./pages/client/CoSoVatChat";
 import DoiTacTuyenDung from "./pages/client/DoiTacDaoTaoVaTuyenDung";
 import DotHocPhiOne from "./pages/admin/HocPhi/One/DotHocPhiOne";
 import DiaChiTree from "./pages/admin/DiaChi";
-import TuitionDashboard from "./pages/admin/HocPhi/DongHocPhi";
+import TuitionDashboard from "./pages/admin/HocPhi/TongQuan";
 
 // --- LAZY LOADING COMPONENTS ---
 
