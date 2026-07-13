@@ -19,6 +19,7 @@ import CoSoVatChat from "./pages/client/CoSoVatChat";
 import DoiTacTuyenDung from "./pages/client/DoiTacDaoTaoVaTuyenDung";
 import DotHocPhiOne from "./pages/admin/HocPhi/One/DotHocPhiOne";
 import DiaChiTree from "./pages/admin/DiaChi";
+import TuitionDashboard from "./pages/admin/HocPhi/DongHocPhi";
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -315,6 +316,7 @@ function App() {
               {/* Học phí */}
               <Route path="hoc-phi" element={<DotHocPhiIndex />} />
               <Route path="hoc-phi/:id" element={<DotHocPhiOne />} />
+              <Route path="hoc-phi/tong-quan" element={<TuitionDashboard />} />
 
               {/* Địa chỉ */}
               <Route path="dia-chi" element={<DiaChiTree />} />

@@ -30,16 +30,14 @@ const LoginPage = () => {
       },
       {
         /* eslint-disable @typescript-eslint/no-explicit-any */
-        onSuccess: (data: any) => {
-          // 💡 Lưu token dài hạn vào localStorage thông qua hàm setAccessToken mới
+        onSuccess: (data) => {
           setAccessToken(data?.access_token);
           localStorage.setItem("user", JSON.stringify(data?.user));
 
           setCurrentUser(data?.user);
 
-          toast.success("Đăng nhập thành công!"); // Thêm thông báo cho đẹp
+          toast.success("Đăng nhập thành công!");
 
-          // Điều hướng dựa trên vai trò (Role)
           if (data?.user?.role === "admin") {
             navigate("/admin/home");
             return;

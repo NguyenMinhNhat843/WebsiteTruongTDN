@@ -1674,6 +1674,38 @@ export interface paths {
         patch: operations["TuitionConfigController_update"];
         trace?: never;
     };
+    "/tuition-dashboard/tuition-overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DashboardController_getOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/tuition-dashboard/payment-trend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DashboardController_getTrend"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/provinces": {
         parameters: {
             query?: never;
@@ -2288,6 +2320,17 @@ export interface components {
             username: string;
             /** @example 123456 */
             password: string;
+        };
+        UserInfoDto: {
+            id: number;
+            username: string;
+            role: string;
+            profile?: Record<string, never>;
+        };
+        LoginResponseDto: {
+            /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
+            access_token: string;
+            user: components["schemas"]["UserInfoDto"];
         };
         AccountResponseDto: {
             role: string;
@@ -3401,6 +3444,10 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        ResponseFeeInvoicePagination: {
+            data: components["schemas"]["FeeInvoiceDto"][];
+            total: number;
+        };
         BatchDto: {
             id: number;
             batchCode: string;
@@ -3601,6 +3648,52 @@ export interface components {
             totalAmount?: number;
             minRequiredAmount?: number;
             items?: components["schemas"]["CreateTuitionConfigItemDto"][];
+        };
+        KpiResponseDto: {
+            totalInvoices: number;
+            totalBilled: number;
+            totalCollected: number;
+            totalOutstanding: number;
+            collectionRate: number;
+        };
+        StatusDistributionDto: {
+            status: string;
+            count: number;
+            amount: number;
+        };
+        PaymentMethodDistributionDto: {
+            method: string;
+            count: number;
+            amount: number;
+        };
+        StudentNestedDto: {
+            id: number;
+        };
+        RecentPaymentDto: {
+            id: number;
+            amountPaid: number;
+            /** Format: date-time */
+            paymentDate: string;
+            method: string;
+            student: components["schemas"]["StudentNestedDto"];
+        };
+        TopDebtorDto: {
+            id: number;
+            remainingAmount: number;
+            status: string;
+            student: components["schemas"]["StudentNestedDto"];
+        };
+        TuitionOverviewResponseDto: {
+            kpis: components["schemas"]["KpiResponseDto"];
+            statusDistribution: components["schemas"]["StatusDistributionDto"][];
+            paymentMethods: components["schemas"]["PaymentMethodDistributionDto"][];
+            recentPayments: components["schemas"]["RecentPaymentDto"][];
+            topDebtors: components["schemas"]["TopDebtorDto"][];
+        };
+        PaymentTrendResponseDto: {
+            /** Format: date-time */
+            date: string;
+            dailyAmount: number;
         };
         CreateProvinceDto: {
             /** @description Mã tỉnh/thành phố (Ví dụ: '56') */
@@ -4331,7 +4424,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["LoginResponseDto"];
+                };
             };
         };
     };
@@ -6845,10 +6940,12 @@ export interface operations {
     };
     FeeInvoiceController_findAll: {
         parameters: {
-            query: {
-                studentId: number;
-                periodId: number;
-                status: string;
+            query?: {
+                studentId?: number;
+                periodId?: number;
+                status?: string;
+                page?: number;
+                limit?: number;
             };
             header?: never;
             path?: never;
@@ -6862,7 +6959,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["FeeInvoiceDto"][];
+                    "application/json": components["schemas"]["ResponseFeeInvoicePagination"];
                 };
             };
         };
@@ -7357,6 +7454,48 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    DashboardController_getOverview: {
+        parameters: {
+            query: {
+                periodId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TuitionOverviewResponseDto"];
+                };
+            };
+        };
+    };
+    DashboardController_getTrend: {
+        parameters: {
+            query: {
+                periodId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentTrendResponseDto"][];
+                };
             };
         };
     };

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { $api } from "../../../api/client";
 import { toast } from "sonner";
+import { useAppContext } from "../../../AppProvider";
 
 interface ModalDongHocPhiProps {
   isOpen: boolean;
@@ -28,6 +29,10 @@ const ModalDongHocPhi: React.FC<ModalDongHocPhiProps> = ({
   periodId,
   onSuccess,
 }) => {
+  // context
+  const { currentUser } = useAppContext();
+  console.log("currentUser", currentUser);
+
   // --- States quản lý nhập liệu ---
   const [identifier, setIdentifier] = useState(""); // Giá trị realtime trong ô input
   const [submittedId, setSubmittedId] = useState(""); // Giá trị chỉ lưu khi nhấn Submit tìm kiếm
@@ -354,19 +359,6 @@ const ModalDongHocPhi: React.FC<ModalDongHocPhiProps> = ({
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500"
                     />
                   </div>
-                </div>
-
-                <div className="space-y-1.5 pt-1">
-                  <label className="block text-xs font-semibold text-slate-600">
-                    Tên nhân viên thu ngân
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Nhập tên người thu tiền..."
-                    value={staffName}
-                    onChange={(e) => setStaffName(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500"
-                  />
                 </div>
               </div>
 

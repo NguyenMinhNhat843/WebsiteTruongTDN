@@ -113,7 +113,20 @@ const navItems: NavItem[] = [
     id: "hoc-phi",
     label: "Học phí",
     icon: "💰",
-    href: "/admin/hoc-phi",
+    children: [
+      {
+        id: "dot-hoc-phi",
+        label: "Đợt học phí",
+        href: "/admin/hoc-phi",
+        roles: ["admin", "staff"],
+      },
+      {
+        id: "tong-quan-hoc-phi",
+        label: "Tổng quan học phí",
+        href: "/admin/hoc-phi/tong-quan",
+        roles: ["admin", "staff"],
+      },
+    ],
   },
   // --- NHÓM CÔNG TÁC HỌC SINH & TUYỂN SINH ---
   {

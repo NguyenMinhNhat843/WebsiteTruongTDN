@@ -12,7 +12,7 @@ export const [NhapDiemProvider, useNhapDiemContext] = createContextProvider(
      * Lưu bảng điểm
      */
     const { mutate: saveGradeTable, isPending: isPendingSaveGradeTable } =
-      $api.useMutation("patch", "/course-registrations/save-grades");
+      $api.useMutation("patch", "/grades/save-grades");
 
     /**
      * Export excel
