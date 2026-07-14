@@ -40,9 +40,11 @@ client.use({
     return request;
   },
 
-  async onResponse({ response }) {
-    // 💡 Nếu API báo token hết hạn hoặc không hợp lệ (401), logout ngay lập tức
-    if (response.status === 401) {
+  async onResponse({ request, response }) {
+    const isLoginRequest = request.url.includes("/auth/login");
+    const isAlreadyOnLoginPage = window.location.pathname === "/admin/login";
+
+    if (response.status === 401 && !isLoginRequest && !isAlreadyOnLoginPage) {
       setAccessToken(null);
       localStorage.removeItem("user");
       window.location.href = "/admin/login";

@@ -20,6 +20,7 @@ const LoginPage = () => {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Đang login với username:", username, "password:", password);
 
     login(
       {
@@ -33,10 +34,11 @@ const LoginPage = () => {
         onSuccess: (data) => {
           setAccessToken(data?.access_token);
           localStorage.setItem("user", JSON.stringify(data?.user));
-
           setCurrentUser(data?.user);
 
           toast.success("Đăng nhập thành công!");
+
+          console.log(data);
 
           if (data?.user?.role === "admin") {
             navigate("/admin/home");

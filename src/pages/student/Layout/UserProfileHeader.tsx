@@ -1,0 +1,186 @@
+import { useNavigate } from "react-router-dom";
+import { Bell, Globe, LogOut, GraduationCap } from "lucide-react";
+import { useAppContext } from "../../../AppProvider";
+import ButtonAction from "../../../components/ui/ButtonAction";
+import { $api } from "../../../api/client";
+import type { EnumRoleUser } from "../../../api/enum";
+import { toast } from "sonner";
+
+const UserProfileHeader = () => {
+  const navigate = useNavigate();
+  const { currentSemester, userRole, profile, currentUser } = useAppContext();
+
+  // Chuỗi hiển thị tên học kỳ
+  const semesterName =
+    currentSemester?.name +
+    (currentSemester?.isCurrent ? " (Học kỳ hiện tại)" : "");
+
+  /**
+   * logout
+   */
+  const { mutate: logout } = $api.useMutation("post", "/auth/logout");
+
+  const handleLogout = () => {
+    logout(
+      {},
+      {
+        onSuccess: () => {
+          localStorage.removeItem("user");
+          localStorage.removeItem("access_token");
+          navigate("/admin/login");
+        },
+        onError: () => {
+          toast.error("Đăng xuất thất bại! Vui lòng thử lại sau.");
+        },
+      },
+    );
+  };
+
+  // Hàm helper dịch Role sang Tiếng Việt và trả về màu sắc tương ứng
+  const getRoleBadgeConfig = (role: EnumRoleUser) => {
+    switch (role?.toLowerCase()) {
+      case "admin":
+        return {
+          text: "Quản trị viên",
+          className: "bg-rose-50 text-rose-600 border-rose-100",
+        };
+      case "teacher":
+        return {
+          text: "Giáo viên",
+          className: "bg-indigo-50 text-indigo-600 border-indigo-100",
+        };
+      case "staff":
+        return {
+          text: "Nhân viên",
+          className: "bg-amber-50 text-amber-600 border-amber-100",
+        };
+      case "student":
+        return {
+          text: "Học sinh",
+          className: "bg-emerald-50 text-emerald-600 border-emerald-100",
+        };
+      default:
+        return {
+          text: role || "Người dùng",
+          className: "bg-slate-50 text-slate-600 border-slate-100",
+        };
+    }
+  };
+
+  // Lấy tên hiển thị ưu tiên từ profile.fullName, nếu chưa có thì fallback về userRole
+  const displayName =
+    profile?.fullName || currentUser?.username || "Chưa cập nhật tên";
+  const roleConfig = getRoleBadgeConfig(userRole || "");
+
+  // Lấy chữ cái đầu tiên của từ cuối cùng (Tên chính) để làm Avatar đại diện
+  const getAvatarLetter = (name: string) => {
+    if (!name) return "?";
+    const words = name.trim().split(/\s+/);
+    return words[words.length - 1].charAt(0).toUpperCase();
+  };
+
+  return (
+    <div className="flex items-center justify-between gap-6 p-3 border-b border-slate-200 bg-white shadow-xs">
+      <div className="flex items-center gap-4">
+        {/* Khối Avatar */}
+        <div className="relative group cursor-pointer">
+          <div
+            className="absolute -inset-0.5 bg-linear-to-r from-indigo-500 
+          to-purple-600 rounded-full opacity-20 group-hover:opacity-100 transition duration-300"
+          ></div>
+          <div
+            className="relative w-10 h-10 rounded-full bg-white flex items-center 
+          justify-center border border-slate-200 overflow-hidden"
+          >
+            {profile?.avatar ? (
+              <img
+                src={profile.avatar}
+                alt={displayName}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div
+                className="w-9 h-9 rounded-full bg-slate-800 flex items-center justify-center 
+              text-white text-sm font-bold"
+              >
+                {getAvatarLetter(displayName)}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Họ tên & Vai trò đã được dịch */}
+        <div className="flex flex-col items-start">
+          <span className="text-sm font-bold text-slate-800 leading-tight">
+            {displayName}
+          </span>
+          <span
+            className={`text-[10px] font-bold px-2 py-0.5 border rounded-full uppercase tracking-wider mt-1 ${roleConfig.className}`}
+          >
+            {roleConfig.text}
+          </span>
+        </div>
+
+        {/* Thanh chia tách nhẹ giữa User và Nút nhanh */}
+        <div className="h-6 w-[1px] bg-slate-200 mx-1"></div>
+
+        {/* Các nút hành động nhanh sử dụng ButtonAction */}
+        <div className="flex items-center gap-1">
+          <a
+            href="https://website-truong-tdn.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center rounded-full text-slate-500 bg-transparent hover:text-indigo-600 hover:bg-indigo-50 transition-colors duration-200 ease-in-out w-9 h-9"
+          >
+            <Globe size={16} />
+          </a>
+          <ButtonAction
+            variant="outline"
+            size="sm"
+            icon={<LogOut size={16} />}
+            title="Đăng xuất"
+            onClick={handleLogout}
+            className="rounded-full text-slate-400 hover:text-rose-600 
+            hover:bg-rose-50 border-transparent hover:border-transparent shadow-none"
+          />
+        </div>
+      </div>
+
+      {/* KHỐI BÊN PHẢI: Nút thông báo nằm BÊN TRÁI Học kỳ hiện tại */}
+      <div className="flex items-center gap-4">
+        <div className="relative">
+          <ButtonAction
+            variant="outline"
+            size="sm"
+            icon={<Bell size={18} />}
+            className="rounded-full text-slate-400 hover:text-indigo-600 
+            hover:bg-indigo-50 border-transparent hover:border-transparent shadow-none"
+          />
+          <div
+            className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full 
+          border border-white pointer-events-none"
+          ></div>
+        </div>
+
+        {/* Học kỳ hiện tại */}
+        {currentSemester && (
+          <div
+            className="flex items-center gap-2.5 bg-linear-to-r 
+          from-blue-50 to-indigo-50 border border-blue-100 px-4 py-2 rounded-xl 
+          text-indigo-900 shadow-xs"
+          >
+            <GraduationCap
+              size={18}
+              className="text-blue-600 bg-blue-100 p-0.5 rounded-md"
+            />
+            <span className="text-sm font-bold tracking-wide">
+              {semesterName}
+            </span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default UserProfileHeader;

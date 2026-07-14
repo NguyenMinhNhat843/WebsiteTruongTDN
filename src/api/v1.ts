@@ -911,6 +911,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/time-table/weekly": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thời khóa biểu theo tuần */
+        get: operations["TimeTableController_getWeeklySchedule"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/posts/stats": {
         parameters: {
             query?: never;
@@ -1125,6 +1142,23 @@ export interface paths {
         };
         /** Lấy bảng điểm (Admin/Quản lý) */
         get: operations["CourseRegistrationController_findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/grades/transcript": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy bảng điểm toàn khóa của học sinh */
+        get: operations["CourseRegistrationController_getTranscript"];
         put?: never;
         post?: never;
         delete?: never;
@@ -2911,6 +2945,29 @@ export interface components {
             building: string | null;
             isRoomOverridden: boolean;
         };
+        WeeklyScheduleResponseDto: {
+            scheduleId: number;
+            weekNumber: number;
+            /** Format: date-time */
+            studyDate: string;
+            dayOfWeek: string;
+            subjectId: number;
+            subjectCode: string;
+            subjectName: string;
+            credits: number;
+            classId: Record<string, never> | null;
+            className: string;
+            teacherId: Record<string, never> | null;
+            teacherName: string;
+            shift: string;
+            startPeriod: number;
+            endPeriod: number;
+            countPeriod: number;
+            roomId: Record<string, never> | null;
+            roomCode: string;
+            building: Record<string, never> | null;
+            isRoomOverridden: boolean;
+        };
         PostStatsResponseDto: {
             totalPosts: number;
             draftPosts: number;
@@ -3142,6 +3199,50 @@ export interface components {
             teacher?: components["schemas"]["StaffResponseDto"] | null;
             gradeStudents?: components["schemas"]["GradeStudentDto"][] | null;
         };
+        StudentInfoResponseDto: {
+            studentId: number;
+            studentCode: string;
+            fullName: string;
+        };
+        SubjectGradeResponseDto: {
+            gradeId: number;
+            subjectId: number;
+            subjectCode: string;
+            subjectName: string;
+            credits: number;
+            kttx1: Record<string, never> | null;
+            kttx2: Record<string, never> | null;
+            kttx3: Record<string, never> | null;
+            ktdk1: Record<string, never> | null;
+            ktdk2: Record<string, never> | null;
+            ktdk3: Record<string, never> | null;
+            ktdk4: Record<string, never> | null;
+            diemTB: Record<string, never> | null;
+            diemTongKet1: Record<string, never> | null;
+            diemTongKet2: Record<string, never> | null;
+            finalScore: Record<string, never> | null;
+            gradeFour: number;
+            gradeLetter: string;
+            isPassed: boolean;
+        };
+        SemesterTranscriptResponseDto: {
+            semesterId: number;
+            semesterName: string;
+            term: number;
+            year: number;
+            schoolYear: Record<string, never> | null;
+            subjects: components["schemas"]["SubjectGradeResponseDto"][];
+            semesterGPA10: number;
+            semesterGPA4: number;
+            semesterCredits: number;
+            cumulativeCPA10: number;
+            cumulativeCPA4: number;
+            cumulativeCredits: number;
+        };
+        StudentTranscriptResponseDto: {
+            studentInfo: components["schemas"]["StudentInfoResponseDto"];
+            transcript: components["schemas"]["SemesterTranscriptResponseDto"][];
+        };
         AcademicSummaryDto: {
             cumulativeGpa: number;
             totalAccumulatedCredits: number;
@@ -3331,7 +3432,7 @@ export interface components {
             totalTeacherScore: number;
             /** @enum {string|null} */
             finalGrade: "EXCELLENT" | "GOOD" | "FAIR" | "AVERAGE" | "POOR" | null;
-            teacherComment: Record<string, never> | null;
+            teacherComment: string | null;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -3403,7 +3504,7 @@ export interface components {
             totalTeacherScore: number;
             /** @enum {string|null} */
             finalGrade: "EXCELLENT" | "GOOD" | "FAIR" | "AVERAGE" | "POOR" | null;
-            teacherComment: Record<string, never> | null;
+            teacherComment: string | null;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -5056,7 +5157,10 @@ export interface operations {
     };
     SemesterController_findAll: {
         parameters: {
-            query?: never;
+            query?: {
+                studentId?: number;
+                batchId?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -5885,6 +5989,31 @@ export interface operations {
             };
         };
     };
+    TimeTableController_getWeeklySchedule: {
+        parameters: {
+            query: {
+                weekNumber: number;
+                semesterId?: number;
+                classId?: number;
+                studentId?: number;
+                teacherId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WeeklyScheduleResponseDto"][];
+                };
+            };
+        };
+    };
     PostController_getStats: {
         parameters: {
             query?: never;
@@ -6283,6 +6412,27 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    CourseRegistrationController_getTranscript: {
+        parameters: {
+            query: {
+                studentId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentTranscriptResponseDto"];
+                };
             };
         };
     };
@@ -7300,6 +7450,7 @@ export interface operations {
         parameters: {
             query?: {
                 name?: string;
+                semesterId?: number;
             };
             header?: never;
             path?: never;

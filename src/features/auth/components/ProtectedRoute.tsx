@@ -13,6 +13,8 @@ const ProtectedRoute = ({ children, allowedRoles }: ProtectedRouteProps) => {
   const location = useLocation();
   const access_token = getAccessToken();
 
+  console.log("ProtectedRoute: currentUser", currentUser);
+
   // 💡 Kiểm tra: Nếu thiếu user thông tin hoặc thiếu hẳn token thì đá về login luôn
   if (!currentUser || !access_token) {
     return <Navigate to="/admin/login" state={{ from: location }} replace />;

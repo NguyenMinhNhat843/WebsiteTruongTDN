@@ -20,6 +20,12 @@ import DoiTacTuyenDung from "./pages/client/DoiTacDaoTaoVaTuyenDung";
 import DotHocPhiOne from "./pages/admin/HocPhi/One/DotHocPhiOne";
 import DiaChiTree from "./pages/admin/DiaChi";
 import TuitionDashboard from "./pages/admin/HocPhi/TongQuan";
+import StudentMainLayout from "./pages/student/Layout/StudentMainLayout";
+import StudentChuongTrinhKhung from "./pages/student/ChuongTrinhKhung";
+import WeeklySchedule from "./pages/student/ThoiKhoaBieu";
+import StudentbangDiem from "./pages/student/BangDiem";
+import StudentTuition from "./pages/student/HocPhi";
+import PhieuDiemRenLuyenIndex from "./pages/student/PhieuDiemRenLuyen";
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -341,6 +347,33 @@ function App() {
               <Route path="lop-hoc" element={<LopHocGiangDay />} />
               <Route path="nhap-diem" element={<BangDiem />} />
               <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
+            </Route>
+
+            {/* ========================= Học sinh / Sinh viên ============================= */}
+            <Route
+              path="/student/*"
+              element={
+                <ProtectedRoute>
+                  <StudentMainLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="home" element={<MemberDashboard />} />
+
+              {/* Học tập */}
+              <Route
+                path="dao-tao/thoi-khoa-bieu"
+                element={<WeeklySchedule />}
+              />
+              <Route
+                path="dao-tao/khung-chuong-trinh"
+                element={<StudentChuongTrinhKhung />}
+              />
+              <Route path="diem-so" element={<StudentbangDiem />} />
+              <Route
+                path="diem-ren-luyen"
+                element={<PhieuDiemRenLuyenIndex />}
+              />
             </Route>
 
             {/* Route 404 */}

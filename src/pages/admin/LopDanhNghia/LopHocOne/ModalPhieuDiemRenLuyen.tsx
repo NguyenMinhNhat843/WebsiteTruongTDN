@@ -100,7 +100,7 @@ const ModalPhieuDiemRenLuyen = ({
   const isPending = assessmentData?.status === "PENDING";
 
   const canEditStudentScore =
-    isTeacher && assessmentData?.status === "NOT_SUBMITTED";
+    !isTeacher && assessmentData?.status === "NOT_SUBMITTED";
   const canEditTeacherScore = isTeacher && isPending;
 
   // 6. Xử lý lưu dữ liệu

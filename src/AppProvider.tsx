@@ -52,8 +52,6 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
     error: departmentsError,
   } = $api.useQuery("get", "/departments", { enabled: isUserLoggedIn });
 
-  console.log("currentUser", currentUser);
-
   return {
     hocKysData,
     isHocKysLoading,
