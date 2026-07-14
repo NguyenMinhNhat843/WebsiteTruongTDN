@@ -1,9 +1,8 @@
 import { useState } from "react";
 import PostDetailView from "./components/PostDetail";
-import type { Post } from "../../../features/posts/types/Post.types";
 
 const AdminPostPreview = () => {
-  const [previewData] = useState<Post | null>(() => {
+  const [previewData] = useState<any>(() => {
     // Logic này chỉ chạy DUY NHẤT một lần khi component mount
     const saved = localStorage.getItem("preview_post_data");
     return saved ? JSON.parse(saved) : null;

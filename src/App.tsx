@@ -119,10 +119,6 @@ const QuanLyNhanVien = lazy(
 const NhanVienOne = lazy(
   () => import("./pages/admin/QuanLyNhanVien/NhanVienOne/NhanVienOne"),
 );
-const PhanQuyenNguoiDung = lazy(
-  () =>
-    import("./pages/admin/CaiDatHeThong/PhanQuyenNguoiDung/PhanQuyenNguoiDung"),
-);
 
 // Teacher (Member) Pages
 const MemberDashboard = lazy(() => import("./pages/MembersDashboard/Home"));
@@ -329,10 +325,6 @@ function App() {
               </Route>
 
               {/* Cài đặt hệ thống */}
-              <Route
-                path="cai-dat/phan-quyen"
-                element={<PhanQuyenNguoiDung />}
-              />
               <Route path="cai-dat/cau-hinh-chung" element={<CauHinhChung />} />
             </Route>
 

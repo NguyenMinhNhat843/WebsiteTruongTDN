@@ -207,12 +207,6 @@ const navItems: NavItem[] = [
     roles: ["admin"],
     children: [
       {
-        id: "phan-quyen",
-        label: "Phân quyền (Roles)",
-        href: "/admin/cai-dat/phan-quyen",
-        roles: ["admin"],
-      },
-      {
         id: "cau-hinh-chung",
         label: "Cấu hình chung",
         href: "/admin/cai-dat/cau-hinh-chung",

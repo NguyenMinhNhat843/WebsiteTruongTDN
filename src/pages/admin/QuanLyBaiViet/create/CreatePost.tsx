@@ -16,6 +16,7 @@ import { useRef } from "react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import { toast } from "sonner";
+import { useAppContext } from "../../../../AppProvider";
 
 interface CreatePostProps {
   defaultValues?: PostResponseDto;
@@ -30,6 +31,7 @@ const CreatePost = ({ defaultValues }: CreatePostProps) => {
 };
 
 const Inner = () => {
+  const { currentUser } = useAppContext();
   const {
     register,
     handleSubmit,
@@ -52,7 +54,7 @@ const Inner = () => {
     formData.append("content", htmlData);
     formData.append("status", data.status || "DRAFT");
     formData.append("type", data.type || "NEWS");
-    formData.append("authorId", String(1));
+    formData.append("authorId", String(currentUser?.id));
 
     if (data.coverImage) {
       const imgValue = data.coverImage as unknown;

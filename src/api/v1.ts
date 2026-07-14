@@ -1469,6 +1469,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/analytics/operation-details": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy số liệu phân tích vận hành và nề nếp nâng cao */
+        get: operations["AnalyticsController_getOperationDetails"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/analytics/overview": {
         parameters: {
             query?: never;
@@ -1495,6 +1512,40 @@ export interface paths {
         };
         /** Lấy dữ liệu biểu đồ tăng trưởng học sinh theo thời gian (Tháng) */
         get: operations["AnalyticsController_getGrowthCharts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analytics/major-distribution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy tỷ trọng học sinh đang theo học thực tế giữa các ngành (Pie Chart) */
+        get: operations["AnalyticsController_getMajorDistribution"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analytics/academic-performance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Phân tích tình hình phân bổ học lực theo từng lớp trong học kỳ hiện tại (Stacked Bar Chart) */
+        get: operations["AnalyticsController_getAcademicPerformance"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3371,50 +3422,116 @@ export interface components {
             teacherComment: string | null;
             details: components["schemas"]["AssessmentDetailUpdateDto"][];
         };
+        OverloadedClassDto: {
+            /** @example CNTTK1A */
+            className: string;
+            /** @example 42/40 */
+            size: string;
+        };
+        ClassroomsStatsDto: {
+            /** @example 25 */
+            totalActiveClasses: number;
+            /** @example 84.5 */
+            schoolFillRate: number;
+            /** @example 2 */
+            overloadedClassesCount: number;
+            overloadedClasses: components["schemas"]["OverloadedClassDto"][];
+            /** @example 850 */
+            totalCurrentStudents: number;
+            /** @example 1000 */
+            totalMaxStudents: number;
+        };
+        AdmissionsStatsDto: {
+            /** @example 350 */
+            totalProfilesProcessed: number;
+            /** @example 12 */
+            alertMissingDocuments: number;
+        };
+        BehaviorAssessmentDto: {
+            /** @example 45 */
+            notSubmitted: number;
+            /** @example 120 */
+            pendingApproval: number;
+            /** @example 680 */
+            approved: number;
+        };
+        AdvancedAnalyticsResponseDto: {
+            /** @example HK1 2026-2027 */
+            semesterName: string;
+            classrooms: components["schemas"]["ClassroomsStatsDto"];
+            admissions: components["schemas"]["AdmissionsStatsDto"];
+            behaviorAssessment: components["schemas"]["BehaviorAssessmentDto"] | null;
+        };
         OverviewStatsResponseDto: {
-            /**
-             * @description Tổng số học sinh hệ thống
-             * @example 150
-             */
+            /** @example 1200 */
             totalStudents: number;
-            /**
-             * @description Tổng số giáo viên
-             * @example 25
-             */
+            /** @example 85 */
             totalTeachers: number;
-            /**
-             * @description Số học sinh đang học chính thức
-             * @example 90
-             */
+            /** @example 850 */
             studyingStudents: number;
-            /**
-             * @description Số học sinh đang chờ xét tuyển
-             * @example 15
-             */
+            /** @example 150 */
             pendingStudents: number;
-            /**
-             * @description Số học sinh mới đăng ký tư vấn
-             * @example 20
-             */
+            /** @example 200 */
             registerStudents: number;
         };
-        ChartPointDto: {
+        MonthDataPointDto: {
             /**
-             * @description Tháng thống kê (Định dạng YYYY-MM)
-             * @example 2026-06
+             * @description Tháng định dạng YYYY-MM
+             * @example 2026-01
              */
             month: string;
-            /**
-             * @description Số lượng học sinh
-             * @example 12
-             */
+            /** @description Số lượng tích lũy/phát sinh trong tháng */
             count: number;
         };
         GrowthChartsResponseDto: {
-            /** @description Dữ liệu tăng trưởng học sinh đăng ký mới tư vấn */
-            registerGrowth: components["schemas"]["ChartPointDto"][];
-            /** @description Dữ liệu tăng trưởng học sinh nhập học thành công (đang học) */
-            studyingGrowth: components["schemas"]["ChartPointDto"][];
+            /** @description Dữ liệu tăng trưởng nguồn học sinh đăng ký tư vấn */
+            registerGrowth: components["schemas"]["MonthDataPointDto"][];
+            /** @description Dữ liệu học sinh nhập học chính thức thành công */
+            studyingGrowth: components["schemas"]["MonthDataPointDto"][];
+        };
+        MajorDistributionResponseDto: {
+            /**
+             * @description Tên chuyên ngành đào tạo
+             * @example Công nghệ thông tin
+             */
+            name: string;
+            /**
+             * @description Số lượng học viên đang theo học thực tế
+             * @example 145
+             */
+            value: number;
+        };
+        AcademicPerformanceResponseDto: {
+            /**
+             * @description Tên lớp học
+             * @example CNTT-K26A
+             */
+            className: string;
+            /**
+             * @description Số lượng học sinh đạt Xuất sắc trong lớp
+             * @example 5
+             */
+            "Xu\u1EA5t s\u1EAFc"?: number;
+            /**
+             * @description Số lượng học sinh đạt Giỏi trong lớp
+             * @example 18
+             */
+            "Gi\u1ECFi"?: number;
+            /**
+             * @description Số lượng học sinh đạt Khá trong lớp
+             * @example 12
+             */
+            "Kh\u00E1"?: number;
+            /**
+             * @description Số lượng học sinh đạt Trung bình trong lớp
+             * @example 3
+             */
+            "Trung b\u00ECnh"?: number;
+            /**
+             * @description Số lượng học sinh chưa được đánh giá
+             * @example 1
+             */
+            "Ch\u01B0a x\u1EBFp lo\u1EA1i"?: number;
         };
         CreateFeeInvoiceDto: {
             studentId: number;
@@ -6898,6 +7015,26 @@ export interface operations {
             };
         };
     };
+    AnalyticsController_getOperationDetails: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lấy dữ liệu phân tích nâng cao thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdvancedAnalyticsResponseDto"];
+                };
+            };
+        };
+    };
     AnalyticsController_getOverview: {
         parameters: {
             query?: never;
@@ -6934,6 +7071,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GrowthChartsResponseDto"];
+                };
+            };
+        };
+    };
+    AnalyticsController_getMajorDistribution: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lấy dữ liệu tỷ trọng ngành học thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MajorDistributionResponseDto"][];
+                };
+            };
+        };
+    };
+    AnalyticsController_getAcademicPerformance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Lấy dữ liệu phân tích học lực theo lớp thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AcademicPerformanceResponseDto"][];
                 };
             };
         };
