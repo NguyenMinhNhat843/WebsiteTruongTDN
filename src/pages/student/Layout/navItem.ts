@@ -39,4 +39,18 @@ export const studentNavItems: NavItem[] = [
       },
     ],
   },
+  {
+    id: "tai-chinh",
+    label: "Tài chính học đường",
+    icon: "💰",
+    children: [
+      {
+        id: "hoc-phi-student",
+        label: "Học phí & Thanh toán",
+        href: "/student/hoc-phi",
+        roles: ["student"],
+      },
+    ],
+  },
 ];
+

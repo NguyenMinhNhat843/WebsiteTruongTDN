@@ -125,6 +125,8 @@ const QuanLyNhanVien = lazy(
 const NhanVienOne = lazy(
   () => import("./pages/admin/QuanLyNhanVien/NhanVienOne/NhanVienOne"),
 );
+const HuongDanSuDung = lazy(() => import("./pages/HuongDanSuDung"));
+const StudentDashboard = lazy(() => import("./pages/student/Dashboard"));
 
 // Teacher (Member) Pages
 const MemberDashboard = lazy(() => import("./pages/MembersDashboard/Home"));
@@ -332,6 +334,10 @@ function App() {
 
               {/* Cài đặt hệ thống */}
               <Route path="cai-dat/cau-hinh-chung" element={<CauHinhChung />} />
+              <Route
+                path="cai-dat/huong-dan-su-dung"
+                element={<HuongDanSuDung />}
+              />
             </Route>
 
             {/* ========================= Giáo viên ============================= */}
@@ -358,7 +364,7 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route path="home" element={<MemberDashboard />} />
+              <Route path="home" element={<StudentDashboard />} />
 
               {/* Học tập */}
               <Route
@@ -374,6 +380,7 @@ function App() {
                 path="diem-ren-luyen"
                 element={<PhieuDiemRenLuyenIndex />}
               />
+              <Route path="hoc-phi" element={<StudentTuition />} />
             </Route>
 
             {/* Route 404 */}
