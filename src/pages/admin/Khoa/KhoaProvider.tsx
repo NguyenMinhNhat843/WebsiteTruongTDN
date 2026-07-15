@@ -17,6 +17,7 @@ export const [KhoaProvider, useKhoaContext] = createContextProvider(() => {
     data: departments,
     isLoading: isLoadingDepartment,
     isError: isDepartmentError,
+    refetch: refetchDepartments,
   } = $api.useQuery("get", "/departments", {
     params: {},
   });
@@ -58,5 +59,6 @@ export const [KhoaProvider, useKhoaContext] = createContextProvider(() => {
     deleteDepartment,
     isDeleteDepartmentError,
     isDeleteDepartmentPending,
+    refetchDepartments,
   };
 });

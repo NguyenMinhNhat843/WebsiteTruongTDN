@@ -6,6 +6,8 @@ import {
   Fingerprint,
   Sparkles,
   GraduationCap,
+  Edit2,
+  FolderOpen,
 } from "lucide-react";
 
 // Hàm helper để render Badge trạng thái tiếng Việt cao cấp
@@ -41,7 +43,7 @@ const renderStatusBadge = (status: string) => {
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${config.class}`}
+      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border ${config.class}`}
     >
       <span className={`w-1.5 h-1.5 rounded-full ${config.dotClass}`} />
       {config.label}
@@ -57,7 +59,6 @@ const KhoaDaoTaoTable: React.FC<KhoaDaoTaoTableProps> = ({ data }) => {
   const { deleteBatch, setBatchSelected } = useKhoaDaoTaoContext();
 
   const handleDelete = (item: khoaDaoTaoDto) => {
-    // Tích hợp xác nhận cơ bản trực tiếp ở UI để đảm bảo an toàn dữ liệu trước khi gọi API
     if (
       window.confirm(
         `Bạn có chắc chắn muốn xóa khóa đào tạo "${item.batchName}" không?`,
@@ -73,60 +74,70 @@ const KhoaDaoTaoTable: React.FC<KhoaDaoTaoTableProps> = ({ data }) => {
   };
 
   return (
-    <div className="w-full bg-white rounded-2xl border border-slate-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.03)] overflow-hidden">
+    <div className="w-full bg-white rounded-3xl border border-slate-200/80 shadow-[0_8px_30px_rgb(0,0,0,0.02)] overflow-hidden">
       <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-slate-200 scrollbar-track-transparent">
-        <table className="w-full text-left border-collapse table-fixed min-w-[850px]">
+        <table className="w-full text-left border-collapse table-fixed min-w-[900px]">
           <colgroup>
-            <col className="w-[150px]" />
+            <col className="w-[140px]" />
             <col className="w-[280px]" />
-            <col className="w-[180px]" />
-            <col className="w-[200px]" />
+            <col className="w-[170px]" />
+            <col className="w-[210px]" />
             <col className="w-[160px]" />
-            <col className="w-[70px]" />
+            <col className="w-[110px]" />
           </colgroup>
           <thead>
-            <tr className="bg-slate-50/70 border-b border-slate-100">
-              <th className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+            <tr className="bg-slate-50/65 border-b border-slate-100">
+              <th className="px-6 py-4.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400">
                 Mã khóa
               </th>
-              <th className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <th className="px-6 py-4.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400">
                 Tên khóa đào tạo
               </th>
-              <th className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <th className="px-6 py-4.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400">
                 Niên khóa
               </th>
-              <th className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <th className="px-6 py-4.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400">
                 Ngành học
               </th>
-              <th className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <th className="px-6 py-4.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400">
                 Trạng thái
               </th>
-              <th className="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500"></th>
+              <th className="px-6 py-4.5 text-[11px] font-extrabold uppercase tracking-widest text-slate-400"></th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100/80 bg-white">
+          <tbody className="divide-y divide-slate-100 bg-white">
             {data.length === 0 ? (
               <tr>
-                <td
-                  colSpan={6}
-                  className="px-6 py-12 text-center text-sm text-slate-400"
-                >
-                  Không tìm thấy dữ liệu khóa đào tạo nào.
+                <td colSpan={6} className="px-6 py-16 text-center">
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    <div className="p-4 bg-slate-50 rounded-full text-slate-400">
+                      <FolderOpen size={36} className="stroke-[1.5]" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm font-bold text-slate-700">
+                        Trống trải quá!
+                      </p>
+                      <p className="text-xs text-slate-400 max-w-[280px] mx-auto">
+                        Không tìm thấy dữ liệu khóa đào tạo nào trong hệ thống
+                        hiện tại.
+                      </p>
+                    </div>
+                  </div>
                 </td>
               </tr>
             ) : (
               data.map((item) => (
                 <tr
                   key={item.id}
-                  className="group hover:bg-slate-50/50 transition-colors duration-150"
+                  className="group hover:bg-indigo-50/20 transition-all duration-200"
                 >
                   {/* Mã khóa */}
                   <td className="px-6 py-4 text-sm whitespace-nowrap">
                     <div className="flex items-center gap-2">
-                      <div className="p-1 rounded bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-slate-700 transition-colors">
-                        <Fingerprint size={13} className="shrink-0" />
+                      <div className="p-1.5 rounded-lg bg-slate-100 text-slate-500 group-hover:bg-white group-hover:text-indigo-600 border border-transparent group-hover:border-slate-100 transition-colors shadow-sm">
+                        <Fingerprint size={14} className="shrink-0" />
                       </div>
-                      <span className="font-mono font-medium text-slate-600">
+                      <span className="font-mono font-bold text-slate-700 tracking-wide">
                         {item.batchCode}
                       </span>
                     </div>
@@ -136,7 +147,7 @@ const KhoaDaoTaoTable: React.FC<KhoaDaoTaoTableProps> = ({ data }) => {
                   <td className="px-6 py-4 text-sm">
                     <div className="flex flex-col max-w-full">
                       <span
-                        className="font-semibold text-slate-800 hover:text-blue-600 cursor-pointer transition-colors duration-150 truncate"
+                        className="font-extrabold text-[15px] text-slate-800 group-hover:text-indigo-600 hover:underline decoration-indigo-500/30 cursor-pointer transition-all duration-150 truncate leading-snug"
                         onClick={(e) => {
                           e.stopPropagation();
                           setBatchSelected(item);
@@ -151,8 +162,8 @@ const KhoaDaoTaoTable: React.FC<KhoaDaoTaoTableProps> = ({ data }) => {
                   {/* Niên khóa */}
                   <td className="px-6 py-4 text-sm whitespace-nowrap">
                     <div className="flex items-center gap-2 text-slate-600">
-                      <Calendar size={14} className="text-slate-400 shrink-0" />
-                      <span className="font-medium tracking-tight">
+                      <Calendar size={15} className="text-slate-400 shrink-0" />
+                      <span className="font-semibold tracking-tight text-[13.5px]">
                         {item.startYear} — {item.endYear}
                       </span>
                     </div>
@@ -162,14 +173,14 @@ const KhoaDaoTaoTable: React.FC<KhoaDaoTaoTableProps> = ({ data }) => {
                   <td className="px-6 py-4 text-sm">
                     <div className="flex items-center gap-2 max-w-full">
                       <GraduationCap
-                        size={15}
-                        className="text-blue-500/80 shrink-0"
+                        size={16}
+                        className="text-indigo-500 shrink-0"
                       />
                       <span
-                        className="font-medium text-slate-700 truncate"
+                        className="font-semibold text-slate-700 truncate text-[13.5px]"
                         title={item.major?.majorName}
                       >
-                        {item.major?.majorName}
+                        {item.major?.majorName || "Chưa phân ngành"}
                       </span>
                     </div>
                   </td>
@@ -180,14 +191,24 @@ const KhoaDaoTaoTable: React.FC<KhoaDaoTaoTableProps> = ({ data }) => {
                   </td>
 
                   {/* Hành động */}
-                  <td className="px-6 py-4 text-sm whitespace-nowrap">
-                    <div className="flex justify-end opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                  <td className="px-6 py-3 text-sm whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1.5 opacity-0 group-hover:opacity-100 focus-within:opacity-100 transition-opacity duration-150">
+                      {/* Nút Chỉnh sửa */}
+                      <button
+                        onClick={() => setBatchSelected(item)}
+                        className="p-2 bg-slate-50 hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 border border-slate-100 hover:border-indigo-100 rounded-xl transition-all active:scale-95"
+                        title="Chỉnh sửa thông tin"
+                      >
+                        <Edit2 size={14} strokeWidth={2.2} />
+                      </button>
+
+                      {/* Nút Xóa */}
                       <button
                         onClick={() => handleDelete(item)}
-                        className="p-2 hover:bg-red-50 text-slate-400 hover:text-red-600 rounded-xl transition-all duration-150 active:scale-95 border border-transparent hover:border-red-100"
+                        className="p-2 bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-100 hover:border-rose-100 rounded-xl transition-all active:scale-95"
                         title="Xóa khóa học"
                       >
-                        <Trash2 size={16} strokeWidth={2.2} />
+                        <Trash2 size={14} strokeWidth={2.2} />
                       </button>
                     </div>
                   </td>
@@ -199,12 +220,12 @@ const KhoaDaoTaoTable: React.FC<KhoaDaoTaoTableProps> = ({ data }) => {
       </div>
 
       {/* Footer chân trang của bảng */}
-      <div className="px-6 py-3.5 bg-slate-50/40 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400 font-medium">
+      <div className="px-6 py-4 bg-slate-50/30 border-t border-slate-100 flex justify-between items-center text-xs text-slate-400 font-bold tracking-wide">
         <div className="flex items-center gap-1.5">
-          <Sparkles size={12} className="text-blue-500" />
-          <span>Hiển thị {data.length} khóa đào tạo</span>
+          <Sparkles size={13} className="text-indigo-500 animate-pulse" />
+          <span>Tổng số: {data.length} khóa đào tạo</span>
         </div>
-        <p className="italic">Dữ liệu cập nhật thời gian thực</p>
+        <p className="italic font-normal">Dữ liệu cập nhật thời gian thực</p>
       </div>
     </div>
   );

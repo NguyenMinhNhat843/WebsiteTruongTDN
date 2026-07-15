@@ -2433,27 +2433,42 @@ export interface components {
             username: string;
         };
         CreateDepartmentDto: {
-            headOfDepartmentId?: Record<string, never> | null;
+            headOfDepartmentId?: number | null;
             deptCode: string;
             deptName: string;
-            description?: Record<string, never> | null;
+            description?: string | null;
+        };
+        ResponseDepartmentDto: {
+            id: number;
+            headOfDepartmentId?: number | null;
+            deptCode: string;
+            deptName: string;
+            description?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            headOfDepartmentName?: Record<string, never> | null;
+            totalMajors: number;
+            totalStaffs: number;
+            totalStudents: number;
         };
         DepartmentDto: {
             id: number;
-            headOfDepartmentId?: Record<string, never> | null;
+            headOfDepartmentId?: number | null;
             deptCode: string;
             deptName: string;
-            description?: Record<string, never> | null;
+            description?: string | null;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
         };
         UpdateDepartmentDto: {
-            headOfDepartmentId?: Record<string, never> | null;
+            headOfDepartmentId?: number | null;
             deptCode?: string;
             deptName?: string;
-            description?: Record<string, never> | null;
+            description?: string | null;
         };
         CreateMajorDto: {
             deptId: number;
@@ -3982,8 +3997,6 @@ export interface operations {
                 /** @description Tìm kiếm theo mã SV, tên SV hoặc CCCD */
                 keyword?: string;
                 status?: components["schemas"]["StudentStatus"];
-                /** @description nếu true: Lọc theo fiel status, nếu false: lọc theo không phải status */
-                excludeStatus?: boolean;
                 classId?: number | null;
                 /** @description Lọc theo ngày nhập học từ (YYYY-MM-DD) */
                 fromDate?: string;
@@ -4687,7 +4700,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DepartmentDto"][];
+                    "application/json": components["schemas"]["ResponseDepartmentDto"][];
                 };
             };
         };

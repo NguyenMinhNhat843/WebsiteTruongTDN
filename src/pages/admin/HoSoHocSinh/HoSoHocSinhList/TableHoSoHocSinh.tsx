@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -39,32 +39,31 @@ const TableHoSoHocSinh = () => {
   const pageSize = filters.limit || 10;
   const totalPages = Math.ceil((total || 0) / pageSize) || 1;
 
+  // State quản lý Modal Duyệt Hàng Loạt
+  const [isOpenApproveModal, setIsOpenApproveModal] = useState(false);
+  const [maxStudents, setMaxStudents] = useState<string>("");
+
   /**
    * Xét duyệt học sinh, chuyển từ chờ xét tuyển sang đã đậu
    */
   const { mutate: approveStudent, isPending: isPendingApprove } =
     $api.useMutation("patch", "/students/approve");
 
-  const handleApproveAll = () => {
-    if (students.length === 0) return;
+  const handleConfirmApprove = () => {
+    const limitAmount = maxStudents ? parseInt(maxStudents, 10) : undefined;
 
-    if (
-      !window.confirm(
-        "Bạn có chắc chắn muốn duyệt TOÀN BỘ học sinh trong trang này không?",
-      )
-    ) {
-      return;
-    }
-
+    // Bạn có thể đính kèm limit hoặc quote vào body gửi lên backend
     approveStudent(
       {
         body: {
-          quote: undefined,
+          quote: limitAmount,
         },
       },
       {
         onSuccess: () => {
-          toast.success("Đã duyệt toàn bộ học sinh thành công!");
+          toast.success("Đã xét duyệt danh sách học sinh thành công!");
+          setIsOpenApproveModal(false);
+          setMaxStudents("");
           queryClient.invalidateQueries({
             queryKey: ["get", "/students"],
           });
@@ -237,7 +236,6 @@ const TableHoSoHocSinh = () => {
 
     // Xử lý loại bỏ cột động dựa theo trạng thái của tab hiện tại
     return baseColumns.filter((col) => {
-      // 1. Nếu là tab 'registered' -> ẩn Lớp học, Khóa đào tạo, Hồ sơ và Đánh giá
       if (currentTab === "registered") {
         return ![
           "class",
@@ -247,11 +245,9 @@ const TableHoSoHocSinh = () => {
           "status",
         ].includes(col.id!);
       }
-      // 2. Nếu là tab 'pending' hoặc 'failed' -> ẩn Lớp học, Khóa đào tạo, Hồ sơ
       if (currentTab === "pending" || currentTab === "failed") {
         return !["class", "batch", "documentProgress"].includes(col.id!);
       }
-      // 3. Nếu là tab 'approved' hoặc 'studying' -> ẩn Đánh giá
       if (currentTab === "approved" || currentTab === "studying") {
         return !["isQualified"].includes(col.id!);
       }
@@ -259,7 +255,6 @@ const TableHoSoHocSinh = () => {
     });
   }, [currentTab, currentPage, pageSize, navigate]);
 
-  // Khởi tạo bảng TanStack Table
   const table = useReactTable({
     data: students || [],
     columns,
@@ -267,7 +262,7 @@ const TableHoSoHocSinh = () => {
   });
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-4 relative">
       {/* THANH CHUYỂN TAB (TABS NAVIGATION) */}
       <div className="flex items-center justify-between border-b border-slate-200 px-2 pb-2 gap-4">
         <div className="flex gap-6 overflow-x-auto custom-scrollbar flex-1 min-w-0">
@@ -293,23 +288,13 @@ const TableHoSoHocSinh = () => {
           })}
         </div>
 
-        {/* Nút Duyệt Tổng bên phải - Chỉ hiển thị khi đang ở tab "Chờ xét tuyển" */}
+        {/* Nút Duyệt Mở Modal - Chỉ hiển thị khi ở tab "Chờ xét tuyển" */}
         {currentTab === "pending" && students.length > 0 && (
           <button
-            onClick={handleApproveAll}
-            disabled={isPendingApprove}
-            className="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 rounded-xl shadow-sm transition-all flex items-center gap-1.5 dynamic-btn shrink-0 whitespace-nowrap"
+            onClick={() => setIsOpenApproveModal(true)}
+            className="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-sm transition-all flex items-center gap-1.5 dynamic-btn shrink-0 whitespace-nowrap"
           >
-            {isPendingApprove ? (
-              <>
-                <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                Đang duyệt...
-              </>
-            ) : (
-              <>
-                <span>✓</span> Duyệt toàn bộ hồ sơ
-              </>
-            )}
+            <span>✓</span> Duyệt toàn bộ hồ sơ
           </button>
         )}
       </div>
@@ -450,6 +435,72 @@ const TableHoSoHocSinh = () => {
             >
               Sau
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL BOX NHỎ GỌN XÉT DUYỆT HÀNG LOẠT */}
+      {isOpenApproveModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl border border-slate-100 flex flex-col gap-4 transform transition-all scale-100">
+            <div>
+              <h3 className="text-base font-bold text-slate-800">
+                Xác nhận duyệt hàng loạt
+              </h3>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Hệ thống sẽ tự động lọc và duyệt theo danh sách các học sinh có
+                điều kiện tốt nhất.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-1.5">
+              <label className="text-xs font-semibold text-slate-600">
+                Số lượng học sinh tối đa muốn duyệt:
+              </label>
+              <input
+                type="number"
+                min="1"
+                placeholder="Để trống nếu muốn duyệt toàn bộ trang"
+                value={maxStudents}
+                onChange={(e) => setMaxStudents(e.target.value)}
+                className="w-full px-3 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all placeholder:text-slate-400 text-slate-800"
+              />
+              <span className="text-[11px] text-amber-600 bg-amber-50 border border-amber-200/50 px-2.5 py-1.5 rounded-lg mt-1">
+                ⚠️{" "}
+                {maxStudents
+                  ? `Sẽ tiến hành duyệt tối đa ${maxStudents} hồ sơ.`
+                  : "Để trống sẽ thực hiện duyệt TOÀN BỘ hồ sơ hợp lệ ở trang này."}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsOpenApproveModal(false);
+                  setMaxStudents("");
+                }}
+                disabled={isPendingApprove}
+                className="px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 rounded-xl border border-slate-200 transition-all disabled:opacity-50"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmApprove}
+                disabled={isPendingApprove}
+                className="px-4 py-2 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 rounded-xl shadow-sm transition-all flex items-center gap-1.5 min-w-[90px] justify-center"
+              >
+                {isPendingApprove ? (
+                  <>
+                    <span className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    Đang duyệt...
+                  </>
+                ) : (
+                  "Xác nhận duyệt"
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

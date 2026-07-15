@@ -182,7 +182,7 @@ export default function DiaChiTree() {
     );
 
   return (
-    <div className="p-6 max-w-4xl mx-auto min-h-screen antialiased text-slate-600">
+    <div className="p-6 min-h-screen antialiased text-slate-600">
       {/* HEADER SECTION */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-5 border-b border-slate-200">
         <div className="flex items-center gap-3">
