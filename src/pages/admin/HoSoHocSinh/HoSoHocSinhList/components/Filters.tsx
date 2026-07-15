@@ -1,9 +1,15 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useHocSinhContext } from "../../HocSinhProvider";
 import { $api } from "../../../../../api/client";
-import SelectSearchInput from "../../../../../components/ui/Form/SelectInput";
-import SearchInput from "../../../../../components/ui/Form/SearchInput";
-import { Filter, RefreshCw, Search } from "lucide-react"; // Import Lucide Icons
+import {
+  Filter,
+  RefreshCw,
+  Search,
+  BookOpen,
+  GraduationCap,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const Filters = () => {
@@ -15,16 +21,31 @@ const Filters = () => {
 
   const { setFilters, filters } = useHocSinhContext();
 
-  const [formValues, setFormValues] = useState({
-    keyword: "",
-    majorId: "" as string | number,
-    batchId: "" as string | number,
-  });
+  // Giữ lại state cục bộ riêng cho keyword để làm debounce mượt mà hơn khi gõ phím
+  const [keywordInput, setKeywordInput] = useState(filters.keyword || "");
 
-  // Quy đổi dữ liệu sang định dạng { value, label } phù hợp với SelectSearchInput
+  // 1. Debounce riêng cho ô Tìm kiếm Từ khóa (đợi ngưng gõ 400ms mới call API)
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      setFilters((prev) => ({
+        ...prev,
+        keyword: keywordInput.trim() || undefined,
+        page: 1, // Reset về trang 1 khi tìm kiếm từ khóa mới
+      }));
+    }, 400);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [keywordInput, setFilters]);
+
+  // Đồng bộ lại ô input nếu bộ lọc bị xóa từ bên ngoài (hoặc nút Xóa bộ lọc)
+  useEffect(() => {
+    setKeywordInput(filters.keyword || "");
+  }, [filters.keyword]);
+
+  // Quy đổi dữ liệu sang định dạng { value, label } cho Khóa học dựa trên majorId của context
   const filteredBatchesOptions = useMemo(() => {
-    if (!formValues.majorId) return [];
-    const selectedMajorId = Number(formValues.majorId);
+    if (!filters.majorId) return [];
+    const selectedMajorId = Number(filters.majorId);
 
     return (rawKhoaHocList || [])
       .filter((batch: any) => Number(batch.majorId) === selectedMajorId)
@@ -32,9 +53,9 @@ const Filters = () => {
         value: batch.id,
         label: batch.name || batch.batchName || `Khóa ${batch.id}`,
       }));
-  }, [formValues.majorId, rawKhoaHocList]);
+  }, [filters.majorId, rawKhoaHocList]);
 
-  // Chuẩn hóa danh sách Ngành học cho SelectSearchInput
+  // Chuẩn hóa danh sách Ngành học
   const majorOptions = useMemo(() => {
     return (majorList || []).map((major: any) => ({
       value: major.id,
@@ -42,34 +63,30 @@ const Filters = () => {
     }));
   }, [majorList]);
 
-  // Đồng thời thay đổi ngành học và reset khóa học
-  const handleMajorChange = (e: any) => {
-    const newMajorId = e?.target ? e.target.value : e;
-    setFormValues((prev) => ({
+  // Thay đổi ngành học -> Cập nhật context trực tiếp & reset khóa học liền lúc
+  const handleMajorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setFilters((prev) => ({
       ...prev,
-      majorId: newMajorId,
-      batchId: "", // Reset Khóa học ngay tại đây
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFilters({
-      keyword: formValues.keyword.trim() || undefined,
-      majorId: formValues.majorId ? Number(formValues.majorId) : undefined,
-      batchId: formValues.batchId ? Number(formValues.batchId) : undefined,
+      majorId: value ? Number(value) : undefined,
+      batchId: undefined, // Reset Khóa học ngay tại đây
       page: 1,
-    });
+    }));
   };
 
-  const handleClearFilters = () => {
-    setFormValues((prev) => ({
+  // Thay đổi khóa học -> Cập nhật context trực tiếp
+  const handleBatchChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value;
+    setFilters((prev) => ({
       ...prev,
-      keyword: "",
-      majorId: "",
-      batchId: "",
+      batchId: value ? Number(value) : undefined,
+      page: 1,
     }));
+  };
 
+  // Nút xóa bộ lọc ở thanh Header
+  const handleClearFilters = () => {
+    setKeywordInput("");
     setFilters((prev) => ({
       ...prev,
       keyword: undefined,
@@ -79,80 +96,122 @@ const Filters = () => {
     }));
   };
 
-  const hasActiveFilters =
-    Object.keys(filters || {}).filter((k) => k !== "page").length > 0;
+  // Kiểm tra xem đang có bộ lọc nào được active không (bỏ qua page, limit, status...)
+  const hasActiveFilters = Boolean(
+    filters.keyword || filters.majorId || filters.batchId,
+  );
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-5 bg-white rounded-xl shadow-sm border border-gray-200/80 mb-6 transition-all duration-200 hover:shadow-md"
-    >
-      {/* Tiêu đề vùng lọc dữ liệu */}
-      <div className="flex items-center gap-2 mb-4 text-gray-800 font-semibold text-base border-b border-gray-100 pb-2">
-        <Filter className="w-5 h-5 text-blue-500" />
-        Bộ lọc tìm kiếm
-      </div>
+    <div className="p-4 bg-white rounded-xl shadow-sm border border-gray-200/80 mb-6 transition-all duration-200 hover:shadow-md">
+      {/* Tiêu đề & Nút xóa bộ lọc đưa lên cùng 1 hàng */}
+      <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-2">
+        <div className="flex items-center gap-2 text-gray-800 font-semibold text-base">
+          <Filter className="w-5 h-5 text-blue-500" />
+          Bộ lọc tìm kiếm
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 items-end">
-        {/* 1. Ô tìm kiếm Từ khóa */}
-        <SearchInput
-          label="Từ khóa"
-          placeholder="Mã SV, họ tên, email..."
-          value={formValues.keyword}
-          onChange={(value) =>
-            setFormValues((prev) => ({ ...prev, keyword: value }))
-          }
-        />
-
-        {/* 2. Ô chọn Ngành học */}
-        <SelectSearchInput
-          label="Ngành học"
-          placeholder="-- Chọn ngành học --"
-          options={majorOptions}
-          value={formValues.majorId}
-          onChange={handleMajorChange}
-        />
-
-        {/* 3. Ô chọn Khóa học */}
-        <SelectSearchInput
-          label="Khóa học"
-          placeholder={
-            !formValues.majorId ? "⚠️ Chọn ngành trước" : "-- Chọn khóa học --"
-          }
-          options={filteredBatchesOptions}
-          value={formValues.batchId}
-          onChange={(value) =>
-            setFormValues((prev) => ({
-              ...prev,
-              batchId: value?.target ? value.target.value : value,
-            }))
-          }
-          isLoading={isLoadingKhoaHocs}
-          disabled={!formValues.majorId || isLoadingKhoaHocs}
-        />
-      </div>
-
-      {/* Khu vực nút bấm điều khiển */}
-      <div className="flex justify-end gap-3 mt-5 border-t border-gray-100 pt-4">
         {hasActiveFilters && (
           <button
             type="button"
             onClick={handleClearFilters}
-            className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-red-600 border border-gray-300 rounded-lg hover:bg-red-50 hover:border-red-200 transition-all duration-150 flex items-center gap-1.5"
+            className="px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-red-600 border border-gray-200 rounded-md hover:bg-red-50 hover:border-red-200 transition-all duration-150 flex items-center gap-1 cursor-pointer"
           >
-            <RefreshCw className="w-4 h-4 animate-duration-500" />
+            <RefreshCw className="w-3.5 h-3.5" />
             Xóa bộ lọc
           </button>
         )}
-        <button
-          type="submit"
-          className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 active:bg-blue-800 rounded-lg shadow-sm hover:shadow transition-all duration-150 flex items-center gap-1.5"
-        >
-          <Search className="w-4 h-4" />
-          Tìm kiếm
-        </button>
       </div>
-    </form>
+
+      {/* Lưới 3 ô nhập liệu có kích thước hoàn toàn bằng đều nhau */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* 1. Ô TÌM KIẾM TỪ KHÓA */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-gray-600 flex items-center gap-1">
+            Từ khóa
+          </label>
+          <div className="relative flex items-center">
+            <span className="absolute left-3 text-gray-400">
+              <Search className="w-4 h-4" />
+            </span>
+            <input
+              type="text"
+              placeholder="Mã SV, họ tên, email..."
+              value={keywordInput}
+              onChange={(e) => setKeywordInput(e.target.value)}
+              className="w-full pl-9 pr-3 py-2.5 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+            />
+          </div>
+        </div>
+
+        {/* 2. Ô CHỌN NGÀNH HỌC */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-gray-600">
+            Ngành học
+          </label>
+          <div className="relative flex items-center">
+            <span className="absolute left-3 text-gray-400 pointer-events-none">
+              <BookOpen className="w-4 h-4" />
+            </span>
+            <select
+              value={filters.majorId || ""}
+              onChange={handleMajorChange}
+              className="w-full pl-9 pr-8 py-2.5 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none cursor-pointer"
+            >
+              <option value="">-- Chọn ngành học --</option>
+              {majorOptions.map((option: any) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            {/* Custom mũi tên chỉ xuống để đồng nhất giao diện */}
+            <span className="absolute right-3 text-gray-400 pointer-events-none text-xs">
+              ▼
+            </span>
+          </div>
+        </div>
+
+        {/* 3. Ô CHỌN KHÓA HỌC (Phụ thuộc vào ngành học) */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-gray-600">
+            Khóa học
+          </label>
+          <div className="relative flex items-center">
+            <span className="absolute left-3 text-gray-400 pointer-events-none">
+              {isLoadingKhoaHocs ? (
+                <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+              ) : !filters.majorId ? (
+                <AlertCircle className="w-4 h-4 text-amber-500" />
+              ) : (
+                <GraduationCap className="w-4 h-4" />
+              )}
+            </span>
+            <select
+              value={filters.batchId || ""}
+              onChange={handleBatchChange}
+              disabled={!filters.majorId || isLoadingKhoaHocs}
+              className="w-full pl-9 pr-8 py-2.5 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none cursor-pointer disabled:bg-gray-50 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed"
+            >
+              {!filters.majorId ? (
+                <option value="">⚠️ Chọn ngành trước</option>
+              ) : (
+                <>
+                  <option value="">-- Chọn khóa học --</option>
+                  {filteredBatchesOptions.map((option: any) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </>
+              )}
+            </select>
+            <span className="absolute right-3 text-gray-400 pointer-events-none text-xs">
+              ▼
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

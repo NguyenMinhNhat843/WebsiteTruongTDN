@@ -77,9 +77,10 @@ const ImportStudentModal = ({ isOpen, onClose }: ImportStudentModalProps) => {
           : null,
       dob: formatExcelDate(row["Ngày sinh"]),
       phone: row["Sđt HS"] ? String(row["Sđt HS"]).trim() : null,
-      address: row["Hộ khẩu thường trú"]
+      addressDetail: row["Hộ khẩu thường trú"]
         ? String(row["Hộ khẩu thường trú"]).trim()
         : null,
+      majorId: selectedMajor ? Number(selectedMajor) : null,
       identityNumber: row["CCCD HS "] ? String(row["CCCD HS "]).trim() : null,
 
       fatherName: row["Họ và tên cha"]
@@ -239,54 +240,58 @@ const ImportStudentModal = ({ isOpen, onClose }: ImportStudentModalProps) => {
             <span className="flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-blue-600 rounded-full">
               2
             </span>
-            Chọn ngành học
+            Chọn thông tin đào tạo
           </label>
           <p className="text-xs text-gray-500 pl-6.5">
-            Sinh viên trong file Excel chuẩn bị Import thuộc ngành nào dưới đây?
+            Sinh viên trong file Excel chuẩn bị Import thuộc ngành và khóa nào
+            dưới đây?
           </p>
 
-          <div className="pl-6.5 mt-1 flex flex-col gap-2">
-            <select
-              value={selectedMajor}
-              onChange={(e) => {
-                const val = e.target.value;
-                setSelectedMajor(val);
-                if (error === "Vui lòng chọn ngành học trước khi import.")
-                  setError("");
-                searchBatches({
-                  params: {
-                    query: {
-                      majorId: val ? Number(val) : undefined,
+          <div className="pl-6.5 mt-1 flex flex-col gap-3">
+            {/* Container chứa 2 Dropdowns xếp ngang hàng */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <select
+                value={selectedMajor}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setSelectedMajor(val);
+                  if (error === "Vui lòng chọn ngành học trước khi import.")
+                    setError("");
+                  searchBatches({
+                    params: {
+                      query: {
+                        majorId: val ? Number(val) : undefined,
+                      },
                     },
-                  },
-                });
-              }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white"
-            >
-              <option value="">-- Chọn ngành học --</option>
-              {MajorOptions?.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+                  });
+                }}
+                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white cursor-pointer"
+              >
+                <option value="">-- Chọn ngành học --</option>
+                {MajorOptions?.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
 
-            <select
-              value={selectedBatch}
-              onChange={(e) => {
-                setSelectedBatch(e.target.value);
-                if (error === "Vui lòng chọn ngành học trước khi import.")
-                  setError("");
-              }}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow bg-white"
-            >
-              <option value="">-- Chọn khóa đào tạo --</option>
-              {KhoaHocOptions?.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+              <select
+                value={selectedBatch}
+                onChange={(e) => {
+                  setSelectedBatch(e.target.value);
+                  if (error === "Vui lòng chọn ngành học trước khi import.")
+                    setError("");
+                }}
+                className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all bg-white cursor-pointer"
+              >
+                <option value="">-- Chọn khóa đào tạo --</option>
+                {KhoaHocOptions?.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             {/* Khối cảnh báo nghiệp vụ chỉ import 1 ngành */}
             <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg flex gap-2 items-start text-amber-800">

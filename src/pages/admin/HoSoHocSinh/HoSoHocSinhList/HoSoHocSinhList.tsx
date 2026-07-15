@@ -1,6 +1,5 @@
 import TableHoSoHocSinh from "./TableHoSoHocSinh";
 import PageShell from "../../../../components/ui/PageShell";
-import StatOverview from "../components/StatOverview";
 import { GraduationCap } from "lucide-react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import { useHocSinhContext } from "../HocSinhProvider";
@@ -32,9 +31,6 @@ const DanhSachHoSoHocSinh = () => {
       }
     >
       <div className="space-y-5">
-        {/* ── Stats ── */}
-        <StatOverview />
-
         <Filters />
 
         <TableHoSoHocSinh />

@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import Breadcrumb from "../../../../components/ui/Breadcrum";
 import { useHocSinhContext, type StatusHocSinhEnum } from "../HocSinhProvider";
-import { StudentDocuments } from "./HoSoFile";
+import { StudentDocuments } from "./Tabs/TabHoSoFile";
 import {
   HoSoHocSinhOneProvider,
   useHoSoHocSinhOneContext,
@@ -20,10 +20,12 @@ import TabThongTinCaNhan from "./Tabs/TabThongTinCaNhan";
 import TabThongTinNguoiGiamHo from "./Tabs/TabThongTinNguoiGiamHo";
 import TabHoSoXetTuyen from "./Tabs/TabHoSoXetTuyen";
 import { toast } from "sonner";
-import { STUDENT_STATUS_MAP } from "../../../../api/enum";
+import {
+  STUDENT_STATUS_MAP,
+  type StudentStatusEnum,
+} from "../../../../api/enum";
 import { $api } from "../../../../api/client";
 import RegisterModal from "../../../../features/auth/RegisterForm";
-// IMPORT RegisterModal của bạn vào đây (Sửa lại đường dẫn cho đúng cấu trúc thư mục của bạn)
 
 const HoSoHocSinhOne = () => {
   return (
@@ -73,7 +75,6 @@ const Inner = () => {
     if (!studentDetail?.id) return;
 
     const dtoData = formData;
-    console.log("dtoData trước khi gửi lên backend: ", dtoData);
 
     if (dtoData.fatherYearOfBirth)
       dtoData.fatherYearOfBirth = Number(dtoData.fatherYearOfBirth);
@@ -143,55 +144,27 @@ const Inner = () => {
     return new Date(dateString).toLocaleDateString("vi-VN");
   };
 
-  const renderStatusBadge = (status: NonNullable<StatusHocSinhEnum>) => {
-    const statusMap = {
-      registered: {
-        text: "Đợi tư vấn",
-        color: "bg-gray-100 text-gray-800 border-gray-200",
-      },
-      pending: {
-        text: "Chờ duyệt",
-        color: "bg-gray-100 text-gray-800 border-gray-200",
-      },
-      failed: {
-        text: "Không đạt",
-        color: "bg-red-100 text-red-800 border-red-200",
-      },
-      studying: {
-        text: "Đang học",
-        color: "bg-green-100 text-green-800 border-green-200",
-      },
-      graduated: {
-        text: "Đã tốt nghiệp",
-        color: "bg-blue-100 text-blue-800 border-blue-200",
-      },
-      suspended: {
-        text: "Bảo lưu",
-        color: "bg-yellow-100 text-yellow-800 border-yellow-200",
-      },
-      dropped: {
-        text: "Thôi học",
-        color: "bg-red-100 text-red-800 border-red-200",
-      },
-      approved: {
-        text: "Đã duyệt nhập học",
-        color: "bg-indigo-100 text-indigo-800 border-indigo-200",
-      },
-      expelled: {
-        text: "Buộc thôi học",
-        color: "bg-purple-100 text-purple-800 border-purple-200",
-      },
+  const renderStatusBadge = (status: NonNullable<StudentStatusEnum>) => {
+    const colorMap: Record<NonNullable<StudentStatusEnum>, string> = {
+      registered: "bg-gray-100 text-gray-800 border-gray-200",
+      pending: "bg-amber-100 text-amber-800 border-amber-200",
+      failed: "bg-red-100 text-red-800 border-red-200",
+      approved: "bg-indigo-100 text-indigo-800 border-indigo-200",
+      studying: "bg-green-100 text-green-800 border-green-200",
+      dropped: "bg-slate-100 text-slate-800 border-slate-200",
+      graduated: "bg-blue-100 text-blue-800 border-blue-200",
     };
-    const current = statusMap[status] || {
-      text: status,
-      color: "bg-gray-100 text-gray-800 border-gray-200",
-    };
+
+    const text = STUDENT_STATUS_MAP[status] || String(status);
+
+    const colorClass =
+      colorMap[status] || "bg-gray-100 text-gray-800 border-gray-200";
 
     return (
       <span
-        className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium ${current.color}`}
+        className={`inline-flex items-center rounded-full border px-3 py-1 text-sm font-medium ${colorClass}`}
       >
-        {current.text}
+        {text}
       </span>
     );
   };
@@ -281,22 +254,27 @@ const Inner = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-1 gap-x-4 gap-y-1 text-sm text-gray-500 sm:grid-cols-2 md:grid-cols-3">
-                <p>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-gray-500">
+                {/* HÀNG 1 - CỘT 1 */}
+                <p className="min-h-[32px] flex items-center">
                   Mã học sinh:{" "}
-                  <span className="font-semibold text-gray-700">
+                  <span className="ml-1 font-semibold text-gray-700">
                     {studentDetail.studentCode}
                   </span>
                 </p>
-                <p>
+
+                {/* HÀNG 1 - CỘT 2 */}
+                <p className="min-h-[32px] flex items-center">
                   Ngành nghề:{" "}
-                  <span className="font-semibold text-gray-700">
+                  <span className="ml-1 font-semibold text-gray-700">
                     {studentDetail.major?.majorName ||
                       studentDetail.majorId ||
                       "---"}
                   </span>
                 </p>
-                <p className="flex items-center gap-2">
+
+                {/* HÀNG 2 - CỘT 1 */}
+                <p className="min-h-[32px] flex items-center gap-2">
                   Khóa đào tạo:{" "}
                   {isEditMode ? (
                     <select
@@ -327,9 +305,11 @@ const Inner = () => {
                     </span>
                   )}
                 </p>
-                <p>
+
+                {/* HÀNG 2 - CỘT 2 */}
+                <p className="min-h-[32px] flex items-center">
                   Lớp học:{" "}
-                  <span className="font-semibold text-gray-700">
+                  <span className="ml-1 font-semibold text-gray-700">
                     {studentDetail.class?.className ||
                       studentDetail.classId ||
                       "---"}
@@ -342,15 +322,19 @@ const Inner = () => {
             <div className="flex flex-wrap gap-2 self-center sm:self-start">
               {!isEditMode ? (
                 <>
-                  {/* CHỈ HIỂN THỊ NÚT CẤP TÀI KHOẢN NẾU HỌC SINH CHƯA CÓ userId */}
-                  {!studentDetail.userId && (
-                    <button
-                      onClick={() => setIsOpenRegisterModal(true)}
-                      className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-medium transition-all shadow-sm"
-                    >
-                      <UserPlus className="w-4 h-4" /> Cấp tài khoản
-                    </button>
-                  )}
+                  {/* CHỈ HIỂN THỊ NÚT CẤP TÀI KHOẢN NẾU HỌC SINH CHƯA CÓ userId và thuộc các trạng thái được phép */}
+                  {!studentDetail.userId &&
+                    studentDetail.status &&
+                    ["approved", "studying", "dropped", "graduated"].includes(
+                      studentDetail.status,
+                    ) && (
+                      <button
+                        onClick={() => setIsOpenRegisterModal(true)}
+                        className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-sm font-medium transition-all shadow-sm"
+                      >
+                        <UserPlus className="w-4 h-4" /> Cấp tài khoản
+                      </button>
+                    )}
 
                   <button
                     onClick={() => setIsEditMode(true)}

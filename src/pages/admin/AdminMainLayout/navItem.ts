@@ -212,6 +212,12 @@ const navItems: NavItem[] = [
         href: "/admin/cai-dat/cau-hinh-chung",
         roles: ["admin"],
       },
+      {
+        id: "huong-dan-su-dung",
+        label: "Hướng dẫn sử dụng",
+        href: "/admin/cai-dat/huong-dan-su-dung",
+        roles: ["admin", "student", "teacher", "staff"],
+      },
     ],
   },
 ];

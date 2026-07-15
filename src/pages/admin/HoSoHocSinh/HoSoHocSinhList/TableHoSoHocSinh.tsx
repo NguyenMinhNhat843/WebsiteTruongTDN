@@ -1,3 +1,10 @@
+import { useMemo } from "react";
+import {
+  useReactTable,
+  getCoreRowModel,
+  flexRender,
+  type ColumnDef,
+} from "@tanstack/react-table";
 import RowActions from "./components/RowAction";
 import { useHocSinhContext } from "../HocSinhProvider";
 import { formatDate } from "../../../../util/formatDate";
@@ -9,8 +16,10 @@ import {
   type StudentStatusEnum,
 } from "../../../../api/enum";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export type ApproveStudentDto = components["schemas"]["ApprovedStudentDto"];
+export type StudentItem = components["schemas"]["QualifiedStudentResponseDto"];
 
 const TableHoSoHocSinh = () => {
   const {
@@ -23,9 +32,12 @@ const TableHoSoHocSinh = () => {
     total,
   } = useHocSinhContext();
 
-  // Thay đổi: Mặc định nếu filters.status không có thì tab active sẽ là "" (Tất cả)
   const currentTab = filters.status || "";
   const queryClient = useQueryClient();
+
+  const currentPage = filters.page || 1;
+  const pageSize = filters.limit || 10;
+  const totalPages = Math.ceil((total || 0) / pageSize) || 1;
 
   /**
    * Xét duyệt học sinh, chuyển từ chờ xét tuyển sang đã đậu
@@ -52,28 +64,22 @@ const TableHoSoHocSinh = () => {
       },
       {
         onSuccess: () => {
-          alert("🎉 Đã duyệt toàn bộ học sinh thành công!");
+          toast.success("Đã duyệt toàn bộ học sinh thành công!");
           queryClient.invalidateQueries({
             queryKey: ["get", "/students"],
           });
         },
         onError: () => {
-          alert("❌ Duyệt hàng loạt thất bại!");
+          toast.error("Duyệt hàng loạt thất bại!");
         },
       },
     );
   };
 
-  const currentPage = filters.page || 1;
-  const pageSize = filters.limit || 10;
-  const totalPages = Math.ceil((total || 0) / pageSize) || 1;
-
-  // Hàm chuyển đổi giữa các Tab
   const handleTabChange = (status: StudentStatusEnum) => {
     setFilters((prev) => ({
       ...prev,
       page: 1,
-      // Nếu chọn tab "Tất cả" (status = ""), ta truyền undefined hoặc "" tùy cấu trúc API xử lý của bạn
       status: status || undefined,
     }));
   };
@@ -102,6 +108,164 @@ const TableHoSoHocSinh = () => {
     );
   };
 
+  // Khai báo cột và xử lý logic ẩn/hiện động theo tab hiện tại
+  const columns = useMemo<ColumnDef<StudentItem>[]>(() => {
+    const baseColumns: ColumnDef<StudentItem>[] = [
+      {
+        id: "stt",
+        header: "STT",
+        cell: (info) => (currentPage - 1) * pageSize + info.row.index + 1,
+        meta: {
+          className: "w-[60px]",
+        },
+      },
+      {
+        id: "fullName",
+        header: "Họ và tên",
+        cell: ({ row }) => {
+          const student = row.original;
+          return (
+            <div className="flex flex-col">
+              <div className="font-bold text-slate-800 text-[13px]">
+                {student.fullName || "Chưa có tên"}
+              </div>
+              <div className="text-[11px] text-slate-400 flex items-center gap-1">
+                {typeof student.gender === "boolean" && (
+                  <span>{student.gender ? "Nam" : "Nữ"}</span>
+                )}
+                {typeof student.gender === "boolean" && student.dob && (
+                  <span className="text-slate-300">·</span>
+                )}
+                {student.dob && <span>{formatDate(String(student.dob))}</span>}
+              </div>
+            </div>
+          );
+        },
+      },
+      {
+        id: "major",
+        header: "Ngành học",
+        cell: ({ row }) => row.original.major?.majorName || "-",
+      },
+      {
+        id: "class",
+        header: "Lớp học",
+        cell: ({ row }) => {
+          const student = row.original;
+          return student.class?.classCode ? (
+            student.class.classCode
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200/60 shadow-sm select-none">
+              Chưa có
+            </span>
+          );
+        },
+      },
+      {
+        id: "batch",
+        header: "Khóa đào tạo",
+        cell: ({ row }) => row.original.batch?.batchCode || "-",
+      },
+      {
+        id: "documentProgress",
+        header: "Hồ sơ",
+        cell: ({ row }) => {
+          const progress = row.original.documentProgress;
+          if (!progress)
+            return <span className="text-slate-400 text-xs">-</span>;
+
+          const isCompleted =
+            progress.current === progress.total && progress.total > 0;
+
+          return (
+            <span
+              className={`inline-flex items-center justify-center font-semibold text-xs px-2 py-0.5 rounded-full ${
+                isCompleted
+                  ? "bg-emerald-50 text-emerald-600 border border-emerald-200/50"
+                  : "bg-amber-50 text-amber-600 border border-amber-200/50"
+              }`}
+            >
+              {progress.current}/{progress.total}
+            </span>
+          );
+        },
+      },
+      {
+        id: "isQualified",
+        header: "Đánh giá",
+        cell: ({ row }) => {
+          const isQualified = row.original.isQualified;
+          return isQualified ? (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
+              Đủ điều kiện
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200">
+              Không đủ điều kiện
+            </span>
+          );
+        },
+      },
+      {
+        id: "status",
+        header: "Trạng thái",
+        cell: ({ row }) => <BadgeStudentStatus status={row.original.status} />,
+      },
+      {
+        id: "actions",
+        header: "Thao tác",
+        meta: {
+          className: "text-right pr-7",
+        },
+        cell: ({ row }) => {
+          const student = row.original;
+          return (
+            <div className="flex justify-end">
+              <RowActions
+                onView={() =>
+                  navigate(`/admin/hoc-sinh/ho-so/${student.studentCode}`)
+                }
+                onDelete={() =>
+                  handleDelete(student.id || -1, student.studentCode || "")
+                }
+              />
+            </div>
+          );
+        },
+      },
+    ];
+
+    // Xử lý loại bỏ cột động dựa theo trạng thái của tab hiện tại
+    return baseColumns.filter((col) => {
+      // 1. Nếu là tab 'registered' -> ẩn Lớp học, Khóa đào tạo, Hồ sơ và Đánh giá
+      if (currentTab === "registered") {
+        return ![
+          "class",
+          "batch",
+          "documentProgress",
+          "isQualified",
+          "status",
+        ].includes(col.id!);
+      }
+      // 2. Nếu là tab 'pending' hoặc 'failed' -> ẩn Lớp học, Khóa đào tạo, Hồ sơ
+      if (currentTab === "pending" || currentTab === "failed") {
+        return !["class", "batch", "documentProgress"].includes(col.id!);
+      }
+      // 3. Nếu là tab 'approved' hoặc 'studying' -> ẩn Đánh giá
+      if (currentTab === "approved" || currentTab === "studying") {
+        return !["isQualified"].includes(col.id!);
+      }
+      return true;
+    });
+  }, [currentTab, currentPage, pageSize, navigate]);
+
+  // Khởi tạo bảng TanStack Table
+  const table = useReactTable({
+    data: students || [],
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+  });
+
   return (
     <div className="w-full flex flex-col gap-4">
       {/* THANH CHUYỂN TAB (TABS NAVIGATION) */}
@@ -112,7 +276,7 @@ const TableHoSoHocSinh = () => {
 
             return (
               <button
-                key={tab.value || "all"} // fallback key nếu tab.value là chuỗi rỗng
+                key={tab.value || "all"}
                 onClick={() => handleTabChange(tab.value)}
                 className={`pb-2 text-sm font-medium transition-all relative whitespace-nowrap ${
                   isActive
@@ -155,161 +319,72 @@ const TableHoSoHocSinh = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm border-collapse">
             <thead>
-              <tr className="bg-slate-50/70 border-b border-slate-200">
-                <th className="px-5 py-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider w-[60px]">
-                  STT
-                </th>
-                <th className="px-5 py-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider">
-                  Họ và tên
-                </th>
-                <th className="px-5 py-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider">
-                  Lớp học
-                </th>
-                <th className="px-5 py-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider">
-                  Khóa đào tạo
-                </th>
-                <th className="px-5 py-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider">
-                  Hồ sơ
-                </th>
-                <th className="px-5 py-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider">
-                  Đánh giá
-                </th>
-                <th className="px-5 py-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider">
-                  Trạng thái
-                </th>
-                <th className="px-5 py-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider text-right pr-7">
-                  Thao tác
-                </th>
-              </tr>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr
+                  key={headerGroup.id}
+                  className="bg-slate-50/70 border-b border-slate-200"
+                >
+                  {headerGroup.headers.map((header) => {
+                    const meta = header.column.columnDef.meta as any;
+                    return (
+                      <th
+                        key={header.id}
+                        className={`px-5 py-4 font-bold text-slate-500 uppercase text-[11px] tracking-wider ${
+                          meta?.className || ""
+                        }`}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </th>
+                    );
+                  })}
+                </tr>
+              ))}
             </thead>
 
             <tbody className="divide-y divide-slate-100">
               {isLoadingStudents ? (
                 Array.from({ length: 5 }).map((_, idx) => (
                   <tr key={idx} className="animate-pulse">
-                    {Array.from({ length: 8 }).map((_, colIdx) => (
+                    {Array.from({ length: columns.length }).map((_, colIdx) => (
                       <td key={colIdx} className="px-5 py-4">
                         <div className="h-4 bg-slate-200/80 rounded-md w-full max-w-[120px]"></div>
                       </td>
                     ))}
                   </tr>
                 ))
-              ) : students.length > 0 ? (
-                students.map((student, index) => {
-                  const stt = (currentPage - 1) * pageSize + index + 1;
-                  const progress = student.documentProgress;
-                  const isCompleted =
-                    progress &&
-                    progress.current === progress.total &&
-                    progress.total > 0;
-
-                  const isQualified = student.isQualified;
-
-                  return (
-                    <tr
-                      key={student.id || index}
-                      className="hover:bg-slate-50/40 transition-colors group"
-                    >
-                      {/* STT */}
-                      <td className="px-5 py-3.5 text-slate-500 font-medium">
-                        {stt}
-                      </td>
-
-                      {/* Họ và tên */}
-                      <td className="px-5 py-3.5">
-                        <div className="flex flex-col">
-                          <div className="font-bold text-slate-800 text-[13px]">
-                            {(student.fullName as unknown as string) ||
-                              "Chưa có tên"}
-                          </div>
-                          <div className="text-[11px] text-slate-400">
-                            {typeof student.gender === "boolean"
-                              ? student.gender
-                                ? "Nam"
-                                : "Nữ"
-                              : "Chưa xác định"}{" "}
-                            · {formatDate(String(student.dob))}
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Lớp học */}
-                      <td className="px-5 py-3.5 text-slate-700">
-                        {student.class?.classCode ? (
-                          student.class.classCode
-                        ) : (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 text-slate-500 border border-slate-200/60 shadow-sm select-none">
-                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
-                            Chưa phân lớp
-                          </span>
-                        )}
-                      </td>
-
-                      {/* Khóa đào tạo */}
-                      <td className="px-5 py-3.5 text-slate-700">
-                        {student.batch?.batchCode || "-"}
-                      </td>
-
-                      {/* Hồ sơ */}
-                      <td className="px-5 py-3.5">
-                        {progress ? (
-                          <span
-                            className={`inline-flex items-center justify-center font-semibold text-xs px-2 py-0.5 rounded-full ${
-                              isCompleted
-                                ? "bg-emerald-50 text-emerald-600 border border-emerald-200/50"
-                                : "bg-amber-50 text-amber-600 border border-amber-200/50"
-                            }`}
-                          >
-                            {progress.current}/{progress.total}
-                          </span>
-                        ) : (
-                          <span className="text-slate-400 text-xs">-</span>
-                        )}
-                      </td>
-
-                      {/* Đánh giá */}
-                      <td className="px-5 py-3.5">
-                        {isQualified ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
-                            Đủ điều kiện
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-50 text-red-700 border border-red-200">
-                            Không đủ điều kiện
-                          </span>
-                        )}
-                      </td>
-
-                      {/* Trạng thái */}
-                      <td className="px-5 py-3.5">
-                        <BadgeStudentStatus status={student.status} />
-                      </td>
-
-                      {/* Thao tác */}
-                      <td className="px-5 py-3.5">
-                        <div className="flex justify-end">
-                          <RowActions
-                            onView={() =>
-                              navigate(
-                                `/admin/hoc-sinh/ho-so/${student.studentCode}`,
-                              )
-                            }
-                            onDelete={() =>
-                              handleDelete(
-                                student.id || -1,
-                                student.studentCode || "",
-                              )
-                            }
-                          />
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
+              ) : table.getRowModel().rows.length > 0 ? (
+                table.getRowModel().rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="hover:bg-slate-50/40 transition-colors group"
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      const meta = cell.column.columnDef.meta as any;
+                      return (
+                        <td
+                          key={cell.id}
+                          className={`px-5 py-3.5 text-slate-700 ${
+                            meta?.className || ""
+                          }`}
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext(),
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))
               ) : (
                 <tr>
                   <td
-                    colSpan={8}
+                    colSpan={columns.length}
                     className="h-32 text-center text-slate-400 font-medium bg-slate-50/20"
                   >
                     <div className="flex flex-col items-center justify-center gap-2">

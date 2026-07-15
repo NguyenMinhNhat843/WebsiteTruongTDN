@@ -1961,7 +1961,7 @@ export interface components {
             classId?: number | null;
             majorId: number | null;
             /** @enum {string} */
-            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "dropped" | "graduated";
             admissionProfile?: components["schemas"]["CreateAdmissionProfileDto"];
         };
         MajorDto: {
@@ -2056,7 +2056,7 @@ export interface components {
             classId?: number | null;
             majorId: number | null;
             /** @enum {string} */
-            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "dropped" | "graduated";
             admissionProfile?: components["schemas"]["CreateAdmissionProfileDto"];
             batch?: components["schemas"]["BatchResponseDto"] | null;
             class?: components["schemas"]["ClassResponseDto"] | null;
@@ -2065,7 +2065,7 @@ export interface components {
             documentProgress: components["schemas"]["DocumentProgressDto"];
         };
         /** @enum {string} */
-        StudentStatus: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+        StudentStatus: "registered" | "pending" | "failed" | "approved" | "studying" | "dropped" | "graduated";
         QualifiedStudentResponseDto: {
             id?: number;
             studentCode?: string;
@@ -2106,7 +2106,7 @@ export interface components {
             classId?: number | null;
             majorId: number | null;
             /** @enum {string} */
-            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "dropped" | "graduated";
             admissionProfile?: components["schemas"]["CreateAdmissionProfileDto"];
             batch?: components["schemas"]["BatchResponseDto"] | null;
             class?: components["schemas"]["ClassResponseDto"] | null;
@@ -2182,7 +2182,7 @@ export interface components {
             classId?: number | null;
             majorId?: number | null;
             /** @enum {string} */
-            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "dropped" | "graduated";
             admissionProfile?: components["schemas"]["CreateAdmissionProfileDto"];
         };
         CreateUserDto: {
@@ -2506,17 +2506,6 @@ export interface components {
             minGrade: number;
             subjectId: number;
         };
-        ElectiveSubjectPayload: {
-            subjectId: number;
-            semesterNumber: number;
-            minGrade?: number;
-        };
-        ElectiveGroupPayload: {
-            groupName: string;
-            minCredits: number;
-            minSubjects: number;
-            subjects: components["schemas"]["ElectiveSubjectPayload"][];
-        };
         CreateCurriculumDto: {
             majorId: number;
             curriculumCode: string;
@@ -2525,8 +2514,6 @@ export interface components {
             totalCredits: number;
             /** @description Danh sách các môn học bắt buộc (hoặc tự chọn tự do không theo nhóm) */
             curriculumSubjects: components["schemas"]["CurriculumSubjectPayload"][];
-            /** @description Danh sách các nhóm môn tự chọn kèm môn học bên trong */
-            electiveGroups?: components["schemas"]["ElectiveGroupPayload"][];
         };
         SubjectDto: {
             id: number;
@@ -2553,22 +2540,9 @@ export interface components {
             subjectId: number;
             /** @enum {string} */
             enrollmentType: "COMPULSORY" | "ELECTIVE";
-            electiveGroupId: number | null;
             /** Format: date-time */
             createdAt: string;
             subject: components["schemas"]["SubjectDto"];
-        };
-        ElectiveGroupResponseDto: {
-            id: number;
-            curriculumId: number;
-            groupName: string;
-            minCredits: number;
-            minSubjects: number;
-            /** Format: date-time */
-            updatedAt: string;
-            /** Format: date-time */
-            createdAt: string;
-            curriculumSubjects: components["schemas"]["CurriculumSubjectResponseDtoWithRelation"][];
         };
         CurriculumResponseDtoWithRelation: {
             id: number;
@@ -2583,8 +2557,6 @@ export interface components {
             updatedAt: string;
             curriculumSubjects: components["schemas"]["CurriculumSubjectResponseDtoWithRelation"][];
             major: components["schemas"]["MajorDto"];
-            /** @description Danh sách các nhóm môn tự chọn, bên trong mỗi nhóm có danh sách môn riêng */
-            electiveGroups?: components["schemas"]["ElectiveGroupResponseDto"][];
         };
         UpdateCurriculumDto: {
             majorId?: number;
@@ -2594,8 +2566,6 @@ export interface components {
             totalCredits?: number;
             /** @description Danh sách các môn học bắt buộc (hoặc tự chọn tự do không theo nhóm) */
             curriculumSubjects?: components["schemas"]["CurriculumSubjectPayload"][];
-            /** @description Danh sách các nhóm môn tự chọn kèm môn học bên trong */
-            electiveGroups?: components["schemas"]["ElectiveGroupPayload"][];
         };
         CreateSemesterDto: {
             /**
@@ -3737,7 +3707,7 @@ export interface components {
             classId?: number | null;
             majorId: number | null;
             /** @enum {string} */
-            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "suspended" | "dropped" | "expelled" | "graduated";
+            status?: "registered" | "pending" | "failed" | "approved" | "studying" | "dropped" | "graduated";
             major: components["schemas"]["MajorDto"] | null;
             batch: components["schemas"]["BatchDto"] | null;
             class: components["schemas"]["ClassDto"] | null;
