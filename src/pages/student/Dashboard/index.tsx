@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import {
-  GraduationCap,
   BookOpen,
   Calendar,
   DollarSign,
@@ -20,7 +19,6 @@ import {
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { $api } from "../../../api/client";
 import { useAppContext } from "../../../AppProvider";
-import moment from "moment";
 
 const StudentDashboard = () => {
   const { currentUser } = useAppContext();
@@ -128,10 +126,10 @@ const StudentDashboard = () => {
 
   return (
     <div className="min-h-screen bg-slate-50/50 p-4 md:p-8 space-y-8 animate-in fade-in duration-300">
-      
+
       {/* 1. WELCOME BANNER & STUDENT CARD */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* Banner chào mừng & Thông tin học vấn */}
         <div className="lg:col-span-2 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-3xl p-6 md:p-8 text-white shadow-lg relative overflow-hidden flex flex-col justify-between min-h-[220px]">
           {/* Background decorations */}
@@ -209,7 +207,7 @@ const StudentDashboard = () => {
 
       {/* 2. STATS WIDGETS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
+
         {/* GPA Tích lũy */}
         <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex items-center justify-between group hover:border-blue-200 transition-all">
           <div className="space-y-1">
@@ -260,7 +258,7 @@ const StudentDashboard = () => {
 
       {/* 3. GPA GRAPH & TUITION BANNER */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         {/* Biểu đồ xu hướng GPA học kỳ */}
         <div className="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between min-h-[300px]">
           <div>
@@ -276,14 +274,14 @@ const StudentDashboard = () => {
                 <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorGpa" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2}/>
-                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
+                      <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis dataKey="semesterName" stroke="#94a3b8" fontSize={10} tickLine={false} />
                   <YAxis domain={[0, 10]} stroke="#94a3b8" fontSize={10} tickLine={false} />
-                  <Tooltip 
+                  <Tooltip
                     contentStyle={{ background: "#fff", border: "1px solid #e2e8f0", borderRadius: "12px", fontSize: "12px" }}
                     labelClassName="font-bold text-slate-800"
                   />
@@ -305,13 +303,12 @@ const StudentDashboard = () => {
             <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
               <DollarSign className="text-amber-600" size={18} /> Dư nợ học phí hiện tại
             </h2>
-            
+
             {invoice ? (
               <div className="space-y-4 pt-2">
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
                   <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Số tiền còn thiếu</p>
                   <p className="text-2xl font-black text-rose-600 mt-1">{formatVND(invoice.remainingAmount)}</p>
-                  <p className="text-xs text-slate-500 mt-1.5 font-medium">Hạn đóng: {invoice.period?.endDate ? moment(invoice.period.endDate).format("DD/MM/YYYY") : "-"}</p>
                 </div>
 
                 {invoice.remainingAmount > 0 ? (
@@ -352,7 +349,7 @@ const StudentDashboard = () => {
       <div className="space-y-4">
         <h2 className="text-base font-bold text-slate-800">Lối tắt truy cập nhanh</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          
+
           <Link
             to="/student/dao-tao/thoi-khoa-bieu"
             className="flex flex-col items-center justify-center text-center p-5 bg-white border border-slate-200/80 rounded-2xl hover:shadow-md hover:border-blue-300 hover:text-blue-600 group transition-all"
