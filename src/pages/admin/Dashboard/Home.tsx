@@ -12,10 +12,11 @@ import {
   GraduationCap,
   AlertTriangle,
   ClipboardCheck,
-  Briefcase,
   TrendingUp,
   PieChart as PieIcon,
   BarChart3,
+  DollarSign,
+  ArrowUpRight,
 } from "lucide-react";
 import {
   LineChart,
@@ -51,6 +52,7 @@ const Home = () => {
   const { data: growthCharts, isLoading: isLoadingGrowthCharts } =
     $api.useQuery("get", "/analytics/growth-charts");
 
+  // API Cập nhật DTO mới
   const { data: operationDetails, isLoading: isLoadingOperations } =
     $api.useQuery("get", "/analytics/operation-details");
 
@@ -74,6 +76,14 @@ const Home = () => {
         "Đang học": studyingItem ? studyingItem.count : 0,
       };
     }) || [];
+
+  // Helper định dạng tiền tệ VNĐ
+  const formatVND = (value: number) => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(value);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -152,7 +162,7 @@ const Home = () => {
             )}
           </div>
 
-          {/* 2. Advanced Actionable Widgets */}
+          {/* 2. Advanced Actionable Widgets (Đã cập nhật theo DTO mới) */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
             {/* Card Vận hành Lớp học */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
@@ -162,7 +172,7 @@ const Home = () => {
                     Vận hành & Sĩ số
                   </h4>
                   <span className="px-2 py-1 text-xs font-bold bg-blue-50 text-blue-600 rounded-md border border-blue-100">
-                    Lập đầy: {operationDetails?.classrooms?.schoolFillRate || 0}
+                    Lấp đầy: {operationDetails?.classrooms?.schoolFillRate || 0}
                     %
                   </span>
                 </div>
@@ -172,7 +182,7 @@ const Home = () => {
                 ) : (
                   <div>
                     <div className="text-xs text-gray-400 mb-1">
-                      Trạng thái lớp active:
+                      Trạng thái lớp hoạt động:
                     </div>
                     <div className="text-base font-bold text-gray-800 mb-3">
                       {operationDetails?.classrooms?.totalActiveClasses || 0}{" "}
@@ -243,108 +253,141 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Card Tiến độ Tuyển sinh */}
+            {/* Card Tài chính Học phí - Chỉ số chính (Thay thế cho Tuyển sinh cũ) */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <h4 className="font-bold text-gray-700 text-sm tracking-wide uppercase">
-                    Hồ sơ tuyển sinh
+                    Tình hình Học phí
                   </h4>
-                  <Briefcase size={18} className="text-orange-500" />
+                  <DollarSign size={18} className="text-emerald-500" />
                 </div>
 
                 {isLoadingOperations ? (
                   <div className="h-24 bg-slate-50 animate-pulse rounded-xl" />
-                ) : (
+                ) : operationDetails?.finance ? (
                   <div>
-                    <div className="text-xs text-gray-400 mb-1">
-                      Tổng hồ sơ học bạ THCS nhận được:
+                    <div
+                      className="text-xs text-gray-400 mb-0.5 truncate"
+                      title={operationDetails.finance.periodName}
+                    >
+                      Đợt hiện tại: {operationDetails.finance.periodName}
                     </div>
-                    <div className="text-2xl font-bold text-gray-800 mb-4">
-                      {operationDetails?.admissions?.totalProfilesProcessed ||
-                        0}{" "}
-                      <span className="text-sm font-normal text-gray-500">
-                        hồ sơ
-                      </span>
+                    <div className="text-xs text-slate-400 mb-2">
+                      Hạn chót:{" "}
+                      {new Date(
+                        operationDetails.finance.endDate,
+                      ).toLocaleDateString("vi-VN")}
                     </div>
 
-                    {(operationDetails?.admissions?.alertMissingDocuments ||
-                      0) > 0 ? (
-                      <div className="p-3 bg-amber-50 border border-amber-100 rounded-xl flex items-center justify-between">
-                        <span className="text-xs text-amber-800 font-medium">
-                          Cần bổ sung/duyệt giấy tờ:
-                        </span>
-                        <span className="px-2.5 py-1 text-xs font-bold bg-amber-600 text-white rounded-full">
-                          {operationDetails?.admissions
-                            ?.alertMissingDocuments || 0}{" "}
-                          file lỗi
+                    <div className="text-2xl font-bold text-emerald-600 mb-1">
+                      {formatVND(
+                        operationDetails.finance.metrics.totalCollected,
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-400 mb-3">
+                      Đã thu thành công (
+                      {operationDetails.finance.metrics.collectionRate}%)
+                    </div>
+
+                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-gray-500">Phải thu:</span>
+                        <span className="font-semibold text-gray-700">
+                          {formatVND(
+                            operationDetails.finance.metrics.totalInvoiced,
+                          )}
                         </span>
                       </div>
-                    ) : (
-                      <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-xs text-emerald-700 font-medium">
-                        ✓ Tất cả học sinh đã hoàn thiện đầy đủ giấy tờ hồ sơ.
+                      <div className="flex justify-between text-xs">
+                        <span className="text-red-500">Còn nợ:</span>
+                        <span className="font-semibold text-red-600">
+                          {formatVND(
+                            operationDetails.finance.metrics.totalRemaining,
+                          )}
+                        </span>
                       </div>
-                    )}
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-xs text-gray-400 text-center py-8">
+                    Chưa kích hoạt hoặc thiết lập đợt thu học phí nào.
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Card Đánh giá nề nếp */}
+            {/* Card Tài chính Học phí - Trạng thái hóa đơn & Giao dịch gần đây (Thay thế cho Nề nếp cũ) */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between">
               <div>
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3">
                   <h4 className="font-bold text-gray-700 text-sm tracking-wide uppercase">
-                    Tiến độ Điểm Rèn Luyện
+                    Giao dịch gần đây
                   </h4>
                   <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
                 </div>
 
                 {isLoadingOperations ? (
                   <div className="h-24 bg-slate-50 animate-pulse rounded-xl" />
-                ) : operationDetails?.behaviorAssessment ? (
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-gray-500">Chưa nộp (Nháp):</span>
-                      <span className="font-bold text-gray-700">
-                        {operationDetails.behaviorAssessment.notSubmitted} phiếu
-                      </span>
+                ) : operationDetails?.finance ? (
+                  <div className="space-y-3">
+                    {/* Phân phối hóa đơn */}
+                    <div className="flex justify-between gap-1 text-[11px] text-center bg-gray-50 p-2 rounded-xl">
+                      <div className="flex-1 border-r border-gray-200">
+                        <span className="block font-bold text-emerald-600">
+                          {operationDetails.finance.statusDistribution.paid}
+                        </span>
+                        <span className="text-gray-400">Đã đóng</span>
+                      </div>
+                      <div className="flex-1 border-r border-gray-200">
+                        <span className="block font-bold text-amber-600">
+                          {operationDetails.finance.statusDistribution.partial}
+                        </span>
+                        <span className="text-gray-400">Một phần</span>
+                      </div>
+                      <div className="flex-1">
+                        <span className="block font-bold text-red-500">
+                          {operationDetails.finance.statusDistribution.unpaid}
+                        </span>
+                        <span className="text-gray-400">Chưa đóng</span>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-amber-600 font-medium">
-                        Đang chờ GVCN duyệt:
-                      </span>
-                      <span className="font-bold text-amber-600">
-                        {operationDetails.behaviorAssessment.pendingApproval}{" "}
-                        phiếu
-                      </span>
-                    </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-emerald-600 font-medium">
-                        Đã duyệt / Khóa sổ:
-                      </span>
-                      <span className="font-bold text-emerald-600">
-                        {operationDetails.behaviorAssessment.approved} phiếu
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden mt-3 flex">
-                      <div
-                        className="bg-emerald-500 h-full"
-                        style={{
-                          width: `${(operationDetails.behaviorAssessment.approved / (operationDetails.behaviorAssessment.notSubmitted + operationDetails.behaviorAssessment.pendingApproval + operationDetails.behaviorAssessment.approved || 1)) * 100}%`,
-                        }}
-                      />
-                      <div
-                        className="bg-amber-500 h-full"
-                        style={{
-                          width: `${(operationDetails.behaviorAssessment.pendingApproval / (operationDetails.behaviorAssessment.notSubmitted + operationDetails.behaviorAssessment.pendingApproval + operationDetails.behaviorAssessment.approved || 1)) * 100}%`,
-                        }}
-                      />
+
+                    {/* Danh sách 3/5 giao dịch gần đây rút gọn cho vừa widget */}
+                    <div className="space-y-1.5 max-h-24 overflow-y-auto pr-0.5 custom-scrollbar">
+                      {operationDetails.finance.recentPayments
+                        ?.slice(0, 3)
+                        .map((payment: any) => (
+                          <div
+                            key={payment.id}
+                            className="flex justify-between items-center text-xs p-1.5 bg-white border border-slate-100 rounded-lg shadow-sm"
+                          >
+                            <div className="truncate pr-2">
+                              <span className="font-medium text-gray-800 block truncate">
+                                {payment.studentName}
+                              </span>
+                              <span className="text-[10px] text-gray-400">
+                                {payment.studentCode} • {payment.method}
+                              </span>
+                            </div>
+                            <div className="text-right flex-shrink-0">
+                              <span className="font-bold text-emerald-600 block">
+                                +{formatVND(payment.amountPaid)}
+                              </span>
+                            </div>
+                          </div>
+                        ))}
+                      {operationDetails.finance.recentPayments?.length ===
+                        0 && (
+                        <div className="text-center text-gray-400 py-2 text-[11px]">
+                          Chưa có giao dịch nào phát sinh.
+                        </div>
+                      )}
                     </div>
                   </div>
                 ) : (
-                  <div className="text-xs text-gray-400 text-center py-4">
-                    Kỳ hiện tại chưa kích hoạt đợt đánh giá rèn luyện.
+                  <div className="text-xs text-gray-400 text-center py-8">
+                    Kỳ hiện tại không có dữ liệu giao dịch học phí.
                   </div>
                 )}
               </div>

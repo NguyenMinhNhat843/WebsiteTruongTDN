@@ -121,7 +121,10 @@ const DotHocPhiOne = () => {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2">
         {/* Breadcrumb */}
         <nav className="flex items-center space-x-2 text-sm font-medium text-slate-500">
-          <Link to="/hoc-phi" className="hover:text-blue-600 transition-colors">
+          <Link
+            to="/admin/hoc-phi"
+            className="hover:text-blue-600 transition-colors"
+          >
             Đợt học phí
           </Link>
           <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />

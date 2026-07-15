@@ -3509,44 +3509,158 @@ export interface components {
             details: components["schemas"]["AssessmentDetailUpdateDto"][];
         };
         OverloadedClassDto: {
-            /** @example CNTTK1A */
+            /**
+             * @description Tên lớp học
+             * @example CNTTK1A
+             */
             className: string;
-            /** @example 42/40 */
+            /**
+             * @description Sĩ số hiện tại / Sĩ số tối đa
+             * @example 42/40
+             */
             size: string;
         };
         ClassroomsStatsDto: {
-            /** @example 25 */
+            /**
+             * @description Tổng số lớp học đang hoạt động
+             * @example 25
+             */
             totalActiveClasses: number;
-            /** @example 84.5 */
+            /**
+             * @description Tỷ lệ lấp đầy toàn trường (%)
+             * @example 84.5
+             */
             schoolFillRate: number;
-            /** @example 2 */
+            /**
+             * @description Số lượng lớp đang bị quá tải sĩ số
+             * @example 2
+             */
             overloadedClassesCount: number;
+            /** @description Danh sách chi tiết các lớp quá tải */
             overloadedClasses: components["schemas"]["OverloadedClassDto"][];
-            /** @example 850 */
+            /**
+             * @description Tổng số học sinh hiện tại toàn trường
+             * @example 850
+             */
             totalCurrentStudents: number;
-            /** @example 1000 */
+            /**
+             * @description Tổng chỉ tiêu/sức chứa tối đa toàn trường
+             * @example 1000
+             */
             totalMaxStudents: number;
         };
-        AdmissionsStatsDto: {
-            /** @example 350 */
-            totalProfilesProcessed: number;
-            /** @example 12 */
-            alertMissingDocuments: number;
+        FinanceMetricsDto: {
+            /**
+             * @description Tổng số tiền đã phát hành hóa đơn (phải thu)
+             * @example 2500000000
+             */
+            totalInvoiced: number;
+            /**
+             * @description Tổng số tiền thực tế đã thu thành công
+             * @example 1850000000
+             */
+            totalCollected: number;
+            /**
+             * @description Tổng số tiền sinh viên còn nợ
+             * @example 650000000
+             */
+            totalRemaining: number;
+            /**
+             * @description Tỷ lệ hoàn thành thu học phí của đợt (%)
+             * @example 74
+             */
+            collectionRate: number;
+            /**
+             * @description Tổng số lượng hóa đơn học phí đã phát hành
+             * @example 850
+             */
+            totalInvoicesCount: number;
         };
-        BehaviorAssessmentDto: {
-            /** @example 45 */
-            notSubmitted: number;
-            /** @example 120 */
-            pendingApproval: number;
-            /** @example 680 */
-            approved: number;
+        InvoiceStatusDistributionDto: {
+            /**
+             * @description Số lượng hóa đơn chưa đóng
+             * @example 150
+             */
+            unpaid: number;
+            /**
+             * @description Số lượng hóa đơn mới đóng một phần
+             * @example 80
+             */
+            partial: number;
+            /**
+             * @description Số lượng hóa đơn đã hoàn thành nghĩa vụ
+             * @example 620
+             */
+            paid: number;
+        };
+        RecentPaymentDto: {
+            /**
+             * @description ID của giao dịch thanh toán
+             * @example 12
+             */
+            id: number;
+            /**
+             * @description Họ và tên học sinh
+             * @example Nguyễn Văn A
+             */
+            studentName: string;
+            /**
+             * @description Mã số học sinh
+             * @example HS260105
+             */
+            studentCode: string;
+            /**
+             * @description Số tiền đóng trong lần giao dịch này
+             * @example 6500000
+             */
+            amountPaid: number;
+            /**
+             * Format: date-time
+             * @description Thời gian thực hiện giao dịch
+             * @example 2026-07-15T10:30:00.000Z
+             */
+            paymentDate: string;
+            /**
+             * @description Phương thức nộp tiền (CASH, BANK_TRANSFER, VNPAY,...)
+             * @example BANK_TRANSFER
+             */
+            method: string;
+        };
+        FinanceAnalyticsDto: {
+            /**
+             * @description Tên đợt thu học phí hiện tại
+             * @example Đợt thu học phí Học kỳ 1 - 2026
+             */
+            periodName: string;
+            /**
+             * Format: date-time
+             * @description Ngày bắt đầu thu
+             * @example 2026-06-01T00:00:00.000Z
+             */
+            startDate: string;
+            /**
+             * Format: date-time
+             * @description Hạn chót đóng tiền
+             * @example 2026-07-31T23:59:59.000Z
+             */
+            endDate: string;
+            /** @description Các chỉ số doanh thu tài chính */
+            metrics: components["schemas"]["FinanceMetricsDto"];
+            /** @description Phân phối trạng thái đóng tiền của học sinh */
+            statusDistribution: components["schemas"]["InvoiceStatusDistributionDto"];
+            /** @description Top 5 giao dịch thành công gần đây nhất */
+            recentPayments: components["schemas"]["RecentPaymentDto"][];
         };
         AdvancedAnalyticsResponseDto: {
-            /** @example HK1 2026-2027 */
+            /**
+             * @description Tên học kỳ hoạt động hiện tại
+             * @example HK1 2026-2027
+             */
             semesterName: string;
+            /** @description Dữ liệu thống kê về vận hành lớp học */
             classrooms: components["schemas"]["ClassroomsStatsDto"];
-            admissions: components["schemas"]["AdmissionsStatsDto"];
-            behaviorAssessment: components["schemas"]["BehaviorAssessmentDto"] | null;
+            /** @description Thông tin chi tiết về tài chính & dòng tiền học phí (Trả về null nếu chưa thiết lập hoặc chưa kích hoạt đợt đóng học phí nào) */
+            finance: components["schemas"]["FinanceAnalyticsDto"] | null;
         };
         OverviewStatsResponseDto: {
             /** @example 1200 */
@@ -3871,14 +3985,6 @@ export interface components {
         };
         StudentNestedDto: {
             id: number;
-        };
-        RecentPaymentDto: {
-            id: number;
-            amountPaid: number;
-            /** Format: date-time */
-            paymentDate: string;
-            method: string;
-            student: components["schemas"]["StudentNestedDto"];
         };
         TopDebtorDto: {
             id: number;

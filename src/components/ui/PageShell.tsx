@@ -25,6 +25,7 @@ const PageShell: FunctionComponent<PageShellProps> = ({
   classNameIcon,
   isLoading,
 }) => {
+  // 1. LOADING STATE - Đồng bộ gọn gàng, cân đối
   if (isLoading) {
     return (
       <div
@@ -44,53 +45,62 @@ const PageShell: FunctionComponent<PageShellProps> = ({
               Đang tải dữ liệu...
             </p>
             <p className="text-xs text-slate-400 font-medium">
-              Vui lòng đợi trong giây lát
+              Hệ thống đang xử lý, vui lòng đợi trong giây lát
             </p>
           </div>
         </div>
       </div>
     );
   }
+
   return (
-    <div className={clsx("w-full", className)}>
-      {/* PHẦN 1: HEADER - Sticky & Backdrop blur */}
+    <div
+      className={clsx(
+        "w-full min-h-screen flex flex-col bg-slate-50/50",
+        className,
+      )}
+    >
+      {/* 2. HEADER - Thiết kế phẳng, cỡ chữ đã được tinh chỉnh vừa vặn, cân đối */}
       <div
-        className="sticky top-0 z-20 bg-white/80 backdrop-blur-md flex flex-col md:flex-row md:items-center justify-between gap-6
+        className="sticky top-0 z-20 bg-white/95 backdrop-blur-md flex flex-col md:flex-row md:items-center justify-between gap-4
         p-6 py-4 border-b border-slate-200"
       >
         {/* Nhóm bên trái: Icon + Text */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3.5">
           {Icon && (
             <div
               className={clsx(
-                "shrink-0 p-3 bg-blue-600 rounded-2xl shadow-lg text-white flex items-center justify-center",
+                "shrink-0 p-2.5 bg-blue-50 border border-blue-100 text-blue-600 rounded-xl flex items-center justify-center",
                 classNameIcon,
               )}
             >
-              <Icon size={26} strokeWidth={2.5} aria-hidden="true" />
+              <Icon size={24} strokeWidth={2.2} aria-hidden="true" />
             </div>
           )}
 
-          <div className="space-y-1">
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
+          <div className="space-y-0.5">
+            <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 leading-tight">
               {title}
             </h1>
             {sub && (
-              <p className="text-sm text-slate-500 font-medium leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
                 {sub}
               </p>
             )}
           </div>
         </div>
 
+        {/* Nhóm bên phải: Các nút hành động */}
         {renderRight && (
-          <div className="flex items-center gap-3 shrink-0">{renderRight}</div>
+          <div className="flex items-center gap-3 shrink-0 w-full md:w-auto">
+            {renderRight}
+          </div>
         )}
       </div>
 
-      {/* --- PHẦN 2: CONTENT --- */}
-      <main className="w-full min-h-screen bg-slate-50">
-        <div className="p-6">{children}</div>
+      {/* 3. CONTENT AREA */}
+      <main className="w-full flex-1">
+        <div className="p-6 max-w-7xl mx-auto w-full">{children}</div>
       </main>
     </div>
   );
