@@ -71,27 +71,34 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
     /**
      * Lấy thông tin chi tiết 1 giáo viên
      */
-    const { data: staffDetail, isLoading: isLoadingStaffDetail } =
-      $api.useQuery(
-        "get",
-        "/staffs/{staffCode}",
-        {
-          params: {
-            path: {
-              staffCode: staffCode!,
-            },
+    const {
+      data: staffDetail,
+      isLoading: isLoadingStaffDetail,
+      refetch: refetchStaffDetail,
+    } = $api.useQuery(
+      "get",
+      "/staffs/{staffCode}",
+      {
+        params: {
+          path: {
+            staffCode: staffCode!,
           },
         },
-        {
-          enabled: Boolean(staffCode),
-        },
-      );
+      },
+      {
+        enabled: Boolean(staffCode),
+      },
+    );
 
     /**
      * Đăng ký môn học cho giáo viên
      */
     const { mutate: registerSubjectsForTeacher, isPending: isRegistering } =
-      $api.useMutation("post", "/teacher-subjects/batch");
+      $api.useMutation("post", "/teacher-subjects/batch", {
+        onSuccess: () => {
+          refetchStaffDetail();
+        },
+      });
 
     /**
      * Lấy all danh sách môn học

@@ -51,6 +51,24 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
       );
 
     /**
+     * Lấy danh sách học kỳ trong thời gian học của lớp học
+     */
+    const { data: semesters, isLoading: isLoadingSemesters } = $api.useQuery(
+      "get",
+      "/semesters",
+      {
+        params: {
+          query: {
+            classId: classId!,
+          },
+        },
+      },
+      {
+        enabled: !!classId,
+      },
+    );
+
+    /**
      * Load bảng kế hoạch đào tạo
      */
     const { data: trainingPlan, isLoading: isLoadingTrainingPlan } =
@@ -89,6 +107,8 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
       isLoadingTeachers,
       trainingPlan,
       isLoadingTrainingPlan,
+      semesters,
+      isLoadingSemesters,
 
       //state
       semesterId,

@@ -5,7 +5,7 @@ import {
   flexRender,
   createColumnHelper,
 } from "@tanstack/react-table";
-import { Calendar, Briefcase, Hash, Building2, User, Eye } from "lucide-react";
+import { Calendar, Hash, Building2, User, Eye } from "lucide-react";
 import {
   useQuanLyNguoiDungContext,
   type StaffDto,
@@ -14,6 +14,7 @@ import PageShell from "../../../../components/ui/PageShell";
 import CreateNhanVien from "./CreateNhanVien";
 import { useNavigate } from "react-router-dom";
 import ButtonAction from "../../../../components/ui/ButtonAction";
+import { UserRoleViMap, type EnumRoleUser } from "../../../../api/enum";
 
 const columnHelper = createColumnHelper<StaffDto>();
 
@@ -36,58 +37,54 @@ const QuanLyNhanVienList = () => {
       }),
       columnHelper.accessor("fullName", {
         header: "Họ và tên",
-        cell: (info) => <span>{info.getValue()}</span>,
+        cell: (info) => (
+          <span className="font-semibold text-slate-900">
+            {info.getValue()}
+          </span>
+        ),
       }),
       columnHelper.accessor("staffCode", {
         header: "Mã NV",
         cell: (info) => (
-          <div className="flex flex-col">
-            <span className="font-bold text-slate-700">{info.getValue()}</span>
-          </div>
+          <span className="font-bold text-slate-700">{info.getValue()}</span>
         ),
       }),
       columnHelper.accessor("EmployeeRole", {
         header: "Vai trò",
         cell: (info) => {
-          const role = info.getValue();
-          const colors = {
-            STAFF: "bg-rose-50 text-rose-600 border-rose-100",
-            TEACHER: "bg-blue-50 text-blue-600 border-blue-100",
-            undefined: "bg-gray-50 text-gray-400 border-gray-100",
+          const rawRole = info.getValue()?.toLowerCase() as EnumRoleUser;
+
+          // Định nghĩa màu sắc tương ứng cho từng vai trò
+          const colors: Record<EnumRoleUser, string> = {
+            admin: "bg-amber-50 text-amber-600 border-amber-100",
+            teacher: "bg-blue-50 text-blue-600 border-blue-100",
+            staff: "bg-rose-50 text-rose-600 border-rose-100",
+            student: "bg-emerald-50 text-emerald-600 border-emerald-100",
           };
 
-          const currentRole = role ?? "undefined";
+          const badgeColor =
+            colors[rawRole] || "bg-slate-50 text-slate-400 border-slate-100";
+          const roleLabel = UserRoleViMap[rawRole] || "Chưa xác định";
 
           return (
             <span
-              className={`px-2.5 py-1 rounded-full text-xs font-bold border ${colors[currentRole]} capitalize`}
+              className={`px-2.5 py-1 rounded-full text-xs font-bold border ${badgeColor}`}
             >
-              {role ?? "N/A"}
+              {roleLabel}
             </span>
           );
         },
       }),
-      columnHelper.accessor("position", {
-        header: () => (
-          <span className="flex items-center gap-2">
-            <Briefcase size={14} /> Chức vụ
-          </span>
-        ),
-        cell: (info) =>
-          info.getValue() || (
-            <span className="text-slate-300 italic text-xs">Chưa cập nhật</span>
-          ),
-      }),
-      columnHelper.accessor("departmentId", {
+      columnHelper.accessor("department.deptName", {
         header: () => (
           <span className="flex items-center gap-2">
             <Building2 size={14} /> Phòng ban
           </span>
         ),
         cell: (info) => (
-          <div className="flex items-center gap-2">
-            <span className="text-sm">{info.getValue()}</span>
-          </div>
+          <span className="text-sm font-medium text-slate-600">
+            {info.getValue() || "-"}
+          </span>
         ),
       }),
       columnHelper.accessor("createdAt", {
@@ -98,9 +95,8 @@ const QuanLyNhanVienList = () => {
         ),
         cell: (info) => {
           const dateValue = info.getValue();
-
           return (
-            <span className="text-sm text-slate-500">
+            <span className="text-sm text-slate-500 font-medium">
               {dateValue
                 ? new Date(dateValue).toLocaleDateString("vi-VN")
                 : "-"}
@@ -110,8 +106,9 @@ const QuanLyNhanVienList = () => {
       }),
       columnHelper.display({
         id: "actions",
+        header: () => <span className="text-center block">Thao tác</span>,
         cell: (info) => (
-          <div>
+          <div className="flex justify-center">
             <ButtonAction
               variant="outline"
               title="Xem chi tiết"
@@ -139,21 +136,23 @@ const QuanLyNhanVienList = () => {
       icon={User}
       renderRight={
         <button
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 
-          rounded-lg text-sm font-semibold transition-all shadow-sm 
-          shadow-blue-200 flex items-center gap-2"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 
+          rounded-xl text-sm font-bold transition-all shadow-xs flex items-center gap-2"
           onClick={() => setOpenModalCreate(true)}
         >
           + Thêm nhân viên
         </button>
       }
     >
-      <div className="w-full bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="w-full bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
               {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id} className="border-b border-slate-100">
+                <tr
+                  key={headerGroup.id}
+                  className="bg-slate-50/50 border-b border-slate-200"
+                >
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
@@ -168,14 +167,14 @@ const QuanLyNhanVienList = () => {
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-slate-50">
+            <tbody className="divide-y divide-slate-100">
               {isPendingStaffs ? (
-                // Skeleton Loading
+                /* Skeleton Loading */
                 [...Array(5)].map((_, i) => (
                   <tr key={i} className="animate-pulse">
-                    {[...Array(7)].map((_, j) => (
+                    {[...Array(6)].map((_, j) => (
                       <td key={j} className="px-6 py-4">
-                        <div className="h-4 bg-slate-100 rounded w-full"></div>
+                        <div className="h-4 bg-slate-100 rounded-lg w-full"></div>
                       </td>
                     ))}
                   </tr>
@@ -184,7 +183,7 @@ const QuanLyNhanVienList = () => {
                 table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className="hover:bg-blue-50/30 transition-colors group"
+                    className="hover:bg-blue-50/20 transition-colors group"
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
@@ -200,12 +199,13 @@ const QuanLyNhanVienList = () => {
                   </tr>
                 ))
               ) : (
+                /* Không có dữ liệu */
                 <tr>
                   <td
-                    colSpan={7}
-                    className="px-6 py-12 text-center text-slate-400 italic"
+                    colSpan={6}
+                    className="px-6 py-16 text-center text-slate-400 italic font-medium"
                   >
-                    Không có dữ liệu nhân viên nào.
+                    Không có dữ liệu nhân viên nào trong danh sách.
                   </td>
                 </tr>
               )}
@@ -213,9 +213,12 @@ const QuanLyNhanVienList = () => {
           </table>
         </div>
 
-        <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-100">
-          <span className="text-xs text-slate-500 font-medium">
-            Hiển thị {staffs?.length || 0} nhân viên trong hệ thống
+        {/* Footer tổng kết dữ liệu */}
+        <div className="px-6 py-4 bg-slate-50/50 border-t border-slate-200 flex justify-between items-center text-xs text-slate-500 font-medium">
+          <span>
+            Hiển thị{" "}
+            <strong className="text-slate-800">{staffs?.length || 0}</strong>{" "}
+            nhân viên trong hệ thống
           </span>
         </div>
       </div>

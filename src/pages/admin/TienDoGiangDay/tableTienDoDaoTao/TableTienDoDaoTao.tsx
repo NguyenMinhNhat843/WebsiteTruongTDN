@@ -1,5 +1,4 @@
 import { useSearchParams } from "react-router-dom";
-import { useAppContext } from "../../../../AppProvider";
 import { useTienDoDaoTaoContext } from "../TienDoDaoTaoProvider";
 import { useEffect, useMemo, useState } from "react";
 import { getWeeksInRange } from "./helpers";
@@ -31,9 +30,18 @@ export type UpsertPlanTrainingDto =
   components["schemas"]["UpsertTrainingPlanDto"];
 
 const TableTienDoDaoTao = () => {
-  const { trainingPlan, isLoadingTrainingPlan, classes, semesterId, teachers } =
-    useTienDoDaoTaoContext();
-  const { hocKysOptions, hocKysData } = useAppContext();
+  const {
+    trainingPlan,
+    isLoadingTrainingPlan,
+    classes,
+    semesterId,
+    teachers,
+    semesters: hocKysData,
+  } = useTienDoDaoTaoContext();
+  const hocKysOptions = hocKysData?.map((hk) => ({
+    value: hk.id,
+    label: hk.name,
+  }));
 
   // Lấy danh sách phòng học
   const { data: rooms, isLoading: isLoadingRooms } = $api.useQuery(

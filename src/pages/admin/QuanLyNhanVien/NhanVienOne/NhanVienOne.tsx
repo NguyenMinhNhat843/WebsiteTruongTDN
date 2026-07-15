@@ -13,6 +13,7 @@ const NhanVienOne = () => {
     isLoadingStaffDetail,
     allSubjects,
     registerSubjectsForTeacher,
+    isRegistering,
     isOpenModalMonHoc,
     setIsOpenModalMonHoc,
   } = useQuanLyNguoiDungContext();
@@ -218,10 +219,12 @@ const NhanVienOne = () => {
               <h2 className="text-lg font-bold text-slate-800">
                 Tài khoản liên kết
               </h2>
-              <ButtonAction
-                label="Tạo tài khoản"
-                onClick={() => setIsOpenRegisterModal(true)}
-              />
+              {!user && (
+                <ButtonAction
+                  label="Tạo tài khoản"
+                  onClick={() => setIsOpenRegisterModal(true)}
+                />
+              )}
             </div>
 
             {/* Phần nội dung chi tiết phía dưới */}
@@ -285,6 +288,7 @@ const NhanVienOne = () => {
             },
           );
         }}
+        isLoadingSubmit={isRegistering}
         isOpen={isOpenModalMonHoc}
         setIsOpen={setIsOpenModalMonHoc}
       />

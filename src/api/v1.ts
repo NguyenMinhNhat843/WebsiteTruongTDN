@@ -2293,6 +2293,17 @@ export interface components {
             hireDate?: string | null;
             isActive?: boolean;
         };
+        DepartmentDto: {
+            id: number;
+            headOfDepartmentId?: number | null;
+            deptCode: string;
+            deptName: string;
+            description?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
         StaffResponseDto: {
             id?: number;
             /** @example Nguyễn Văn C */
@@ -2328,6 +2339,7 @@ export interface components {
             /** Format: date-time */
             updatedAt?: string;
             user?: components["schemas"]["UserResponseDto"];
+            department?: components["schemas"]["DepartmentDto"];
             teacherSubjects?: components["schemas"]["TeacherSubjectResponseDto"][];
         };
         ResponseSubjectDto: {
@@ -2452,17 +2464,6 @@ export interface components {
             totalMajors: number;
             totalStaffs: number;
             totalStudents: number;
-        };
-        DepartmentDto: {
-            id: number;
-            headOfDepartmentId?: number | null;
-            deptCode: string;
-            deptName: string;
-            description?: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
         };
         UpdateDepartmentDto: {
             headOfDepartmentId?: number | null;
@@ -5249,6 +5250,7 @@ export interface operations {
             query?: {
                 studentId?: number;
                 batchId?: number;
+                classId?: number;
             };
             header?: never;
             path?: never;
