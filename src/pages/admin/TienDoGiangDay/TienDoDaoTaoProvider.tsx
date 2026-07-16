@@ -79,6 +79,8 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
             classId: classId!,
           },
         },
+      }, {
+        enabled: !!semesterId && !!classId,
       });
 
     /**

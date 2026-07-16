@@ -1,14 +1,35 @@
-import { useState } from "react";
 import { $api } from "../../../api/client";
 import { createContextProvider } from "../../../util/createContextProvider";
 import type { components } from "../../../api/v1";
+import { useSearchParams } from "react-router-dom"; // Thêm dòng này
 
 export type SemesterDto = components["schemas"]["SemesterResponseDto"];
 
 export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
   createContextProvider(() => {
-    const [semesterId, setSemesterId] = useState<number | null>(null);
-    const [classId, setClassId] = useState<number | null>(null);
+    // 1. Lấy dữ liệu từ URL thông qua useSearchParams
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    // Ép kiểu về number hoặc null nếu chưa chọn
+    const semesterId = searchParams.get("semesterId") ? Number(searchParams.get("semesterId")) : null;
+    const classId = searchParams.get("classId") ? Number(searchParams.get("classId")) : null;
+
+    // Hàm cập nhật URL khi user thay đổi selection
+    const setSemesterId = (id: number | null) => {
+      setSearchParams((prev) => {
+        if (!id) prev.delete("semesterId");
+        else prev.set("semesterId", String(id));
+        return prev;
+      });
+    };
+
+    const setClassId = (id: number | null) => {
+      setSearchParams((prev) => {
+        if (!id) prev.delete("classId");
+        else prev.set("classId", String(id));
+        return prev;
+      });
+    };
 
     /**
      * Load danh sách học kỳ
@@ -25,6 +46,7 @@ export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
       "get",
       "/classes",
     );
+    const classSelected = lopHocsData?.find((item) => item.id === classId);
 
     /**
      * Load danh sách giáo viên
@@ -42,7 +64,7 @@ export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
     );
 
     /**
-     * Load tiến độ đào tạo
+     * Load tiến độ đào tạo (Chỉ kích hoạt khi có cả 2 id trên URL)
      */
     const { data: studySchedule, isLoading: isLoadingStudySchedule } =
       $api.useQuery(
@@ -60,6 +82,7 @@ export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
           enabled: !!semesterId && !!classId,
         },
       );
+
     const scheduleItems =
       studySchedule
         ?.map((item) => {
@@ -71,9 +94,10 @@ export const [ThoiKhoaBieuProvider, useThoiKhoaBieuContext] =
               endPeriod: session.endPeriod,
               shift: session.shift,
               dayOfWeek: session.dayOfWeek,
-              room: session.roomId,
-              teacher: item.teacher.fullName,
+              room: session?.room?.roomCode,
+              teacher: item?.teacher?.fullName,
               subjectName: item.subject.subjectName,
+              className: classSelected?.classCode
             }));
           });
         })

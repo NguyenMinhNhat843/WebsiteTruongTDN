@@ -37,28 +37,28 @@ const shifts: Array<{
   icon: LucideIcon;
   color: string;
 }> = [
-  {
-    key: "SANG",
-    label: "Ca Sáng",
-    sub: "T1 - 5",
-    icon: Sunrise,
-    color: "bg-amber-50 text-amber-700 border-amber-100",
-  },
-  {
-    key: "CHIEU",
-    label: "Ca Chiều",
-    sub: "T1 - 5",
-    icon: Sun,
-    color: "bg-sky-50 text-sky-700 border-sky-100",
-  },
-  {
-    key: "TOI",
-    label: "Ca Tối",
-    sub: "T1 - 5",
-    icon: Moon,
-    color: "bg-indigo-50 text-indigo-700 border-indigo-100",
-  },
-];
+    {
+      key: "SANG",
+      label: "Ca Sáng",
+      sub: "T1 - 5",
+      icon: Sunrise,
+      color: "bg-amber-50 text-amber-700 border-amber-100",
+    },
+    {
+      key: "CHIEU",
+      label: "Ca Chiều",
+      sub: "T1 - 5",
+      icon: Sun,
+      color: "bg-sky-50 text-sky-700 border-sky-100",
+    },
+    {
+      key: "TOI",
+      label: "Ca Tối",
+      sub: "T1 - 5",
+      icon: Moon,
+      color: "bg-indigo-50 text-indigo-700 border-indigo-100",
+    },
+  ];
 
 export const ThoiKhoaBieuTable = ({
   scheduleData,
@@ -222,18 +222,13 @@ export const ThoiKhoaBieuTable = ({
 
                             {/* Lớp học */}
                             <p className="text-[13px] font-semibold text-slate-900 leading-snug break-words whitespace-normal">
-                              {cellSchedule.classSubject?.baseClass
-                                ?.className ||
-                                `Lớp # ${cellSchedule.classSubject?.baseClass?.className}`}
+                              {`${cellSchedule?.className}`}
                             </p>
                             <div className="flex flex-col gap-1 text-[11px] text-slate-500 font-medium">
                               <div className="flex items-center gap-1.5 flex-wrap">
                                 <span className="bg-slate-100 text-slate-700 px-1.5 py-0.5 rounded text-[10px] font-bold whitespace-nowrap">
                                   Tiết {cellSchedule.startPeriod} -{" "}
                                   {cellSchedule.endPeriod}
-                                </span>
-                                <span className="text-slate-400 whitespace-nowrap">
-                                  ({cellSchedule.countPeriod} tiết)
                                 </span>
                               </div>
                               <div className="flex items-start gap-1 mt-0.5">
@@ -249,13 +244,12 @@ export const ThoiKhoaBieuTable = ({
                                   Phòng:
                                 </span>
                                 <span
-                                  className={`px-1.5 py-0.2 rounded text-[10px] font-bold break-words whitespace-normal ${
-                                    cellSchedule.roomId
-                                      ? "bg-blue-50 text-blue-700 border border-blue-100"
-                                      : "text-slate-400 italic font-normal"
-                                  }`}
+                                  className={`px-1.5 py-0.2 rounded text-[10px] font-bold break-words whitespace-normal ${cellSchedule.room
+                                    ? "bg-blue-50 text-blue-700 border border-blue-100"
+                                    : "text-slate-400 italic font-normal"
+                                    }`}
                                 >
-                                  {cellSchedule.roomId || "Chưa có"}
+                                  {cellSchedule.room || "Chưa có"}
                                 </span>
                               </div>
                             </div>

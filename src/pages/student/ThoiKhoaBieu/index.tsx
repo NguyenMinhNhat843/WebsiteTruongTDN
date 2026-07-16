@@ -2,6 +2,15 @@ import { useState, useEffect, useMemo } from "react";
 import { $api } from "../../../api/client";
 import { useAppContext } from "../../../AppProvider";
 import moment from "moment";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Calendar,
+  MapPin,
+  AlertTriangle,
+  Star,
+  ChevronDown
+} from "lucide-react";
 
 // Cấu hình các Thứ trong tuần cần hiển thị
 const DAYS_OF_WEEK = [
@@ -20,97 +29,13 @@ const SHIFTS = [
   { label: "Tối", value: "T" },
 ];
 
-// Inline SVG Icons tinh giản để loại bỏ Emoji Anti-pattern
-const ChevronLeftIcon = () => (
-  <svg
-    className="w-4 h-4"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M15 19l-7-7 7-7"
-    />
-  </svg>
-);
-const ChevronRightIcon = () => (
-  <svg
-    className="w-4 h-4"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M9 5l7 7-7 7"
-    />
-  </svg>
-);
-const CalendarIcon = () => (
-  <svg
-    className="w-4 h-4 text-slate-400"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 002-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-    />
-  </svg>
-);
-const MapPinIcon = () => (
-  <svg
-    className="w-3.5 h-3.5 flex-shrink-0"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-    />
-  </svg>
-);
-const AlertIcon = () => (
-  <svg
-    className="w-3.5 h-3.5 text-amber-600 flex-shrink-0"
-    fill="none"
-    stroke="currentColor"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2"
-      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-    />
-  </svg>
-);
-const StarIcon = () => (
-  <svg
-    className="w-3.5 h-3.5 text-amber-500"
-    fill="currentColor"
-    viewBox="0 0 20 20"
-  >
-    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-  </svg>
-);
+// Định nghĩa lại các Icon bằng lucide-react để giữ nguyên cấu trúc component cũ
+const ChevronLeftIcon = () => <ChevronLeft className="w-4 h-4" />;
+const ChevronRightIcon = () => <ChevronRight className="w-4 h-4" />;
+const CalendarIcon = () => <Calendar className="w-4 h-4 text-slate-400" />;
+const MapPinIcon = () => <MapPin className="w-3.5 h-3.5 flex-shrink-0" />;
+const AlertIcon = () => <AlertTriangle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />;
+const StarIcon = () => <Star className="w-3.5 h-3.5 text-amber-500" fill="currentColor" />;
 
 const WeeklySchedule = () => {
   const { currentUser } = useAppContext();
@@ -243,19 +168,7 @@ const WeeklySchedule = () => {
               )}
             </select>
             <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-500">
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
+              <ChevronDown className="w-4 h-4" />
             </div>
           </div>
           {activeSemester?.isCurrent && (
@@ -365,19 +278,11 @@ const WeeklySchedule = () => {
                           {cellSchedules.map((item: any) => (
                             <div
                               key={item.scheduleId}
-                              className={`p-3.5 rounded-xl border text-left transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 ${
-                                item.isRoomOverridden
-                                  ? "border-amber-200 bg-amber-50/40 hover:bg-amber-50/80"
-                                  : "border-blue-100 bg-blue-50/30 hover:bg-blue-50/60"
-                              }`}
+                              className={`p-3.5 rounded-xl border text-left transition-all duration-200 shadow-sm hover:shadow-md hover:-translate-y-0.5 ${item.isRoomOverridden
+                                ? "border-amber-200 bg-amber-50/40 hover:bg-amber-50/80"
+                                : "border-blue-100 bg-blue-50/30 hover:bg-blue-50/60"
+                                }`}
                             >
-                              {/* Cảnh báo đổi phòng học */}
-                              {item.isRoomOverridden && (
-                                <div className="text-[10px] font-bold text-amber-700 mb-2 flex items-center gap-1 bg-amber-100 px-2 py-0.5 rounded-md w-max">
-                                  <AlertIcon /> ĐỔI PHÒNG HỌC
-                                </div>
-                              )}
-
                               {/* Tên môn học */}
                               <div className="font-bold text-slate-900 text-sm leading-snug line-clamp-2 mb-2 group-hover:text-blue-600 transition-colors">
                                 {item.subjectName}
@@ -422,11 +327,10 @@ const WeeklySchedule = () => {
 
                                 {/* Phòng học dạng Tag nổi bật */}
                                 <div
-                                  className={`mt-2.5 pt-2 border-t border-dashed flex items-center gap-1.5 font-bold ${
-                                    item.isRoomOverridden
-                                      ? "border-amber-200 text-amber-800"
-                                      : "border-blue-100 text-blue-700"
-                                  }`}
+                                  className={`mt-2.5 pt-2 border-t border-dashed flex items-center gap-1.5 font-bold ${item.isRoomOverridden
+                                    ? "border-amber-200 text-amber-800"
+                                    : "border-blue-100 text-blue-700"
+                                    }`}
                                 >
                                   <MapPinIcon />
                                   <span className="text-xs">

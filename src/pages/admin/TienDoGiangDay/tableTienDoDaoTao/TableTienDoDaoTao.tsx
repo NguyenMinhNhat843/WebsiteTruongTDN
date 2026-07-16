@@ -1,6 +1,7 @@
 import { useSearchParams } from "react-router-dom";
 import { useTienDoDaoTaoContext } from "../TienDoDaoTaoProvider";
 import { useEffect, useMemo, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { getWeeksInRange } from "./helpers";
 import { formatDateToString } from "../../../../util/formatDate";
 import type { components } from "../../../../api/v1";
@@ -30,6 +31,7 @@ export type UpsertPlanTrainingDto =
   components["schemas"]["UpsertTrainingPlanDto"];
 
 const TableTienDoDaoTao = () => {
+  const queryClient = useQueryClient();
   const {
     trainingPlan,
     isLoadingTrainingPlan,
@@ -103,25 +105,25 @@ const TableTienDoDaoTao = () => {
         !row.classSubjectSessions || row.classSubjectSessions.length === 0
           ? [createEmptySession()]
           : row.classSubjectSessions.map((session) => {
-              const sessionObj: any = {
-                maPhongHoc: session.room?.roomCode || "",
-                idPhongHoc: session.room?.id || 0,
-                thu: session.dayOfWeek || "",
-                tiet:
-                  session.startPeriod && session.endPeriod
-                    ? `${session.shift || ""}${session.startPeriod}-${session.endPeriod}`
-                    : "",
-              };
+            const sessionObj: any = {
+              maPhongHoc: session.room?.roomCode || "",
+              idPhongHoc: session.room?.id || 0,
+              thu: session.dayOfWeek || "",
+              tiet:
+                session.startPeriod && session.endPeriod
+                  ? `${session.shift || ""}${session.startPeriod}-${session.endPeriod}`
+                  : "",
+            };
 
-              weekList.forEach((week) => {
-                const hasSchedule = session?.schedules?.some(
-                  (schedule) => schedule.weekNumber === week.weekNumber,
-                );
-                sessionObj[`week_${week.weekNumber}`] = !!hasSchedule;
-              });
-
-              return sessionObj;
+            weekList.forEach((week) => {
+              const hasSchedule = session?.schedules?.some(
+                (schedule) => schedule.weekNumber === week.weekNumber,
+              );
+              sessionObj[`week_${week.weekNumber}`] = !!hasSchedule;
             });
+
+            return sessionObj;
+          });
 
       return {
         monHocId: row.subject.id,
@@ -137,9 +139,14 @@ const TableTienDoDaoTao = () => {
 
   const [table, setTable] = useState<DataRow[]>([]);
 
-  // 3. Chỉ đồng bộ dữ liệu vào State khi trainingPlan hoặc tuần học kì thay đổi (Chặn ghi đè dữ liệu Client nhập)
+  // Reset table state khi đổi lớp hoặc học kỳ
   useEffect(() => {
-    if (tableData && tableData.length > 0 && table.length === 0) {
+    setTable([]);
+  }, [classIdParam, semesterIdParam]);
+
+  // 3. Đồng bộ dữ liệu vào State khi tableData thay đổi
+  useEffect(() => {
+    if (tableData && tableData.length > 0) {
       setTable(tableData);
     }
   }, [tableData]);
@@ -333,6 +340,19 @@ const TableTienDoDaoTao = () => {
       return;
     }
 
+    // Kiểm tra xem có buổi học nào được tích tuần nhưng thiếu Thứ hoặc Tiết không
+    for (const item of table) {
+      for (const session of item.sessions) {
+        const hasTickedWeek = weekList.some((week) => !!session[`week_${week.weekNumber}`]);
+        if (hasTickedWeek && (!session.thu || !session.tiet)) {
+          toast.error(
+            `Môn học "${item.tenMonHoc}" đã được tích tuần học nhưng chưa chọn Thứ hoặc Tiết. Vui lòng cấu hình đầy đủ Thứ và Tiết trước khi lưu.`
+          );
+          return;
+        }
+      }
+    }
+
     const items: UpsertPlanTrainingDto["items"] = table.map((item) => {
       const sessions = item.sessions
         // Bỏ qua các buổi chưa cấu hình đầy đủ Thứ/Tiết
@@ -380,6 +400,9 @@ const TableTienDoDaoTao = () => {
       {
         onSuccess: () => {
           toast.success("Lưu kế hoạch đào tạo thành công!");
+          queryClient.invalidateQueries({
+            queryKey: ["get", "/class-subject-session/plan-training"],
+          });
         },
         onError: () => {
           toast.error("Có lỗi xảy ra khi lưu kế hoạch đào tạo!");
@@ -836,9 +859,8 @@ const TableTienDoDaoTao = () => {
                           return (
                             <td
                               key={week.weekNumber}
-                              className={`px-2 py-3 text-center border border-slate-200 transition-colors duration-150 align-middle ${
-                                hasSchedule ? "bg-emerald-50/50" : "bg-white"
-                              }`}
+                              className={`px-2 py-3 text-center border border-slate-200 transition-colors duration-150 align-middle ${hasSchedule ? "bg-emerald-50/50" : "bg-white"
+                                }`}
                             >
                               <div className="flex items-center justify-center">
                                 <input
