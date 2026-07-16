@@ -133,6 +133,9 @@ const MemberDashboard = lazy(() => import("./pages/MembersDashboard/Home"));
 const LopHocGiangDay = lazy(
   () => import("./pages/MembersDashboard/LopGiangDay/LopGiangDay"),
 );
+const LopHocOneTeacher = lazy(
+  () => import("./pages/MembersDashboard/LopGiangDay/LopHocOneTeacher"),
+);
 const BangDiem = lazy(
   () => import("./pages/MembersDashboard/NhapDiem/BangDiem"),
 );
@@ -351,6 +354,8 @@ function App() {
             >
               <Route path="home" element={<MemberDashboard />} />
               <Route path="lop-hoc" element={<LopHocGiangDay />} />
+              <Route path="lop-hoc/:idLopHoc" element={<LopHocOneTeacher />} />
+              <Route path="lop-hoc/:idLopHoc/:idClassSubject" element={<BangDiem />} />
               <Route path="nhap-diem" element={<BangDiem />} />
               <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
             </Route>

@@ -1,16 +1,18 @@
-import { useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import NhapDiem from "../../admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiem";
 import { $api } from "../../../api/client";
 import Breadcrumb from "../../../components/ui/Breadcrum";
 
 const BangDiem = () => {
+  const { idLopHoc, idClassSubject } = useParams();
   const [searchParams] = useSearchParams();
-  const classSubjectId = searchParams.get("classSubjectId");
+
+  const classSubjectId = idClassSubject || searchParams.get("classSubjectId");
   const classSubjectIdNumber = classSubjectId
     ? Number(classSubjectId)
     : undefined;
 
-  const classId = searchParams.get("classId");
+  const classId = idLopHoc || searchParams.get("classId");
   const classIdNumber = classId ? Number(classId) : undefined;
 
   const { data: lopHocDetail, isLoading: isLoadingLopHocDetail } =
@@ -54,8 +56,12 @@ const BangDiem = () => {
         <Breadcrumb
           items={[
             {
-              label: `${lopHocDetail?.className || "Lớp học"}`,
-              link: `/teacher/lop-hoc`,
+              label: "Các lớp học",
+              link: "/teacher/lop-hoc",
+            },
+            {
+              label: `Lớp ${lopHocDetail?.className || ""}`,
+              link: `/teacher/lop-hoc/${lopHocDetail?.id}`,
             },
             { label: "Nhập điểm" },
           ]}

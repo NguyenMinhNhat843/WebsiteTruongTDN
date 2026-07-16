@@ -42,7 +42,7 @@ const navItems: NavItem[] = [
         id: "diem-ren-luyen",
         label: "Điểm rèn luyện",
         href: "/admin/diem-ren-luyen",
-        roles: ["admin", "staff", "teacher"], // Giáo viên chủ nhiệm chấm điểm rèn luyện
+        roles: ["admin", "staff"],
       },
       {
         id: "tien-do-dao-tao",
@@ -54,7 +54,7 @@ const navItems: NavItem[] = [
         id: "thoi-khoa-bieu",
         label: "Thời khóa biểu",
         href: "/admin/dao-tao/thoi-khoa-bieu",
-        roles: ["admin", "staff", "teacher"], // Giáo viên xem lịch dạy
+        roles: ["admin", "staff", "teacher"],
       },
     ],
   },
@@ -139,7 +139,7 @@ const navItems: NavItem[] = [
         id: "ho-so-hoc-sinh",
         label: "Hồ sơ học sinh",
         href: "/admin/hoc-sinh/ho-so",
-        roles: ["admin", "staff", "teacher"],
+        roles: ["admin", "staff"],
       },
       {
         id: "ho-so-hoc-sinh/create",

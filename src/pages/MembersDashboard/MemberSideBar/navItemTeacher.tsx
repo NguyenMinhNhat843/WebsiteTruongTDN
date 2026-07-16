@@ -2,19 +2,19 @@ import type { NavItem } from "../../../components/navTree/navTree.type";
 
 export const navItemTeacher: NavItem[] = [
   {
-    id: "dashboard",
+    id: "home",
     label: "Tổng quan",
-    icon: "📊",
+    icon: "🏠",
     href: "/teacher/home",
   },
   {
-    id: "classes",
-    label: "Lớp giảng dạy",
-    icon: "🏫",
+    id: "lop-giang-day",
+    label: "Các lớp học",
+    icon: "📖",
     href: "/teacher/lop-hoc",
   },
   {
-    id: "thoikhoabieu",
+    id: "thoi-khoa-bieu",
     label: "Thời khóa biểu",
     icon: "📅",
     href: "/teacher/thoi-khoa-bieu",
