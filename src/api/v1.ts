@@ -1083,23 +1083,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-offers/previewpreviewGenerateSectionForClass": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Xem trước danh sách lớp học phần tự động */
-        get: operations["ClassSubjectController_previewGenerateSectionForClass"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/course-offers/student/{id}/export-excel": {
         parameters: {
             query?: never;
@@ -1126,7 +1109,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** Tạo bảng điểm cho một ClassSubject (Admin/Quản lý) */
-        post: operations["CourseRegistrationController_createGradesForClassSubject"];
+        post: operations["GradeController_createGradesForClassSubject"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1141,7 +1124,7 @@ export interface paths {
             cookie?: never;
         };
         /** Lấy bảng điểm (Admin/Quản lý) */
-        get: operations["CourseRegistrationController_findAll"];
+        get: operations["GradeController_findAll"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1158,7 +1141,7 @@ export interface paths {
             cookie?: never;
         };
         /** Lấy bảng điểm toàn khóa của học sinh */
-        get: operations["CourseRegistrationController_getTranscript"];
+        get: operations["GradeController_getTranscript"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1175,7 +1158,7 @@ export interface paths {
             cookie?: never;
         };
         /** Lấy thông tin tổng quan học tập của học sinh */
-        get: operations["CourseRegistrationController_getAcademicSummaryWidget"];
+        get: operations["GradeController_getAcademicSummaryWidget"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1192,7 +1175,7 @@ export interface paths {
             cookie?: never;
         };
         /** Xem chi tiết thông tin điểm 1 học sinh theo ID */
-        get: operations["CourseRegistrationController_findOne"];
+        get: operations["GradeController_findOne"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1215,7 +1198,23 @@ export interface paths {
         options?: never;
         head?: never;
         /** Lưu bảng điểm cho một ClassSubject */
-        patch: operations["CourseRegistrationController_saveGrades"];
+        patch: operations["GradeController_saveGrades"];
+        trace?: never;
+    };
+    "/export-grade-table/comprehensive/export-excel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ExportGradeTableController_exportExcelGradeComprehensive"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/document-configs": {
@@ -1900,6 +1899,46 @@ export interface paths {
         head?: never;
         /** Cập nhật thông tin thôn/xóm */
         patch: operations["VillageController_update"];
+        trace?: never;
+    };
+    "/script/import-grade": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Import điểm của các môn học từ file Excel */
+        post: operations["GradeImportController_importGrades"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/script/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Import điểm rèn luyện từ file Excel tổng hợp
+         * @description Hệ thống sẽ thực hiện đọc dữ liệu từ File Excel bắt đầu từ dòng số 10.
+         *         - Đối chiếu mã học sinh (Cột B) với cơ sở dữ liệu.
+         *         - Lấy điểm tổng học sinh tự chấm (Cột E) và điểm giáo viên chấm (Cột G).
+         *         - Tự động phân bổ/rải đều điểm số này xuống các tiêu chí chi tiết (AssessmentDetail) của đợt đánh giá từ trên xuống dưới cho khớp chính xác với điểm tổng.
+         */
+        post: operations["GradeImportController_importAssessments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
 }
@@ -3109,13 +3148,6 @@ export interface components {
             semester?: components["schemas"]["SemesterResponseDto"];
             subject?: components["schemas"]["ResponseSubjectDto"];
         };
-        ResponsePreviewGenerateSectionForClass: {
-            subjectId: number;
-            subjectCode: string;
-            subjectName: string;
-            credits: number;
-            isExisted: boolean;
-        };
         GradeStudentDto: {
             id: number;
             kttx1?: number;
@@ -4086,6 +4118,18 @@ export interface components {
             name?: string;
             /** @description Khóa ngoại kết nối lên Xã */
             wardCode?: string;
+        };
+        ImportAssessmentDto: {
+            /**
+             * Format: binary
+             * @description File Excel danh sách điểm rèn luyện tổng hợp (.xlsx)
+             */
+            file: string;
+            /**
+             * @description ID của Đợt Đánh Giá (EvaluationPeriod)
+             * @example 1
+             */
+            periodId: number;
         };
     };
     responses: never;
@@ -6426,29 +6470,6 @@ export interface operations {
             };
         };
     };
-    ClassSubjectController_previewGenerateSectionForClass: {
-        parameters: {
-            query: {
-                classId: number;
-                semesterId: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Lấy dữ liệu cấu trúc xem trước thành công. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResponsePreviewGenerateSectionForClass"][];
-                };
-            };
-        };
-    };
     ClassSubjectController_exportExcelGradeForOneStudent: {
         parameters: {
             query?: never;
@@ -6468,7 +6489,7 @@ export interface operations {
             };
         };
     };
-    CourseRegistrationController_createGradesForClassSubject: {
+    GradeController_createGradesForClassSubject: {
         parameters: {
             query: {
                 classId: number;
@@ -6489,7 +6510,7 @@ export interface operations {
             };
         };
     };
-    CourseRegistrationController_findAll: {
+    GradeController_findAll: {
         parameters: {
             query?: never;
             header?: never;
@@ -6506,7 +6527,7 @@ export interface operations {
             };
         };
     };
-    CourseRegistrationController_getTranscript: {
+    GradeController_getTranscript: {
         parameters: {
             query: {
                 studentId: number;
@@ -6527,7 +6548,7 @@ export interface operations {
             };
         };
     };
-    CourseRegistrationController_getAcademicSummaryWidget: {
+    GradeController_getAcademicSummaryWidget: {
         parameters: {
             query?: never;
             header?: never;
@@ -6549,7 +6570,7 @@ export interface operations {
             };
         };
     };
-    CourseRegistrationController_findOne: {
+    GradeController_findOne: {
         parameters: {
             query?: never;
             header?: never;
@@ -6569,7 +6590,7 @@ export interface operations {
             };
         };
     };
-    CourseRegistrationController_saveGrades: {
+    GradeController_saveGrades: {
         parameters: {
             query?: never;
             header?: never;
@@ -6581,6 +6602,28 @@ export interface operations {
                 "application/json": components["schemas"]["SaveGradesDto"];
             };
         };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExportGradeTableController_exportExcelGradeComprehensive: {
+        parameters: {
+            query: {
+                /** @description ID của lớp học */
+                classId: number;
+                /** @description ID của khóa học/niên khóa */
+                batchId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             200: {
                 headers: {
@@ -8264,6 +8307,80 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["VillageDto"];
                 };
+            };
+        };
+    };
+    GradeImportController_importGrades: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /**
+                     * Format: binary
+                     * @description File Excel danh sách điểm (Định dạng .xlsx)
+                     */
+                    file?: string;
+                };
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GradeImportController_importAssessments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Dữ liệu File Excel và ID đợt đánh giá */
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["ImportAssessmentDto"];
+            };
+        };
+        responses: {
+            /** @description Import thành công hoặc hoàn tất quá trình kiểm thử import. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** @example Hoàn thành quá trình import điểm rèn luyện! */
+                        message?: string;
+                        data?: {
+                            /** @example 35 */
+                            successCount?: number;
+                            /** @example 2 */
+                            failedCount?: number;
+                            /**
+                             * @example [
+                             *       "Dòng 12: Không tìm thấy HS có mã [24206099] trong database."
+                             *     ]
+                             */
+                            errors?: string[];
+                        };
+                    };
+                };
+            };
+            /** @description Lỗi định dạng File, không tìm thấy Đợt đánh giá, hoặc thiếu dữ liệu bắt buộc. */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

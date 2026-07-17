@@ -6,10 +6,18 @@ import {
   type ColumnDef,
 } from "@tanstack/react-table";
 import { Loader2, Trash2, FileDown, Paperclip } from "lucide-react";
-import ButtonAction from "../../../../components/ui/ButtonAction";
 import ModalPhieuDiemRenLuyen from "./ModalPhieuDiemRenLuyen";
 import { useLopHocOneContext } from "./LopHocOneProvider";
 import { useAppContext } from "../../../../AppProvider";
+import { $api } from "../../../../api/client";
+import { toast } from "sonner";
+
+// Hàm helper lấy từ cuối cùng để sắp xếp theo Tên (hỗ trợ tiếng Việt)
+const getLastNameForSorting = (fullName: string): string => {
+  if (!fullName) return "";
+  const parts = fullName.trim().split(/\s+/);
+  return parts[parts.length - 1].toLowerCase();
+};
 
 const TableDanhSachHocSinh = () => {
   const { userRole } = useAppContext();
@@ -21,7 +29,42 @@ const TableDanhSachHocSinh = () => {
     isLoadingLopHocDetail,
     exportStudentGrade,
     isExportingStudentGrade,
+    refetchStudentsInLopHoc,
   } = useLopHocOneContext();
+
+  const { mutate: removeStudentFromClass, isPending: isRemovingStudent } =
+    $api.useMutation("patch", "/students/{id}");
+
+  // Kick 1 học sinh ra khỏi lớp --> cập nhật classId thành null
+  const handleKickStudent = (studentId: number) => {
+    // Thêm xác nhận trước khi xóa để tránh người dùng bấm nhầm
+    const isConfirmed = window.confirm(
+      "Bạn có chắc chắn muốn xóa học sinh này khỏi lớp?",
+    );
+    if (!isConfirmed) return;
+
+    removeStudentFromClass(
+      {
+        params: {
+          path: {
+            id: studentId,
+          },
+        },
+        body: {
+          classId: null,
+        },
+      },
+      {
+        onSuccess: () => {
+          toast.success("Học sinh đã được xóa khỏi lớp thành công!");
+          refetchStudentsInLopHoc();
+        },
+        onError: () => {
+          toast.error("Không thể xóa học sinh khỏi lớp. Vui lòng thử lại.");
+        },
+      },
+    );
+  };
 
   // State quản lý học sinh đang chọn để mở modal điểm rèn luyện
   const [selectedStudentForPoint, setSelectedStudentForPoint] = useState<{
@@ -31,9 +74,18 @@ const TableDanhSachHocSinh = () => {
 
   const currentPeriodId = 1;
 
-  // 1. Chuẩn hóa dữ liệu danh sách học sinh
+  // 1. Chuẩn hóa và SẮP XẾP danh sách học sinh theo Tên (từ cuối cùng)
   const dataDanhSachHocSinh = useMemo(() => {
-    return (studentsInLopHoc?.students || []).map((student, index) => ({
+    const rawStudents = studentsInLopHoc?.students || [];
+
+    // Tạo bản sao và sort theo chữ cuối của tên
+    const sortedStudents = [...rawStudents].sort((a, b) => {
+      const nameA = getLastNameForSorting(a.fullName || "");
+      const nameB = getLastNameForSorting(b.fullName || "");
+      return nameA.localeCompare(nameB, "vi", { sensitivity: "base" });
+    });
+
+    return sortedStudents.map((student, index) => ({
       stt: index + 1,
       id: student.id,
       tenHocSinh: student.fullName || "Chưa cập nhật",
@@ -106,51 +158,61 @@ const TableDanhSachHocSinh = () => {
           if (userRole === "student") return null;
 
           return (
-            <div className="flex items-center gap-2">
-              {/* Nút Xuất Bảng Điểm (Hiện cho admin, teacher, staff) */}
-              <ButtonAction
+            <div className="flex items-center gap-1.5">
+              {/* Nút Xuất Bảng Điểm (Xanh lá nhẹ, tinh tế) */}
+              <button
+                type="button"
                 title="Xuất bảng điểm Excel"
-                variant="export"
                 disabled={isExportingStudentGrade}
                 onClick={() =>
                   handleExportGrade(student.id!, student.tenHocSinh)
                 }
-                icon={
-                  isExportingStudentGrade ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <FileDown className="h-4 w-4" />
-                  )
-                }
-              />
+                className="group cursor-pointer p-2 rounded-lg text-emerald-600 hover:bg-emerald-50 active:bg-emerald-100 disabled:opacity-50 transition-all duration-200"
+              >
+                {isExportingStudentGrade ? (
+                  <Loader2 className="h-4.5 w-4.5 animate-spin" />
+                ) : (
+                  <FileDown className="h-4.5 w-4.5 group-hover:scale-105 transition-transform" />
+                )}
+              </button>
 
-              {/* Nút Xóa Học Sinh (Chỉ hiển thị khi là admin) */}
-              {userRole === "admin" && (
-                <ButtonAction
-                  title="Xóa học sinh khỏi lớp học"
-                  variant="danger"
-                  icon={<Trash2 className="h-4 w-4" />}
-                />
-              )}
-
-              {/* Nút Điểm rèn luyện (Hiện cho admin, teacher, staff) */}
-              <ButtonAction
+              {/* Nút Điểm rèn luyện (Xanh dương nhẹ, thanh lịch) */}
+              <button
+                type="button"
                 title="Điểm rèn luyện"
-                variant="primary"
-                icon={<Paperclip className="h-4 w-4" />}
                 onClick={() =>
                   setSelectedStudentForPoint({
                     id: student.id!,
                     periodId: currentPeriodId,
                   })
                 }
-              />
+                className="group p-2 cursor-pointer rounded-lg text-blue-600 hover:bg-blue-50 active:bg-blue-100 transition-all duration-200"
+              >
+                <Paperclip className="h-4.5 w-4.5 group-hover:rotate-12 group-hover:scale-105 transition-transform" />
+              </button>
+
+              {/* Nút Xóa Học Sinh (Đỏ nhẹ - Chỉ hiện khi là admin) */}
+              {userRole === "admin" && (
+                <button
+                  type="button"
+                  title="Xóa học sinh khỏi lớp"
+                  disabled={isRemovingStudent}
+                  onClick={() => handleKickStudent(student.id!)}
+                  className="group p-2 cursor-pointer rounded-lg text-rose-500 hover:bg-rose-50 active:bg-rose-100 disabled:opacity-50 transition-all duration-200"
+                >
+                  {isRemovingStudent ? (
+                    <Loader2 className="h-4.5 w-4.5 animate-spin" />
+                  ) : (
+                    <Trash2 className="h-4.5 w-4.5 group-hover:scale-105 transition-transform" />
+                  )}
+                </button>
+              )}
             </div>
           );
         },
       },
     ],
-    [isExportingStudentGrade, currentPeriodId, userRole], // Thêm userRole vào dependency array
+    [isExportingStudentGrade, isRemovingStudent, currentPeriodId, userRole],
   );
 
   // 3. Khởi tạo TanStack Table
@@ -237,7 +299,6 @@ const TableDanhSachHocSinh = () => {
           onClose={() => setSelectedStudentForPoint(null)}
           studentId={selectedStudentForPoint.id}
           semesterId={selectedSemesterId!}
-          isTeacher={true}
         />
       )}
     </div>

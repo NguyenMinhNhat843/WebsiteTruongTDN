@@ -1,24 +1,15 @@
-import { useAppContext } from "../../../../AppProvider";
 import { useLopHocOneContext } from "./LopHocOneProvider";
-import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 import { useNavigate } from "react-router-dom";
 
 const TabMonHoc = () => {
   const navigate = useNavigate();
-  const { hocKysData, isHocKysLoading } = useAppContext();
+
   const {
-    selectedSemesterId,
-    setselectedSemesterId,
+    LopHocDetail: lopHocDetail,
     classSubjects,
     isClassSubjectsLoading,
-    isGiaoViensLoading,
-    dataGiaoViens,
+    isHocKysLoading,
   } = useLopHocOneContext();
-
-  const dataGiaoVienHienThi = dataGiaoViens?.map((gv) => ({
-    id: gv.id,
-    fullName: gv.fullName,
-  }));
 
   const dataHienThi = classSubjects?.map((cs) => ({
     id: cs.id,
@@ -30,6 +21,7 @@ const TabMonHoc = () => {
     soGioLyThuyet: cs.subject?.theoryHours,
     soGioThucHanh: cs.subject?.practiceHours,
     soGioKiemTra: cs.subject?.testHours,
+    teacher: cs.teacher?.fullName,
   }));
 
   if (isHocKysLoading || isClassSubjectsLoading) {
@@ -44,7 +36,6 @@ const TabMonHoc = () => {
   }
 
   return (
-    // Đã làm phẳng thành 1 khối duy nhất (Block đơn), loại bỏ block bọc Table thừa phía trong
     <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden mb-32">
       {/* HEADER SECTION */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 border-b border-slate-100 bg-white">
@@ -55,17 +46,6 @@ const TabMonHoc = () => {
           <p className="text-xs text-slate-400 mt-0.5">
             Danh sách các môn học phân phối theo từng học kỳ
           </p>
-        </div>
-        <div className="flex items-center gap-2.5">
-          <SelectOption
-            containerClassName="w-52"
-            value={selectedSemesterId ?? ""}
-            onChange={(e) => setselectedSemesterId(Number(e.target.value))}
-            options={hocKysData?.map((hocKy) => ({
-              value: hocKy.id,
-              label: `${hocKy.name} ${hocKy.isCurrent ? "(Hiện tại)" : ""}`,
-            }))}
-          />
         </div>
       </div>
 
@@ -80,17 +60,19 @@ const TabMonHoc = () => {
           </p>
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        /* Thêm custom-scrollbar và overflow-x-auto giúp cuộn mượt khi bảng dài */
+        <div className="overflow-x-auto custom-scrollbar">
+          <table className="w-full text-left border-collapse min-w-[800px]">
             <thead>
               <tr className="bg-slate-50/70 text-slate-500 text-xs font-bold uppercase tracking-wider border-b border-slate-150">
-                <th className="px-6 py-4 font-semibold text-slate-600 w-36">
+                {/* Dùng whitespace-nowrap ngăn các thẻ th rớt dòng */}
+                <th className="px-6 py-4 font-semibold text-slate-600 w-40 whitespace-nowrap">
                   Mã môn học
                 </th>
-                <th className="px-6 py-4 font-semibold text-slate-600">
+                <th className="px-6 py-4 font-semibold text-slate-600 min-w-[240px] whitespace-nowrap">
                   Tên môn học
                 </th>
-                <th className="px-6 py-4 font-semibold text-slate-600 text-center w-32">
+                <th className="px-6 py-4 font-semibold text-slate-600 text-center w-32 whitespace-nowrap">
                   Số tín chỉ
                 </th>
                 <th className="px-4 py-4 font-semibold text-slate-600 text-center w-28 whitespace-nowrap">
@@ -102,7 +84,7 @@ const TabMonHoc = () => {
                 <th className="px-4 py-4 font-semibold text-slate-600 text-center w-28 whitespace-nowrap">
                   Kiểm tra
                 </th>
-                <th className="px-6 py-4 font-semibold text-slate-600 w-60">
+                <th className="px-6 py-4 font-semibold text-slate-600 min-w-[200px] whitespace-nowrap">
                   Giáo viên giảng dạy
                 </th>
               </tr>
@@ -115,14 +97,14 @@ const TabMonHoc = () => {
                     className="hover:bg-blue-50/20 transition-colors duration-150 ease-in-out"
                   >
                     {/* Mã môn học */}
-                    <td className="px-6 py-4 align-middle">
+                    <td className="px-6 py-4 align-middle whitespace-nowrap">
                       <span className="font-mono font-semibold text-blue-600 bg-blue-50 px-2.5 py-1 rounded-md text-xs tracking-wider">
                         {item.maMonHoc}
                       </span>
                     </td>
 
                     {/* Tên môn học */}
-                    <td className="px-6 py-4 align-middle">
+                    <td className="px-6 py-4 align-middle whitespace-nowrap">
                       <div className="max-w-md">
                         <div
                           className="font-semibold text-slate-800 text-[14px] inline-block cursor-pointer hover:text-blue-600 active:scale-95 transition-all duration-150"
@@ -134,42 +116,28 @@ const TabMonHoc = () => {
                     </td>
 
                     {/* Số tín chỉ */}
-                    <td className="px-6 py-4 align-middle text-center font-semibold text-slate-700">
+                    <td className="px-6 py-4 align-middle text-center font-semibold text-slate-700 whitespace-nowrap">
                       {item.soTinChi ?? 0}
                     </td>
 
                     {/* Cột Số giờ Lý thuyết */}
-                    <td className="px-4 py-4 align-middle text-center font-medium text-slate-600 tabular-nums">
-                      {item.soGioLyThuyet ?? 0}{" "}
+                    <td className="px-4 py-4 align-middle text-center font-medium text-slate-600 tabular-nums whitespace-nowrap">
+                      {item.soGioLyThuyet ?? 0}
                     </td>
 
                     {/* Cột Số giờ Thực hành */}
-                    <td className="px-4 py-4 align-middle text-center font-medium text-slate-600 tabular-nums">
-                      {item.soGioThucHanh ?? 0}{" "}
+                    <td className="px-4 py-4 align-middle text-center font-medium text-slate-600 tabular-nums whitespace-nowrap">
+                      {item.soGioThucHanh ?? 0}
                     </td>
 
                     {/* Cột Số giờ Kiểm tra */}
-                    <td className="px-4 py-4 align-middle text-center font-medium text-slate-600 tabular-nums">
-                      {item.soGioKiemTra ?? 0}{" "}
+                    <td className="px-4 py-4 align-middle text-center font-medium text-slate-600 tabular-nums whitespace-nowrap">
+                      {item.soGioKiemTra ?? 0}
                     </td>
 
                     {/* Giáo viên giảng dạy */}
-                    <td className="px-6 py-4 align-middle min-w-50 text-sm font-medium">
-                      {isGiaoViensLoading ? (
-                        <span className="text-slate-400 text-xs italic animate-pulse">
-                          Đang tải dữ liệu...
-                        </span>
-                      ) : item.giaoVienId ? (
-                        <span className="text-slate-700">
-                          {dataGiaoVienHienThi?.find(
-                            (gv) => gv.id === item.giaoVienId,
-                          )?.fullName || "Không tìm thấy giáo viên"}
-                        </span>
-                      ) : (
-                        <span className="text-slate-400 italic font-normal">
-                          Chưa phân công
-                        </span>
-                      )}
+                    <td className="px-6 py-4 align-middle text-sm font-medium whitespace-nowrap">
+                      {item.teacher ?? "--"}
                     </td>
                   </tr>
                 );

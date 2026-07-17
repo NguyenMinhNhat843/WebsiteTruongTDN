@@ -9,19 +9,13 @@ export type ClassSubjectGrade = components["schemas"]["GradeStudentDto"];
 
 export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
   () => {
-    const { currentSemester, isHocKysLoading } = useAppContext();
+    const { currentSemester } = useAppContext();
     const [isOpenModalAddStudent, setIsOpenModalAddStudent] = useState(false);
     const [selectedSemesterId, setselectedSemesterId] = useState<number | null>(
       currentSemester ? currentSemester.id : null,
     );
     const { idLopHoc } = useParams();
     const idLopHocNumber = Number(idLopHoc);
-
-    useEffect(() => {
-      if (currentSemester && !isHocKysLoading) {
-        setselectedSemesterId(currentSemester.id);
-      }
-    }, [currentSemester, isHocKysLoading]);
 
     /**
      * Lấy lớp học theo id
@@ -45,6 +39,28 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       },
     );
 
+    /** Lấy danh sách học kỳ thuộc về khóa học này */
+    const { data: hocKysData, isLoading: isHocKysLoading } = $api.useQuery(
+      "get",
+      "/semesters",
+      {
+        params: {
+          query: {
+            classId: LopHocDetail?.id,
+          },
+        },
+      },
+      {
+        enabled: !!LopHocDetail?.id,
+      },
+    );
+
+    useEffect(() => {
+      if (currentSemester && !isHocKysLoading) {
+        setselectedSemesterId(currentSemester.id);
+      }
+    }, [currentSemester, isHocKysLoading]);
+
     const {
       data: studentsInLopHoc,
       isLoading: isLoadingStudentsInLopHoc,
@@ -56,6 +72,7 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
         params: {
           query: {
             classId: idLopHocNumber,
+            limit: 100,
           },
         },
       },
@@ -107,18 +124,6 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
     );
 
     /**
-     * Load danh sách giáo viên
-     */
-    const { data: dataGiaoViens, isLoading: isGiaoViensLoading } =
-      $api.useQuery("get", "/staffs", {
-        params: {
-          query: {
-            employeeRole: "TEACHER",
-          },
-        },
-      });
-
-    /**
      * Export excel
      */
     const { mutate: exportExcel, isPending: isExportingExcel } =
@@ -126,6 +131,17 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
 
     const { mutate: exportStudentGrade, isPending: isExportingStudentGrade } =
       $api.useMutation("get", "/course-offers/student/{id}/export-excel");
+
+    /**
+     * Export bảng điểm tổng hợp
+     */
+    const {
+      mutate: exportClassComprehensiveTranscripts,
+      isPending: isExportingClassComprehensiveTranscripts,
+    } = $api.useMutation(
+      "get",
+      "/export-grade-table/comprehensive/export-excel",
+    );
 
     return {
       LopHocDetail,
@@ -140,8 +156,6 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       isMonHocsLoading,
       classSubjects,
       isClassSubjectsLoading,
-      dataGiaoViens,
-      isGiaoViensLoading,
       refetchClassSubjects,
       exportExcel,
       isExportingExcel,
@@ -149,6 +163,10 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
       isExportingStudentGrade,
       isOpenModalAddStudent,
       setIsOpenModalAddStudent,
+      hocKysData,
+      isHocKysLoading,
+      exportClassComprehensiveTranscripts,
+      isExportingClassComprehensiveTranscripts,
     };
   },
 );

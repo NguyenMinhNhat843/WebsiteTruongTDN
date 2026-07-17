@@ -256,7 +256,6 @@ const Inner = () => {
                 />
                 <Input
                   label="Số CCCD / Định danh"
-                  require
                   placeholder="Nhập số CCCD (nếu có)"
                   {...register("identityNumber")}
                 />

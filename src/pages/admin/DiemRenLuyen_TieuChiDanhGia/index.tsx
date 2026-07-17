@@ -12,6 +12,7 @@ import {
 import { $api } from "../../../api/client";
 import CreateTieuChiChamDiem from "./CreateTieuChiChamDiem";
 import PageShell from "../../../components/ui/PageShell"; // Đường dẫn thực tế tới component PageShell của bạn
+import { toast } from "sonner";
 
 export type UpdateCriterionDto = {
   maxScore: number;
@@ -49,11 +50,11 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
   const { mutate: deleteTieuChiChamDiem, isPending: isDeleting } =
     $api.useMutation("delete", "/assessment/criteria/{id}", {
       onSuccess: () => {
-        alert("Xóa tiêu chí thành công!");
+        toast.success("Xóa tiêu chí thành công!");
         refetch();
       },
       onError: (error) => {
-        alert("Xóa thất bại: " + (error as any)?.message);
+        toast.error("Xóa thất bại: " + (error as any)?.message);
       },
     });
 
@@ -61,12 +62,12 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
   const { mutate: updateTieuChiChamDiem, isPending: isUpdating } =
     $api.useMutation("patch", "/assessment/criteria/{id}", {
       onSuccess: () => {
-        alert("Cập nhật tiêu chí thành công!");
+        toast.success("Cập nhật tiêu chí thành công!");
         setEditingItem(null); // Đóng modal sửa
         refetch(); // Tải lại danh sách
       },
       onError: (error) => {
-        alert("Cập nhật thất bại: " + (error as any)?.message);
+        toast.error("Cập nhật thất bại: " + (error as any)?.message);
       },
     });
 

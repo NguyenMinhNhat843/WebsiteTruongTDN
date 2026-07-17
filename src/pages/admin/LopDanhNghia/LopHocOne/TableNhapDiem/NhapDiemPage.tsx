@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import NhapDiem from "./NhapDiem";
+import NhapDiem from "./NhapDiemTable";
 import { LoadingWrapper } from "../../../../../components/ui/LoadingWrapper";
 import Breadcrumb from "../../../../../components/ui/Breadcrum";
 import { useLopHocOneContext } from "../LopHocOneProvider";

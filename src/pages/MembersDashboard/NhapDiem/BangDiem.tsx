@@ -1,5 +1,5 @@
 import { useParams, useSearchParams } from "react-router-dom";
-import NhapDiem from "../../admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiem";
+import NhapDiem from "../../admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiemTable";
 import { $api } from "../../../api/client";
 import Breadcrumb from "../../../components/ui/Breadcrum";
 

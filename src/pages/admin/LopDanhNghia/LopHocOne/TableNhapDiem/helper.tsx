@@ -1,4 +1,4 @@
-import type { GradeRow } from "./NhapDiem";
+import type { GradeRow } from "./NhapDiemTable";
 
 export const calculateGrades = (
   row: Partial<GradeRow>,

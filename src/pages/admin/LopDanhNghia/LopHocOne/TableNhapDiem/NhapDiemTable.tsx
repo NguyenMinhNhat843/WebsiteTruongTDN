@@ -34,7 +34,8 @@ export interface GradeRow {
   diemTB: number | null;
   diemTongKet1: number | null;
   diemTongKet2: number | null;
-  ghiChu: string | null;
+  diemChu: string; // Cột mới thay thế ghi chú
+  diemHe4: number | null; // Cột mới thay thế ghi chú
 }
 
 const columnHelper = createColumnHelper<GradeRow>();
@@ -43,6 +44,34 @@ interface NhapDiemProps {
   classSubjectId: number;
   lopHocDetail: LopHocResponseDto;
 }
+
+const getGradeLetterAndScale4 = (diemTK1: any, diemTK2: any) => {
+  const rawGrade =
+    diemTK2 !== null && diemTK2 !== undefined && diemTK2 !== ""
+      ? diemTK2
+      : diemTK1;
+
+  if (
+    rawGrade === null ||
+    rawGrade === undefined ||
+    rawGrade === "" ||
+    rawGrade === "-"
+  ) {
+    return { diemChu: "-", diemHe4: null };
+  }
+
+  const targetGrade = parseFloat(rawGrade);
+
+  if (isNaN(targetGrade)) {
+    return { diemChu: "-", diemHe4: null };
+  }
+
+  if (targetGrade >= 8.5) return { diemChu: "A", diemHe4: 4.0 };
+  if (targetGrade >= 7.0) return { diemChu: "B", diemHe4: 3.0 };
+  if (targetGrade >= 5.5) return { diemChu: "C", diemHe4: 2.0 };
+  if (targetGrade >= 4.0) return { diemChu: "D", diemHe4: 1.0 };
+  return { diemChu: "F", diemHe4: 0.0 };
+};
 
 const NhapDiem = ({ classSubjectId, lopHocDetail }: NhapDiemProps) => {
   return (
@@ -89,11 +118,19 @@ const Inner = () => {
             ktdk4: regis.ktdk4 ?? null,
             diemKiemTra1: regis.diemKiemTra1 ?? null,
             diemKiemTra2: regis.diemKiemTra2 ?? null,
-            ghiChu: regis.note ?? "",
           };
 
+          // Tính toán các điểm trung bình từ hàm helper có sẵn
           const calculated = calculateGrades(baseRow);
-          return { ...baseRow, ...calculated } as GradeRow;
+          const tempRow = { ...baseRow, ...calculated };
+
+          // Tính toán thêm Điểm chữ & Điểm hệ 4 dựa trên điểm tổng kết vừa tính được
+          const gradeScale = getGradeLetterAndScale4(
+            tempRow.diemTongKet1 ?? null,
+            tempRow.diemTongKet2 ?? null,
+          );
+
+          return { ...tempRow, ...gradeScale } as GradeRow;
         },
       );
       setTableData(initialData);
@@ -110,15 +147,9 @@ const Inner = () => {
       oldData.map((row, index) => {
         if (index !== rowIndex) return row;
 
-        let updatedValue: number | string | null = value;
+        let updatedValue: number | null = null;
 
-        if (columnId === "ghiChu") {
-          return { ...row, ghiChu: value };
-        }
-
-        if (value === "") {
-          updatedValue = null;
-        } else {
+        if (value !== "") {
           const parsed = parseFloat(value);
           if (isNaN(parsed) || parsed < 0 || parsed > 10) return row;
           updatedValue = parsed;
@@ -126,8 +157,15 @@ const Inner = () => {
 
         const updatedRow = { ...row, [columnId]: updatedValue };
         const calculated = calculateGrades(updatedRow);
+        const tempRow = { ...updatedRow, ...calculated };
 
-        return { ...updatedRow, ...calculated };
+        // Tính lại Điểm chữ và Hệ 4 sau khi có điểm tổng kết mới
+        const gradeScale = getGradeLetterAndScale4(
+          tempRow.diemTongKet1 ?? null,
+          tempRow.diemTongKet2 ?? null,
+        );
+
+        return { ...tempRow, ...gradeScale };
       }),
     );
   };
@@ -266,20 +304,40 @@ const Inner = () => {
         ],
       }),
 
-      columnHelper.accessor("ghiChu", {
-        header: "Ghi chú",
-        cell: (info) => (
-          <input
-            type="text"
-            value={info.getValue() || ""}
-            onChange={(e) =>
-              handleCellChange(info.row.index, "ghiChu", e.target.value)
-            }
-            className="w-32.5 px-2 py-1 text-xs border border-slate-200 rounded 
-            focus:outline-none focus:border-blue-500 bg-transparent"
-            placeholder="Thêm ghi chú..."
-          />
-        ),
+      // --- CỘT ĐIỂM CHỮ (THAY CHO GHI CHÚ) ---
+      columnHelper.accessor("diemChu", {
+        header: "Điểm chữ",
+        cell: (info) => {
+          const val = info.getValue();
+          let colorClass = "text-slate-500 bg-slate-50";
+          if (val === "A") colorClass = "text-red-600 bg-red-50 font-extrabold";
+          else if (val === "B") colorClass = "text-orange-600 bg-orange-50";
+          else if (val === "C") colorClass = "text-yellow-600 bg-yellow-50";
+          else if (val === "D") colorClass = "text-blue-600 bg-blue-50";
+          else if (val === "F")
+            colorClass = "text-rose-700 bg-rose-100 font-bold";
+
+          return (
+            <span
+              className={`px-2 py-1 rounded-md block text-center font-bold min-w-[50px] ${colorClass}`}
+            >
+              {val}
+            </span>
+          );
+        },
+      }),
+
+      // --- CỘT ĐIỂM HỆ 4 (THAY CHO GHI CHÚ) ---
+      columnHelper.accessor("diemHe4", {
+        header: "Hệ 4",
+        cell: (info) => {
+          const val = info.getValue();
+          return (
+            <span className="font-semibold text-slate-700 bg-slate-100 px-2 py-1 rounded-md block text-center min-w-[50px]">
+              {val !== null ? val.toFixed(1) : "-"}
+            </span>
+          );
+        },
       }),
     ],
     [],
@@ -310,7 +368,7 @@ const Inner = () => {
             diemTB: row.diemTB ?? undefined,
             diemTongKet1: row.diemTongKet1 ?? undefined,
             diemTongKet2: row.diemTongKet2 ?? undefined,
-            note: row.ghiChu ?? undefined, // Hoặc giữ nguyên nếu API nhận string | null
+            // Đã lược bỏ note/ghiChu tại đây
           })),
         },
       },
@@ -422,7 +480,7 @@ const Inner = () => {
                         rowSpan={isGroup ? 1 : 2}
                         className={`px-3 py-2.5 text-xs font-bold tracking-wider text-center select-none border-r border-slate-200 last:border-0 transition-colors relative ${
                           isGroup
-                            ? "text-blue-800 font-extrabold uppercase bg-blue-50" // Dùng màu đặc biệt (không dùng alpha tạo độ trong suốt)
+                            ? "text-blue-800 font-extrabold uppercase bg-blue-50"
                             : isSubHeader
                               ? "text-slate-500 font-medium normal-case bg-slate-50"
                               : "text-slate-700 font-bold uppercase bg-slate-100"
@@ -448,7 +506,6 @@ const Inner = () => {
               className="divide-y divide-slate-100"
               onKeyDown={(e) => handleKeyDown(e, table)}
             >
-              {/* Giữ nguyên logic map rows cũ của bạn... */}
               {table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { $api } from "../../../../api/client";
 import { useAppContext } from "../../../../AppProvider";
+import { toast } from "sonner";
 
 interface DetailDotDanhGiaModalProps {
   periodId: number | null;
@@ -60,7 +61,7 @@ const DetailDotDanhGiaModal = ({
     "/assessment/periods/{id}",
     {
       onSuccess: () => {
-        alert("Cập nhật thông tin đợt đánh giá thành công!");
+        toast.success("Cập nhật thông tin đợt đánh giá thành công!");
         if (onSuccess) onSuccess();
         onClose();
       },
@@ -85,7 +86,6 @@ const DetailDotDanhGiaModal = ({
       setSelectedCriterionIds(activeIds);
     }
   }, [periodDetail]);
-  console.log("Selected criterion IDs:", selectedCriterionIds);
 
   const toggleCriterion = (id: number) => {
     setSelectedCriterionIds((prev) =>

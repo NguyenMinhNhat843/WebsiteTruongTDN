@@ -21,7 +21,6 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       page: 1,
       limit: 10,
       status: "pending",
-      excludeStatus: false,
     });
 
     /**
@@ -46,9 +45,7 @@ export const [HocSinhProvider, useHocSinhContext] = createContextProvider(
       studying: students?.filter((s) => s.status === "studying").length || 0,
       approved: students?.filter((s) => s.status === "approved").length || 0,
       dropped: students?.filter((s) => s.status === "dropped").length || 0,
-      expelled: students?.filter((s) => s.status === "expelled").length || 0,
       graduated: students?.filter((s) => s.status === "graduated").length || 0,
-      suspended: students?.filter((s) => s.status === "suspended").length || 0,
     };
 
     /**

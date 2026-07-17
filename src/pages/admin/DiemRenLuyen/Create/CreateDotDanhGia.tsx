@@ -48,7 +48,6 @@ const CreateDotDanhGia = ({
         setError(
           (err as any)?.message || "Có lỗi xảy ra khi kết nối đến máy chủ.",
         );
-        console.error(err);
       },
     },
   );

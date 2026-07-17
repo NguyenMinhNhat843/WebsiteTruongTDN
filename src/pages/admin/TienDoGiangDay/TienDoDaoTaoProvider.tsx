@@ -83,21 +83,6 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
         enabled: !!semesterId && !!classId,
       });
 
-    /**
-     * Load danh sách Giáo viên
-     */
-    const { data: teachers, isLoading: isLoadingTeachers } = $api.useQuery(
-      "get",
-      "/staffs",
-      {
-        params: {
-          query: {
-            employeeRole: "TEACHER",
-          },
-        },
-      },
-    );
-
     return {
       giaoViens,
       isLoadingGiaoViens,
@@ -105,8 +90,6 @@ export const [TienDoDaoTaoProvider, useTienDoDaoTaoContext] =
       isLoadingClasses,
       classSubjects,
       isLoadingClassSubjects,
-      teachers,
-      isLoadingTeachers,
       trainingPlan,
       isLoadingTrainingPlan,
       semesters,

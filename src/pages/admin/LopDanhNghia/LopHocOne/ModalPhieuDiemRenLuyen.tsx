@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import {
   X,
   Save,
@@ -9,13 +9,13 @@ import {
 } from "lucide-react";
 import { $api } from "../../../../api/client";
 import { toast } from "sonner";
+import { useAppContext } from "../../../../AppProvider";
 
 interface ModalPhieuDiemRenLuyenProps {
   studentId: number;
   semesterId: number;
   isOpen: boolean;
   onClose: () => void;
-  isTeacher?: boolean; // Khác biệt giao diện giữa Giáo viên và Học sinh
 }
 
 const ModalPhieuDiemRenLuyen = ({
@@ -23,8 +23,10 @@ const ModalPhieuDiemRenLuyen = ({
   semesterId,
   isOpen,
   onClose,
-  isTeacher = true,
 }: ModalPhieuDiemRenLuyenProps) => {
+  const { currentUser } = useAppContext();
+  const role = currentUser?.role; // admin | teacher | student | staff ...
+
   // 1. Gọi API Load Phiếu Điểm
   const {
     data: assessmentData,
@@ -44,7 +46,7 @@ const ModalPhieuDiemRenLuyen = ({
     { enabled: isOpen && !!studentId && !!semesterId },
   );
 
-  // Giả định mutation cập nhật dữ liệu của bạn
+  // Mutation cập nhật dữ liệu
   const { mutate: updateAssessment, isPending: isUpdating } = $api.useMutation(
     "post",
     "/assessment/submit",
@@ -71,15 +73,17 @@ const ModalPhieuDiemRenLuyen = ({
     }
   }, [assessmentData]);
 
-  // Nếu modal không mở hoặc đang load dữ liệu thì không render
+  // Nếu modal không mở thì không render
   if (!isOpen) return null;
 
   // 3. Sắp xếp danh sách tiêu chí theo thứ tự sortOrder tăng dần
-  const sortedDetails = [...(assessmentData?.details || [])].sort(
-    (a, b) =>
-      a.periodCriterion.criterion.sortOrder -
-      b.periodCriterion.criterion.sortOrder,
-  );
+  const sortedDetails = useMemo(() => {
+    return [...(assessmentData?.details || [])].sort(
+      (a, b) =>
+        a.periodCriterion.criterion.sortOrder -
+        b.periodCriterion.criterion.sortOrder,
+    );
+  }, [assessmentData?.details]);
 
   // 4. Tính toán tổng điểm real-time trên giao diện
   const totalMaxScore = sortedDetails.reduce(
@@ -95,20 +99,32 @@ const ModalPhieuDiemRenLuyen = ({
     0,
   );
 
-  // 5. Kiểm tra quyền chỉnh sửa dựa trên trạng thái phiếu điểm
+  // 5. Trạng thái phiếu điểm
   const isApproved = assessmentData?.status === "APPROVED";
   const isPending = assessmentData?.status === "PENDING";
+  const isNotSubmitted = assessmentData?.status === "NOT_SUBMITTED";
 
-  const canEditStudentScore =
-    !isTeacher && assessmentData?.status === "NOT_SUBMITTED";
-  const canEditTeacherScore = isTeacher && isPending;
+  // 6. Phân quyền chỉnh sửa (Quyết định bởi Role lấy từ Context)
+  const isAdmin = role === "admin";
+  const isTeacherRole = role === "teacher";
+  const isStudentRole = role === "student";
 
-  // 6. Xử lý lưu dữ liệu
+  // Quyền sửa điểm Student: Admin được sửa mọi lúc (trừ khi đã duyệt, hoặc luôn luôn sửa được tùy bạn), Học sinh chỉ được sửa khi CHƯA NỘP
+  const canEditStudentScore = isAdmin || (isStudentRole && isNotSubmitted);
+
+  // Quyền sửa điểm Teacher & Nhận xét: Admin được sửa mọi lúc, Giáo viên chỉ sửa được khi đang CHỜ DUYỆT
+  const canEditTeacherScore = isAdmin || (isTeacherRole && isPending);
+
+  // 7. Xử lý lưu dữ liệu
   const handleSave = (submitStatus?: "PENDING" | "APPROVED") => {
+    // Nếu là học sinh gửi, trạng thái sẽ lên PENDING. Nếu giáo viên duyệt sẽ lên APPROVED.
     const payload = {
       assessmentId: assessmentData!.id!,
       status: submitStatus || assessmentData?.status || "NOT_SUBMITTED",
-      teacherComment: isTeacher ? comment : "",
+      // Chỉ gửi bình luận lên nếu người dùng có quyền chỉnh sửa phần giáo viên
+      teacherComment: canEditTeacherScore
+        ? comment
+        : assessmentData?.teacherComment || "",
       details: Object.entries(scores).map(([id, val]) => ({
         id: Number(id),
         studentScore: val.studentScore,
@@ -131,7 +147,7 @@ const ModalPhieuDiemRenLuyen = ({
     );
   };
 
-  // Helper render badge trạng thái bằng màu Tailwind chuẩn
+  // Helper render badge trạng thái
   const renderStatusBadge = (status?: string) => {
     switch (status) {
       case "APPROVED":
@@ -174,10 +190,9 @@ const ModalPhieuDiemRenLuyen = ({
           </button>
         </div>
 
-        {/* Body (Có Thể Cuộn) */}
+        {/* Body */}
         <div className="flex-1 p-6 overflow-y-auto space-y-6">
           {isLoading ? (
-            // Hiện spinner khi đang load data ban đầu
             <div className="flex flex-col items-center justify-center space-y-2 py-12">
               <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
               <p className="text-sm text-gray-500 font-medium">
@@ -195,8 +210,12 @@ const ModalPhieuDiemRenLuyen = ({
                       <th className="px-4 py-3 text-center w-28">
                         Điểm tối đa
                       </th>
-                      <th className="px-4 py-3 text-center w-36">Sinh viên</th>
-                      <th className="px-4 py-3 text-center w-36">GVCN duyệt</th>
+                      <th className="px-4 py-3 text-center w-36">
+                        Sinh viên tự chấm
+                      </th>
+                      <th className="px-4 py-3 text-center w-36">
+                        GV/Admin duyệt
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 text-gray-600">
@@ -216,6 +235,7 @@ const ModalPhieuDiemRenLuyen = ({
                             {item.periodCriterion.criterion.maxScore}đ
                           </span>
                         </td>
+
                         {/* Input Sinh Viên */}
                         <td className="px-4 py-3 text-center">
                           <input
@@ -240,7 +260,8 @@ const ModalPhieuDiemRenLuyen = ({
                             className="w-20 px-2 py-1 text-center bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-400 font-medium"
                           />
                         </td>
-                        {/* Input Giáo Viên */}
+
+                        {/* Input Giáo Viên / Admin */}
                         <td className="px-4 py-3 text-center">
                           <input
                             type="number"
@@ -267,7 +288,7 @@ const ModalPhieuDiemRenLuyen = ({
                       </tr>
                     ))}
                   </tbody>
-                  {/* Footer Table hiển thị tổng điểm đạt được */}
+                  {/* Footer Tổng Điểm */}
                   <tfoot className="bg-gray-50 border-t-2 border-gray-200 font-bold text-gray-900">
                     <tr>
                       <td
@@ -290,17 +311,17 @@ const ModalPhieuDiemRenLuyen = ({
                 </table>
               </div>
 
-              {/* Ô nhận xét ý kiến của GVCN */}
+              {/* Ô Nhận xét */}
               <div className="space-y-2">
                 <label className="block text-sm font-semibold text-gray-700">
-                  Ý kiến / Nhận xét của GVCN:
+                  Ý kiến / Nhận xét của Giáo viên:
                 </label>
                 <textarea
                   rows={3}
                   disabled={!canEditTeacherScore}
                   value={comment}
                   placeholder={
-                    isTeacher
+                    isAdmin || isTeacherRole
                       ? "Nhập nhận xét đánh giá tại đây..."
                       : "Chưa có ý kiến nhận xét từ GVCN"
                   }
@@ -312,7 +333,7 @@ const ModalPhieuDiemRenLuyen = ({
           )}
         </div>
 
-        {/* Footer chứa Action Buttons */}
+        {/* Footer Actions */}
         <div className="flex items-center justify-end gap-3 p-4 border-t border-gray-200 bg-gray-50/50">
           <button
             onClick={onClose}
@@ -321,15 +342,14 @@ const ModalPhieuDiemRenLuyen = ({
             Đóng
           </button>
 
-          {/* Actions dành cho Sinh Viên */}
-          {canEditStudentScore && (
+          {/* HÀNH ĐỘNG DÀNH CHO HỌC SINH (HOẶC ADMIN ĐANG GIẢ LẬP ĐIỂM HỌC SINH) */}
+          {canEditStudentScore && !isTeacherRole && (
             <>
               <button
                 onClick={() => handleSave()}
                 disabled={isUpdating}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
-                {/* Thay icon Save bằng Spinner nếu đang updating */}
                 {isUpdating ? (
                   <Loader2 size={16} className="animate-spin" />
                 ) : (
@@ -341,24 +361,22 @@ const ModalPhieuDiemRenLuyen = ({
               <button
                 onClick={() => handleSave("PENDING")}
                 disabled={isUpdating}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm transition-colors disabled:opacity-75 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg shadow-sm transition-colors disabled:opacity-75"
               >
-                {/* Thêm hiệu ứng Spinner chạy trước chữ */}
                 {isUpdating && <Loader2 size={16} className="animate-spin" />}
                 Nộp phiếu điểm
               </button>
             </>
           )}
 
-          {/* Actions dành cho Giáo Viên */}
+          {/* HÀNH ĐỘNG DÀNH CHO GIÁO VIÊN / ADMIN (DUYỆT & ĐÁNH GIÁ) */}
           {canEditTeacherScore && (
             <>
               <button
                 onClick={() => handleSave()}
                 disabled={isUpdating}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
               >
-                {/* Thay icon Save bằng Spinner nếu đang updating */}
                 {isUpdating ? (
                   <Loader2 size={16} className="animate-spin" />
                 ) : (
@@ -370,7 +388,7 @@ const ModalPhieuDiemRenLuyen = ({
               <button
                 onClick={() => handleSave("APPROVED")}
                 disabled={isUpdating}
-                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 shadow-sm transition-colors disabled:opacity-75 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-1.5 px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm transition-colors disabled:opacity-75"
               >
                 {isUpdating && <Loader2 size={16} className="animate-spin" />}
                 Duyệt & Khóa phiếu

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
 
 import {
   User,
@@ -9,6 +9,7 @@ import {
   ArrowLeft,
   Calendar,
   FileText,
+  ChevronDown,
 } from "lucide-react";
 import ModelThemHocSinh from "./ModelThemHocSinh";
 import { useNavigate } from "react-router-dom";
@@ -19,17 +20,16 @@ import Breadcrumb from "../../../../components/ui/Breadcrum";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import { useLopHocOneContext } from "./LopHocOneProvider";
 import { downloadFromBlob } from "../../../../util/download";
-import { useAppContext } from "../../../../AppProvider";
 import { LoadingWrapper } from "../../../../components/ui/LoadingWrapper";
 import { $api } from "../../../../api/client";
 import { toast } from "sonner";
+import { SelectOption } from "../../../../components/ui/Form/SelectOption";
 
 const LopHocOne = () => {
   return <Inner />;
 };
 
 const Inner = () => {
-  const { hocKysData } = useAppContext();
   const {
     exportExcel,
     isExportingExcel,
@@ -42,10 +42,31 @@ const Inner = () => {
     isLoadingStudentsInLopHoc,
     isOpenModalAddStudent,
     setIsOpenModalAddStudent,
+    setselectedSemesterId,
+    hocKysData,
+    exportClassComprehensiveTranscripts,
+    isExportingClassComprehensiveTranscripts,
   } = useLopHocOneContext();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<"hoc-sinh" | "mon-hoc">("mon-hoc");
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const exportMenuRef = useRef<HTMLDivElement>(null);
+
   const hocKySelected = hocKysData?.find((hk) => hk.id === selectedSemesterId);
+
+  // Xử lý đóng dropdown khi click ra ngoài vùng nút
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        exportMenuRef.current &&
+        !exportMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowExportMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Lấy danh sách giáo viên
   const { data: teachers, isLoading: isLoadingTeachers } = $api.useQuery(
@@ -87,6 +108,64 @@ const Inner = () => {
         onSuccess: () => {
           toast.success("Cập nhật giáo viên chủ nhiệm thành công");
           refetchLopHocDetail();
+        },
+      },
+    );
+  };
+
+  // Gọi API xuất bảng điểm học kỳ hiện tại đang chọn
+  const handleExportSemesterTranscript = () => {
+    setShowExportMenu(false);
+    exportExcel(
+      {
+        parseAs: "blob",
+        body: {
+          classSubjectIds: classSubjects?.map((cs) => cs.id) || [],
+          haveTongKetSheet: true,
+        },
+      },
+      {
+        onSuccess: (blob) => {
+          downloadFromBlob(
+            blob as never,
+            `${LopHocDetail?.className} - ${hocKySelected?.name} - BangDiemHocKy.xlsx`,
+            ".xlsx",
+          );
+        },
+      },
+    );
+  };
+
+  // Gọi API xuất bảng điểm tổng hợp (Tất cả học kỳ & Toàn khóa)
+  const handleExportComprehensiveTranscript = () => {
+    setShowExportMenu(false);
+
+    if (!LopHocDetail?.id || !LopHocDetail?.batch?.id) {
+      toast.error(
+        "Không tìm thấy thông tin lớp học hoặc niên khóa. Vui lòng thử lại sau.",
+      );
+      return;
+    }
+
+    // Gọi mutation hoặc endpoint API dành cho bảng điểm tổng hợp toàn khóa
+    // Giả sử bạn truyền route hoặc body config tương ứng cho API Backend xử lý đa Sheet
+    exportClassComprehensiveTranscripts(
+      {
+        parseAs: "blob",
+        params: {
+          query: {
+            classId: LopHocDetail?.id,
+            batchId: LopHocDetail?.batch?.id,
+          },
+        },
+      },
+      {
+        onSuccess: (blob) => {
+          downloadFromBlob(
+            blob as never,
+            `${LopHocDetail?.className} - BangDiemTongHopToanKhoa.xlsx`,
+            ".xlsx",
+          );
         },
       },
     );
@@ -163,33 +242,54 @@ const Inner = () => {
                   icon={<Plus className="h-4 w-4" />}
                 />
 
-                <ButtonAction
-                  variant="export"
-                  label="Xuất bảng điểm học kỳ"
-                  icon={<FileText className="h-4 w-4" />}
-                  loading={isExportingExcel}
-                  onClick={() => {
-                    return exportExcel(
-                      {
-                        parseAs: "blob",
-                        body: {
-                          classSubjectIds:
-                            classSubjects?.map((cs) => cs.id) || [],
-                          haveTongKetSheet: true,
-                        },
-                      },
-                      {
-                        onSuccess: (blob) => {
-                          downloadFromBlob(
-                            blob as never,
-                            `${LopHocDetail?.className} - ${hocKySelected?.name} - BangDiem.xlsx`,
-                            ".xlsx",
-                          );
-                        },
-                      },
-                    );
-                  }}
-                />
+                {/* KHỐI DROPDOWN XUẤT BẢNG ĐIỂM */}
+                <div className="relative" ref={exportMenuRef}>
+                  <ButtonAction
+                    variant="export"
+                    label="Xuất bảng điểm"
+                    icon={<FileText className="h-4 w-4" />}
+                    loading={
+                      isExportingExcel ||
+                      isExportingClassComprehensiveTranscripts
+                    }
+                    onClick={() => setShowExportMenu(!showExportMenu)}
+                  />
+
+                  {showExportMenu && (
+                    <div className="absolute right-0 mt-2 w-60 bg-white rounded-xl border border-gray-100 shadow-xl z-50 py-1.5 animate-in fade-in slide-in-from-top-2 duration-150">
+                      <button
+                        onClick={handleExportSemesterTranscript}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors font-medium flex items-center gap-2"
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                        Xuất bảng điểm học kỳ
+                      </button>
+                      <button
+                        onClick={handleExportComprehensiveTranscript}
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-600 transition-colors font-medium flex items-center gap-2"
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Xuất bảng điểm tổng hợp
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2.5">
+                  <SelectOption
+                    containerClassName="w-52"
+                    value={selectedSemesterId ?? ""}
+                    onChange={(e) =>
+                      setselectedSemesterId(Number(e.target.value))
+                    }
+                    options={
+                      hocKysData?.map((hocKy) => ({
+                        value: hocKy.id,
+                        label: `${hocKy.name} ${hocKy.isCurrent ? "(Hiện tại)" : ""}`,
+                      })) || []
+                    }
+                  />
+                </div>
               </div>
             </div>
 
@@ -225,7 +325,6 @@ const Inner = () => {
                       disabled={isLoadingUpdateFormTeacher}
                       onChange={(e) => {
                         const value = e.target.value;
-                        // Nếu chọn tùy chọn trống "", truyền null, ngược lại ép kiểu về số (number)
                         handleUpdateClassFormTeacher(
                           value ? Number(value) : null,
                         );
@@ -280,7 +379,8 @@ const Inner = () => {
             </div>
           </div>
         </div>
-        {/* --- PHẦN 2: DANH SÁCH HỌC SINH (TANSTACK TABLE) --- */}
+
+        {/* --- PHẦN 2: TABS --- */}
         <Tabs
           tabs={[
             { value: "mon-hoc", label: "Môn học" },

@@ -3,29 +3,15 @@ import { useTienDoDaoTaoContext } from "../TienDoDaoTaoProvider";
 import { useEffect, useMemo, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { getWeeksInRange } from "./helpers";
-import { formatDateToString } from "../../../../util/formatDate";
 import type { components } from "../../../../api/v1";
 import { $api } from "../../../../api/client";
 import { toast } from "sonner";
 import ButtonAction from "../../../../components/ui/ButtonAction";
-import { FileText, SlidersHorizontal } from "lucide-react";
+import { FileText } from "lucide-react";
 import { downloadFromBlob } from "../../../../util/download";
-
-interface DataRow {
-  monHocId: number;
-  tenMonHoc: string;
-  giaoVienGiangDay: string;
-  giaoVienGiangDayId: number;
-  tinChi: number;
-  tongSoTiet: number;
-  sessions: {
-    maPhongHoc: string;
-    idPhongHoc: number;
-    thu: string;
-    tiet: string;
-    [week: string]: any;
-  }[];
-}
+import { Filters } from "./Filters";
+import { TableContent } from "./TableContent";
+import { type DataRow } from "./types";
 
 export type UpsertPlanTrainingDto =
   components["schemas"]["UpsertTrainingPlanDto"];
@@ -37,9 +23,9 @@ const TableTienDoDaoTao = () => {
     isLoadingTrainingPlan,
     classes,
     semesterId,
-    teachers,
     semesters: hocKysData,
   } = useTienDoDaoTaoContext();
+
   const hocKysOptions = hocKysData?.map((hk) => ({
     value: hk.id,
     label: hk.name,
@@ -50,11 +36,6 @@ const TableTienDoDaoTao = () => {
     "get",
     "/rooms",
   );
-
-  const teachersOption = teachers?.map((teacher) => ({
-    value: teacher.id,
-    label: teacher.fullName,
-  }));
 
   const [searchParams, setSearchParams] = useSearchParams();
   const classIdParam = searchParams.get("classId") || "";
@@ -236,9 +217,8 @@ const TableTienDoDaoTao = () => {
   };
 
   // Hàm xử lý khi chọn giáo viên giảng dạy cho 1 môn học
-  const handleChangeTeacher = (itemIndex: number, teacherId: string) => {
+  const handleChangeTeacher = (itemIndex: number, teacherId: string, teacherName: string) => {
     const selectedId = teacherId ? Number(teacherId) : 0;
-    const selectedTeacher = teachers?.find((t) => t.id === selectedId);
 
     setTable((prevTable) =>
       prevTable.map((item, iIdx) => {
@@ -246,7 +226,7 @@ const TableTienDoDaoTao = () => {
         return {
           ...item,
           giaoVienGiangDayId: selectedId,
-          giaoVienGiangDay: selectedTeacher?.fullName || "",
+          giaoVienGiangDay: teacherName || "",
         };
       }),
     );
@@ -411,153 +391,34 @@ const TableTienDoDaoTao = () => {
     );
   };
 
+  const handleClassChange = (value: string) => {
+    setSearchParams((prev) => {
+      if (value) prev.set("classId", value);
+      else prev.delete("classId");
+      return prev;
+    });
+  };
+
+  const handleSemesterChange = (value: string) => {
+    setSearchParams((prev) => {
+      if (value) prev.set("semesterId", value);
+      else prev.delete("semesterId");
+      return prev;
+    });
+  };
+
   return (
-    <div className="w-full p-4 bg-white rounded-lg shadow-sm">
-      {/* Header Đơn giản phía trên bộ lọc */}
-      <div className="flex items-center gap-2.5 pb-1 border-b border-slate-100">
-        <div className="p-2 bg-indigo-50 rounded-lg text-indigo-600">
-          <SlidersHorizontal className="w-5 h-5" />
-        </div>
-        <div>
-          <h2 className="text-base font-bold text-slate-800 tracking-tight">
-            Bộ lọc tiến độ đào tạo
-          </h2>
-          <p className="text-xs text-slate-400">
-            Chọn lớp và học kỳ để cấu hình dữ liệu chi tiết
-          </p>
-        </div>
-      </div>
+    <div>
+      <Filters
+        classIdParam={classIdParam}
+        semesterIdParam={semesterIdParam}
+        classOptions={classOptions}
+        semesterOptions={semesterOptions}
+        onClassChange={handleClassChange}
+        onSemesterChange={handleSemesterChange}
+      />
 
-      {/* Filters */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8 p-5 bg-white rounded-xl border border-slate-100 shadow-sm">
-        {/* Dropdown Lớp học */}
-        <div className="flex flex-col gap-2 relative">
-          <label className="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-            <svg
-              className="w-4 h-4 text-slate-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
-              />
-            </svg>
-            Lớp học
-          </label>
-          <div className="relative">
-            <select
-              value={classIdParam}
-              onChange={(e) => {
-                const value = e.target.value;
-                setSearchParams((prev) => {
-                  if (value) prev.set("classId", value);
-                  else prev.delete("classId");
-                  return prev;
-                });
-              }}
-              className="w-full appearance-none bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-800 rounded-lg pl-3 pr-10 py-2.5 text-sm font-medium transition-all duration-200 outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 cursor-pointer"
-            >
-              <option value="" className="text-slate-400">
-                -- Chọn lớp học --
-              </option>
-              {classOptions?.map((option) => (
-                <option
-                  key={option.value}
-                  value={option.value}
-                  className="text-slate-800"
-                >
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            {/* Icon mũi tên tùy chỉnh */}
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-              <svg
-                className="w-4 h-4 transition-transform duration-200"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        {/* Dropdown Học kỳ */}
-        <div className="flex flex-col gap-2 relative">
-          <label className="text-sm font-semibold text-slate-700 flex items-center gap-1.5">
-            <svg
-              className="w-4 h-4 text-slate-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-              />
-            </svg>
-            Học kỳ
-          </label>
-          <div className="relative">
-            <select
-              value={semesterIdParam}
-              onChange={(e) => {
-                const value = e.target.value;
-                setSearchParams((prev) => {
-                  if (value) prev.set("semesterId", value);
-                  else prev.delete("semesterId");
-                  return prev;
-                });
-              }}
-              className="w-full appearance-none bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 text-slate-800 rounded-lg pl-3 pr-10 py-2.5 text-sm font-medium transition-all duration-200 outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 cursor-pointer"
-            >
-              <option value="" className="text-slate-400">
-                -- Chọn học kỳ --
-              </option>
-              {semesterOptions?.map((option) => (
-                <option
-                  key={option.value}
-                  value={option.value}
-                  className="text-slate-800"
-                >
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            {/* Icon mũi tên tùy chỉnh */}
-            <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-slate-400">
-              <svg
-                className="w-4 h-4 transition-transform duration-200"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth="2.5"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div>
+      <div className="w-full p-4 bg-white rounded-lg shadow-sm">
         {isLoadingTrainingPlan ? (
           <div className="flex justify-center items-center py-8 w-full">
             <div className="flex items-center gap-3 text-slate-500 font-medium text-sm bg-slate-50 px-4 py-2 rounded-full border border-slate-100 shadow-sm">
@@ -566,327 +427,20 @@ const TableTienDoDaoTao = () => {
             </div>
           </div>
         ) : (
-          <div className="overflow-x-auto border border-slate-200 rounded-xl shadow-md bg-white custom-scrollbar">
-            <table className="min-w-full divide-y divide-slate-200 text-sm text-left border-collapse">
-              <thead className="bg-slate-50 text-slate-700 font-semibold text-xs tracking-wider sticky top-0 z-10 shadow-[inset_0_-1px_0_rgba(226,232,240,1)]">
-                <tr>
-                  <th className="px-4 py-3.5 text-center w-14 border border-slate-200 text-slate-800 bg-slate-50">
-                    STT
-                  </th>
-                  <th className="px-6 min-w-60 py-3.5 border border-slate-200 text-slate-800 bg-slate-50">
-                    Tên môn học
-                  </th>
-                  <th className="px-6 min-w-60 py-3.5 border border-slate-200 text-slate-800 bg-slate-50">
-                    Giáo viên giảng dạy
-                  </th>
-                  <th className="px-4 py-3.5 text-center border border-slate-200 text-slate-800 bg-slate-50">
-                    Tổng số tiết
-                  </th>
-                  <th className="px-6 py-3.5 text-center border border-slate-200 text-slate-800 bg-slate-50">
-                    Thao tác
-                  </th>
-                  <th className="px-6 min-w-32 py-3.5 border border-slate-200 text-slate-800 bg-slate-50">
-                    Phòng
-                  </th>
-                  <th className="px-6 py-3.5 border border-slate-200 text-slate-800 bg-slate-50">
-                    Thứ
-                  </th>
-                  <th className="px-6 py-3.5 border border-slate-200 text-slate-800 bg-slate-50">
-                    Tiết
-                  </th>
-
-                  {weekList.map((week) => (
-                    <th
-                      key={week.weekNumber}
-                      className="px-4 py-2.5 text-center border border-slate-200 min-w-[85px] bg-slate-50/70 align-middle"
-                    >
-                      <span className="text-slate-700 font-bold block">
-                        Tuần {week.weekNumber}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-medium block mt-0.5">
-                        {formatDateToString(week.start).slice(0, 5)}
-                      </span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-slate-200 text-slate-600">
-                {table?.map((item, itemIndex) => {
-                  const totalSessions = item.sessions.length;
-
-                  return item.sessions.map((session, sessionIndex) => {
-                    const isFirstRow = sessionIndex === 0;
-                    return (
-                      <tr
-                        key={`${item.monHocId}-${sessionIndex}`}
-                        className="hover:bg-slate-50/60 transition-colors duration-150"
-                      >
-                        {isFirstRow && (
-                          <>
-                            <td
-                              rowSpan={totalSessions}
-                              className="px-4 py-4 text-center font-semibold text-slate-800 border border-slate-200 bg-slate-50/30 align-middle"
-                            >
-                              {itemIndex + 1}
-                            </td>
-
-                            {/* Tên môn học */}
-                            <td
-                              rowSpan={totalSessions}
-                              className="px-6 py-4 font-semibold text-slate-900 border border-slate-200 align-middle max-w-xs leading-relaxed"
-                            >
-                              {item.tenMonHoc || "---"}
-                            </td>
-
-                            {/* Giáo viên giảng dạy */}
-                            <td
-                              rowSpan={totalSessions}
-                              className="px-6 py-4 whitespace-nowrap border border-slate-200 align-middle bg-white"
-                            >
-                              <div className="relative">
-                                <select
-                                  className="block w-full rounded-lg border border-slate-200 text-slate-800 bg-slate-50/50 hover:bg-slate-50 py-2 px-3 text-sm font-medium transition-all outline-none focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/10 cursor-pointer appearance-none pr-8"
-                                  value={item.giaoVienGiangDayId || ""}
-                                  onChange={(e) =>
-                                    handleChangeTeacher(
-                                      itemIndex,
-                                      e.target.value,
-                                    )
-                                  }
-                                >
-                                  <option
-                                    value=""
-                                    disabled
-                                    className="text-slate-400 italic"
-                                  >
-                                    -- Chưa phân công --
-                                  </option>
-                                  {teachersOption?.map((option) => (
-                                    <option
-                                      key={option.value}
-                                      value={option.value}
-                                    >
-                                      {option.label}
-                                    </option>
-                                  ))}
-                                </select>
-                                <div className="absolute inset-y-0 right-0 flex items-center pr-2.5 pointer-events-none text-slate-400">
-                                  <svg
-                                    className="w-4 h-4"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                  >
-                                    <path
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      d="M19 9l-7 7-7-7"
-                                    />
-                                  </svg>
-                                </div>
-                              </div>
-                            </td>
-
-                            {/* Tổng số tiết */}
-                            <td
-                              rowSpan={totalSessions}
-                              className="px-4 py-4 text-center font-bold text-indigo-600 border border-slate-200 align-middle bg-indigo-50/20 text-base"
-                            >
-                              {item.tongSoTiet}
-                            </td>
-                          </>
-                        )}
-
-                        {/* Thao tác thêm buổi */}
-                        <td className="px-4 py-3 text-center border border-slate-200 whitespace-nowrap align-middle">
-                          <div className="flex flex-col gap-1 items-center justify-center min-w-[90px]">
-                            {isFirstRow ? (
-                              <button
-                                onClick={() =>
-                                  handleAddClassSubjectSession(itemIndex)
-                                }
-                                className="text-indigo-600 hover:text-indigo-700 font-semibold text-xs bg-indigo-50 hover:bg-indigo-100/80 px-2.5 py-1.5 rounded-lg border border-indigo-200 hover:border-indigo-300 transition-all shadow-sm w-full"
-                              >
-                                + Thêm buổi
-                              </button>
-                            ) : (
-                              <button
-                                className="text-red-600 hover:text-red-700 font-semibold text-xs bg-red-50 hover:bg-red-100/80 px-2.5 py-1.5 rounded-lg border border-red-200 hover:border-red-300 transition-all shadow-sm w-full"
-                                onClick={() =>
-                                  handleRemoveClassSubjectSession(
-                                    itemIndex,
-                                    sessionIndex,
-                                  )
-                                }
-                              >
-                                Xóa buổi
-                              </button>
-                            )}
-                          </div>
-                        </td>
-
-                        {/* Phòng học */}
-                        <td className="px-4 py-3 border border-slate-200 align-middle">
-                          <div className="relative">
-                            <select
-                              disabled={isLoadingRooms}
-                              value={session.idPhongHoc || ""}
-                              onChange={(e) =>
-                                handleChangeRoom(
-                                  itemIndex,
-                                  sessionIndex,
-                                  e.target.value,
-                                )
-                              }
-                              className="w-32 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm bg-white hover:bg-slate-50 font-medium text-slate-800 focus:border-indigo-500 focus:outline-none transition-all disabled:bg-slate-100 disabled:text-slate-400 appearance-none pr-7 cursor-pointer"
-                            >
-                              <option value="" disabled>
-                                {isLoadingRooms
-                                  ? "Đang tải..."
-                                  : "Chọn phòng..."}
-                              </option>
-
-                              {rooms?.map((room) => (
-                                <option key={room.id} value={room.id}>
-                                  {room.roomCode}{" "}
-                                  {room.building ? `(${room.building})` : ""}
-                                </option>
-                              ))}
-                            </select>
-                            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-slate-400">
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19 9l-7 7-7-7"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* Thứ */}
-                        <td className="px-4 py-3 border border-slate-200 align-middle">
-                          <div className="relative">
-                            <select
-                              value={session.thu}
-                              onChange={(e) =>
-                                handleChangeSessionField(
-                                  itemIndex,
-                                  sessionIndex,
-                                  "thu",
-                                  e.target.value,
-                                )
-                              }
-                              className="w-28 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm bg-white hover:bg-slate-50 font-medium text-slate-800 focus:border-indigo-500 focus:outline-none transition-all appearance-none pr-7 cursor-pointer"
-                            >
-                              <option value="">Chọn thứ</option>
-                              {[
-                                "MONDAY",
-                                "TUESDAY",
-                                "WEDNESDAY",
-                                "THURSDAY",
-                                "FRIDAY",
-                                "SATURDAY",
-                                "SUNDAY",
-                              ].map((day) => {
-                                const d = day as keyof typeof daysMap;
-
-                                const daysMap = {
-                                  MONDAY: "Thứ 2",
-                                  TUESDAY: "Thứ 3",
-                                  WEDNESDAY: "Thứ 4",
-                                  THURSDAY: "Thứ 5",
-                                  FRIDAY: "Thứ 6",
-                                  SATURDAY: "Thứ 7",
-                                  SUNDAY: "Chủ nhật",
-                                };
-
-                                return (
-                                  <option key={d} value={d}>
-                                    {daysMap[d]}
-                                  </option>
-                                );
-                              })}
-                            </select>
-                            <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none text-slate-400">
-                              <svg
-                                className="w-3.5 h-3.5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth="2"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  d="M19 9l-7 7-7-7"
-                                />
-                              </svg>
-                            </div>
-                          </div>
-                        </td>
-
-                        {/* Tiết */}
-                        <td className="px-4 py-3 border border-slate-200 align-middle">
-                          <input
-                            type="text"
-                            placeholder="VD: S1-3"
-                            value={session.tiet}
-                            onChange={(e) =>
-                              handleChangeSessionField(
-                                itemIndex,
-                                sessionIndex,
-                                "tiet",
-                                e.target.value,
-                              )
-                            }
-                            className="w-20 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-medium text-slate-800 placeholder-slate-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 focus:outline-none transition-all"
-                          />
-                        </td>
-
-                        {/* Render Checkbox Tuần */}
-                        {weekList.map((week) => {
-                          const hasSchedule =
-                            !!session[`week_${week.weekNumber}`];
-                          return (
-                            <td
-                              key={week.weekNumber}
-                              className={`px-2 py-3 text-center border border-slate-200 transition-colors duration-150 align-middle ${hasSchedule ? "bg-emerald-50/50" : "bg-white"
-                                }`}
-                            >
-                              <div className="flex items-center justify-center">
-                                <input
-                                  type="checkbox"
-                                  checked={hasSchedule}
-                                  onChange={() =>
-                                    handleToggleWeek(
-                                      itemIndex,
-                                      sessionIndex,
-                                      week.weekNumber,
-                                    )
-                                  }
-                                  className="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500/20 cursor-pointer accent-emerald-600 transition-all"
-                                />
-                              </div>
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    );
-                  });
-                })}
-              </tbody>
-            </table>
-          </div>
+          <TableContent
+            table={table}
+            weekList={weekList}
+            rooms={rooms}
+            isLoadingRooms={isLoadingRooms}
+            handleAddClassSubjectSession={handleAddClassSubjectSession}
+            handleRemoveClassSubjectSession={handleRemoveClassSubjectSession}
+            handleChangeRoom={handleChangeRoom}
+            handleChangeTeacher={handleChangeTeacher}
+            handleChangeSessionField={handleChangeSessionField}
+            handleToggleWeek={handleToggleWeek}
+          />
         )}
+
         <div className="flex justify-end mt-4">
           <ButtonAction
             variant="export"

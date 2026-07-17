@@ -4,6 +4,7 @@ import { usePhanLopContext } from "./PhanLopProvider";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import { SelectOption } from "../../../components/ui/Form/SelectOption";
 import { useState } from "react";
+import { toast } from "sonner";
 
 const PhanLop = () => {
   const {
@@ -58,9 +59,12 @@ const PhanLop = () => {
       },
       {
         onSuccess: () => {
-          alert("Phân lớp thành công! Dữ liệu sẽ được cập nhật.");
+          toast.success("Phân lớp thành công! Dữ liệu sẽ được cập nhật.");
           setIsOpenModal(false); // Đóng modal sau khi thành công
         },
+        onError: () => {
+          toast.error('Có lỗi xảy ra, vui lòng thử lại!')
+        }
       },
     );
   };

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { createContextProvider } from "../../../util/createContextProvider";
 import { $api } from "../../../api/client";
 import type { components } from "../../../api/v1";
@@ -20,20 +20,6 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
     const { staffCode } = useParams(); // Dùng cho xem chi tiết
     const [isOpenModalMonHoc, setIsOpenModalMonHoc] = useState(false);
 
-    const stats = useMemo(
-      () => ({
-        total: 5,
-        byRole: {
-          ADMIN: 1,
-          TEACHER: 2,
-          STAFF: 1,
-          STUDENT: 1,
-        },
-        active: 4,
-      }),
-      [],
-    );
-
     const [filters, setFilters] = useState({
       page: 1,
       limit: 10,
@@ -54,6 +40,7 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
           page: filters.page,
           limit: filters.limit,
           employeeRole: filters.EmployeeRole as StaffRole,
+          keyword: search.trim() !== "" ? search.trim() : undefined,
         },
       },
     });
@@ -119,7 +106,6 @@ export const [QuanLyNguoiDungProvider, useQuanLyNguoiDungContext] =
       setSelectedUser,
       sortBy,
       setSortBy,
-      stats,
       openModalCreate,
       setOpenModalCreate,
       isLoadingNhanVien,
