@@ -532,6 +532,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/curriculums/copy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sao chép chương trình khung */
+        post: operations["CurriculumController_copyCurriculum"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/curriculums/first": {
         parameters: {
             query?: never;
@@ -2569,6 +2586,11 @@ export interface components {
             totalCredits: number;
             /** @description Danh sách các môn học bắt buộc (hoặc tự chọn tự do không theo nhóm) */
             curriculumSubjects: components["schemas"]["CurriculumSubjectPayload"][];
+        };
+        CopyCurriculumDto: {
+            curriculumCode: string;
+            curriculumName: string;
+            sourceCurriculumId: number;
         };
         SubjectDto: {
             id: number;
@@ -5192,6 +5214,27 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": components["schemas"]["CreateCurriculumDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CurriculumController_copyCurriculum: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CopyCurriculumDto"];
             };
         };
         responses: {
