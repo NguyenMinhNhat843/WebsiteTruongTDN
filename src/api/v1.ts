@@ -1502,6 +1502,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/assessment/export-assessment": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Xuất file Excel bảng điểm rèn luyện và kết quả học tập của 1 lớp theo học kỳ */
+        get: operations["AssessmentController_downloadBangDiemRenLuyen"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/assessment/submit": {
         parameters: {
             query?: never;
@@ -7328,6 +7345,28 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ResponseAssessmentDtoWithRelation"];
                 };
+            };
+        };
+    };
+    AssessmentController_downloadBangDiemRenLuyen: {
+        parameters: {
+            query: {
+                /** @description ID của Lớp học cần xuất dữ liệu */
+                classId: number;
+                /** @description ID của Học kỳ cần xét */
+                semesterId: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

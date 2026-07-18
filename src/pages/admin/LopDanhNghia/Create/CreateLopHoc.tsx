@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import ButtonAction from "../../../../components/ui/ButtonAction";
 import { useLopHocContext, type CreateLopHocDto } from "../LopHocProvider";
+import { toast } from "sonner";
 
 interface CreateLopHocProps {
   isOpen: boolean;
@@ -78,14 +79,14 @@ const CreateLopHoc = ({ isOpen, onClose }: CreateLopHocProps) => {
         { body: payload },
         {
           onSuccess: () => {
-            alert("Tạo lớp học thành công!");
+            toast.success("Tạo lớp học thành công!");
             reset();
             onClose();
             if (refetchLopHocList) refetchLopHocList();
           },
           onError: (error) => {
             console.error("Lỗi khi tạo lớp học:", error);
-            alert("Có lỗi xảy ra khi tạo lớp học. Vui lòng thử lại.");
+            toast.error("Có lỗi xảy ra khi tạo lớp học. Vui lòng thử lại.");
           },
         },
       );

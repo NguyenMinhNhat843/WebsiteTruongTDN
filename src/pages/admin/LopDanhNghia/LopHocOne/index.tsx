@@ -68,6 +68,37 @@ const Inner = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Xuất bảng điểm rèn luyện học kỳ
+  const { mutate: exportDiemRenLuyen, isPending: isExportingDiemRenLuyen } =
+    $api.useMutation("get", "/assessment/export-assessment");
+  const handleExportDiemRenLuyen = (classId: number, semesterId: number) => {
+    exportDiemRenLuyen(
+      {
+        parseAs: "blob",
+        params: {
+          query: {
+            classId,
+            semesterId,
+          },
+        },
+      },
+      {
+        onSuccess: (blob) => {
+          downloadFromBlob(
+            blob as never,
+            `BangDiemRenLuyen_${LopHocDetail?.className}_${hocKySelected?.name}`,
+            ".xlsx",
+          );
+        },
+        onError: () => {
+          toast.error(
+            "Xuất bảng điểm rèn luyện thất bại. Vui lòng thử lại sau.",
+          );
+        },
+      },
+    );
+  };
+
   // Lấy danh sách giáo viên
   const { data: teachers, isLoading: isLoadingTeachers } = $api.useQuery(
     "get",
@@ -128,7 +159,7 @@ const Inner = () => {
         onSuccess: (blob) => {
           downloadFromBlob(
             blob as never,
-            `${LopHocDetail?.className} - ${hocKySelected?.name} - BangDiemHocKy.xlsx`,
+            `${LopHocDetail?.className} - ${hocKySelected?.name} - BangDiemHocKy`,
             ".xlsx",
           );
         },
@@ -163,7 +194,7 @@ const Inner = () => {
         onSuccess: (blob) => {
           downloadFromBlob(
             blob as never,
-            `${LopHocDetail?.className} - BangDiemTongHopToanKhoa.xlsx`,
+            `${LopHocDetail?.className} - BangDiemTongHopToanKhoa`,
             ".xlsx",
           );
         },
@@ -246,11 +277,12 @@ const Inner = () => {
                 <div className="relative" ref={exportMenuRef}>
                   <ButtonAction
                     variant="export"
-                    label="Xuất bảng điểm"
+                    label="Xuất Excel"
                     icon={<FileText className="h-4 w-4" />}
                     loading={
                       isExportingExcel ||
-                      isExportingClassComprehensiveTranscripts
+                      isExportingClassComprehensiveTranscripts ||
+                      isExportingDiemRenLuyen
                     }
                     onClick={() => setShowExportMenu(!showExportMenu)}
                   />
@@ -270,6 +302,18 @@ const Inner = () => {
                       >
                         <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                         Xuất bảng điểm tổng hợp
+                      </button>
+                      <button
+                        onClick={() =>
+                          handleExportDiemRenLuyen(
+                            LopHocDetail?.id!,
+                            selectedSemesterId!,
+                          )
+                        }
+                        className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-emerald-600 transition-colors font-medium flex items-center gap-2"
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        Xuất Bảng điểm rèn luyện Học kỳ
                       </button>
                     </div>
                   )}
