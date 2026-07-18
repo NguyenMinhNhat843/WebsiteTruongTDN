@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { $api, setAccessToken } from "../../api/client";
 import { toast } from "sonner";
 import { useAppContext } from "../../AppProvider";
+import { $api } from "../../api/client";
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("admin");
-  const { setCurrentUser } = useAppContext();
+  const { setCurrentUser, setAccessToken } = useAppContext();
 
   /**
    * api login
@@ -32,13 +32,14 @@ const LoginPage = () => {
       {
         /* eslint-disable @typescript-eslint/no-explicit-any */
         onSuccess: (data) => {
-          setAccessToken(data?.access_token);
-          localStorage.setItem("user", JSON.stringify(data?.user));
-          setCurrentUser(data?.user);
+          setAccessToken(data?.access_token || null);
+          setCurrentUser(data?.user || null);
+
+          if (data?.user) {
+            localStorage.setItem("user", JSON.stringify(data.user));
+          }
 
           toast.success("Đăng nhập thành công!");
-
-          console.log(data);
 
           if (data?.user?.role === "admin") {
             navigate("/admin/home");
@@ -49,6 +50,9 @@ const LoginPage = () => {
           } else if (data?.user?.role === "student") {
             navigate("/student/home");
             return;
+          } else {
+            navigate("/");
+            toast.error("Role không hợp lệ, vui lòng liên hệ quản trị viên.");
           }
         },
         onError: () => {

@@ -4,7 +4,6 @@ import type { EnumRoleUser } from "./api/enum";
 import { useState } from "react";
 
 export const [AppProvider, useAppContext] = createContextProvider(() => {
-  // 💡 Lấy thông tin user hiện tại từ localStorage
   const [currentUser, setCurrentUser] = useState(() => {
     const curentUserRaw = localStorage.getItem("user");
     return curentUserRaw ? JSON.parse(curentUserRaw) : null;
@@ -12,8 +11,30 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
   const profile = currentUser?.profile || null;
   const userRole: EnumRoleUser = currentUser?.role || null;
 
-  // 💡 Chỉ kích hoạt gọi API khi thực sự đã đăng nhập (có user)
-  const isUserLoggedIn = !!currentUser;
+  // Quản lý trạng thái Access Token
+  const [accessToken, setAccessTokenState] = useState(() => {
+    return localStorage.getItem("access_token");
+  });
+
+  // Hàm wrapper để vừa cập nhật State vừa lưu localStorage đồng bộ
+  const setAccessToken = (token: string | null) => {
+    if (token) {
+      localStorage.setItem("access_token", token);
+      setAccessTokenState(token);
+    } else {
+      localStorage.removeItem("access_token");
+      setAccessTokenState(null);
+    }
+  };
+
+  const isUserLoggedIn = !!currentUser && !!accessToken;
+
+  const logout = () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("access_token");
+    setCurrentUser(null);
+    setAccessTokenState(null);
+  };
 
   /**
    * Lấy danh sách học kỳ
@@ -68,5 +89,8 @@ export const [AppProvider, useAppContext] = createContextProvider(() => {
     setCurrentUser,
     profile,
     userRole,
+    accessToken,
+    setAccessToken,
+    logout,
   };
 });

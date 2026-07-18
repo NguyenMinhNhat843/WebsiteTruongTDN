@@ -31,6 +31,20 @@ export const client = createFetchClient<paths>({
 
 export const $api = createClient(client);
 
+let isRefreshing = false;
+let refreshSubscribers: ((token: string) => void)[] = [];
+
+// Hàm hỗ trợ xếp hàng các request đợi token mới
+const subscribeTokenRefresh = (cb: (token: string) => void) => {
+  refreshSubscribers.push(cb);
+};
+
+// Hàm thông báo cho các request đang đợi khi đã lấy được token mới thành công
+const onRerefreshed = (token: string) => {
+  refreshSubscribers.map((cb) => cb(token));
+  refreshSubscribers = [];
+};
+
 client.use({
   onRequest({ request }) {
     const token = getAccessToken();
@@ -42,12 +56,53 @@ client.use({
 
   async onResponse({ request, response }) {
     const isLoginRequest = request.url.includes("/auth/login");
+    const isRefreshRequest = request.url.includes("/auth/refresh");
     const isAlreadyOnLoginPage = window.location.pathname === "/admin/login";
 
-    if (response.status === 401 && !isLoginRequest && !isAlreadyOnLoginPage) {
-      setAccessToken(null);
-      localStorage.removeItem("user");
-      window.location.href = "/admin/login";
+    if (
+      response.status === 401 &&
+      !isLoginRequest &&
+      !isAlreadyOnLoginPage &&
+      !isRefreshRequest
+    ) {
+      if (!isRefreshing) {
+        isRefreshing = true;
+
+        try {
+          const { data, error } = await client.POST("/auth/refresh");
+
+          if (error || !data?.access_token) {
+            throw new Error("Refresh token failed");
+          }
+
+          const newAccessToken = data.access_token;
+          setAccessToken(newAccessToken);
+
+          onRerefreshed(newAccessToken);
+          isRefreshing = false;
+
+          request.headers.set("Authorization", `Bearer ${newAccessToken}`);
+          return fetch(request);
+        } catch (err) {
+          isRefreshing = false;
+          refreshSubscribers = [];
+
+          // Refresh thất bại (Refresh token hết hạn) -> Xóa sạch dữ liệu và đá về Login
+          setAccessToken(null);
+          localStorage.removeItem("user");
+          window.location.href = "/admin/login";
+          return response;
+        }
+      }
+
+      // Nếu hệ thống đang trong quá trình refresh (isRefreshing === true),
+      // tạo ra một Promise bắt request này "đứng đợi" cho đến khi hoàn thành
+      return new Promise((resolve) => {
+        subscribeTokenRefresh((token) => {
+          request.headers.set("Authorization", `Bearer ${token}`);
+          resolve(fetch(request));
+        });
+      });
     }
     return response;
   },

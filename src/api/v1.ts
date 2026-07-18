@@ -362,7 +362,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** Làm mới token */
-        post: operations["AuthController_refreshToken"];
+        post: operations["AuthController_refresh"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2499,9 +2499,12 @@ export interface components {
             profile?: Record<string, never>;
         };
         LoginResponseDto: {
-            /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
             access_token: string;
+            refresh_token: string;
             user: components["schemas"]["UserInfoDto"];
+        };
+        ResponseRefreshTokenDto: {
+            access_token: string;
         };
         AccountResponseDto: {
             role: string;
@@ -4833,7 +4836,7 @@ export interface operations {
             };
         };
     };
-    AuthController_refreshToken: {
+    AuthController_refresh: {
         parameters: {
             query?: never;
             header?: never;
@@ -4846,7 +4849,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ResponseRefreshTokenDto"];
+                };
             };
         };
     };
