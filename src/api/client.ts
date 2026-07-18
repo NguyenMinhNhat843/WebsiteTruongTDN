@@ -87,10 +87,21 @@ client.use({
           isRefreshing = false;
           refreshSubscribers = [];
 
-          // Refresh thất bại (Refresh token hết hạn) -> Xóa sạch dữ liệu và đá về Login
           setAccessToken(null);
           localStorage.removeItem("user");
-          window.location.href = "/admin/login";
+
+          // KIỂM TRA XEM CÓ ĐANG Ở VÙNG QUẢN TRỊ HOẶC TRANG NỘI BỘ KHÔNG
+          const pathname = window.location.pathname;
+          const isDashboardRoute =
+            pathname.startsWith("/admin") ||
+            pathname.startsWith("/teacher") ||
+            pathname.startsWith("/student");
+
+          // Chỉ khi đang ở trong các trang quản trị thì mới ép quay về màn hình login
+          if (isDashboardRoute) {
+            window.location.href = "/admin/login";
+          }
+
           return response;
         }
       }
