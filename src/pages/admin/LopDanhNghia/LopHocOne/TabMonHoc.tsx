@@ -4,12 +4,8 @@ import { useNavigate } from "react-router-dom";
 const TabMonHoc = () => {
   const navigate = useNavigate();
 
-  const {
-    LopHocDetail: lopHocDetail,
-    classSubjects,
-    isClassSubjectsLoading,
-    isHocKysLoading,
-  } = useLopHocOneContext();
+  const { classSubjects, isClassSubjectsLoading, isHocKysLoading } =
+    useLopHocOneContext();
 
   const dataHienThi = classSubjects?.map((cs) => ({
     id: cs.id,

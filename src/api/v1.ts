@@ -2405,6 +2405,7 @@ export interface components {
             /** @enum {string} */
             knowledgeBlock: "GENERAL" | "BASE_MAJOR" | "SPECIALIZED";
             subjectName: string;
+            isThucTap?: boolean;
             credits: number;
             description: string | null;
             practiceHours: number;
@@ -2599,6 +2600,7 @@ export interface components {
             /** @enum {string} */
             knowledgeBlock: "GENERAL" | "BASE_MAJOR" | "SPECIALIZED";
             subjectName: string;
+            isThucTap?: boolean;
             credits: number;
             description: string | null;
             practiceHours: number;
@@ -2814,6 +2816,7 @@ export interface components {
             /** @enum {string} */
             knowledgeBlock: "GENERAL" | "BASE_MAJOR" | "SPECIALIZED";
             subjectName: string;
+            isThucTap?: boolean;
             credits: number;
             description: string | null;
             practiceHours: number;
@@ -2826,6 +2829,7 @@ export interface components {
             /** @enum {string} */
             knowledgeBlock?: "GENERAL" | "BASE_MAJOR" | "SPECIALIZED";
             subjectName?: string;
+            isThucTap?: boolean;
             credits?: number;
             description?: string | null;
             practiceHours?: number;
@@ -3185,6 +3189,10 @@ export interface components {
             diemTB?: number;
             diemTongKet1?: number;
             diemTongKet2?: number;
+            finalScore?: number;
+            diemBaoCao?: number;
+            diemChuyenMon?: number;
+            diemYThuc?: number;
             courseOfferId: number;
             /**
              * @description ID của sinh viên đăng ký
@@ -3316,6 +3324,10 @@ export interface components {
             diemTB?: number;
             diemTongKet1?: number;
             diemTongKet2?: number;
+            finalScore?: number;
+            diemBaoCao?: number;
+            diemChuyenMon?: number;
+            diemYThuc?: number;
             courseOfferId?: number;
             /**
              * @description ID của sinh viên đăng ký

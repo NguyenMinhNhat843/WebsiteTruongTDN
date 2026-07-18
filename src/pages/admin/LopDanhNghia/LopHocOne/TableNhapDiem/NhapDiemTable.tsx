@@ -34,8 +34,11 @@ export interface GradeRow {
   diemTB: number | null;
   diemTongKet1: number | null;
   diemTongKet2: number | null;
-  diemChu: string; // Cột mới thay thế ghi chú
-  diemHe4: number | null; // Cột mới thay thế ghi chú
+  diemChu: string;
+  diemHe4: number | null;
+  diemYThuc: number | null;
+  diemChuyenMon: number | null;
+  diemBaoCao: number | null;
 }
 
 const columnHelper = createColumnHelper<GradeRow>();
@@ -73,6 +76,24 @@ const getGradeLetterAndScale4 = (diemTK1: any, diemTK2: any) => {
   return { diemChu: "F", diemHe4: 0.0 };
 };
 
+// Hàm tính toán điểm trung bình riêng cho thực tập
+const calculateThucTapGrade = (row: Partial<GradeRow>): number | null => {
+  const yThuc = row.diemYThuc ?? 0;
+  const chuyenMon = row.diemChuyenMon ?? 0;
+  const baoCao = row.diemBaoCao ?? 0;
+
+  // Nếu cả 3 điểm đều chưa nhập thì trả về null
+  if (
+    row.diemYThuc === null &&
+    row.diemChuyenMon === null &&
+    row.diemBaoCao === null
+  ) {
+    return null;
+  }
+
+  return parseFloat(((yThuc + chuyenMon + baoCao) / 3).toFixed(2));
+};
+
 const NhapDiem = ({ classSubjectId, lopHocDetail }: NhapDiemProps) => {
   return (
     <NhapDiemProvider props={{ classSubjectId, lopHocDetail }}>
@@ -92,6 +113,10 @@ const Inner = () => {
     refetchClassSubject,
     lopHocDetail,
   } = useNhapDiemContext();
+
+  // Xác định xem đây có phải là lớp thực tập hay không
+  // (Bạn có thể lấy từ lopHocDetail hoặc classSubject tùy thuộc vào schema của bạn)
+  const isThucTap = classSubject?.subject?.isThucTap || false;
 
   // State quản lý danh sách điểm cục bộ
   const [tableData, setTableData] = useState<GradeRow[]>([]);
@@ -118,24 +143,37 @@ const Inner = () => {
             ktdk4: regis.ktdk4 ?? null,
             diemKiemTra1: regis.diemKiemTra1 ?? null,
             diemKiemTra2: regis.diemKiemTra2 ?? null,
+            diemYThuc: regis.diemYThuc ?? null,
+            diemChuyenMon: regis.diemChuyenMon ?? null,
+            diemBaoCao: regis.diemBaoCao ?? null,
           };
 
-          // Tính toán các điểm trung bình từ hàm helper có sẵn
-          const calculated = calculateGrades(baseRow);
-          const tempRow = { ...baseRow, ...calculated };
+          let finalRow = { ...baseRow } as GradeRow;
+
+          if (isThucTap) {
+            // Logic tính điểm cho thực tập
+            finalRow.diemTB = calculateThucTapGrade(baseRow);
+            // Có thể gán điểm tổng kết bằng điểm TB nếu cần xét điểm chữ/hệ 4
+            finalRow.diemTongKet1 = finalRow.diemTB;
+            finalRow.diemTongKet2 = null;
+          } else {
+            // Logic tính điểm thông thường
+            const calculated = calculateGrades(baseRow);
+            finalRow = { ...finalRow, ...calculated };
+          }
 
           // Tính toán thêm Điểm chữ & Điểm hệ 4 dựa trên điểm tổng kết vừa tính được
           const gradeScale = getGradeLetterAndScale4(
-            tempRow.diemTongKet1 ?? null,
-            tempRow.diemTongKet2 ?? null,
+            finalRow.diemTongKet1 ?? null,
+            finalRow.diemTongKet2 ?? null,
           );
 
-          return { ...tempRow, ...gradeScale } as GradeRow;
+          return { ...finalRow, ...gradeScale } as GradeRow;
         },
       );
       setTableData(initialData);
     }
-  }, [classSubject]);
+  }, [classSubject, isThucTap]);
 
   // Hàm xử lý khi người dùng thay đổi điểm số trong các ô input
   const handleCellChange = (
@@ -156,16 +194,25 @@ const Inner = () => {
         }
 
         const updatedRow = { ...row, [columnId]: updatedValue };
-        const calculated = calculateGrades(updatedRow);
-        const tempRow = { ...updatedRow, ...calculated };
+        let finalRow = { ...updatedRow };
+
+        if (isThucTap) {
+          // Tính lại điểm TB thực tập khi thay đổi ô nhập
+          finalRow.diemTB = calculateThucTapGrade(updatedRow);
+          finalRow.diemTongKet1 = finalRow.diemTB;
+        } else {
+          // Tính lại điểm thường
+          const calculated = calculateGrades(updatedRow);
+          finalRow = { ...finalRow, ...calculated };
+        }
 
         // Tính lại Điểm chữ và Hệ 4 sau khi có điểm tổng kết mới
         const gradeScale = getGradeLetterAndScale4(
-          tempRow.diemTongKet1 ?? null,
-          tempRow.diemTongKet2 ?? null,
+          finalRow.diemTongKet1 ?? null,
+          finalRow.diemTongKet2 ?? null,
         );
 
-        return { ...tempRow, ...gradeScale };
+        return { ...finalRow, ...gradeScale };
       }),
     );
   };
@@ -191,9 +238,10 @@ const Inner = () => {
     );
   };
 
-  // Định nghĩa cấu trúc cột với Header nhóm phân cấp UI
-  const columns = useMemo(
-    () => [
+  // Định nghĩa cấu trúc cột động dựa trên điều kiện `isThucTap`
+  const columns = useMemo(() => {
+    // Các cột chung luôn xuất hiện
+    const baseColumns = [
       columnHelper.accessor("stt", {
         header: "STT",
         cell: (info) => (
@@ -219,8 +267,41 @@ const Inner = () => {
           <span className="text-slate-600 font-mono">{info.getValue()}</span>
         ),
       }),
+    ];
 
-      // --- NHÓM CỘT KIỂM TRA THƯỜNG XUYÊN ---
+    if (isThucTap) {
+      // Cột dành riêng cho giao diện Thực Tập
+      return [
+        ...baseColumns,
+        columnHelper.accessor("diemYThuc", {
+          header: "Điểm Ý Thức",
+          cell: (info) =>
+            renderInputCell(info.row.index, "diemYThuc", info.getValue()),
+        }),
+        columnHelper.accessor("diemChuyenMon", {
+          header: "Điểm Chuyên Môn",
+          cell: (info) =>
+            renderInputCell(info.row.index, "diemChuyenMon", info.getValue()),
+        }),
+        columnHelper.accessor("diemBaoCao", {
+          header: "Điểm Báo Cáo",
+          cell: (info) =>
+            renderInputCell(info.row.index, "diemBaoCao", info.getValue()),
+        }),
+        columnHelper.accessor("diemTongKet1", {
+          header: "Điểm Tổng kết",
+          cell: (info) => (
+            <span className="font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md block text-center min-w-11.25">
+              {info.getValue() !== null ? info.getValue()?.toFixed(1) : "-"}
+            </span>
+          ),
+        }),
+      ];
+    }
+
+    // Các cột cũ dành cho môn học bình thường
+    return [
+      ...baseColumns,
       columnHelper.group({
         id: "kiemTraThuongXuyen",
         header: "Kiểm tra thường xuyên",
@@ -232,8 +313,6 @@ const Inner = () => {
           }),
         ),
       }),
-
-      // --- NHÓM CỘT KIỂM TRA ĐỊNH KỲ ---
       columnHelper.group({
         id: "kiemTraDinhKy",
         header: "Kiểm tra định kỳ",
@@ -246,7 +325,6 @@ const Inner = () => {
             }),
         ),
       }),
-
       columnHelper.accessor("diemTB", {
         header: "Điểm TB",
         cell: (info) => (
@@ -255,8 +333,6 @@ const Inner = () => {
           </span>
         ),
       }),
-
-      // --- NHÓM CỘT ĐIỂM KIỂM TRA ---
       columnHelper.group({
         id: "diemKiemTraGroup",
         header: "Điểm Kiểm tra",
@@ -273,8 +349,6 @@ const Inner = () => {
           }),
         ],
       }),
-
-      // --- NHÓM CỘT ĐIỂM TỔNG KẾT ---
       columnHelper.group({
         id: "diemTongKetGroup",
         header: "Điểm Tổng kết",
@@ -282,10 +356,7 @@ const Inner = () => {
           columnHelper.accessor("diemTongKet1", {
             header: "Lần 1",
             cell: (info) => (
-              <span
-                className="font-bold text-emerald-600 bg-emerald-50 px-2 py-1 
-              rounded-md block text-center min-w-11.25"
-              >
+              <span className="font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-md block text-center min-w-11.25">
                 {info.getValue() !== null ? info.getValue()?.toFixed(1) : "-"}
               </span>
             ),
@@ -293,18 +364,13 @@ const Inner = () => {
           columnHelper.accessor("diemTongKet2", {
             header: "Lần 2",
             cell: (info) => (
-              <span
-                className="font-bold text-amber-600 bg-amber-50 px-2 py-1 
-              rounded-md block text-center min-w-11.25"
-              >
+              <span className="font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-md block text-center min-w-11.25">
                 {info.getValue() !== null ? info.getValue()?.toFixed(1) : "-"}
               </span>
             ),
           }),
         ],
       }),
-
-      // --- CỘT ĐIỂM CHỮ (THAY CHO GHI CHÚ) ---
       columnHelper.accessor("diemChu", {
         header: "Điểm chữ",
         cell: (info) => {
@@ -326,8 +392,6 @@ const Inner = () => {
           );
         },
       }),
-
-      // --- CỘT ĐIỂM HỆ 4 (THAY CHO GHI CHÚ) ---
       columnHelper.accessor("diemHe4", {
         header: "Hệ 4",
         cell: (info) => {
@@ -339,9 +403,8 @@ const Inner = () => {
           );
         },
       }),
-    ],
-    [],
-  );
+    ];
+  }, [isThucTap]);
 
   const table = useReactTable({
     data: tableData,
@@ -356,19 +419,28 @@ const Inner = () => {
           classSubjectId: classSubject!.id!,
           grades: tableData.map((row) => ({
             studentId: row.studentId,
-            kttx1: row.kttx1 ?? undefined,
-            kttx2: row.kttx2 ?? undefined,
-            kttx3: row.kttx3 ?? undefined,
-            ktdk1: row.ktdk1 ?? undefined,
-            ktdk2: row.ktdk2 ?? undefined,
-            ktdk3: row.ktdk3 ?? undefined,
-            ktdk4: row.ktdk4 ?? undefined,
-            diemKiemTra1: row.diemKiemTra1 ?? undefined,
-            diemKiemTra2: row.diemKiemTra2 ?? undefined,
-            diemTB: row.diemTB ?? undefined,
-            diemTongKet1: row.diemTongKet1 ?? undefined,
-            diemTongKet2: row.diemTongKet2 ?? undefined,
-            // Đã lược bỏ note/ghiChu tại đây
+            // Gửi dữ liệu tùy thuộc vào loại bảng điểm
+            ...(isThucTap
+              ? {
+                  diemYThuc: row.diemYThuc ?? undefined,
+                  diemChuyenMon: row.diemChuyenMon ?? undefined,
+                  diemBaoCao: row.diemBaoCao ?? undefined,
+                  diemTongKet1: row.diemTongKet1 ?? undefined,
+                }
+              : {
+                  kttx1: row.kttx1 ?? undefined,
+                  kttx2: row.kttx2 ?? undefined,
+                  kttx3: row.kttx3 ?? undefined,
+                  ktdk1: row.ktdk1 ?? undefined,
+                  ktdk2: row.ktdk2 ?? undefined,
+                  ktdk3: row.ktdk3 ?? undefined,
+                  ktdk4: row.ktdk4 ?? undefined,
+                  diemKiemTra1: row.diemKiemTra1 ?? undefined,
+                  diemKiemTra2: row.diemKiemTra2 ?? undefined,
+                  diemTB: row.diemTB ?? undefined,
+                  diemTongKet1: row.diemTongKet1 ?? undefined,
+                  diemTongKet2: row.diemTongKet2 ?? undefined,
+                }),
           })),
         },
       },
@@ -410,7 +482,7 @@ const Inner = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pt-2">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            Bảng Nhập Điểm
+            Bảng Nhập Điểm {isThucTap && "(Thực Tập)"}
           </h1>
           <p className="text-sm text-slate-500 mt-1">
             {"Môn học: " + (classSubject?.subject?.subjectName || "N/A")}
@@ -477,7 +549,8 @@ const Inner = () => {
                       <th
                         key={header.id}
                         colSpan={header.colSpan}
-                        rowSpan={isGroup ? 1 : 2}
+                        // Nếu là thực tập (không có nhóm cột) thì luôn chiếm full 2 tầng header row
+                        rowSpan={isThucTap ? 2 : isGroup ? 1 : 2}
                         className={`px-3 py-2.5 text-xs font-bold tracking-wider text-center select-none border-r border-slate-200 last:border-0 transition-colors relative ${
                           isGroup
                             ? "text-blue-800 font-extrabold uppercase bg-blue-50"

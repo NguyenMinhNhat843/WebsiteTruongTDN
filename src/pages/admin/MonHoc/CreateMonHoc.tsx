@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useQueryClient } from "@tanstack/react-query"; // Đảm bảo import đúng hook của react-query bạn đang dùng
+import { useQueryClient } from "@tanstack/react-query";
 import type { CreatemonHocDto } from "./MonHocProvider";
 import {
   BookOpen,
@@ -10,6 +10,7 @@ import {
   Hash,
   Clock,
   FileText,
+  HelpCircle,
 } from "lucide-react";
 import { useAppContext } from "../../../AppProvider";
 import Input from "../../../components/ui/Form/Input";
@@ -17,7 +18,6 @@ import SelectSearchInput from "../../../components/ui/Form/SelectInput";
 import ButtonAction from "../../../components/ui/ButtonAction";
 import { $api } from "../../../api/client";
 
-// Giả định kiểu dữ liệu môn học từ API trả về có ID
 interface SubjectDataType extends CreatemonHocDto {
   id?: number;
 }
@@ -27,7 +27,7 @@ interface Props {
   onClose: () => void;
   onSubmit: (data: CreatemonHocDto, reset: () => void) => void;
   isPending: boolean;
-  initialData?: SubjectDataType | null; // Nhận data môn học khi cần Update
+  initialData?: SubjectDataType | null;
 }
 
 const CreateMonHocModal = ({
@@ -37,7 +37,7 @@ const CreateMonHocModal = ({
   isPending,
   initialData,
 }: Props) => {
-  const isEditMode = !!initialData?.id; // Kiểm tra xem đang ở chế độ tạo mới hay cập nhật
+  const isEditMode = !!initialData?.id;
   const queryClient = useQueryClient();
 
   const {
@@ -55,14 +55,18 @@ const CreateMonHocModal = ({
       testHours: 0,
       knowledgeBlock: "GENERAL",
       description: "",
+      isThucTap: false, // Bổ sung giá trị mặc định ban đầu
     },
   });
 
-  // Tự động load dữ liệu cũ vào form nếu ở chế độ Edit, hoặc reset form về mặc định nếu là Create
+  // Tự động load dữ liệu cũ vào form hoặc reset về mặc định
   useEffect(() => {
     if (isOpen) {
       if (initialData) {
-        reset(initialData);
+        reset({
+          ...initialData,
+          isThucTap: initialData.isThucTap ?? false, // Đảm bảo không bị undefined
+        });
       } else {
         reset({
           subjectName: "",
@@ -74,6 +78,7 @@ const CreateMonHocModal = ({
           testHours: 0,
           knowledgeBlock: "GENERAL",
           description: "",
+          isThucTap: false, // Reset về false khi tạo mới
         });
       }
     }
@@ -131,13 +136,11 @@ const CreateMonHocModal = ({
 
   const handleInternalSubmit = (data: CreatemonHocDto) => {
     if (isEditMode && initialData?.id) {
-      // Gọi API Patch để cập nhật
       updateMonHoc({
         params: { path: { id: initialData.id } },
         body: data,
       });
     } else {
-      // Gọi hàm onSubmit của cha để tạo mới
       onSubmit(data, () => {
         reset();
       });
@@ -146,7 +149,6 @@ const CreateMonHocModal = ({
 
   if (!isOpen) return null;
 
-  // Trạng thái loading chung cho cả nút bấm và nút tắt
   const anyPending = isPending || isUpdatePending;
 
   return (
@@ -212,7 +214,6 @@ const CreateMonHocModal = ({
                 {...register("subjectName", {
                   required: "Vui lòng nhập tên môn học",
                   onChange: (e) => {
-                    // Chỉ tự động gen code nếu đang ở chế độ tạo mới
                     if (!isEditMode) {
                       const nameValue = e.target.value;
                       const generatedCode = generateSubjectCode(nameValue);
@@ -279,6 +280,30 @@ const CreateMonHocModal = ({
                   />
                 )}
               />
+            </div>
+
+            {/* Hàng mới: Tùy chọn Môn Thực Tập */}
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-start justify-between gap-4">
+              <div className="space-y-0.5">
+                <label
+                  htmlFor="isThucTap"
+                  className="text-sm font-semibold text-slate-700 cursor-pointer select-none"
+                >
+                  Đây là môn học thực tập / thực tế
+                </label>
+                <p className="text-xs text-slate-400 flex items-center gap-1">
+                  <HelpCircle size={12} /> Hệ thống sẽ áp dụng quy chế và cách
+                  xử lý tính toán điểm riêng biệt cho môn này.
+                </p>
+              </div>
+              <div className="flex items-center h-5">
+                <input
+                  id="isThucTap"
+                  type="checkbox"
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+                  {...register("isThucTap")}
+                />
+              </div>
             </div>
 
             {/* Hàng 3: Cấu hình Tín chỉ / Số giờ */}

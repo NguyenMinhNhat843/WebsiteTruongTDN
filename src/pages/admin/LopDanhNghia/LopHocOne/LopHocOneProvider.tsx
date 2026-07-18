@@ -2,18 +2,13 @@ import { useEffect, useState } from "react";
 import { createContextProvider } from "../../../../util/createContextProvider";
 import { $api } from "../../../../api/client";
 import { useParams } from "react-router-dom";
-import { useAppContext } from "../../../../AppProvider";
 import type { components } from "../../../../api/v1";
 
 export type ClassSubjectGrade = components["schemas"]["GradeStudentDto"];
 
 export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
   () => {
-    const { currentSemester } = useAppContext();
     const [isOpenModalAddStudent, setIsOpenModalAddStudent] = useState(false);
-    const [selectedSemesterId, setselectedSemesterId] = useState<number | null>(
-      currentSemester ? currentSemester.id : null,
-    );
     const { idLopHoc } = useParams();
     const idLopHocNumber = Number(idLopHoc);
 
@@ -54,10 +49,18 @@ export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(
         enabled: !!LopHocDetail?.id,
       },
     );
+    const currentSemester = hocKysData?.find((hk) => hk.isCurrent);
+    const [selectedSemesterId, setselectedSemesterId] = useState<number | null>(
+      currentSemester ? currentSemester.id : null,
+    );
 
     useEffect(() => {
       if (currentSemester && !isHocKysLoading) {
         setselectedSemesterId(currentSemester.id);
+      } else {
+        setselectedSemesterId(
+          hocKysData && hocKysData.length > 0 ? hocKysData[0].id : null,
+        );
       }
     }, [currentSemester, isHocKysLoading]);
 
