@@ -26,6 +26,8 @@ import WeeklySchedule from "./pages/student/ThoiKhoaBieu";
 import StudentbangDiem from "./pages/student/BangDiem";
 import StudentTuition from "./pages/student/HocPhi";
 import PhieuDiemRenLuyenIndex from "./pages/student/PhieuDiemRenLuyen";
+import DotTuyenSinhHome from "./pages/admin/TuyenSinh/DotTuyenSinh";
+import NamHocHome from "./pages/admin/NamHoc";
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -278,6 +280,16 @@ function App() {
                 <Route path="hoc-sinh/phan-lop" element={<PhanLop />} />
               </Route>
 
+              {/* Tuyển sinh */}
+              <Route
+                path="tuyen-sinh/dot-tuyen-sinh"
+                element={<DotTuyenSinhHome />}
+              />
+              <Route
+                path="tuyen-sinh/cau-hinh-giay-to"
+                element={<div>Cấu hình giấy tờ</div>}
+              />
+
               {/* Khoa */}
               <Route element={<KhoaIndex />}>
                 <Route path="dao-tao/khoa" element={<KhoaList />} />
@@ -314,6 +326,8 @@ function App() {
                   element={<HoSoHocSinhOne />}
                 />
               </Route>
+
+              <Route path="nam-hoc" element={<NamHocHome />} />
 
               {/* Học kỳ */}
               <Route element={<HocKyLayout />}>
@@ -355,7 +369,10 @@ function App() {
               <Route path="home" element={<MemberDashboard />} />
               <Route path="lop-hoc" element={<LopHocGiangDay />} />
               <Route path="lop-hoc/:idLopHoc" element={<LopHocOneTeacher />} />
-              <Route path="lop-hoc/:idLopHoc/:idClassSubject" element={<BangDiem />} />
+              <Route
+                path="lop-hoc/:idLopHoc/:idClassSubject"
+                element={<BangDiem />}
+              />
               <Route path="nhap-diem" element={<BangDiem />} />
               <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
             </Route>

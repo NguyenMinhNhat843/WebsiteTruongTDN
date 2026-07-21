@@ -90,6 +90,12 @@ const navItems: NavItem[] = [
         roles: ["admin", "staff"],
       },
       {
+        id: "nam-hoc",
+        label: "Năm học",
+        href: "/admin/nam-hoc",
+        roles: ["admin", "staff"],
+      },
+      {
         id: "hoc-ky",
         label: "Học kỳ",
         href: "/admin/hoc-ky",
@@ -124,6 +130,33 @@ const navItems: NavItem[] = [
         id: "tong-quan-hoc-phi",
         label: "Tổng quan học phí",
         href: "/admin/hoc-phi/tong-quan",
+        roles: ["admin", "staff"],
+      },
+    ],
+  },
+  // --- NHÓM TUYỂN SINH ---
+  {
+    id: "quan-ly-tuyen-sinh",
+    label: "Tuyển sinh",
+    icon: "🎯",
+    roles: ["admin", "staff"],
+    children: [
+      {
+        id: "dot-tuyen-sinh",
+        label: "Đợt tuyển sinh",
+        href: "/admin/tuyen-sinh/dot-tuyen-sinh",
+        roles: ["admin", "staff"],
+      },
+      {
+        id: "cau-hinh-giay-to",
+        label: "Cấu hình giấy tờ hồ sơ",
+        href: "/admin/tuyen-sinh/cau-hinh-giay-to",
+        roles: ["admin", "staff"],
+      },
+      {
+        id: "chi-tieu-tuyen-sinh",
+        label: "Chỉ tiêu tuyển sinh",
+        href: "/admin/tuyen-sinh/chi-tieu",
         roles: ["admin", "staff"],
       },
     ],
@@ -178,14 +211,14 @@ const navItems: NavItem[] = [
   },
   // --- QUẢN TRỊ NHÂN SỰ ---
   {
-    id: "quan-tri-nhan-su",
-    label: "Quản trị nhân sự",
+    id: "quan-tri-giang-vien",
+    label: "Quản trị giảng viên",
     icon: "👔",
     roles: ["admin"],
     children: [
       {
         id: "quan-ly-nguoi-dung",
-        label: "Cán bộ & Nhân viên",
+        label: "Quản lý giảng viên",
         icon: "👥",
         href: "/admin/users",
         roles: ["admin"],
