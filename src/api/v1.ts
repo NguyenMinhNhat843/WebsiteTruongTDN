@@ -1815,23 +1815,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admission-campaigns/{id}/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** Chạy xét duyệt tự động kết quả trúng tuyển cho đợt tuyển sinh */
-        post: operations["AdmissionCampaignController_approveCampaign"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/admission-campaigns/{id}": {
         parameters: {
             query?: never;
@@ -3969,11 +3952,9 @@ export interface components {
         AdmissionCampaignItemsDto: {
             majorId: number;
             quota: number;
-            benchmarkScore: number | null;
         };
         CreateAdmissionCampaignDto: {
             academicYearId: number;
-            batchId: number | null;
             code: string;
             /** Format: date-time */
             startDate: string;
@@ -3989,7 +3970,6 @@ export interface components {
         AdmissionCampaignDto: {
             id: number;
             academicYearId: number;
-            batchId: number | null;
             code: string;
             /** Format: date-time */
             startDate: string;
@@ -4005,8 +3985,42 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        /** @enum {string} */
+        AcademicYearStatus: "PLANNING" | "ACTIVE" | "CLOSED";
+        AcademicYearDto: {
+            id: number;
+            /** @example 2023-2024 */
+            code: string;
+            /** @default ACTIVE */
+            status: components["schemas"]["AcademicYearStatus"];
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            /** @default false */
+            isCurrent: boolean;
+        };
+        AdmissionCampaignWithAcademicYearDto: {
+            id: number;
+            academicYearId: number;
+            code: string;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            description: string | null;
+            name: string;
+            /** @enum {string} */
+            status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
+            targetQuota: number | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            academicYear: components["schemas"]["AcademicYearDto"];
+        };
         ResponseAdmissionCampaignPaginationPaginationDto: {
-            data: components["schemas"]["AdmissionCampaignDto"][];
+            data: components["schemas"]["AdmissionCampaignWithAcademicYearDto"][];
             total: number;
         };
         ResponseAdmissionCampaignMajorDetailDto: {
@@ -4014,13 +4028,11 @@ export interface components {
             admissionCampaignId: number;
             majorId: number;
             quota: number;
-            benchmarkScore: number | null;
             major: components["schemas"]["MajorDto"] | null;
         };
         ResponseAdmissionCampaignDetailDto: {
             id: number;
             academicYearId: number;
-            batchId: number | null;
             code: string;
             /** Format: date-time */
             startDate: string;
@@ -4035,12 +4047,11 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            batch: components["schemas"]["BatchDto"] | null;
             campaignMajors: components["schemas"]["ResponseAdmissionCampaignMajorDetailDto"][] | null;
+            academicYear: components["schemas"]["AcademicYearDto"];
         };
         UpdateAdmissionCampaignDto: {
             academicYearId?: number;
-            batchId?: number | null;
             code?: string;
             /** Format: date-time */
             startDate?: string;
@@ -4103,22 +4114,7 @@ export interface components {
             trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION" | null;
             items?: components["schemas"]["DocumentConfigItemsPayloadDto"][];
         };
-        /** @enum {string} */
-        AcademicYearStatus: "PLANNING" | "ACTIVE" | "CLOSED";
         CreateAcademicYearDto: {
-            /** @example 2023-2024 */
-            code: string;
-            /** @default ACTIVE */
-            status: components["schemas"]["AcademicYearStatus"];
-            /** Format: date-time */
-            startDate: string;
-            /** Format: date-time */
-            endDate: string;
-            /** @default false */
-            isCurrent: boolean;
-        };
-        AcademicYearDto: {
-            id: number;
             /** @example 2023-2024 */
             code: string;
             /** @default ACTIVE */
@@ -8052,26 +8048,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["AdmissionCampaignDto"];
                 };
-            };
-        };
-    };
-    AdmissionCampaignController_approveCampaign: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Xét duyệt thành công */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };
