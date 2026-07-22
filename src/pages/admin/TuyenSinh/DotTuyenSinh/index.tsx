@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Search, Plus, Calendar, Layers, Edit3, Trash2, Sparkles, AlertTriangle, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { Search, Plus, Calendar, Layers, Edit3, Trash2, AlertTriangle, Loader2 } from 'lucide-react'
 import { $api } from '../../../../api/client'
 import type { paths } from '../../../../api/v1'
 import { useDebounce } from '../../../../hooks/useDebounce' // Hook debounce của bạn
@@ -75,7 +75,7 @@ const DotTuyenSinhHome = () => {
     params: {
       query: {
         name: debouncedSearchName || undefined,
-        status: (selectedStatus as any) || undefined,
+        status: selectedStatus || undefined,
         page,
         limit,
       },
@@ -205,7 +205,7 @@ const DotTuyenSinhHome = () => {
       ) : (
         /* Danh sách Card */
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {admissionCampaigns.data.map((campaign: any) => (
+          {admissionCampaigns.data.map((campaign) => (
             <div
               key={campaign.id}
               className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-slate-200/80 bg-white transition-all duration-200 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/5"
@@ -237,13 +237,6 @@ const DotTuyenSinhHome = () => {
                     <Calendar className="h-3.5 w-3.5 shrink-0 text-slate-400" />
                     <span className="truncate">
                       {formatDate(campaign.startDate)} - {formatDate(campaign.endDate)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-end gap-1.5 text-slate-500">
-                    <Sparkles className="h-3.5 w-3.5 shrink-0 text-amber-500" />
-                    <span>
-                      Chỉ tiêu:{' '}
-                      <strong className="text-slate-800">{campaign.targetQuota ?? 'Không giới hạn'}</strong>
                     </span>
                   </div>
                 </div>

@@ -2401,27 +2401,6 @@ export interface components {
             academicYearId: number;
             campaignMajors?: components["schemas"]["CreateAdmissionCampaignMajorDto"][];
         };
-        AdmissionCampaignDto: {
-            id: number;
-            code: string;
-            name: string;
-            /** Format: date-time */
-            startDate: string;
-            /** Format: date-time */
-            endDate: string;
-            /** @enum {string} */
-            status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
-            description?: string | null;
-            academicYearId: number;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        ResponseAdmissionCampaignPaginationDto: {
-            data: components["schemas"]["AdmissionCampaignDto"][];
-            total: number;
-        };
         /** @enum {string} */
         AcademicYearStatus: "PLANNING" | "ACTIVE" | "CLOSED";
         AcademicYearDto: {
@@ -2436,6 +2415,48 @@ export interface components {
             endDate: string;
             /** @default false */
             isCurrent: boolean;
+        };
+        MajorDto: {
+            id: number;
+            deptId: number;
+            description?: Record<string, never> | null;
+            majorCode: string;
+            majorName: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        SubjectCombinationItemDto: {
+            id: number;
+            subjectCombinationId: number;
+            subjectCode: string;
+        };
+        SubjectCombinationDetailDto: {
+            id: number;
+            code: string;
+            name: string;
+            items?: components["schemas"]["SubjectCombinationItemDto"][];
+        };
+        AdmissionCampaignMajorDetailDto: {
+            id: number;
+            admissionCampaignId: number;
+            majorId: number;
+            /** @enum {string} */
+            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            quota: number;
+            acceptedAdmissionTypes: ("ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT")[];
+            subjectCombinationId?: number;
+            minScorePerSubject?: number;
+            minTotalScore?: number;
+            minGpaAverage?: number;
+            /** @enum {string} */
+            minConduct?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            transcriptScoreMethod?: "LAST_YEAR_ONLY" | "AVERAGE_ALL_YEARS";
+            cutoffScore?: number;
+            major?: components["schemas"]["MajorDto"];
+            subjectCombination?: components["schemas"]["SubjectCombinationDetailDto"];
         };
         DocumentConfigItemDto: {
             id: number;
@@ -2474,8 +2495,12 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
             academicYear: components["schemas"]["AcademicYearDto"];
-            campaignMajors?: components["schemas"]["CreateAdmissionCampaignMajorDto"][];
+            campaignMajors?: components["schemas"]["AdmissionCampaignMajorDetailDto"][];
             documentConfigs?: components["schemas"]["DocumentConfigDto"][];
+        };
+        ResponseAdmissionCampaignPaginationDto: {
+            data: components["schemas"]["AdmissionCampaignDetailDto"][];
+            total: number;
         };
         UpdateAdmissionCampaignDto: {
             code?: string;
@@ -2489,6 +2514,23 @@ export interface components {
             description?: string | null;
             academicYearId?: number;
             campaignMajors?: components["schemas"]["CreateAdmissionCampaignMajorDto"][];
+        };
+        AdmissionCampaignDto: {
+            id: number;
+            code: string;
+            name: string;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            /** @enum {string} */
+            status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
+            description?: string | null;
+            academicYearId: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         AdmissionCampaignMajorDto: {
             id: number;
@@ -2537,17 +2579,6 @@ export interface components {
             code: string;
             name: string;
         };
-        SubjectCombinationItemDto: {
-            id: number;
-            subjectCombinationId: number;
-            subjectCode: string;
-        };
-        SubjectCombinationDetailDto: {
-            id: number;
-            code: string;
-            name: string;
-            items?: components["schemas"]["SubjectCombinationItemDto"][];
-        };
         SubjectCombinationPaginationDto: {
             data: components["schemas"]["SubjectCombinationDetailDto"][];
             total: number;
@@ -2567,16 +2598,13 @@ export interface components {
             score: number;
         };
         CreateAdmissionProfileDto: {
+            applicationCode: string;
             admissionCampaignMajorId: number;
-            /**
-             * @default ACADEMIC_TRANSCRIPT_GPA
-             * @enum {string}
-             */
+            /** @enum {string} */
+            status: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
+            /** @enum {string} */
             admissionType: "ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT";
-            /**
-             * @default THCS
-             * @enum {string}
-             */
+            /** @enum {string} */
             educationLevel: "THCS" | "THPT";
             fullName: string;
             identityNumber: string;
@@ -2585,53 +2613,55 @@ export interface components {
             /** @enum {string} */
             gender: "MALE" | "FEMALE" | "OTHER";
             phone: string;
-            email?: string;
-            addressDetail?: string;
-            provinceCode?: string;
-            wardCode?: string;
-            villageId?: number;
-            fatherName?: string;
-            fatherPhone?: string;
-            motherName?: string;
-            motherPhone?: string;
-            guardianName?: string;
-            guardianPhone?: string;
-            gpa6?: number;
-            gpa7?: number;
-            gpa8?: number;
-            gpa9?: number;
-            /** @enum {string} */
-            conduct6?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct7?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct8?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct9?: "TOT" | "KHA" | "TB" | "YEU";
-            thcsGradYear?: number;
-            gpa10?: number;
-            gpa11?: number;
-            gpa12?: number;
-            /** @enum {string} */
-            conduct10?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct11?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct12?: "TOT" | "KHA" | "TB" | "YEU";
-            thptGradYear?: number;
-            subjectCombinationId?: number;
-            examScores?: components["schemas"]["CreateExamScoreDto"][];
-            transcriptSubjectScores?: components["schemas"]["CreateTranscriptSubjectScoreDto"][];
-            /** @enum {string} */
-            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
-            /** @enum {string} */
-            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
-            priorityScore?: number;
-            /** @default false */
+            email?: string | null;
+            addressDetail?: string | null;
+            provinceCode?: string | null;
+            /** @enum {string|null} */
+            conduct10?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct11?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct12?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct6?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct7?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct8?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct9?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC" | null;
+            fatherName?: string | null;
+            fatherPhone?: string | null;
+            gpa10?: number | null;
+            gpa11?: number | null;
+            gpa12?: number | null;
+            gpa6?: number | null;
+            gpa7?: number | null;
+            gpa8?: number | null;
+            gpa9?: number | null;
+            guardianName?: string | null;
+            guardianPhone?: string | null;
             isDirectAdmission: boolean;
-            /** @enum {string} */
-            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC";
-            note?: string;
+            motherName?: string | null;
+            motherPhone?: string | null;
+            note?: string | null;
+            /** @enum {string|null} */
+            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC" | null;
+            /** @enum {string|null} */
+            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3" | null;
+            priorityScore?: number | null;
+            scoreCalculated?: number | null;
+            studentId?: number | null;
+            subjectCombinationId?: number | null;
+            thcsGradYear?: number | null;
+            thptGradYear?: number | null;
+            totalExamScore?: number | null;
+            villageId?: number | null;
+            wardCode?: string | null;
+            examScores: components["schemas"]["CreateExamScoreDto"][];
+            transcriptSubjectScores: components["schemas"]["CreateTranscriptSubjectScoreDto"][];
         };
         AdmissionProfileDto: {
             id: number;
@@ -2650,53 +2680,53 @@ export interface components {
             /** @enum {string} */
             gender: "MALE" | "FEMALE" | "OTHER";
             phone: string;
-            email?: string;
-            addressDetail?: string;
-            provinceCode?: string;
-            wardCode?: string;
-            villageId?: number;
-            fatherName?: string;
-            fatherPhone?: string;
-            motherName?: string;
-            motherPhone?: string;
-            guardianName?: string;
-            guardianPhone?: string;
-            gpa6?: number;
-            gpa7?: number;
-            gpa8?: number;
-            gpa9?: number;
-            /** @enum {string} */
-            conduct6?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct7?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct8?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct9?: "TOT" | "KHA" | "TB" | "YEU";
-            thcsGradYear?: number;
-            gpa10?: number;
-            gpa11?: number;
-            gpa12?: number;
-            /** @enum {string} */
-            conduct10?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct11?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct12?: "TOT" | "KHA" | "TB" | "YEU";
-            thptGradYear?: number;
-            subjectCombinationId?: number;
-            totalExamScore?: number;
-            /** @enum {string} */
-            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
-            /** @enum {string} */
-            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
-            priorityScore?: number;
+            email?: string | null;
+            addressDetail?: string | null;
+            provinceCode?: string | null;
+            /** @enum {string|null} */
+            conduct10?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct11?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct12?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct6?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct7?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct8?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct9?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC" | null;
+            fatherName?: string | null;
+            fatherPhone?: string | null;
+            gpa10?: number | null;
+            gpa11?: number | null;
+            gpa12?: number | null;
+            gpa6?: number | null;
+            gpa7?: number | null;
+            gpa8?: number | null;
+            gpa9?: number | null;
+            guardianName?: string | null;
+            guardianPhone?: string | null;
             isDirectAdmission: boolean;
-            /** @enum {string} */
-            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC";
-            scoreCalculated?: number;
-            note?: string;
-            studentId?: number;
+            motherName?: string | null;
+            motherPhone?: string | null;
+            note?: string | null;
+            /** @enum {string|null} */
+            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC" | null;
+            /** @enum {string|null} */
+            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3" | null;
+            priorityScore?: number | null;
+            scoreCalculated?: number | null;
+            studentId?: number | null;
+            subjectCombinationId?: number | null;
+            thcsGradYear?: number | null;
+            thptGradYear?: number | null;
+            totalExamScore?: number | null;
+            villageId?: number | null;
+            wardCode?: string | null;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -2707,6 +2737,14 @@ export interface components {
             total: number;
         };
         UpdateAdmissionProfileDto: {
+            applicationCode?: string;
+            admissionCampaignMajorId?: number;
+            /** @enum {string} */
+            status?: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
+            /** @enum {string} */
+            admissionType?: "ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT";
+            /** @enum {string} */
+            educationLevel?: "THCS" | "THPT";
             fullName?: string;
             identityNumber?: string;
             /** Format: date-time */
@@ -2714,52 +2752,55 @@ export interface components {
             /** @enum {string} */
             gender?: "MALE" | "FEMALE" | "OTHER";
             phone?: string;
-            email?: string;
-            addressDetail?: string;
-            provinceCode?: string;
-            wardCode?: string;
-            villageId?: number;
-            fatherName?: string;
-            fatherPhone?: string;
-            motherName?: string;
-            motherPhone?: string;
-            guardianName?: string;
-            guardianPhone?: string;
-            gpa6?: number;
-            gpa7?: number;
-            gpa8?: number;
-            gpa9?: number;
-            /** @enum {string} */
-            conduct6?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct7?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct8?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct9?: "TOT" | "KHA" | "TB" | "YEU";
-            thcsGradYear?: number;
-            gpa10?: number;
-            gpa11?: number;
-            gpa12?: number;
-            /** @enum {string} */
-            conduct10?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct11?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            conduct12?: "TOT" | "KHA" | "TB" | "YEU";
-            thptGradYear?: number;
-            subjectCombinationId?: number;
+            email?: string | null;
+            addressDetail?: string | null;
+            provinceCode?: string | null;
+            /** @enum {string|null} */
+            conduct10?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct11?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct12?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct6?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct7?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct8?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            conduct9?: "TOT" | "KHA" | "TB" | "YEU" | null;
+            /** @enum {string|null} */
+            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC" | null;
+            fatherName?: string | null;
+            fatherPhone?: string | null;
+            gpa10?: number | null;
+            gpa11?: number | null;
+            gpa12?: number | null;
+            gpa6?: number | null;
+            gpa7?: number | null;
+            gpa8?: number | null;
+            gpa9?: number | null;
+            guardianName?: string | null;
+            guardianPhone?: string | null;
+            isDirectAdmission?: boolean;
+            motherName?: string | null;
+            motherPhone?: string | null;
+            note?: string | null;
+            /** @enum {string|null} */
+            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC" | null;
+            /** @enum {string|null} */
+            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3" | null;
+            priorityScore?: number | null;
+            scoreCalculated?: number | null;
+            studentId?: number | null;
+            subjectCombinationId?: number | null;
+            thcsGradYear?: number | null;
+            thptGradYear?: number | null;
+            totalExamScore?: number | null;
+            villageId?: number | null;
+            wardCode?: string | null;
             examScores?: components["schemas"]["CreateExamScoreDto"][];
             transcriptSubjectScores?: components["schemas"]["CreateTranscriptSubjectScoreDto"][];
-            /** @enum {string} */
-            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
-            /** @enum {string} */
-            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
-            priorityScore?: number;
-            isDirectAdmission?: boolean;
-            /** @enum {string} */
-            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC";
-            note?: string;
         };
         ChangeProfileStatusDto: {
             /** @enum {string} */
@@ -3167,17 +3208,6 @@ export interface components {
             description?: Record<string, never> | null;
             majorCode: string;
             majorName: string;
-        };
-        MajorDto: {
-            id: number;
-            deptId: number;
-            description?: Record<string, never> | null;
-            majorCode: string;
-            majorName: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
         };
         MajorResponseWithRelationDto: {
             id: number;
@@ -5017,7 +5047,12 @@ export interface operations {
     };
     AdmissionCampaignController_findActive: {
         parameters: {
-            query?: never;
+            query?: {
+                /** @description ID Ngành học cần lọc */
+                majorId?: number;
+                /** @description Hệ đào tạo (9+, Trung cấp, Sơ cấp, GDTX...) */
+                trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -5029,7 +5064,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AdmissionCampaignDto"][];
+                    "application/json": components["schemas"]["AdmissionCampaignDetailDto"][];
                 };
             };
         };
@@ -5303,11 +5338,12 @@ export interface operations {
         parameters: {
             query?: {
                 applicationCode?: string;
+                admissionCampaignMajorId?: number;
+                status?: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
+                admissionType?: "ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT";
                 fullName?: string;
                 identityNumber?: string;
                 phone?: string;
-                status?: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
-                admissionCampaignMajorId?: number;
                 admissionCampaignId?: number;
                 majorId?: number;
                 page?: number;

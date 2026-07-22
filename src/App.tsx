@@ -29,7 +29,7 @@ import PhieuDiemRenLuyenIndex from './pages/student/PhieuDiemRenLuyen'
 import DotTuyenSinhHome from './pages/admin/TuyenSinh/DotTuyenSinh'
 import NamHocHome from './pages/admin/NamHoc'
 import AdmissionCampaignDetail from './pages/admin/TuyenSinh/DotTuyenSinh/One/DotTuyenSinhDetail'
-import TaoHoSoTuyenSinh from './pages/admin/TuyenSinh/DotTuyenSinh/One/TabHoSoTuyenSinh'
+import TaoHoSoTuyenSinh from './pages/admin/TuyenSinh/HoSoTuyenSinh/TabHoSoTuyenSinh'
 import ToHopMonHome from './pages/admin/TuyenSinh/ToHopMon'
 import HoSoTuyenSinhHome from './pages/admin/TuyenSinh/HoSoTuyenSinh'
 import CauHinhTuyenSinhHome from './pages/admin/TuyenSinh/CauHinhTuyenSinh'
@@ -113,7 +113,7 @@ const LoadingSpinner = () => {
       <Loader2 className="h-10 w-10 animate-spin text-blue-600 dark:text-blue-400" />
 
       {/* Chữ hiển thị phía dưới */}
-      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 animate-pulse">Đang tải trang...</p>
+      <p className="animate-pulse text-sm font-medium text-gray-500 dark:text-gray-400">Đang tải trang...</p>
     </div>
   )
 }
