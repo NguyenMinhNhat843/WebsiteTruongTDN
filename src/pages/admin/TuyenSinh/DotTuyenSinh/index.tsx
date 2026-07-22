@@ -15,6 +15,7 @@ import type { paths } from "../../../../api/v1";
 import { useDebounce } from "../../../../hooks/useDebounce"; // Hook debounce của bạn
 import CreateDotTuyenSinhModal from "./CreateDotTuyenSinhModal";
 import type { AdmissionCampaignDetailDto } from "../../../../api/entity";
+import { useNavigate } from "react-router-dom";
 
 export type QueryAdmissionCampaignDto =
   paths["/admission-campaigns"]["get"]["parameters"]["query"];
@@ -71,6 +72,7 @@ const DotTuyenSinhHome = () => {
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [page, setPage] = useState(1);
   const limit = 9; // Hiển thị 9 card mỗi trang
+  const navigate = useNavigate();
 
   // 2. State quản lý Modal & Chi tiết
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -237,7 +239,11 @@ const DotTuyenSinhHome = () => {
                 {/* Tên & Mã đợt */}
                 <div>
                   <h3
-                    onClick={() => handleOpenEdit(campaign.id)}
+                    onClick={() =>
+                      navigate(
+                        `/admin/tuyen-sinh/dot-tuyen-sinh/${campaign.id}`,
+                      )
+                    }
                     className="text-base font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 cursor-pointer"
                     title={campaign.name}
                   >

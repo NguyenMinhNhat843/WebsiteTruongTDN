@@ -6,7 +6,7 @@ import type { paths } from "../api/v1";
  */
 export type QueryAcademicYearDto =
   paths["/academic-years"]["get"]["parameters"]["query"];
-export const useGetAcademicYears = (queryParams: QueryAcademicYearDto) => {
+export const useGetAcademicYears = (queryParams?: QueryAcademicYearDto) => {
   return $api.useQuery("get", "/academic-years", {
     params: {
       query: {

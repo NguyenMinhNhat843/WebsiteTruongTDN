@@ -12,10 +12,10 @@ export interface paths {
             cookie?: never;
         };
         /** Tìm kiếm và phân trang danh sách sinh viên */
-        get: operations["searchStudents"];
+        get: operations["StudentController_searchStudent"];
         put?: never;
         /** Tạo mới hồ sơ sinh viên */
-        post: operations["createStudent"];
+        post: operations["StudentController_create"];
         delete?: never;
         options?: never;
         head?: never;
@@ -32,7 +32,7 @@ export interface paths {
         get?: never;
         put?: never;
         /** Tạo nhiều hồ sơ sinh viên cùng lúc */
-        post: operations["createManyStudents"];
+        post: operations["StudentController_createMany"];
         delete?: never;
         options?: never;
         head?: never;
@@ -50,7 +50,7 @@ export interface paths {
         put?: never;
         post?: never;
         /** Xóa hồ sơ sinh viên */
-        delete: operations["deleteStudent"];
+        delete: operations["StudentController_deleteStudentById"];
         options?: never;
         head?: never;
         /** Cập nhật thông tin hồ sơ sinh viên */
@@ -82,7 +82,7 @@ export interface paths {
             cookie?: never;
         };
         /** Tìm sinh viên theo mã sinh viên */
-        get: operations["findStudentByStudentCode"];
+        get: operations["StudentController_findByStudentCode"];
         put?: never;
         post?: never;
         delete?: never;
@@ -122,7 +122,400 @@ export interface paths {
         options?: never;
         head?: never;
         /** Phân lớp cho sinh viên */
-        patch: operations["assignStudentsToClasses"];
+        patch: operations["StudentController_assignStudentsToClasses"];
+        trace?: never;
+    };
+    "/admission-campaigns": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Danh sách đợt tuyển sinh */
+        get: operations["AdmissionCampaignController_findAll"];
+        put?: never;
+        /** Tạo đợt tuyển sinh mới */
+        post: operations["AdmissionCampaignController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admission-campaigns/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Danh sách đợt tuyển sinh đang mở theo năm học active */
+        get: operations["AdmissionCampaignController_findActive"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admission-campaigns/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Chi tiết đợt tuyển sinh */
+        get: operations["AdmissionCampaignController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa đợt tuyển sinh */
+        delete: operations["AdmissionCampaignController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật đợt tuyển sinh */
+        patch: operations["AdmissionCampaignController_update"];
+        trace?: never;
+    };
+    "/admission-campaign-majors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Danh sách chỉ tiêu ngành theo đợt tuyển sinh */
+        get: operations["AdmissionCampaignMajorController_findAll"];
+        put?: never;
+        /** Thêm ngành và chỉ tiêu cho đợt tuyển sinh */
+        post: operations["AdmissionCampaignMajorController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admission-campaign-majors/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Chi tiết chỉ tiêu ngành */
+        get: operations["AdmissionCampaignMajorController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa ngành khỏi đợt tuyển sinh */
+        delete: operations["AdmissionCampaignMajorController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật chỉ tiêu ngành */
+        patch: operations["AdmissionCampaignMajorController_update"];
+        trace?: never;
+    };
+    "/subject-combinations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Danh sách tổ hợp môn xét tuyển */
+        get: operations["SubjectCombinationController_findAll"];
+        put?: never;
+        /** Tạo tổ hợp môn xét tuyển */
+        post: operations["SubjectCombinationController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/subject-combinations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Chi tiết tổ hợp môn */
+        get: operations["SubjectCombinationController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa tổ hợp môn */
+        delete: operations["SubjectCombinationController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật tổ hợp môn */
+        patch: operations["SubjectCombinationController_update"];
+        trace?: never;
+    };
+    "/admission-profiles": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Danh sách hồ sơ đăng ký xét tuyển */
+        get: operations["AdmissionProfileController_findAll"];
+        put?: never;
+        /** Đăng ký hồ sơ xét tuyển (Online hoặc Staff nhập) */
+        post: operations["AdmissionProfileController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admission-profiles/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Chi tiết hồ sơ xét tuyển */
+        get: operations["AdmissionProfileController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa hồ sơ xét tuyển */
+        delete: operations["AdmissionProfileController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật hồ sơ xét tuyển */
+        patch: operations["AdmissionProfileController_update"];
+        trace?: never;
+    };
+    "/admission-profiles/{id}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Duyệt / Chuyển trạng thái hồ sơ (Ví dụ: ENROLLED) */
+        patch: operations["AdmissionProfileController_changeStatus"];
+        trace?: never;
+    };
+    "/admission-profiles/{id}/recalculate-score": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tính toán lại điểm xét tuyển */
+        post: operations["AdmissionProfileController_recalculateScore"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admission-documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Tải lên tài liệu số hóa cho hồ sơ */
+        post: operations["AdmissionDocumentController_uploadDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admission-documents/profile/{profileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Danh sách tài liệu của một hồ sơ */
+        get: operations["AdmissionDocumentController_findByProfile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admission-documents/{id}/verify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Duyệt hoặc từ chối tài liệu số hóa */
+        patch: operations["AdmissionDocumentController_verifyDocument"];
+        trace?: never;
+    };
+    "/admission-documents/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Xóa tài liệu */
+        delete: operations["AdmissionDocumentController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-configs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Danh sách cấu hình checklist tài liệu */
+        get: operations["DocumentConfigController_findAll"];
+        put?: never;
+        /** Tạo cấu hình checklist tài liệu */
+        post: operations["DocumentConfigController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/document-configs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Chi tiết cấu hình checklist tài liệu */
+        get: operations["DocumentConfigController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa cấu hình checklist */
+        delete: operations["DocumentConfigController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật cấu hình checklist */
+        patch: operations["DocumentConfigController_update"];
+        trace?: never;
+    };
+    "/priority-rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Danh sách quy tắc điểm ưu tiên */
+        get: operations["PriorityRuleController_findAll"];
+        put?: never;
+        /** Thêm cấu hình quy tắc điểm ưu tiên */
+        post: operations["PriorityRuleController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/priority-rules/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Chi tiết quy tắc điểm ưu tiên */
+        get: operations["PriorityRuleController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa quy tắc điểm ưu tiên */
+        delete: operations["PriorityRuleController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật quy tắc điểm ưu tiên */
+        patch: operations["PriorityRuleController_update"];
+        trace?: never;
+    };
+    "/admission-interests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Danh sách thí sinh đăng ký nhu cầu tư vấn */
+        get: operations["AdmissionInterestController_findAll"];
+        put?: never;
+        /** Đăng ký nhu cầu tư vấn (Online) */
+        post: operations["AdmissionInterestController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/admission-interests/{id}/notify": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Đánh dấu đã thông báo / liên hệ tư vấn */
+        patch: operations["AdmissionInterestController_markAsNotified"];
+        trace?: never;
+    };
+    "/admission-interests/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Xóa nhu cầu tư vấn */
+        delete: operations["AdmissionInterestController_remove"];
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/users/{id}": {
@@ -1797,80 +2190,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/admission-campaigns": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy danh sách Admission Campaigns */
-        get: operations["AdmissionCampaignController_findAll"];
-        put?: never;
-        /** Tạo mới Admission Campaign */
-        post: operations["AdmissionCampaignController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admission-campaigns/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy chi tiết Admission Campaign */
-        get: operations["AdmissionCampaignController_findOne"];
-        put?: never;
-        post?: never;
-        /** Xóa Admission Campaign */
-        delete: operations["AdmissionCampaignController_remove"];
-        options?: never;
-        head?: never;
-        /** Cập nhật Admission Campaign */
-        patch: operations["AdmissionCampaignController_update"];
-        trace?: never;
-    };
-    "/document-configs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy danh sách Document Configs */
-        get: operations["DocumentConfigController_findAll"];
-        put?: never;
-        /** Tạo mới Document Config */
-        post: operations["DocumentConfigController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/document-configs/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lấy chi tiết Document Config */
-        get: operations["DocumentConfigController_findOne"];
-        put?: never;
-        post?: never;
-        /** Xóa Document Config */
-        delete: operations["DocumentConfigController_remove"];
-        options?: never;
-        head?: never;
-        /** Cập nhật Document Config */
-        patch: operations["DocumentConfigController_update"];
-        trace?: never;
-    };
     "/academic-years": {
         parameters: {
             query?: never;
@@ -1913,14 +2232,12 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         CreateStudentDto: {
-            /** @example SV2026001 */
             studentCode: string;
-            /** @example 038200001234 */
             identityNumber: string;
             userId: number;
-            batchId: number | null;
-            majorId: number | null;
-            classId: number | null;
+            batchId?: number;
+            majorId?: number;
+            classId?: number;
             /**
              * @default THCS
              * @enum {string}
@@ -1932,83 +2249,29 @@ export interface components {
              */
             status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
             /** Format: date-time */
-            enrollmentDate: string | null;
+            enrollmentDate?: string;
             /** Format: date-time */
-            graduationDate: string | null;
-            /** @example Nguyễn Văn A */
+            graduationDate?: string;
             fullName: string;
-            /** @example nguyenvana@gmail.com */
-            email: string | null;
-            /** @enum {string|null} */
-            gender: "MALE" | "FEMALE" | "OTHER" | null;
+            email?: string;
+            /** @enum {string} */
+            gender?: "MALE" | "FEMALE" | "OTHER";
             /** Format: date-time */
-            dob: string | null;
-            /** @example 0912345678 */
-            phone: string | null;
-            avatarUrl: string | null;
-        };
-        MajorDto: {
-            id: number;
-            deptId: number;
-            description?: Record<string, never> | null;
-            majorCode: string;
-            majorName: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        BatchResponseDto: {
-            id: number;
-            batchCode: string;
-            batchName: string;
-            majorId: number;
-            academicYearId?: number | null;
-            curriculumId?: number | null;
-            description?: string | null;
-            endTerm?: number | null;
-            endYear: number;
-            startYear: number;
-            status: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            major: components["schemas"]["MajorDto"] | null;
-        };
-        ClassResponseDto: {
-            id: number;
-            classCode: string;
-            className: string;
-            majorId: number;
-            batchId?: number | null;
-            formTeacherId?: number | null;
-            currentSize: number;
-            maxStudents: number;
-            status: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        MajorSimpleDto: {
-            id: number;
-            majorCode: string;
-            majorName: string;
+            dob?: string;
+            phone?: string;
+            avatarUrl?: string;
         };
         DocumentProgressDto: {
             current: number;
             total: number;
         };
         QualifiedStudentResponseDto: {
-            /** @example SV2026001 */
             studentCode: string;
-            /** @example 038200001234 */
             identityNumber: string;
             userId: number;
-            batchId: number | null;
-            majorId: number | null;
-            classId: number | null;
+            batchId?: number;
+            majorId?: number;
+            classId?: number;
             /**
              * @default THCS
              * @enum {string}
@@ -2020,26 +2283,21 @@ export interface components {
              */
             status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
             /** Format: date-time */
-            enrollmentDate: string | null;
+            enrollmentDate?: string;
             /** Format: date-time */
-            graduationDate: string | null;
-            /** @example Nguyễn Văn A */
+            graduationDate?: string;
             fullName: string;
-            /** @example nguyenvana@gmail.com */
-            email: string | null;
-            /** @enum {string|null} */
-            gender: "MALE" | "FEMALE" | "OTHER" | null;
+            email?: string;
+            /** @enum {string} */
+            gender?: "MALE" | "FEMALE" | "OTHER";
             /** Format: date-time */
-            dob: string | null;
-            /** @example 0912345678 */
-            phone: string | null;
-            avatarUrl: string | null;
-            batch?: components["schemas"]["BatchResponseDto"] | null;
-            class?: components["schemas"]["ClassResponseDto"] | null;
-            major?: components["schemas"]["MajorSimpleDto"] | null;
-            /** @description Thông tin tiến độ nộp hồ sơ của học sinh */
-            documentProgress: components["schemas"]["DocumentProgressDto"];
-            /** @description Học sinh có đủ điều kiện xét tuyển ko */
+            dob?: string;
+            phone?: string;
+            avatarUrl?: string;
+            batch?: Record<string, never>;
+            class?: Record<string, never>;
+            major?: Record<string, never>;
+            documentProgress?: components["schemas"]["DocumentProgressDto"];
             isQualified: boolean;
         };
         ResponseStudentPaginationDto: {
@@ -2047,14 +2305,12 @@ export interface components {
             total: number;
         };
         StudentResponseDto: {
-            /** @example SV2026001 */
             studentCode: string;
-            /** @example 038200001234 */
             identityNumber: string;
             userId: number;
-            batchId: number | null;
-            majorId: number | null;
-            classId: number | null;
+            batchId?: number;
+            majorId?: number;
+            classId?: number;
             /**
              * @default THCS
              * @enum {string}
@@ -2066,25 +2322,21 @@ export interface components {
              */
             status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
             /** Format: date-time */
-            enrollmentDate: string | null;
+            enrollmentDate?: string;
             /** Format: date-time */
-            graduationDate: string | null;
-            /** @example Nguyễn Văn A */
+            graduationDate?: string;
             fullName: string;
-            /** @example nguyenvana@gmail.com */
-            email: string | null;
-            /** @enum {string|null} */
-            gender: "MALE" | "FEMALE" | "OTHER" | null;
+            email?: string;
+            /** @enum {string} */
+            gender?: "MALE" | "FEMALE" | "OTHER";
             /** Format: date-time */
-            dob: string | null;
-            /** @example 0912345678 */
-            phone: string | null;
-            avatarUrl: string | null;
-            batch?: components["schemas"]["BatchResponseDto"] | null;
-            class?: components["schemas"]["ClassResponseDto"] | null;
-            major?: components["schemas"]["MajorSimpleDto"] | null;
-            /** @description Thông tin tiến độ nộp hồ sơ của học sinh */
-            documentProgress: components["schemas"]["DocumentProgressDto"];
+            dob?: string;
+            phone?: string;
+            avatarUrl?: string;
+            batch?: Record<string, never>;
+            class?: Record<string, never>;
+            major?: Record<string, never>;
+            documentProgress?: components["schemas"]["DocumentProgressDto"];
         };
         AssignStudentsToClassesDto: {
             batchId?: number;
@@ -2092,14 +2344,12 @@ export interface components {
             studentsPerClass: number;
         };
         UpdateStudentDto: {
-            /** @example SV2026001 */
             studentCode?: string;
-            /** @example 038200001234 */
             identityNumber?: string;
             userId?: number;
-            batchId?: number | null;
-            majorId?: number | null;
-            classId?: number | null;
+            batchId?: number;
+            majorId?: number;
+            classId?: number;
             /**
              * @default THCS
              * @enum {string}
@@ -2111,20 +2361,483 @@ export interface components {
              */
             status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
             /** Format: date-time */
-            enrollmentDate?: string | null;
+            enrollmentDate?: string;
             /** Format: date-time */
-            graduationDate?: string | null;
-            /** @example Nguyễn Văn A */
+            graduationDate?: string;
             fullName?: string;
-            /** @example nguyenvana@gmail.com */
-            email?: string | null;
-            /** @enum {string|null} */
-            gender?: "MALE" | "FEMALE" | "OTHER" | null;
+            email?: string;
+            /** @enum {string} */
+            gender?: "MALE" | "FEMALE" | "OTHER";
             /** Format: date-time */
-            dob?: string | null;
-            /** @example 0912345678 */
-            phone?: string | null;
-            avatarUrl?: string | null;
+            dob?: string;
+            phone?: string;
+            avatarUrl?: string;
+        };
+        CreateAdmissionCampaignMajorDto: {
+            admissionCampaignId: number;
+            majorId: number;
+            /** @enum {string} */
+            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            quota: number;
+            acceptedAdmissionTypes: ("ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT")[];
+            subjectCombinationId?: number;
+            minScorePerSubject?: number;
+            minTotalScore?: number;
+            minGpaAverage?: number;
+            /** @enum {string} */
+            minConduct?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            transcriptScoreMethod?: "LAST_YEAR_ONLY" | "AVERAGE_ALL_YEARS";
+            cutoffScore?: number;
+        };
+        CreateAdmissionCampaignDto: {
+            code: string;
+            name: string;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            /**
+             * @default PLANNING
+             * @enum {string}
+             */
+            status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
+            description?: string;
+            academicYearId: number;
+            campaignMajors?: components["schemas"]["CreateAdmissionCampaignMajorDto"][];
+        };
+        AdmissionCampaignDto: {
+            id: number;
+            code: string;
+            name: string;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            /** @enum {string} */
+            status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
+            description?: string;
+            academicYearId: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ResponseAdmissionCampaignPaginationDto: {
+            data: components["schemas"]["AdmissionCampaignDto"][];
+            total: number;
+        };
+        UpdateAdmissionCampaignDto: {
+            code?: string;
+            name?: string;
+            /** Format: date-time */
+            startDate?: string;
+            /** Format: date-time */
+            endDate?: string;
+            /** @enum {string} */
+            status?: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
+            description?: string;
+            academicYearId?: number;
+            campaignMajors?: components["schemas"]["CreateAdmissionCampaignMajorDto"][];
+        };
+        AdmissionCampaignMajorDto: {
+            id: number;
+            admissionCampaignId: number;
+            majorId: number;
+            /** @enum {string} */
+            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            quota: number;
+            acceptedAdmissionTypes: ("ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT")[];
+            subjectCombinationId?: number;
+            minScorePerSubject?: number;
+            minTotalScore?: number;
+            minGpaAverage?: number;
+            /** @enum {string} */
+            minConduct?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            transcriptScoreMethod?: "LAST_YEAR_ONLY" | "AVERAGE_ALL_YEARS";
+            cutoffScore?: number;
+        };
+        UpdateAdmissionCampaignMajorDto: {
+            quota?: number;
+            acceptedAdmissionTypes?: ("ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT")[];
+            subjectCombinationId?: number;
+            minScorePerSubject?: number;
+            minTotalScore?: number;
+            minGpaAverage?: number;
+            /** @enum {string} */
+            minConduct?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            transcriptScoreMethod?: "LAST_YEAR_ONLY" | "AVERAGE_ALL_YEARS";
+            cutoffScore?: number;
+        };
+        CreateSubjectCombinationItemDto: {
+            subjectCode: string;
+        };
+        CreateSubjectCombinationDto: {
+            code: string;
+            name: string;
+            items?: components["schemas"]["CreateSubjectCombinationItemDto"][];
+        };
+        SubjectCombinationDto: {
+            id: number;
+            code: string;
+            name: string;
+        };
+        SubjectCombinationItemDto: {
+            id: number;
+            subjectCombinationId: number;
+            subjectCode: string;
+        };
+        SubjectCombinationDetailDto: {
+            id: number;
+            code: string;
+            name: string;
+            items?: components["schemas"]["SubjectCombinationItemDto"][];
+        };
+        SubjectCombinationPaginationDto: {
+            data: components["schemas"]["SubjectCombinationDetailDto"][];
+            total: number;
+        };
+        UpdateSubjectCombinationDto: {
+            code?: string;
+            name?: string;
+            items?: components["schemas"]["CreateSubjectCombinationItemDto"][];
+        };
+        CreateExamScoreDto: {
+            subjectCode: string;
+            score: number;
+        };
+        CreateTranscriptSubjectScoreDto: {
+            gradeLevel: number;
+            subjectCode: string;
+            score: number;
+        };
+        CreateAdmissionProfileDto: {
+            admissionCampaignMajorId: number;
+            /**
+             * @default ACADEMIC_TRANSCRIPT_GPA
+             * @enum {string}
+             */
+            admissionType: "ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT";
+            /**
+             * @default THCS
+             * @enum {string}
+             */
+            educationLevel: "THCS" | "THPT";
+            fullName: string;
+            identityNumber: string;
+            /** Format: date-time */
+            dob: string;
+            /** @enum {string} */
+            gender: "MALE" | "FEMALE" | "OTHER";
+            phone: string;
+            email?: string;
+            addressDetail?: string;
+            provinceCode?: string;
+            wardCode?: string;
+            villageId?: number;
+            fatherName?: string;
+            fatherPhone?: string;
+            motherName?: string;
+            motherPhone?: string;
+            guardianName?: string;
+            guardianPhone?: string;
+            gpa6?: number;
+            gpa7?: number;
+            gpa8?: number;
+            gpa9?: number;
+            /** @enum {string} */
+            conduct6?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct7?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct8?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct9?: "TOT" | "KHA" | "TB" | "YEU";
+            thcsGradYear?: number;
+            gpa10?: number;
+            gpa11?: number;
+            gpa12?: number;
+            /** @enum {string} */
+            conduct10?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct11?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct12?: "TOT" | "KHA" | "TB" | "YEU";
+            thptGradYear?: number;
+            subjectCombinationId?: number;
+            examScores?: components["schemas"]["CreateExamScoreDto"][];
+            transcriptSubjectScores?: components["schemas"]["CreateTranscriptSubjectScoreDto"][];
+            /** @enum {string} */
+            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
+            /** @enum {string} */
+            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
+            priorityScore?: number;
+            /** @default false */
+            isDirectAdmission: boolean;
+            /** @enum {string} */
+            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC";
+            note?: string;
+        };
+        AdmissionProfileDto: {
+            id: number;
+            applicationCode: string;
+            admissionCampaignMajorId: number;
+            /** @enum {string} */
+            status: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
+            /** @enum {string} */
+            admissionType: "ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT";
+            /** @enum {string} */
+            educationLevel: "THCS" | "THPT";
+            fullName: string;
+            identityNumber: string;
+            /** Format: date-time */
+            dob: string;
+            /** @enum {string} */
+            gender: "MALE" | "FEMALE" | "OTHER";
+            phone: string;
+            email?: string;
+            addressDetail?: string;
+            provinceCode?: string;
+            wardCode?: string;
+            villageId?: number;
+            fatherName?: string;
+            fatherPhone?: string;
+            motherName?: string;
+            motherPhone?: string;
+            guardianName?: string;
+            guardianPhone?: string;
+            gpa6?: number;
+            gpa7?: number;
+            gpa8?: number;
+            gpa9?: number;
+            /** @enum {string} */
+            conduct6?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct7?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct8?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct9?: "TOT" | "KHA" | "TB" | "YEU";
+            thcsGradYear?: number;
+            gpa10?: number;
+            gpa11?: number;
+            gpa12?: number;
+            /** @enum {string} */
+            conduct10?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct11?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct12?: "TOT" | "KHA" | "TB" | "YEU";
+            thptGradYear?: number;
+            subjectCombinationId?: number;
+            totalExamScore?: number;
+            /** @enum {string} */
+            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
+            /** @enum {string} */
+            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
+            priorityScore?: number;
+            isDirectAdmission: boolean;
+            /** @enum {string} */
+            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC";
+            scoreCalculated?: number;
+            note?: string;
+            studentId?: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ResponseAdmissionProfilePaginationDto: {
+            data: components["schemas"]["AdmissionProfileDto"][];
+            total: number;
+        };
+        UpdateAdmissionProfileDto: {
+            fullName?: string;
+            identityNumber?: string;
+            /** Format: date-time */
+            dob?: string;
+            /** @enum {string} */
+            gender?: "MALE" | "FEMALE" | "OTHER";
+            phone?: string;
+            email?: string;
+            addressDetail?: string;
+            provinceCode?: string;
+            wardCode?: string;
+            villageId?: number;
+            fatherName?: string;
+            fatherPhone?: string;
+            motherName?: string;
+            motherPhone?: string;
+            guardianName?: string;
+            guardianPhone?: string;
+            gpa6?: number;
+            gpa7?: number;
+            gpa8?: number;
+            gpa9?: number;
+            /** @enum {string} */
+            conduct6?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct7?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct8?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct9?: "TOT" | "KHA" | "TB" | "YEU";
+            thcsGradYear?: number;
+            gpa10?: number;
+            gpa11?: number;
+            gpa12?: number;
+            /** @enum {string} */
+            conduct10?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct11?: "TOT" | "KHA" | "TB" | "YEU";
+            /** @enum {string} */
+            conduct12?: "TOT" | "KHA" | "TB" | "YEU";
+            thptGradYear?: number;
+            subjectCombinationId?: number;
+            examScores?: components["schemas"]["CreateExamScoreDto"][];
+            transcriptSubjectScores?: components["schemas"]["CreateTranscriptSubjectScoreDto"][];
+            /** @enum {string} */
+            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
+            /** @enum {string} */
+            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
+            priorityScore?: number;
+            isDirectAdmission?: boolean;
+            /** @enum {string} */
+            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC";
+            note?: string;
+        };
+        ChangeProfileStatusDto: {
+            /** @enum {string} */
+            status: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
+            reason?: string;
+        };
+        CreateAdmissionDocumentDto: {
+            admissionProfileId: number;
+            documentConfigItemId: number;
+            fileUrl: string;
+            fileName: string;
+            fileSize: number;
+        };
+        AdmissionDocumentDto: {
+            id: number;
+            admissionProfileId: number;
+            documentConfigItemId: number;
+            fileUrl: string;
+            fileName: string;
+            fileSize: number;
+            /** @enum {string} */
+            status: "PENDING" | "APPROVED" | "REJECTED";
+            rejectionReason?: string;
+            /** Format: date-time */
+            verifiedAt?: string;
+            verifiedByUserId?: number;
+            isLatest: boolean;
+            /** Format: date-time */
+            uploadedAt: string;
+        };
+        VerifyAdmissionDocumentDto: {
+            /** @enum {string} */
+            status: "PENDING" | "APPROVED" | "REJECTED";
+            rejectionReason?: string;
+        };
+        CreateDocumentConfigItemDto: {
+            name: string;
+            code?: string;
+            /** @default true */
+            required: boolean;
+            sortOrder?: number;
+        };
+        CreateDocumentConfigDto: {
+            name: string;
+            /** Format: date-time */
+            startDate?: string;
+            admissionCampaignId?: number;
+            /** @enum {string} */
+            educationLevel?: "THCS" | "THPT";
+            /** @enum {string} */
+            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            items?: components["schemas"]["CreateDocumentConfigItemDto"][];
+        };
+        DocumentConfigItemDto: {
+            id: number;
+            documentConfigId: number;
+            name: string;
+            code?: string;
+            required?: boolean;
+            sortOrder?: number;
+        };
+        DocumentConfigDto: {
+            id: number;
+            name: string;
+            /** Format: date-time */
+            startDate: string;
+            admissionCampaignId?: number;
+            /** @enum {string} */
+            educationLevel?: "THCS" | "THPT";
+            /** @enum {string} */
+            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            items?: components["schemas"]["DocumentConfigItemDto"][];
+        };
+        UpdateDocumentConfigDto: {
+            name?: string;
+            /** Format: date-time */
+            startDate?: string;
+            admissionCampaignId?: number;
+            /** @enum {string} */
+            educationLevel?: "THCS" | "THPT";
+            /** @enum {string} */
+            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            items?: components["schemas"]["CreateDocumentConfigItemDto"][];
+        };
+        CreatePriorityRuleDto: {
+            academicYearId: number;
+            /** @enum {string} */
+            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
+            /** @enum {string} */
+            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
+            bonusScore: number;
+        };
+        PriorityRuleDto: {
+            id: number;
+            academicYearId: number;
+            /** @enum {string} */
+            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
+            /** @enum {string} */
+            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
+            bonusScore: number;
+        };
+        UpdatePriorityRuleDto: {
+            academicYearId?: number;
+            /** @enum {string} */
+            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
+            /** @enum {string} */
+            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
+            bonusScore?: number;
+        };
+        CreateAdmissionInterestDto: {
+            fullName: string;
+            phone: string;
+            identityNumber?: string;
+            majorId: number;
+            /** @enum {string} */
+            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            note?: string;
+        };
+        AdmissionInterestDto: {
+            id: number;
+            fullName: string;
+            phone: string;
+            identityNumber?: string;
+            majorId: number;
+            /** @enum {string} */
+            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            note?: string;
+            /** Format: date-time */
+            notifiedAt?: string;
+            /** Format: date-time */
+            createdAt: string;
         };
         CreateUserDto: {
             /**
@@ -2422,6 +3135,17 @@ export interface components {
             majorCode: string;
             majorName: string;
         };
+        MajorDto: {
+            id: number;
+            deptId: number;
+            description?: Record<string, never> | null;
+            majorCode: string;
+            majorName: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
         MajorResponseWithRelationDto: {
             id: number;
             deptId: number;
@@ -2451,6 +3175,24 @@ export interface components {
             endYear: number;
             startYear: number;
             status: string;
+        };
+        BatchResponseDto: {
+            id: number;
+            batchCode: string;
+            batchName: string;
+            majorId: number;
+            academicYearId?: number | null;
+            curriculumId?: number | null;
+            description?: string | null;
+            endTerm?: number | null;
+            endYear: number;
+            startYear: number;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            major: components["schemas"]["MajorDto"] | null;
         };
         UpdateBatchDto: {
             batchCode?: string;
@@ -2670,6 +3412,21 @@ export interface components {
             maxStudents: number;
             /** @default active */
             status: string;
+        };
+        ClassResponseDto: {
+            id: number;
+            classCode: string;
+            className: string;
+            majorId: number;
+            batchId?: number | null;
+            formTeacherId?: number | null;
+            currentSize: number;
+            maxStudents: number;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         ClassResponseWithRelationsDto: {
             id: number;
@@ -3651,14 +4408,12 @@ export interface components {
         };
         ResponseStudentDebtDto: {
             id: number;
-            /** @example SV2026001 */
             studentCode: string;
-            /** @example 038200001234 */
             identityNumber: string;
             userId: number;
-            batchId: number | null;
-            majorId: number | null;
-            classId: number | null;
+            batchId?: number;
+            majorId?: number;
+            classId?: number;
             /**
              * @default THCS
              * @enum {string}
@@ -3670,20 +4425,17 @@ export interface components {
              */
             status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
             /** Format: date-time */
-            enrollmentDate: string | null;
+            enrollmentDate?: string;
             /** Format: date-time */
-            graduationDate: string | null;
-            /** @example Nguyễn Văn A */
+            graduationDate?: string;
             fullName: string;
-            /** @example nguyenvana@gmail.com */
-            email: string | null;
-            /** @enum {string|null} */
-            gender: "MALE" | "FEMALE" | "OTHER" | null;
+            email?: string;
+            /** @enum {string} */
+            gender?: "MALE" | "FEMALE" | "OTHER";
             /** Format: date-time */
-            dob: string | null;
-            /** @example 0912345678 */
-            phone: string | null;
-            avatarUrl: string | null;
+            dob?: string;
+            phone?: string;
+            avatarUrl?: string;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -3949,46 +4701,9 @@ export interface components {
              */
             periodId: number;
         };
-        AdmissionCampaignItemsDto: {
-            majorId: number;
-            quota: number;
-        };
-        CreateAdmissionCampaignDto: {
-            academicYearId: number;
-            code: string;
-            /** Format: date-time */
-            startDate: string;
-            /** Format: date-time */
-            endDate: string;
-            description: string | null;
-            name: string;
-            /** @enum {string} */
-            status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
-            targetQuota: number | null;
-            items: components["schemas"]["AdmissionCampaignItemsDto"][];
-        };
-        AdmissionCampaignDto: {
-            id: number;
-            academicYearId: number;
-            code: string;
-            /** Format: date-time */
-            startDate: string;
-            /** Format: date-time */
-            endDate: string;
-            description: string | null;
-            name: string;
-            /** @enum {string} */
-            status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
-            targetQuota: number | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
         /** @enum {string} */
         AcademicYearStatus: "PLANNING" | "ACTIVE" | "CLOSED";
-        AcademicYearDto: {
-            id: number;
+        CreateAcademicYearDto: {
             /** @example 2023-2024 */
             code: string;
             /** @default ACTIVE */
@@ -4000,121 +4715,8 @@ export interface components {
             /** @default false */
             isCurrent: boolean;
         };
-        AdmissionCampaignWithAcademicYearDto: {
+        AcademicYearDto: {
             id: number;
-            academicYearId: number;
-            code: string;
-            /** Format: date-time */
-            startDate: string;
-            /** Format: date-time */
-            endDate: string;
-            description: string | null;
-            name: string;
-            /** @enum {string} */
-            status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
-            targetQuota: number | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            academicYear: components["schemas"]["AcademicYearDto"];
-        };
-        ResponseAdmissionCampaignPaginationPaginationDto: {
-            data: components["schemas"]["AdmissionCampaignWithAcademicYearDto"][];
-            total: number;
-        };
-        ResponseAdmissionCampaignMajorDetailDto: {
-            id: number;
-            admissionCampaignId: number;
-            majorId: number;
-            quota: number;
-            major: components["schemas"]["MajorDto"] | null;
-        };
-        ResponseAdmissionCampaignDetailDto: {
-            id: number;
-            academicYearId: number;
-            code: string;
-            /** Format: date-time */
-            startDate: string;
-            /** Format: date-time */
-            endDate: string;
-            description: string | null;
-            name: string;
-            /** @enum {string} */
-            status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
-            targetQuota: number | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            campaignMajors: components["schemas"]["ResponseAdmissionCampaignMajorDetailDto"][] | null;
-            academicYear: components["schemas"]["AcademicYearDto"];
-        };
-        UpdateAdmissionCampaignDto: {
-            academicYearId?: number;
-            code?: string;
-            /** Format: date-time */
-            startDate?: string;
-            /** Format: date-time */
-            endDate?: string;
-            description?: string | null;
-            name?: string;
-            /** @enum {string} */
-            status?: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
-            targetQuota?: number | null;
-            items?: components["schemas"]["AdmissionCampaignItemsDto"][];
-        };
-        DocumentConfigItemsPayloadDto: {
-            /** @example Học bạ THCS */
-            name: string;
-            /** @example TRANSCRIPT_THCS */
-            code: string | null;
-            /** @default true */
-            required: boolean | null;
-            /** @default 0 */
-            sortOrder: number | null;
-        };
-        CreateDocumentConfigDto: {
-            /** @example Hồ sơ nhập học Hệ 9+ */
-            name: string;
-            /** Format: date-time */
-            startDate: string;
-            admissionCampaignId: number | null;
-            /** @enum {string|null} */
-            educationLevel: "THCS" | "THPT" | null;
-            /** @enum {string|null} */
-            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION" | null;
-            items: components["schemas"]["DocumentConfigItemsPayloadDto"][];
-        };
-        DocumentConfigDto: {
-            id: number;
-            /** @example Hồ sơ nhập học Hệ 9+ */
-            name: string;
-            /** Format: date-time */
-            startDate: string;
-            admissionCampaignId: number | null;
-            /** @enum {string|null} */
-            educationLevel: "THCS" | "THPT" | null;
-            /** @enum {string|null} */
-            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION" | null;
-        };
-        ResponseDocumentConfigPaginationDto: {
-            data: components["schemas"]["DocumentConfigDto"][];
-            total: number;
-        };
-        UpdateDocumentConfigDto: {
-            /** @example Hồ sơ nhập học Hệ 9+ */
-            name?: string;
-            /** Format: date-time */
-            startDate?: string;
-            admissionCampaignId?: number | null;
-            /** @enum {string|null} */
-            educationLevel?: "THCS" | "THPT" | null;
-            /** @enum {string|null} */
-            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION" | null;
-            items?: components["schemas"]["DocumentConfigItemsPayloadDto"][];
-        };
-        CreateAcademicYearDto: {
             /** @example 2023-2024 */
             code: string;
             /** @default ACTIVE */
@@ -4152,18 +4754,18 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    searchStudents: {
+    StudentController_searchStudent: {
         parameters: {
             query?: {
                 studentCode?: string;
                 identityNumber?: string;
-                batchId?: number | null;
-                majorId?: number | null;
-                classId?: number | null;
+                batchId?: number;
+                majorId?: number;
+                classId?: number;
                 status?: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
                 fullName?: string;
-                email?: string | null;
-                phone?: string | null;
+                email?: string;
+                phone?: string;
                 page?: number;
                 limit?: number;
             };
@@ -4183,7 +4785,7 @@ export interface operations {
             };
         };
     };
-    createStudent: {
+    StudentController_create: {
         parameters: {
             query?: never;
             header?: never;
@@ -4204,7 +4806,7 @@ export interface operations {
             };
         };
     };
-    createManyStudents: {
+    StudentController_createMany: {
         parameters: {
             query?: never;
             header?: never;
@@ -4225,7 +4827,7 @@ export interface operations {
             };
         };
     };
-    deleteStudent: {
+    StudentController_deleteStudentById: {
         parameters: {
             query?: never;
             header?: never;
@@ -4287,7 +4889,7 @@ export interface operations {
             };
         };
     };
-    findStudentByStudentCode: {
+    StudentController_findByStudentCode: {
         parameters: {
             query: {
                 studentCode: string;
@@ -4319,7 +4921,6 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Lấy danh sách học sinh thành công. */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -4328,7 +4929,7 @@ export interface operations {
             };
         };
     };
-    assignStudentsToClasses: {
+    StudentController_assignStudentsToClasses: {
         parameters: {
             query?: never;
             header?: never;
@@ -4340,6 +4941,922 @@ export interface operations {
                 "application/json": components["schemas"]["AssignStudentsToClassesDto"];
             };
         };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionCampaignController_findAll: {
+        parameters: {
+            query?: {
+                name?: string;
+                status?: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
+                academicYearId?: number;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseAdmissionCampaignPaginationDto"];
+                };
+            };
+        };
+    };
+    AdmissionCampaignController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAdmissionCampaignDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionCampaignDto"];
+                };
+            };
+        };
+    };
+    AdmissionCampaignController_findActive: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionCampaignDto"][];
+                };
+            };
+        };
+    };
+    AdmissionCampaignController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionCampaignDto"];
+                };
+            };
+        };
+    };
+    AdmissionCampaignController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionCampaignController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAdmissionCampaignDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionCampaignDto"];
+                };
+            };
+        };
+    };
+    AdmissionCampaignMajorController_findAll: {
+        parameters: {
+            query?: {
+                admissionCampaignId?: number;
+                majorId?: number;
+                trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionCampaignMajorController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAdmissionCampaignMajorDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionCampaignMajorDto"];
+                };
+            };
+        };
+    };
+    AdmissionCampaignMajorController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionCampaignMajorDto"];
+                };
+            };
+        };
+    };
+    AdmissionCampaignMajorController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionCampaignMajorController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAdmissionCampaignMajorDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionCampaignMajorDto"];
+                };
+            };
+        };
+    };
+    SubjectCombinationController_findAll: {
+        parameters: {
+            query?: {
+                code?: string;
+                name?: string;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectCombinationPaginationDto"];
+                };
+            };
+        };
+    };
+    SubjectCombinationController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSubjectCombinationDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectCombinationDto"];
+                };
+            };
+        };
+    };
+    SubjectCombinationController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectCombinationDto"];
+                };
+            };
+        };
+    };
+    SubjectCombinationController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SubjectCombinationController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSubjectCombinationDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubjectCombinationDto"];
+                };
+            };
+        };
+    };
+    AdmissionProfileController_findAll: {
+        parameters: {
+            query?: {
+                applicationCode?: string;
+                fullName?: string;
+                identityNumber?: string;
+                phone?: string;
+                status?: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
+                admissionCampaignMajorId?: number;
+                admissionCampaignId?: number;
+                majorId?: number;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResponseAdmissionProfilePaginationDto"];
+                };
+            };
+        };
+    };
+    AdmissionProfileController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAdmissionProfileDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionProfileDto"];
+                };
+            };
+        };
+    };
+    AdmissionProfileController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionProfileDto"];
+                };
+            };
+        };
+    };
+    AdmissionProfileController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionProfileController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAdmissionProfileDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionProfileDto"];
+                };
+            };
+        };
+    };
+    AdmissionProfileController_changeStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeProfileStatusDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionProfileDto"];
+                };
+            };
+        };
+    };
+    AdmissionProfileController_recalculateScore: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionDocumentController_uploadDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAdmissionDocumentDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionDocumentDto"];
+                };
+            };
+        };
+    };
+    AdmissionDocumentController_findByProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                profileId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionDocumentDto"][];
+                };
+            };
+        };
+    };
+    AdmissionDocumentController_verifyDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VerifyAdmissionDocumentDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionDocumentDto"];
+                };
+            };
+        };
+    };
+    AdmissionDocumentController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DocumentConfigController_findAll: {
+        parameters: {
+            query?: {
+                name?: string;
+                admissionCampaignId?: number;
+                educationLevel?: "THCS" | "THPT";
+                trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DocumentConfigController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDocumentConfigDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentConfigDto"];
+                };
+            };
+        };
+    };
+    DocumentConfigController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentConfigDto"];
+                };
+            };
+        };
+    };
+    DocumentConfigController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DocumentConfigController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDocumentConfigDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentConfigDto"];
+                };
+            };
+        };
+    };
+    PriorityRuleController_findAll: {
+        parameters: {
+            query?: {
+                academicYearId?: number;
+                priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
+                priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PriorityRuleController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePriorityRuleDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriorityRuleDto"];
+                };
+            };
+        };
+    };
+    PriorityRuleController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriorityRuleDto"];
+                };
+            };
+        };
+    };
+    PriorityRuleController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PriorityRuleController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePriorityRuleDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PriorityRuleDto"];
+                };
+            };
+        };
+    };
+    AdmissionInterestController_findAll: {
+        parameters: {
+            query?: {
+                fullName?: string;
+                phone?: string;
+                majorId?: number;
+                trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+                isNotified?: boolean;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionInterestController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAdmissionInterestDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionInterestDto"];
+                };
+            };
+        };
+    };
+    AdmissionInterestController_markAsNotified: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionInterestDto"];
+                };
+            };
+        };
+    };
+    AdmissionInterestController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
         responses: {
             200: {
                 headers: {
@@ -7997,270 +9514,6 @@ export interface operations {
             };
             /** @description Lỗi định dạng File, không tìm thấy Đợt đánh giá, hoặc thiếu dữ liệu bắt buộc. */
             400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AdmissionCampaignController_findAll: {
-        parameters: {
-            query: {
-                name?: string;
-                status?: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
-                page: number;
-                limit: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResponseAdmissionCampaignPaginationPaginationDto"];
-                };
-            };
-        };
-    };
-    AdmissionCampaignController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateAdmissionCampaignDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdmissionCampaignDto"];
-                };
-            };
-        };
-    };
-    AdmissionCampaignController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResponseAdmissionCampaignDetailDto"];
-                };
-            };
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AdmissionCampaignController_remove: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdmissionCampaignDto"];
-                };
-            };
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AdmissionCampaignController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateAdmissionCampaignDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdmissionCampaignDto"];
-                };
-            };
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    DocumentConfigController_findAll: {
-        parameters: {
-            query?: {
-                name?: string;
-                admissionCampaignId?: number | null;
-                educationLevel?: "THCS" | "THPT" | null;
-                trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION" | null;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResponseDocumentConfigPaginationDto"];
-                };
-            };
-        };
-    };
-    DocumentConfigController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateDocumentConfigDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DocumentConfigDto"];
-                };
-            };
-        };
-    };
-    DocumentConfigController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DocumentConfigDto"];
-                };
-            };
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    DocumentConfigController_remove: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DocumentConfigDto"];
-                };
-            };
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    DocumentConfigController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateDocumentConfigDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DocumentConfigDto"];
-                };
-            };
-            404: {
                 headers: {
                     [name: string]: unknown;
                 };

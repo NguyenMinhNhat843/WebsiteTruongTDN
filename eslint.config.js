@@ -19,8 +19,9 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
-    rules: [
+    rules: {
       'react-hooks/set-state-in-effect': 'off',
-    ]
+      'max-len': ['warn', { code: 150 }],
+    },
   },
 ])
