@@ -189,8 +189,7 @@ export interface paths {
         /** Danh sách chỉ tiêu ngành theo đợt tuyển sinh */
         get: operations["AdmissionCampaignMajorController_findAll"];
         put?: never;
-        /** Thêm ngành và chỉ tiêu cho đợt tuyển sinh */
-        post: operations["AdmissionCampaignMajorController_create"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2374,7 +2373,6 @@ export interface components {
             avatarUrl?: string;
         };
         CreateAdmissionCampaignMajorDto: {
-            admissionCampaignId: number;
             majorId: number;
             /** @enum {string} */
             trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
@@ -2397,12 +2395,9 @@ export interface components {
             startDate: string;
             /** Format: date-time */
             endDate: string;
-            /**
-             * @default PLANNING
-             * @enum {string}
-             */
+            /** @enum {string} */
             status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
-            description?: string;
+            description?: string | null;
             academicYearId: number;
             campaignMajors?: components["schemas"]["CreateAdmissionCampaignMajorDto"][];
         };
@@ -2416,7 +2411,7 @@ export interface components {
             endDate: string;
             /** @enum {string} */
             status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
-            description?: string;
+            description?: string | null;
             academicYearId: number;
             /** Format: date-time */
             createdAt: string;
@@ -2427,6 +2422,61 @@ export interface components {
             data: components["schemas"]["AdmissionCampaignDto"][];
             total: number;
         };
+        /** @enum {string} */
+        AcademicYearStatus: "PLANNING" | "ACTIVE" | "CLOSED";
+        AcademicYearDto: {
+            id: number;
+            /** @example 2023-2024 */
+            code: string;
+            /** @default ACTIVE */
+            status: components["schemas"]["AcademicYearStatus"];
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            /** @default false */
+            isCurrent: boolean;
+        };
+        DocumentConfigItemDto: {
+            id: number;
+            documentConfigId: number;
+            name: string;
+            code?: string;
+            required?: boolean;
+            sortOrder?: number;
+        };
+        DocumentConfigDto: {
+            id: number;
+            name: string;
+            /** Format: date-time */
+            startDate: string;
+            admissionCampaignId?: number;
+            /** @enum {string} */
+            educationLevel?: "THCS" | "THPT";
+            /** @enum {string} */
+            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            items?: components["schemas"]["DocumentConfigItemDto"][];
+        };
+        AdmissionCampaignDetailDto: {
+            id: number;
+            code: string;
+            name: string;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            /** @enum {string} */
+            status: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
+            description?: string | null;
+            academicYearId: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            academicYear: components["schemas"]["AcademicYearDto"];
+            campaignMajors?: components["schemas"]["CreateAdmissionCampaignMajorDto"][];
+            documentConfigs?: components["schemas"]["DocumentConfigDto"][];
+        };
         UpdateAdmissionCampaignDto: {
             code?: string;
             name?: string;
@@ -2436,7 +2486,7 @@ export interface components {
             endDate?: string;
             /** @enum {string} */
             status?: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
-            description?: string;
+            description?: string | null;
             academicYearId?: number;
             campaignMajors?: components["schemas"]["CreateAdmissionCampaignMajorDto"][];
         };
@@ -2459,6 +2509,9 @@ export interface components {
             cutoffScore?: number;
         };
         UpdateAdmissionCampaignMajorDto: {
+            majorId?: number;
+            /** @enum {string} */
+            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
             quota?: number;
             acceptedAdmissionTypes?: ("ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT")[];
             subjectCombinationId?: number;
@@ -2759,26 +2812,6 @@ export interface components {
             /** @enum {string} */
             trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
             items?: components["schemas"]["CreateDocumentConfigItemDto"][];
-        };
-        DocumentConfigItemDto: {
-            id: number;
-            documentConfigId: number;
-            name: string;
-            code?: string;
-            required?: boolean;
-            sortOrder?: number;
-        };
-        DocumentConfigDto: {
-            id: number;
-            name: string;
-            /** Format: date-time */
-            startDate: string;
-            admissionCampaignId?: number;
-            /** @enum {string} */
-            educationLevel?: "THCS" | "THPT";
-            /** @enum {string} */
-            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
-            items?: components["schemas"]["DocumentConfigItemDto"][];
         };
         UpdateDocumentConfigDto: {
             name?: string;
@@ -4701,22 +4734,7 @@ export interface components {
              */
             periodId: number;
         };
-        /** @enum {string} */
-        AcademicYearStatus: "PLANNING" | "ACTIVE" | "CLOSED";
         CreateAcademicYearDto: {
-            /** @example 2023-2024 */
-            code: string;
-            /** @default ACTIVE */
-            status: components["schemas"]["AcademicYearStatus"];
-            /** Format: date-time */
-            startDate: string;
-            /** Format: date-time */
-            endDate: string;
-            /** @default false */
-            isCurrent: boolean;
-        };
-        AcademicYearDto: {
-            id: number;
             /** @example 2023-2024 */
             code: string;
             /** @default ACTIVE */
@@ -4953,6 +4971,7 @@ export interface operations {
     AdmissionCampaignController_findAll: {
         parameters: {
             query?: {
+                code?: string;
                 name?: string;
                 status?: "PLANNING" | "OPEN" | "CLOSED" | "COMPLETED";
                 academicYearId?: number;
@@ -4992,9 +5011,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["AdmissionCampaignDto"];
-                };
+                content?: never;
             };
         };
     };
@@ -5033,7 +5050,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AdmissionCampaignDto"];
+                    "application/json": components["schemas"]["AdmissionCampaignDetailDto"];
                 };
             };
         };
@@ -5102,29 +5119,6 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
-            };
-        };
-    };
-    AdmissionCampaignMajorController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateAdmissionCampaignMajorDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdmissionCampaignMajorDto"];
-                };
             };
         };
     };

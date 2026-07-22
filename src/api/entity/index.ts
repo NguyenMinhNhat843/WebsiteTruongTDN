@@ -7,6 +7,7 @@ export type AcademicYearDto = components['schemas']['AcademicYearDto']
 
 // Admission entities
 export type AdmissionCampaignDto = components['schemas']['AdmissionCampaignDto']
+export type AdmissionCampaignDetailDto = components['schemas']['AdmissionCampaignDetailDto']
 export type CreateAdmissionCampaignDto = components['schemas']['CreateAdmissionCampaignDto']
 export type UpdateAdmissionCampaignDto = components['schemas']['UpdateAdmissionCampaignDto']
 

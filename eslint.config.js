@@ -21,7 +21,6 @@ export default defineConfig([
     },
     rules: {
       'react-hooks/set-state-in-effect': 'off',
-      'max-len': ['warn', { code: 150 }],
     },
   },
 ])
