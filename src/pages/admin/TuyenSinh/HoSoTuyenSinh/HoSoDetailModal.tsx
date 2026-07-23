@@ -13,7 +13,7 @@ import {
   Clock,
 } from 'lucide-react'
 import { $api } from '../../../../api/client'
-import { APPLICATION_STATUS_MAP, DOCUMENT_STATUS_MAP, ADMISSION_TYPE_MAP } from '../../../../api/enum'
+import { APPLICATION_STATUS_MAP, DOCUMENT_STATUS_MAP } from '../../../../api/enum'
 import type { ApplicationStatusEnum, DocumentStatusEnum } from '../../../../api/enum'
 import type { components } from '../../../../api/v1'
 
@@ -29,7 +29,7 @@ interface Props {
 
 export const HoSoDetailModal: React.FC<Props> = ({ profileId, onClose, onRefetch }) => {
   const [activeTab, setActiveTab] = useState<'INFO' | 'ADMISSION' | 'LOGS'>('INFO')
-  const [statusReason, setStatusReason] = useState('')
+  const [statusReason] = useState('')
 
   // Query Profile Detail (Response tự động infer kiểu AdmissionProfileDetail)
   const {
@@ -48,7 +48,8 @@ export const HoSoDetailModal: React.FC<Props> = ({ profileId, onClose, onRefetch
   // Trường hợp API trả về trực tiếp object hoặc unwrap qua response wrapper (.data)
   const profile = profileData?.profile
   const transcriptScores = profileData?.transcriptSubjectScores || []
-  const admissionCampaign = profileData?.admissionCampaign
+  const admissionCampaign = profileData?.admissionCampaignMajor?.admissionCampaign
+  const admissionCampaignMajor = profileData?.admissionCampaignMajor
 
   // Mutations
   const { mutate: updateStatus, isPending: isUpdatingStatus } = $api.useMutation(
@@ -320,21 +321,13 @@ export const HoSoDetailModal: React.FC<Props> = ({ profileId, onClose, onRefetch
                   <div>
                     <span className="text-slate-500">Ngành xét tuyển:</span>
                     <p className="font-semibold text-slate-800">
-                      {admissionCampaign?.campaignMajors?.[0]?.major?.majorName} (
-                      {admissionCampaign?.campaignMajors?.[0]?.major?.majorCode})
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-slate-500">Phương thức đăng ký:</span>
-                    <p className="font-medium text-slate-800">
-                      {ADMISSION_TYPE_MAP[profile.admissionType as keyof typeof ADMISSION_TYPE_MAP] ||
-                        profile.admissionType}
+                      {admissionCampaignMajor?.major?.majorName} ({admissionCampaignMajor?.major?.majorCode})
                     </p>
                   </div>
                   <div>
                     <span className="text-slate-500">Tổ hợp môn:</span>
                     <p className="font-medium text-slate-800">
-                      {admissionCampaign?.campaignMajors?.[0]?.subjectCombination?.name || 'N/A'}
+                      {admissionCampaignMajor?.subjectCombination?.name || 'N/A'}
                     </p>
                   </div>
                 </div>
@@ -348,21 +341,7 @@ export const HoSoDetailModal: React.FC<Props> = ({ profileId, onClose, onRefetch
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <div className="rounded-xl bg-slate-50 p-3">
                     <span className="text-[11px] text-slate-500">Điểm thi/Học bạ gốc</span>
-                    <p className="text-sm font-bold text-slate-800">{profile.totalExamScore ?? 0}</p>
-                  </div>
-                  <div className="rounded-xl bg-slate-50 p-3">
-                    <span className="text-[11px] text-slate-500">Điểm ưu tiên</span>
-                    <p className="text-sm font-bold text-slate-800">+{profile.priorityScore || 0}</p>
-                  </div>
-                  <div className="rounded-xl bg-slate-50 p-3">
-                    <span className="text-[11px] text-slate-500">Đối tượng ưu tiên</span>
-                    <p className="text-xs font-semibold text-slate-800">
-                      {profile.priorityObject || 'Không'}
-                    </p>
-                  </div>
-                  <div className="rounded-xl border border-indigo-100 bg-indigo-50/60 p-3">
-                    <span className="text-[11px] font-medium text-indigo-600">Tổng điểm quy đổi</span>
-                    <p className="text-base font-extrabold text-indigo-700">{profile.scoreCalculated ?? 0}</p>
+                    <p className="text-sm font-bold text-slate-800">{profile.avgSubjectScore ?? 0}</p>
                   </div>
                 </div>
               </div>
@@ -504,7 +483,7 @@ export const HoSoDetailModal: React.FC<Props> = ({ profileId, onClose, onRefetch
                             <span className="font-semibold text-slate-700">
                               {log.isSystem
                                 ? 'Hệ thống (Tự động)'
-                                : log.byUser?.fullName || 'NPH / Quản trị viên'}
+                                : log.byUser?.username || 'NPH / Quản trị viên'}
                             </span>
                           </div>
                         </div>

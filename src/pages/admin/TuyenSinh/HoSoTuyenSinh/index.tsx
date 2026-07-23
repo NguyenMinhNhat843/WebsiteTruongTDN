@@ -32,7 +32,7 @@ const HoSoTuyenSinhHome: React.FC = () => {
         identityNumber: debouncedSearch || undefined,
         applicationCode: debouncedSearch || undefined,
         phone: debouncedSearch || undefined,
-        status: (activeTabStatus as any) || undefined,
+        status: (activeTabStatus as ApplicationStatusEnum) || undefined,
         page,
         limit,
       },
@@ -150,7 +150,7 @@ const HoSoTuyenSinhHome: React.FC = () => {
                       <td className="px-4 py-3.5 text-slate-600">{profile.identityNumber}</td>
                       <td className="px-4 py-3.5 text-slate-600">{profile.phone}</td>
                       <td className="px-4 py-3.5 font-bold text-slate-800">
-                        {profile.scoreCalculated ?? profile.totalExamScore ?? '0'}
+                        {profile.scoreCalculated ?? profile.avgSubjectScore ?? '0'}
                       </td>
                       <td className="px-4 py-3.5">
                         <span

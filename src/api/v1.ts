@@ -143,6 +143,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/admission-campaigns/{id}/approve-auto": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Duyệt tự động đợt tuyển sinh theo chỉ tiêu và điểm sàn */
+        post: operations["AdmissionCampaignController_approveAdmissionCampaign"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admission-campaigns/active": {
         parameters: {
             query?: never;
@@ -2539,7 +2556,6 @@ export interface components {
             studentId?: number | null;
             thcsGradYear?: number | null;
             thptGradYear?: number | null;
-            totalExamScore?: number | null;
             villageId?: number | null;
             wardCode?: string | null;
             avgSubjectScore?: number | null;
@@ -2598,7 +2614,6 @@ export interface components {
             studentId?: number | null;
             thcsGradYear?: number | null;
             thptGradYear?: number | null;
-            totalExamScore?: number | null;
             villageId?: number | null;
             wardCode?: string | null;
             avgSubjectScore?: number | null;
@@ -2611,6 +2626,23 @@ export interface components {
         ResponseAdmissionProfilePaginationDto: {
             data: components["schemas"]["AdmissionProfileDto"][];
             total: number;
+        };
+        NestedAdmissionCampaignMajorDto: {
+            id: number;
+            admissionCampaignId: number;
+            majorId: number;
+            /** @enum {string} */
+            trainingType: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
+            quota: number;
+            subjectCombinationId: number;
+            minScorePerSubject?: number;
+            minTotalScore?: number;
+            /** @enum {string} */
+            minConduct?: "TOT" | "KHA" | "TB" | "YEU";
+            cutoffScore?: number;
+            major: components["schemas"]["MajorDto"];
+            subjectCombination: components["schemas"]["SubjectCombinationDetailDto"];
+            admissionCampaign: components["schemas"]["AdmissionCampaignDto"];
         };
         TranscriptSubjectScoreDto: {
             id: number;
@@ -2635,7 +2667,26 @@ export interface components {
             /** Format: date-time */
             uploadedAt: string;
         };
-        AdmissionStatusLogDto: {
+        UserResponseDto: {
+            /** @example 1 */
+            id: number;
+            staffId?: number;
+            studentId?: number;
+            /** @example u_9b1deb4d */
+            userId: string;
+            /** @example johndoe */
+            username: string;
+            /** @enum {string} */
+            role: "admin" | "teacher" | "student" | "staff";
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            /** @example 2024-01-01T12:00:00Z */
+            lastLoginAt?: Record<string, never>;
+        };
+        AdmissionStatusLogDetailDto: {
             id: number;
             admissionProfileId: number;
             /** @enum {string|null} */
@@ -2647,13 +2698,14 @@ export interface components {
             byUserId?: number | null;
             /** Format: date-time */
             createdAt: string;
+            byUser?: components["schemas"]["UserResponseDto"] | null;
         };
         AdmissionProfileDetailDto: {
             profile: components["schemas"]["AdmissionProfileDto"];
-            admissionCampaign?: components["schemas"]["AdmissionCampaignDetailDto"];
+            admissionCampaignMajor: components["schemas"]["NestedAdmissionCampaignMajorDto"];
             transcriptSubjectScores: components["schemas"]["TranscriptSubjectScoreDto"][];
             documents: components["schemas"]["AdmissionDocumentDto"][];
-            statusLogs: components["schemas"]["AdmissionStatusLogDto"][];
+            statusLogs: components["schemas"]["AdmissionStatusLogDetailDto"][];
         };
         UpdateAdmissionProfileDto: {
             applicationCode?: string;
@@ -2706,7 +2758,6 @@ export interface components {
             studentId?: number | null;
             thcsGradYear?: number | null;
             thptGradYear?: number | null;
-            totalExamScore?: number | null;
             villageId?: number | null;
             wardCode?: string | null;
             avgSubjectScore?: number | null;
@@ -2777,25 +2828,6 @@ export interface components {
             role: "admin" | "teacher" | "student" | "staff";
             /** @default true */
             isActive: boolean;
-        };
-        UserResponseDto: {
-            /** @example 1 */
-            id: number;
-            staffId?: number;
-            studentId?: number;
-            /** @example u_9b1deb4d */
-            userId: string;
-            /** @example johndoe */
-            username: string;
-            /** @enum {string} */
-            role: "admin" | "teacher" | "student" | "staff";
-            isActive: boolean;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            /** @example 2024-01-01T12:00:00Z */
-            lastLoginAt?: Record<string, never>;
         };
         CreateStaffDto: {
             /** @example Nguyễn Văn C */
@@ -4884,6 +4916,33 @@ export interface operations {
         };
         responses: {
             201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AdmissionCampaignController_approveAdmissionCampaign: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xét duyệt đợt tuyển sinh thành công */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Đợt tuyển sinh không tồn tại */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };

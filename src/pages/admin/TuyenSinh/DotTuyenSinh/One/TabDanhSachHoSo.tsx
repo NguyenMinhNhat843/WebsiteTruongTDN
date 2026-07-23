@@ -1,11 +1,23 @@
 import React, { useState } from 'react'
-import { Search, Plus, FileText, Eye, Trash2, Loader2 } from 'lucide-react'
+import {
+  Search,
+  Plus,
+  FileText,
+  Eye,
+  Trash2,
+  Loader2,
+  Sparkles,
+  AlertCircle,
+  CheckCircle2,
+  X,
+} from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { $api } from '../../../../../api/client'
 import { useDebounce } from '../../../../../hooks/useDebounce'
 import { APPLICATION_STATUS_MAP, APPLICATION_STATUS_TABS } from '../../../../../api/enum'
 import type { ApplicationStatusEnum } from '../../../../../api/enum'
 import { HoSoDetailModal } from '../../HoSoTuyenSinh/HoSoDetailModal'
+import { toast } from 'sonner'
 
 interface TabDanhSachHoSoProps {
   admissionCampaignId: number
@@ -21,8 +33,9 @@ const TabDanhSachHoSo: React.FC<TabDanhSachHoSoProps> = ({ admissionCampaignId }
   const [page, setPage] = useState(1)
   const limit = 10
 
-  // Selected Detail Modal
+  // State Modal
   const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null)
+  const [showAutoApproveModal, setShowAutoApproveModal] = useState(false)
 
   // Query Admission Profiles list cho ĐỢT XÉT TUYỂN HIỆN TẠI
   const {
@@ -55,6 +68,30 @@ const TabDanhSachHoSo: React.FC<TabDanhSachHoSoProps> = ({ admissionCampaignId }
   const total = response?.total || 0
   const totalPages = Math.ceil(total / limit)
 
+  // Mutation Duyệt Tự Động
+  const { mutate: approveAdmissionCampaign, isPending: isApproving } = $api.useMutation(
+    'post',
+    '/admission-campaigns/{id}/approve-auto',
+  )
+
+  const handleConfirmAutoApprove = () => {
+    if (!admissionCampaignId) return
+
+    approveAdmissionCampaign(
+      { params: { path: { id: admissionCampaignId } } },
+      {
+        onSuccess: () => {
+          toast.success('Duyệt tự động đợt tuyển sinh thành công!')
+          setShowAutoApproveModal(false)
+          refetch()
+        },
+        onError: () => {
+          toast.error('Duyệt tự động thất bại. Vui lòng thử lại!')
+        },
+      },
+    )
+  }
+
   // Mutation Delete Profile
   const { mutate: deleteProfile } = $api.useMutation('delete', '/admission-profiles/{id}', {
     onSuccess: () => refetch(),
@@ -76,15 +113,28 @@ const TabDanhSachHoSo: React.FC<TabDanhSachHoSoProps> = ({ admissionCampaignId }
           </p>
         </div>
 
-        <button
-          onClick={() =>
-            navigate(`/admin/tuyen-sinh/ho-so-tuyen-sinh/tao-moi?campaignId=${admissionCampaignId}`)
-          }
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-medium text-white shadow-sm shadow-indigo-200 transition-colors hover:bg-indigo-700"
-        >
-          <Plus className="h-4 w-4" />
-          Thêm hồ sơ đợt này
-        </button>
+        {/* Khối các nút hành động */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Nút Duyệt tự động - Mở Modal */}
+          <button
+            onClick={() => setShowAutoApproveModal(true)}
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2 text-xs font-medium text-amber-700 shadow-sm transition-colors hover:bg-amber-100 active:bg-amber-200"
+          >
+            <Sparkles className="h-4 w-4 text-amber-600" />
+            Duyệt tự động
+          </button>
+
+          {/* Nút Thêm hồ sơ */}
+          <button
+            onClick={() =>
+              navigate(`/admin/tuyen-sinh/ho-so-tuyen-sinh/tao-moi?campaignId=${admissionCampaignId}`)
+            }
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-medium text-white shadow-sm shadow-indigo-200 transition-colors hover:bg-indigo-700"
+          >
+            <Plus className="h-4 w-4" />
+            Thêm hồ sơ đợt này
+          </button>
+        </div>
       </div>
 
       {/* Tabs Phân loại trạng thái */}
@@ -234,6 +284,111 @@ const TabDanhSachHoSo: React.FC<TabDanhSachHoSoProps> = ({ admissionCampaignId }
           onClose={() => setSelectedProfileId(null)}
           onRefetch={refetch}
         />
+      )}
+
+      {/* ========================================================= */}
+      {/* MODAL XÁC NHẬN DUYỆT TỰ ĐỘNG ĐỢT TUYỂN SINH               */}
+      {/* ========================================================= */}
+      {showAutoApproveModal && (
+        <div className="animate-in fade-in fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-xs duration-200">
+          <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
+            {/* Header Modal */}
+            <div className="flex items-start justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900">Xác Nhận Duyệt Tự Động</h3>
+                  <p className="text-xs text-slate-500">Xét duyệt danh sách hồ sơ đăng ký theo quy chuẩn</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowAutoApproveModal(false)}
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Nội dung giải thích quy trình */}
+            <div className="my-5 space-y-4">
+              <p className="text-xs leading-relaxed text-slate-600">
+                Hệ thống sẽ quét toàn bộ các hồ sơ ở trạng thái{' '}
+                <b className="text-indigo-600">Mới đăng ký (REGISTERED)</b> trong đợt này và tự động xét duyệt
+                theo thứ tự ưu tiên sau:
+              </p>
+
+              <div className="space-y-2.5 rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 text-xs text-slate-700">
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  <span>
+                    <b>Kiểm tra điểm sàn & điểm liệt:</b> Lọc bỏ các hồ sơ có điểm TB tổ hợp nhỏ hơn điểm sàn
+                    ngành hoặc có điểm môn bất kỳ bị dính điểm liệt.
+                  </span>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  <span>
+                    <b>Xếp hạng điểm số:</b> Sắp xếp các thí sinh đạt chuẩn từ điểm xét tuyển cao xuống thấp.
+                  </span>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  <span>
+                    <b>Tiêu chí phụ (Hạnh kiểm & Thời gian):</b> Nếu bằng điểm, ưu tiên thí sinh có hạnh kiểm
+                    tốt hơn, sau đó xét theo thời gian nộp hồ sơ sớm hơn.
+                  </span>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
+                  <span>
+                    <b>Chốt danh sách theo Chỉ tiêu (Quota):</b> Chuyển{' '}
+                    <b className="text-emerald-700">Đã duyệt (APPROVED)</b> cho các hồ sơ nằm trong chỉ tiêu,
+                    các hồ sơ còn lại chuyển <b className="text-rose-600">Từ chối (REJECTED)</b>.
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 rounded-xl border border-amber-200/60 bg-amber-50 p-3 text-[11px] text-amber-800">
+                <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" />
+                <span>
+                  Hành động này sẽ cập nhật trực tiếp trạng thái của các hồ sơ trong DB và không thể hoàn tác!
+                </span>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3 border-t border-slate-100 pt-4">
+              <button
+                type="button"
+                disabled={isApproving}
+                onClick={() => setShowAutoApproveModal(false)}
+                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 transition-colors hover:bg-slate-50"
+              >
+                Hủy bỏ
+              </button>
+              <button
+                type="button"
+                disabled={isApproving}
+                onClick={handleConfirmAutoApprove}
+                className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-xs font-semibold text-white shadow-sm shadow-amber-200 transition-all hover:bg-amber-700 disabled:opacity-50"
+              >
+                {isApproving ? (
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    Đang xét duyệt...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="h-4 w-4" />
+                    Xác nhận duyệt
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

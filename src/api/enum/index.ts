@@ -71,22 +71,11 @@ export const APPLICATION_STATUS_TABS = [
   })),
 ]
 
-// 3. Phương thức xét tuyển (AdmissionType)
-export type AdmissionTypeEnum = components['schemas']['AdmissionProfileDto']['admissionType']
-export const ADMISSION_TYPE_MAP: Record<NonNullable<AdmissionTypeEnum>, string> = {
-  ACADEMIC_TRANSCRIPT_GPA: 'Xét học bạ theo Điểm TB chung',
-  ACADEMIC_TRANSCRIPT_SUBJECT: 'Xét học bạ theo Tổ hợp môn',
-  EXAM_SCORE: 'Xét điểm thi theo Tổ hợp môn',
-  DIRECT: 'Xét tuyển thẳng',
-}
-
 // 4. Trình độ / Hệ đào tạo (TrainingType)
 export type TrainingTypeEnum = components['schemas']['AdmissionCampaignMajorDto']['trainingType']
 export const TRAINING_TYPE_MAP: Record<NonNullable<TrainingTypeEnum>, string> = {
-  DUAL_PROGRAM_9PLUS: 'Hệ 9+ (THPT + Trung cấp)',
   VOCATIONAL_INTERMEDIATE: 'Trung cấp Nghề',
   VOCATIONAL_ELEMENTARY: 'Sơ cấp Nghề',
-  CONTINUING_EDUCATION: 'Đào tạo thường xuyên / Ngắn hạn',
 }
 
 // 5. Trạng thái tài liệu số hóa (DocumentStatus)
