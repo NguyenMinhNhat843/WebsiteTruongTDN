@@ -137,6 +137,7 @@ const TaoHoSoTuyenSinh: React.FC = () => {
     if (scores.length === 0) return 0
     return scores.reduce((sum, val) => sum + val, 0) / (scores.length / 3)
   }, [scoresMap, gradesToInput, subjectCombinationItems])
+  console.log('Computed Avg Subject Score:', computedAvgSubjectScore)
 
   useEffect(() => {
     setValue('avgSubjectScore', Number(computedAvgSubjectScore.toFixed(2)))
@@ -188,7 +189,7 @@ const TaoHoSoTuyenSinh: React.FC = () => {
       {
         onSuccess: () => {
           toast.success('Tạo mới hồ sơ tuyển sinh thành công!')
-          navigate(-1)
+          // navigate(-1)
         },
         onError: () => {
           toast.error('Tạo mới hồ sơ thất bại. Vui lòng kiểm tra lại thông tin!')
