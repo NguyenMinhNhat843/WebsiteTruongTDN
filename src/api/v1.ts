@@ -2323,11 +2323,12 @@ export interface components {
             trainingType: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             quota: number;
             subjectCombinationId: number;
-            minScorePerSubject?: number;
-            minTotalScore?: number;
+            batchId: number;
+            cutoffScore?: Record<string, never>;
             /** @enum {string} */
             minConduct?: "TOT" | "KHA" | "TB" | "YEU";
-            cutoffScore?: number;
+            minScorePerSubject?: number;
+            minTotalScore?: number;
         };
         CreateAdmissionCampaignDto: {
             code: string;
@@ -2387,11 +2388,12 @@ export interface components {
             trainingType: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             quota: number;
             subjectCombinationId: number;
-            minScorePerSubject?: number;
-            minTotalScore?: number;
+            batchId: number;
+            cutoffScore?: Record<string, never>;
             /** @enum {string} */
             minConduct?: "TOT" | "KHA" | "TB" | "YEU";
-            cutoffScore?: number;
+            minScorePerSubject?: number;
+            minTotalScore?: number;
             major?: components["schemas"]["MajorDto"];
             subjectCombination?: components["schemas"]["SubjectCombinationDetailDto"];
         };
@@ -2463,11 +2465,12 @@ export interface components {
             trainingType: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             quota: number;
             subjectCombinationId: number;
-            minScorePerSubject?: number;
-            minTotalScore?: number;
+            batchId: number;
+            cutoffScore?: Record<string, never>;
             /** @enum {string} */
             minConduct?: "TOT" | "KHA" | "TB" | "YEU";
-            cutoffScore?: number;
+            minScorePerSubject?: number;
+            minTotalScore?: number;
         };
         UpdateAdmissionCampaignMajorDto: {
             majorId?: number;
@@ -2475,11 +2478,12 @@ export interface components {
             trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             quota?: number;
             subjectCombinationId?: number;
-            minScorePerSubject?: number;
-            minTotalScore?: number;
+            batchId?: number;
+            cutoffScore?: Record<string, never>;
             /** @enum {string} */
             minConduct?: "TOT" | "KHA" | "TB" | "YEU";
-            cutoffScore?: number;
+            minScorePerSubject?: number;
+            minTotalScore?: number;
         };
         CreateSubjectCombinationItemDto: {
             subjectName: string;
@@ -2638,11 +2642,12 @@ export interface components {
             trainingType: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             quota: number;
             subjectCombinationId: number;
-            minScorePerSubject?: number;
-            minTotalScore?: number;
+            batchId: number;
+            cutoffScore?: Record<string, never>;
             /** @enum {string} */
             minConduct?: "TOT" | "KHA" | "TB" | "YEU";
-            cutoffScore?: number;
+            minScorePerSubject?: number;
+            minTotalScore?: number;
             major: components["schemas"]["MajorDto"];
             subjectCombination: components["schemas"]["SubjectCombinationDetailDto"];
             admissionCampaign: components["schemas"]["AdmissionCampaignDto"];

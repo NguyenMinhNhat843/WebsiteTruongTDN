@@ -1,26 +1,21 @@
-import { Edit, PlusIcon, Trash2 } from "lucide-react";
-import PageShell from "../../../components/ui/PageShell";
-import { NganhProvider, useNganhContext } from "./NganhProvider";
-import CreateNganhModal from "./CreateNganhHoc";
-import NganhHocList from "./NganhHocList";
+import { Edit, PlusIcon, Trash2 } from 'lucide-react'
+import PageShell from '../../../components/ui/PageShell'
+import { NganhProvider, useNganhContext } from './NganhProvider'
+import CreateNganhModal from './CreateNganhHoc'
+import NganhHocList from './NganhHocList'
+import { toast } from 'sonner'
 
 const NganhIndex = () => {
   return (
     <NganhProvider>
       <Inner />
     </NganhProvider>
-  );
-};
+  )
+}
 
 const Inner = () => {
-  const {
-    isOpenModalCreate,
-    setIsOpenModalCreate,
-    isPendingCreateNganh,
-    createNganh,
-    nganhs,
-    deleteNganh,
-  } = useNganhContext();
+  const { isOpenModalCreate, setIsOpenModalCreate, isPendingCreateNganh, createNganh, nganhs, deleteNganh } =
+    useNganhContext()
 
   return (
     <PageShell
@@ -28,10 +23,10 @@ const Inner = () => {
       sub="Trang quản lý các ngành học trong hệ thống"
       renderRight={
         <button
-          className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-medium text-sm rounded-xl shadow-sm hover:shadow transition-all duration-150 transform active:scale-98"
+          className="flex transform items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:from-purple-700 hover:to-indigo-700 hover:shadow active:scale-98"
           onClick={() => setIsOpenModalCreate(true)}
         >
-          <PlusIcon className="w-4 h-4" />
+          <PlusIcon className="h-4 w-4" />
           Thêm ngành học
         </button>
       }
@@ -42,13 +37,13 @@ const Inner = () => {
         renderActions={(data) => (
           <div className="flex gap-1.5">
             <button
-              className="p-1.5 hover:bg-purple-50 text-gray-500 hover:text-purple-600 rounded-lg transition-colors border border-transparent hover:border-purple-100"
+              className="rounded-lg border border-transparent p-1.5 text-gray-500 transition-colors hover:border-purple-100 hover:bg-purple-50 hover:text-purple-600"
               title="Chỉnh sửa"
             >
               <Edit size={16} />
             </button>
             <button
-              className="p-1.5 hover:bg-red-50 text-gray-500 hover:text-red-600 rounded-lg transition-colors border border-transparent hover:border-red-100"
+              className="rounded-lg border border-transparent p-1.5 text-gray-500 transition-colors hover:border-red-100 hover:bg-red-50 hover:text-red-600"
               title="Xóa"
               onClick={() =>
                 deleteNganh({
@@ -78,15 +73,19 @@ const Inner = () => {
             },
             {
               onSuccess: () => {
-                reset();
-                setIsOpenModalCreate(false);
+                toast.success('Tạo ngành học thành công!')
+                reset()
+                setIsOpenModalCreate(false)
+              },
+              onError: () => {
+                toast.error('Đã có lỗi xảy ra. Vui lòng thử lại sau.')
               },
             },
-          );
+          )
         }}
       />
     </PageShell>
-  );
-};
+  )
+}
 
-export default NganhIndex;
+export default NganhIndex

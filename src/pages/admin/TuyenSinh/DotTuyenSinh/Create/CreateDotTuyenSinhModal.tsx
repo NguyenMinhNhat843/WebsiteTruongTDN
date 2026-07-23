@@ -39,6 +39,8 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
 
   const { data: subjectCombinations } = $api.useQuery('get', '/subject-combinations')
 
+  const { data: batches, isLoading: isLoadingBatches } = $api.useQuery('get', '/batches')
+
   const isSubmitting = isCreating || isUpdating
 
   const initFormData: Partial<CreateAdmissionCampaignDto> = {
@@ -69,7 +71,7 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
     name: 'campaignMajors',
   })
 
-  // 3. Tự động tính Tổng Chỉ tiêu hiển thị trực quan
+  // 3. Tự động tính Tổng Chỉ tiêu + theo dõi majorId từng dòng để lọc batch tương ứng
   const watchedMajors = useWatch({ control, name: 'campaignMajors' })
   const totalCalculatedQuota = (watchedMajors || []).reduce(
     (acc, item) => acc + (Number(item?.quota) || 0),
@@ -93,10 +95,10 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
             trainingType: item.trainingType || 'VOCATIONAL_INTERMEDIATE',
             quota: item.quota || 0,
             subjectCombinationId: item.subjectCombinationId ? Number(item.subjectCombinationId) : undefined,
+            batchId: item.batchId ? Number(item.batchId) : undefined,
             minScorePerSubject: item.minScorePerSubject,
             minTotalScore: item.minTotalScore,
             minConduct: item.minConduct,
-            cutoffScore: item.cutoffScore,
           })) || [],
       })
     } else if (!initialData && isOpen) {
@@ -114,9 +116,9 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
         majorId: Number(item.majorId),
         quota: Number(item.quota),
         subjectCombinationId: Number(item.subjectCombinationId),
+        batchId: Number(item.batchId),
         minScorePerSubject: item.minScorePerSubject ? Number(item.minScorePerSubject) : undefined,
         minTotalScore: item.minTotalScore ? Number(item.minTotalScore) : undefined,
-        cutoffScore: item.cutoffScore ? Number(item.cutoffScore) : undefined,
       })),
     }
 
@@ -334,6 +336,7 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
                       quota: 10,
                       trainingType: 'VOCATIONAL_INTERMEDIATE',
                       subjectCombinationId: 0,
+                      batchId: 0,
                     })
                   }
                   className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition-colors hover:bg-indigo-100"
@@ -355,167 +358,204 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
                 </div>
               ) : (
                 <div className="max-h-[550px] space-y-4 overflow-y-auto pr-1">
-                  {fields.map((field, index) => (
-                    <div
-                      key={field.id}
-                      className="group relative space-y-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 transition-all hover:border-slate-300"
-                    >
-                      {/* Tiêu đề mục ngành + Nút xóa */}
-                      <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
-                        <span className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
-                          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-100 text-[10px] text-indigo-700">
-                            {index + 1}
+                  {fields.map((field, index) => {
+                    // Lấy majorId hiện tại của dòng này để lọc danh sách khóa (batch) phù hợp
+                    const currentMajorId = Number(watchedMajors?.[index]?.majorId) || 0
+                    const filteredBatches = (batches || []).filter(
+                      (b) => currentMajorId > 0 && b.majorId === currentMajorId,
+                    )
+
+                    return (
+                      <div
+                        key={field.id}
+                        className="group relative space-y-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 transition-all hover:border-slate-300"
+                      >
+                        {/* Tiêu đề mục ngành + Nút xóa */}
+                        <div className="flex items-center justify-between border-b border-slate-200/60 pb-2">
+                          <span className="flex items-center gap-1.5 text-xs font-bold text-slate-700">
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-indigo-100 text-[10px] text-indigo-700">
+                              {index + 1}
+                            </span>
+                            Cấu hình ngành thứ {index + 1}
                           </span>
-                          Cấu hình ngành thứ {index + 1}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => remove(index)}
-                          className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500"
-                          title="Xóa ngành này"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-
-                      {/* Dòng 1: Chọn Ngành, Hệ đào tạo & Chỉ tiêu */}
-                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-12">
-                        <div className="sm:col-span-5">
-                          <label className="mb-1 block text-[11px] font-semibold text-slate-600">
-                            Ngành tuyển sinh <span className="text-red-500">*</span>
-                          </label>
-                          <select
-                            {...register(`campaignMajors.${index}.majorId` as const, {
-                              required: 'Chọn ngành',
-                              valueAsNumber: true,
-                            })}
-                            disabled={isLoadingMajors}
-                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                          <button
+                            type="button"
+                            onClick={() => remove(index)}
+                            className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-red-50 hover:text-red-500"
+                            title="Xóa ngành này"
                           >
-                            <option value={0}>-- Chọn ngành --</option>
-                            {majors?.map((m) => (
-                              <option key={m.id} value={m.id}>
-                                {m.majorName} ({m.majorCode})
-                              </option>
-                            ))}
-                          </select>
+                            <Trash2 className="h-4 w-4" />
+                          </button>
                         </div>
 
-                        <div className="sm:col-span-4">
-                          <label className="mb-1 block text-[11px] font-semibold text-slate-600">
-                            Hệ đào tạo <span className="text-red-500">*</span>
-                          </label>
-                          <select
-                            {...register(`campaignMajors.${index}.trainingType` as const)}
-                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
-                          >
-                            <option value="VOCATIONAL_INTERMEDIATE">Trung cấp</option>
-                            <option value="VOCATIONAL_ELEMENTARY">Sơ cấp nghề</option>
-                          </select>
-                        </div>
-
-                        <div className="sm:col-span-3">
-                          <label className="mb-1 block text-[11px] font-semibold text-slate-600">
-                            Chỉ tiêu <span className="text-red-500">*</span>
-                          </label>
-                          <input
-                            type="number"
-                            min={1}
-                            placeholder="Chỉ tiêu"
-                            {...register(`campaignMajors.${index}.quota` as const, {
-                              required: true,
-                              valueAsNumber: true,
-                            })}
-                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
-                          />
-                        </div>
-                      </div>
-
-                      {/* Dòng 2: Điều kiện xét tuyển — chỉ còn 1 phương thức duy nhất:
-                          Học bạ theo tổ hợp 3 môn + hạnh kiểm */}
-                      <div className="rounded-xl border border-amber-200/80 bg-amber-50/50 p-2.5">
-                        <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-amber-800">
-                          <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                          Điều kiện xét tuyển (Học bạ theo tổ hợp môn + hạnh kiểm)
-                        </div>
-                        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
-                          {/* Tổ hợp môn */}
-                          <div>
-                            <label className="mb-1 block text-[10px] font-medium text-slate-600">
-                              Tổ hợp môn <span className="text-red-500">*</span>
+                        {/* Dòng 1: Chọn Ngành, Hệ đào tạo & Chỉ tiêu */}
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-12">
+                          <div className="sm:col-span-5">
+                            <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+                              Ngành tuyển sinh <span className="text-red-500">*</span>
                             </label>
                             <select
-                              {...register(`campaignMajors.${index}.subjectCombinationId` as const, {
-                                required: 'Chọn tổ hợp môn',
+                              {...register(`campaignMajors.${index}.majorId` as const, {
+                                required: 'Chọn ngành',
                                 valueAsNumber: true,
                               })}
-                              className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                              disabled={isLoadingMajors}
+                              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
                             >
-                              <option value="">-- Chọn tổ hợp --</option>
-                              {subjectCombinations?.data?.map((sc) => (
-                                <option key={sc.id} value={sc.id}>
-                                  {sc.code} ({sc.name})
+                              <option value={0}>-- Chọn ngành --</option>
+                              {majors?.map((m) => (
+                                <option key={m.id} value={m.id}>
+                                  {m.majorName} ({m.majorCode})
                                 </option>
                               ))}
                             </select>
                           </div>
 
-                          {/* Hạnh kiểm tối thiểu */}
-                          <div>
-                            <label className="mb-1 block text-[10px] font-medium text-slate-600">
-                              Hạnh kiểm tối thiểu
+                          <div className="sm:col-span-4">
+                            <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+                              Hệ đào tạo <span className="text-red-500">*</span>
                             </label>
                             <select
-                              {...register(`campaignMajors.${index}.minConduct` as const)}
-                              className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                              {...register(`campaignMajors.${index}.trainingType` as const)}
+                              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
                             >
-                              <option value="">Không yêu cầu</option>
-                              <option value="TOT">Tốt</option>
-                              <option value="KHA">Khá trở lên</option>
-                              <option value="TB">Trung bình trở lên</option>
-                              <option value="YEU">Yếu</option>
+                              <option value="VOCATIONAL_INTERMEDIATE">Trung cấp</option>
+                              <option value="VOCATIONAL_ELEMENTARY">Sơ cấp nghề</option>
                             </select>
                           </div>
 
-                          {/* Điểm sàn tổng */}
-                          <div>
-                            <label className="mb-1 block text-[10px] font-medium text-slate-600">
-                              Điểm sàn TB tổ hợp
+                          <div className="sm:col-span-3">
+                            <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+                              Chỉ tiêu <span className="text-red-500">*</span>
                             </label>
                             <input
                               type="number"
-                              step="0.1"
-                              placeholder="VD: 5.0"
-                              {...register(`campaignMajors.${index}.minTotalScore` as const, {
+                              min={1}
+                              placeholder="Chỉ tiêu"
+                              {...register(`campaignMajors.${index}.quota` as const, {
+                                required: true,
                                 valueAsNumber: true,
                               })}
-                              className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
-                            />
-                          </div>
-
-                          {/* Điểm sàn tối thiểu mỗi môn */}
-                          <div>
-                            <label className="mb-1 block text-[10px] font-medium text-slate-600">
-                              Điểm sàn min / môn
-                            </label>
-                            <input
-                              type="number"
-                              step="0.1"
-                              placeholder="VD: 2.0"
-                              {...register(`campaignMajors.${index}.minScorePerSubject` as const, {
-                                valueAsNumber: true,
-                              })}
-                              className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
                             />
                           </div>
                         </div>
-                        <p className="mt-2 text-[10px] text-slate-400">
-                          Điểm học bạ lấy theo tổ hợp môn ở trên, tính trung bình 4 năm cấp 2 (lớp 6-9) hoặc 3
-                          năm cấp 3 (lớp 10-12) tùy trình độ học vấn của thí sinh khi nộp hồ sơ.
-                        </p>
+
+                        {/* Dòng 1b: Chọn Khóa (Batch) — phụ thuộc vào ngành đã chọn ở trên */}
+                        <div>
+                          <label className="mb-1 block text-[11px] font-semibold text-slate-600">
+                            Khóa tuyển sinh <span className="text-red-500">*</span>
+                          </label>
+                          <select
+                            {...register(`campaignMajors.${index}.batchId` as const, {
+                              required: 'Chọn khóa',
+                              valueAsNumber: true,
+                            })}
+                            disabled={isLoadingBatches || currentMajorId === 0}
+                            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium focus:ring-2 focus:ring-indigo-500/20 focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+                          >
+                            <option value={0}>
+                              {currentMajorId === 0 ? '-- Chọn ngành trước --' : '-- Chọn khóa --'}
+                            </option>
+                            {filteredBatches.map((b) => (
+                              <option key={b.id} value={b.id}>
+                                {b.batchName} ({b.batchCode})
+                              </option>
+                            ))}
+                          </select>
+                          {currentMajorId !== 0 && filteredBatches.length === 0 && !isLoadingBatches && (
+                            <p className="mt-1 text-[11px] text-amber-600">
+                              Ngành này chưa có khóa tuyển sinh nào, vui lòng tạo khóa trước.
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Dòng 2: Điều kiện xét tuyển — chỉ còn 1 phương thức duy nhất:
+                            Học bạ theo tổ hợp 3 môn + hạnh kiểm */}
+                        <div className="rounded-xl border border-amber-200/80 bg-amber-50/50 p-2.5">
+                          <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-amber-800">
+                            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                            Điều kiện xét tuyển (Học bạ theo tổ hợp môn + hạnh kiểm)
+                          </div>
+                          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                            {/* Tổ hợp môn */}
+                            <div>
+                              <label className="mb-1 block text-[10px] font-medium text-slate-600">
+                                Tổ hợp môn <span className="text-red-500">*</span>
+                              </label>
+                              <select
+                                {...register(`campaignMajors.${index}.subjectCombinationId` as const, {
+                                  required: 'Chọn tổ hợp môn',
+                                  valueAsNumber: true,
+                                })}
+                                className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                              >
+                                <option value="">-- Chọn tổ hợp --</option>
+                                {subjectCombinations?.data?.map((sc) => (
+                                  <option key={sc.id} value={sc.id}>
+                                    {sc.code} ({sc.name})
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+
+                            {/* Hạnh kiểm tối thiểu */}
+                            <div>
+                              <label className="mb-1 block text-[10px] font-medium text-slate-600">
+                                Hạnh kiểm tối thiểu
+                              </label>
+                              <select
+                                {...register(`campaignMajors.${index}.minConduct` as const)}
+                                className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                              >
+                                <option value="">Không yêu cầu</option>
+                                <option value="TOT">Tốt</option>
+                                <option value="KHA">Khá trở lên</option>
+                                <option value="TB">Trung bình trở lên</option>
+                                <option value="YEU">Yếu</option>
+                              </select>
+                            </div>
+
+                            {/* Điểm sàn tổng */}
+                            <div>
+                              <label className="mb-1 block text-[10px] font-medium text-slate-600">
+                                Điểm sàn TB tổ hợp
+                              </label>
+                              <input
+                                type="number"
+                                step="0.1"
+                                placeholder="VD: 5.0"
+                                {...register(`campaignMajors.${index}.minTotalScore` as const, {
+                                  valueAsNumber: true,
+                                })}
+                                className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                              />
+                            </div>
+
+                            {/* Điểm sàn tối thiểu mỗi môn */}
+                            <div>
+                              <label className="mb-1 block text-[10px] font-medium text-slate-600">
+                                Điểm sàn min / môn
+                              </label>
+                              <input
+                                type="number"
+                                step="0.1"
+                                placeholder="VD: 2.0"
+                                {...register(`campaignMajors.${index}.minScorePerSubject` as const, {
+                                  valueAsNumber: true,
+                                })}
+                                className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                              />
+                            </div>
+                          </div>
+                          <p className="mt-2 text-[10px] text-slate-400">
+                            Điểm học bạ lấy theo tổ hợp môn ở trên, tính trung bình 4 năm cấp 2 (lớp 6-9) hoặc
+                            3 năm cấp 3 (lớp 10-12) tùy trình độ học vấn của thí sinh khi nộp hồ sơ.
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    )
+                  })}
                 </div>
               )}
             </div>
