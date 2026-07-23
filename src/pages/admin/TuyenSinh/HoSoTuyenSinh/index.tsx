@@ -5,7 +5,7 @@ import { $api } from '../../../../api/client'
 import { useDebounce } from '../../../../hooks/useDebounce'
 import { APPLICATION_STATUS_MAP, APPLICATION_STATUS_TABS } from '../../../../api/enum'
 import type { ApplicationStatusEnum } from '../../../../api/enum'
-import { HoSoDetailModal } from './HoSoDetailModal'
+import { HoSoDetailModal } from './One/HoSoDetailModal'
 
 const HoSoTuyenSinhHome: React.FC = () => {
   const navigate = useNavigate()
