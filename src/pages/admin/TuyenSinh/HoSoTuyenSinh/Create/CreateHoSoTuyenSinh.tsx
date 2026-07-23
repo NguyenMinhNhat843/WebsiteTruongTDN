@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
+import React, { useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import {
   User,
   BookOpen,
-  Award,
   GraduationCap,
   Save,
   ArrowLeft,
@@ -33,7 +32,8 @@ const TaoHoSoTuyenSinh: React.FC = () => {
   // 1. STATE BƯỚC ĐẦU: NGÀNH + HỆ ĐÀO TẠO + TRÌNH ĐỘ
   // ----------------------------------------------------
   const [selectedMajorId, setSelectedMajorId] = useState<number | undefined>()
-  const [selectedTrainingType, setSelectedTrainingType] = useState<TrainingTypeEnum>('CONTINUING_EDUCATION')
+  const [selectedTrainingType, setSelectedTrainingType] =
+    useState<TrainingTypeEnum>('VOCATIONAL_INTERMEDIATE')
   const [selectedEducationLevel, setSelectedEducationLevel] = useState<'THCS' | 'THPT'>('THCS')
   const [selectedCampaignMajorId, setSelectedCampaignMajorId] = useState<number | undefined>()
 
@@ -66,18 +66,10 @@ const TaoHoSoTuyenSinh: React.FC = () => {
     }
     return null
   }, [activeCampaigns, selectedCampaignMajorId])
-  console.log('selectedCampaignMajor', selectedCampaignMajor)
 
   const subjectCombinationItems = selectedCampaignMajor?.subjectCombination?.items || []
   // Danh sách các lớp cần nhập theo Trình độ học vấn
   const gradesToInput = selectedEducationLevel === 'THCS' ? [6, 7, 8, 9] : [10, 11, 12]
-
-  const ADMISSION_METHOD_LABELS: Record<string, string> = {
-    ACADEMIC_TRANSCRIPT_GPA: 'Xét Học Bạ (Điểm TB Chung GPA)',
-    ACADEMIC_TRANSCRIPT_SUBJECT: 'Xét Học Bạ (Theo Tổ Hợp Môn)',
-    EXAM_SCORE: 'Xét Điểm Thi Tuyển Sinh',
-    DIRECT: 'Xét Tuyển Thẳng',
-  }
 
   // ----------------------------------------------------
   // 2. MUTATION & REACT HOOK FORM SETUP
@@ -90,34 +82,65 @@ const TaoHoSoTuyenSinh: React.FC = () => {
   const {
     register,
     handleSubmit,
-    control,
     setValue,
     formState: { errors },
   } = useForm<CreateAdmissionProfileDto>({
     defaultValues: {
       status: 'REGISTERED',
-      admissionType: 'ACADEMIC_TRANSCRIPT_GPA',
       educationLevel: 'THCS',
       gender: 'MALE',
-      isDirectAdmission: false,
-      priorityObject: 'NONE',
-      priorityScore: 0,
-      scoreCalculated: 0,
-      totalExamScore: 0,
-      examScores: [],
-      transcriptSubjectScores: [],
+      avgSubjectScore: 0,
     },
   })
 
-  // Watch các trường dynamic
-  const watchAdmissionType = useWatch({ control, name: 'admissionType' })
-  const watchIsDirect = useWatch({ control, name: 'isDirectAdmission' })
+  // Điểm học bạ theo môn KHÔNG đăng ký vào mảng của RHF nữa (register theo index
+  // gây lỗi: khi đổi Trình độ học vấn, các ô ẩn của lớp/số lượng lớp cũ không tự
+  // gỡ khỏi form state, dẫn tới submit dư dữ liệu lớp cũ với score null).
+  // Thay vào đó lưu bằng state cục bộ, key theo "lớp_mônCode", và chỉ dựng lại
+  // mảng transcriptSubjectScores đúng tại thời điểm submit.
+  const [scoresMap, setScoresMap] = useState<Record<string, string>>({})
 
-  // Cập nhật educationLevel vào Form khi chọn ở Bước 0
+  const handleScoreChange = (grade: number, subjectCode: string, value: string) => {
+    setScoresMap((prev) => ({ ...prev, [`${grade}_${subjectCode}`]: value }))
+  }
+
+  // Cập nhật educationLevel vào Form khi chọn ở Bước 0 — đồng thời xóa sạch điểm
+  // đã nhập trước đó, vì đổi trình độ nghĩa là đổi hẳn bộ lớp cần nhập (6-9 hay 10-12).
   const handleEducationLevelChange = (level: 'THCS' | 'THPT') => {
     setSelectedEducationLevel(level)
     setValue('educationLevel', level)
+    setScoresMap({})
   }
+
+  // Tổ hợp môn xét tuyển do đợt tuyển sinh quy định sẵn cho ngành/hệ này —
+  // thí sinh không được chọn khác, tự động gán vào form khi chọn đợt.
+  // Đổi đợt tuyển sinh (khác tổ hợp môn) cũng phải xóa điểm cũ vì các môn có thể khác.
+  useEffect(() => {
+    if (selectedCampaignMajor?.subjectCombinationId) {
+      setValue('subjectCombinationId', Number(selectedCampaignMajor.subjectCombinationId))
+    }
+    setScoresMap({})
+  }, [selectedCampaignMajor, setValue])
+
+  // Tự động tính điểm TB tổ hợp môn từ các điểm học bạ đã nhập, hiển thị trực quan.
+  // Chỉ tính trên đúng bộ lớp + môn đang áp dụng hiện tại (gradesToInput/subjectCombinationItems),
+  // không bị dính điểm "rác" của trình độ học vấn hay tổ hợp môn trước đó.
+  const computedAvgSubjectScore = React.useMemo(() => {
+    const scores: number[] = []
+    gradesToInput.forEach((grade) => {
+      subjectCombinationItems.forEach((item) => {
+        const raw = scoresMap[`${grade}_${item.subjectName}`]
+        const num = raw !== undefined && raw !== '' ? Number(raw) : NaN
+        if (!Number.isNaN(num)) scores.push(num)
+      })
+    })
+    if (scores.length === 0) return 0
+    return scores.reduce((sum, val) => sum + val, 0) / (scores.length / 3)
+  }, [scoresMap, gradesToInput, subjectCombinationItems])
+
+  useEffect(() => {
+    setValue('avgSubjectScore', Number(computedAvgSubjectScore.toFixed(2)))
+  }, [computedAvgSubjectScore, setValue])
 
   // ----------------------------------------------------
   // 3. SUBMIT HANDLER
@@ -128,32 +151,36 @@ const TaoHoSoTuyenSinh: React.FC = () => {
       return
     }
 
+    // Dựng lại mảng điểm học bạ đúng theo bộ lớp + môn đang áp dụng hiện tại
+    // (gradesToInput/subjectCombinationItems), chỉ lấy các ô đã có giá trị hợp lệ.
+    const transcriptSubjectScores: NonNullable<CreateAdmissionProfileDto['transcriptSubjectScores']> = []
+    gradesToInput.forEach((grade) => {
+      subjectCombinationItems.forEach((item) => {
+        const raw = scoresMap[`${grade}_${item.subjectName}`]
+        const num = raw !== undefined && raw !== '' ? Number(raw) : NaN
+        if (!Number.isNaN(num)) {
+          transcriptSubjectScores.push({
+            gradeLevel: grade,
+            subjectCode: item.subjectName,
+            score: num,
+          })
+        }
+      })
+    })
+
     const payload: CreateAdmissionProfileDto = {
       ...formData,
       status: 'REGISTERED',
       admissionCampaignMajorId: Number(selectedCampaignMajorId),
       educationLevel: selectedEducationLevel,
 
-      // Format số
-      gpa6: formData.gpa6 ? Number(formData.gpa6) : null,
-      gpa7: formData.gpa7 ? Number(formData.gpa7) : null,
-      gpa8: formData.gpa8 ? Number(formData.gpa8) : null,
-      gpa9: formData.gpa9 ? Number(formData.gpa9) : null,
-      gpa10: formData.gpa10 ? Number(formData.gpa10) : null,
-      gpa11: formData.gpa11 ? Number(formData.gpa11) : null,
-      gpa12: formData.gpa12 ? Number(formData.gpa12) : null,
-
       thcsGradYear: formData.thcsGradYear ? Number(formData.thcsGradYear) : null,
       thptGradYear: formData.thptGradYear ? Number(formData.thptGradYear) : null,
-      totalExamScore: formData.totalExamScore ? Number(formData.totalExamScore) : null,
-      priorityScore: formData.priorityScore ? Number(formData.priorityScore) : 0,
-      scoreCalculated: formData.scoreCalculated ? Number(formData.scoreCalculated) : null,
+      avgSubjectScore: formData.avgSubjectScore ? Number(formData.avgSubjectScore) : null,
       subjectCombinationId: formData.subjectCombinationId ? Number(formData.subjectCombinationId) : null,
       villageId: formData.villageId ? Number(formData.villageId) : null,
 
-      // Mặc định mảng rỗng nếu chưa nhập
-      examScores: formData.examScores || [],
-      transcriptSubjectScores: formData.transcriptSubjectScores || [],
+      transcriptSubjectScores,
     }
 
     createAdmissionProfile(
@@ -255,11 +282,8 @@ const TaoHoSoTuyenSinh: React.FC = () => {
               }}
               className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
             >
-              <option value="">-- Chọn hệ đào tạo --</option>
-              <option value="DUAL_PROGRAM_9PLUS">Chương trình 9+ (Song song)</option>
               <option value="VOCATIONAL_INTERMEDIATE">Trung cấp nghề</option>
               <option value="VOCATIONAL_ELEMENTARY">Sơ cấp nghề</option>
-              <option value="CONTINUING_EDUCATION">Giáo dục thường xuyên (GDTX)</option>
             </select>
           </div>
 
@@ -324,7 +348,8 @@ const TaoHoSoTuyenSinh: React.FC = () => {
                         </div>
                         <p className="mt-1 text-[11px] text-slate-500">
                           Mã: <span className="font-mono font-semibold">{campaign.code}</span> | Chỉ tiêu:{' '}
-                          {targetMajor.quota || 'N/A'}
+                          {targetMajor.quota || 'N/A'} | Tổ hợp:{' '}
+                          {targetMajor.subjectCombination?.code || 'N/A'}
                         </p>
                       </div>
                     )
@@ -430,13 +455,11 @@ const TaoHoSoTuyenSinh: React.FC = () => {
             </div>
           </div>
 
-          {/* SECTION 2: CẤU HÌNH LOẠI HỒ SƠ & TRẠNG THÁI */}
+          {/* SECTION 2: MÃ HỒ SƠ */}
           <div className="space-y-4 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
             <div className="flex items-center gap-2 border-b border-slate-100 pb-3 text-indigo-600">
               <GraduationCap className="h-5 w-5" />
-              <h2 className="text-sm font-bold tracking-wide text-slate-800 uppercase">
-                2. Phương Thức & Mã Hồ Sơ
-              </h2>
+              <h2 className="text-sm font-bold tracking-wide text-slate-800 uppercase">2. Mã Hồ Sơ</h2>
             </div>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div>
@@ -452,19 +475,6 @@ const TaoHoSoTuyenSinh: React.FC = () => {
                 {errors.applicationCode && (
                   <span className="text-[11px] text-red-500">{errors.applicationCode.message}</span>
                 )}
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium text-slate-700">Phương Thức Xét Tuyển</label>
-                <select
-                  {...register('admissionType')}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
-                >
-                  {selectedCampaignMajor?.acceptedAdmissionTypes?.map((method: string) => (
-                    <option key={method} value={method}>
-                      {ADMISSION_METHOD_LABELS[method] || method}
-                    </option>
-                  ))}
-                </select>
               </div>
             </div>
           </div>
@@ -484,341 +494,123 @@ const TaoHoSoTuyenSinh: React.FC = () => {
             </div>
 
             {/* ========================================================= */}
-            {/* A. THÔNG TIN HỌC BẠ TỔNG QUAN (LUÔN CÓ CHO TẤT CẢ PHƯƠNG THỨC) */}
+            {/* A. HẠNH KIỂM TỪNG NĂM */}
             {/* ========================================================= */}
             <div>
-              <h3 className="mb-3 text-xs font-bold text-slate-700">
-                A. Điểm Trung Bình Học Bạ & Hạnh Kiểm Tổng Quan
-              </h3>
-              {selectedEducationLevel === 'THCS' ? (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4 rounded-xl border border-slate-100 bg-slate-50/50 p-4 sm:grid-cols-4">
-                    {[6, 7, 8, 9].map((grade) => (
-                      <div key={grade} className="space-y-2">
-                        <span className="text-xs font-bold text-slate-700">Lớp {grade}</span>
-                        <input
-                          type="number"
-                          step="0.1"
-                          placeholder={`GPA ${grade}`}
-                          {...register(`gpa${grade}` as any)}
-                          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm"
-                        />
-                        <select
-                          {...register(`conduct${grade}` as any)}
-                          className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs"
-                        >
-                          <option value="">-- Hạnh kiểm --</option>
-                          <option value="TOT">Tốt</option>
-                          <option value="KHA">Khá</option>
-                          <option value="TB">Trung bình</option>
-                          <option value="YEU">Yếu</option>
-                        </select>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="w-full sm:w-1/4">
-                    <label className="mb-1 block text-xs font-medium text-slate-700">
-                      Năm Tốt Nghiệp THCS
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="VD: 2026"
-                      {...register('thcsGradYear')}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
-                    />
-                  </div>
+              <h3 className="mb-3 text-xs font-bold text-slate-700">A. Hạnh Kiểm Từng Năm Học</h3>
+              <div className="space-y-4">
+                <div
+                  className={`grid grid-cols-2 gap-4 rounded-xl border border-slate-100 bg-slate-50/50 p-4 ${
+                    selectedEducationLevel === 'THCS' ? 'sm:grid-cols-4' : 'sm:grid-cols-3'
+                  }`}
+                >
+                  {gradesToInput.map((grade) => (
+                    <div key={grade} className="space-y-2">
+                      <span className="text-xs font-bold text-slate-700">Lớp {grade}</span>
+                      <select
+                        {...register(`conduct${grade}` as any)}
+                        className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs"
+                      >
+                        <option value="">-- Hạnh kiểm --</option>
+                        <option value="TOT">Tốt</option>
+                        <option value="KHA">Khá</option>
+                        <option value="TB">Trung bình</option>
+                        <option value="YEU">Yếu</option>
+                      </select>
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-1 gap-4 rounded-xl border border-slate-100 bg-slate-50/50 p-4 sm:grid-cols-3">
-                    {[10, 11, 12].map((grade) => (
-                      <div key={grade} className="space-y-2">
-                        <span className="text-xs font-bold text-slate-700">Lớp {grade}</span>
-                        <input
-                          type="number"
-                          step="0.1"
-                          placeholder={`GPA ${grade}`}
-                          {...register(`gpa${grade}` as any)}
-                          className="w-full rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm"
-                        />
-                        <select
-                          {...register(`conduct${grade}` as any)}
-                          className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs"
-                        >
-                          <option value="">-- Hạnh kiểm --</option>
-                          <option value="TOT">Tốt</option>
-                          <option value="KHA">Khá</option>
-                          <option value="TB">Trung bình</option>
-                          <option value="YEU">Yếu</option>
-                        </select>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="w-full sm:w-1/4">
-                    <label className="mb-1 block text-xs font-medium text-slate-700">
-                      Năm Tốt Nghiệp THPT
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="VD: 2026"
-                      {...register('thptGradYear')}
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
-                    />
-                  </div>
+                <div className="w-full sm:w-1/4">
+                  <label className="mb-1 block text-xs font-medium text-slate-700">
+                    Năm Tốt Nghiệp {selectedEducationLevel === 'THCS' ? 'THCS' : 'THPT'}
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="VD: 2026"
+                    {...register(selectedEducationLevel === 'THCS' ? 'thcsGradYear' : 'thptGradYear')}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
+                  />
                 </div>
-              )}
+              </div>
             </div>
 
             {/* ========================================================= */}
-            {/* B. MÔN XÉT TUYỂN THEO TỔ HỢP (Dùng cho EXAM_SCORE & ACADEMIC_TRANSCRIPT_SUBJECT) */}
+            {/* B. ĐIỂM HỌC BẠ THEO TỔ HỢP MÔN (duy nhất 1 phương thức xét) */}
             {/* ========================================================= */}
-            {(watchAdmissionType === 'EXAM_SCORE' ||
-              watchAdmissionType === 'ACADEMIC_TRANSCRIPT_SUBJECT') && (
-              <div className="space-y-4 rounded-xl border border-indigo-100 bg-indigo-50/30 p-4">
-                <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
-                  <h3 className="text-xs font-bold text-indigo-900">
-                    B. Các Môn Xét Tuyển Theo Tổ Hợp Ngành
-                  </h3>
-                  {subjectCombinationItems.length > 0 && (
-                    <span className="rounded-md bg-indigo-100 px-2 py-0.5 text-[11px] font-semibold text-indigo-700">
-                      Gồm {subjectCombinationItems.length} môn
-                    </span>
-                  )}
-                </div>
-
-                {/* Hiển thị danh sách các môn trong tổ hợp (chỉ xem, không chọn) */}
-                {subjectCombinationItems.length > 0 ? (
-                  <div className="flex flex-wrap gap-2">
-                    {subjectCombinationItems.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center gap-1.5 rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-xs font-semibold text-indigo-800 shadow-sm"
-                      >
-                        <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" />
-                        Môn: {item.subjectCode}
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-amber-600 italic">
-                    Ngành này chưa cấu hình các môn trong tổ hợp xét tuyển.
-                  </p>
+            <div className="space-y-4 rounded-xl border border-indigo-100 bg-indigo-50/30 p-4">
+              <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
+                <h3 className="text-xs font-bold text-indigo-900">B. Điểm Học Bạ Theo Tổ Hợp Môn</h3>
+                {subjectCombinationItems.length > 0 && (
+                  <span className="rounded-md bg-indigo-100 px-2 py-0.5 text-[11px] font-semibold text-indigo-700">
+                    Tổ hợp {selectedCampaignMajor?.subjectCombination?.code} — Gồm{' '}
+                    {subjectCombinationItems.length} môn
+                  </span>
                 )}
+              </div>
 
-                {/* ----------------------------------------------------- */}
-                {/* 2. TRƯỜNG HỢP EXAM_SCORE: NHẬP ĐIỂM THI THEO MÔN     */}
-                {/* ----------------------------------------------------- */}
-                {watchAdmissionType === 'EXAM_SCORE' && subjectCombinationItems.length > 0 && (
-                  <div className="mt-4 space-y-3 border-t border-indigo-100 pt-4">
-                    <label className="block text-xs font-bold text-amber-900">
-                      C. Nhập Điểm Thi Chi Tiết Môn
-                    </label>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                      {subjectCombinationItems.map((item, idx) => (
-                        <div
-                          key={item.id}
-                          className="space-y-1 rounded-xl border border-amber-200 bg-amber-50/40 p-3"
-                        >
-                          <span className="block text-xs font-bold text-slate-800 uppercase">
-                            Môn: {item.subjectCode}
-                          </span>
-                          <input
-                            type="hidden"
-                            {...register(`examScores.${idx}.subjectCode`)}
-                            value={item.subjectCode}
-                          />
-                          <input
-                            type="number"
-                            step="0.1"
-                            placeholder="Điểm thi"
-                            {...register(`examScores.${idx}.score`, { valueAsNumber: true })}
-                            className="w-full rounded-lg border border-amber-200 bg-white px-3 py-1.5 text-sm font-semibold text-amber-900 focus:outline-none"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* ------------------------------------------------------------------------- */}
-                {/* 3. TRƯỜNG HỢP ACADEMIC_TRANSCRIPT_SUBJECT: NHẬP ĐIỂM HỌC BẠ THEO NĂM/MÔN  */}
-                {/* ------------------------------------------------------------------------- */}
-                {watchAdmissionType === 'ACADEMIC_TRANSCRIPT_SUBJECT' &&
-                  subjectCombinationItems.length > 0 && (
-                    <div className="mt-4 space-y-4 border-t border-indigo-100 pt-4">
-                      <label className="block text-xs font-bold text-indigo-900">
-                        C. Nhập Điểm Học Bạ Các Môn Theo Từng Lớp ({selectedEducationLevel})
-                      </label>
-
-                      <div className="space-y-3">
-                        {gradesToInput.map((grade) => (
-                          <div
-                            key={grade}
-                            className="space-y-2 rounded-xl border border-slate-200 bg-white p-3"
-                          >
-                            <span className="inline-block rounded-md bg-indigo-100 px-2 py-0.5 text-xs font-bold text-indigo-800">
-                              Lớp {grade}
-                            </span>
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                              {subjectCombinationItems.map((item, subIdx) => {
-                                const inputIdx =
-                                  (grade - (selectedEducationLevel === 'THCS' ? 6 : 10)) *
-                                    subjectCombinationItems.length +
-                                  subIdx
-
-                                return (
-                                  <div key={`${grade}-${item.subjectCode}`} className="space-y-1">
-                                    <label className="block text-[11px] font-medium text-slate-600">
-                                      {item.subjectCode}
-                                    </label>
-                                    <input
-                                      type="hidden"
-                                      {...register(`transcriptSubjectScores.${inputIdx}.gradeLevel`, {
-                                        valueAsNumber: true,
-                                      })}
-                                      value={grade}
-                                    />
-                                    <input
-                                      type="hidden"
-                                      {...register(`transcriptSubjectScores.${inputIdx}.subjectCode`)}
-                                      value={item.subjectCode}
-                                    />
-                                    <input
-                                      type="number"
-                                      step="0.1"
-                                      placeholder="Điểm TB môn"
-                                      {...register(`transcriptSubjectScores.${inputIdx}.score`, {
-                                        valueAsNumber: true,
-                                      })}
-                                      className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-semibold focus:bg-white focus:outline-none"
-                                    />
-                                  </div>
-                                )
-                              })}
-                            </div>
+              {subjectCombinationItems.length === 0 ? (
+                <p className="text-xs text-amber-600 italic">
+                  Ngành này chưa cấu hình tổ hợp môn xét tuyển. Vui lòng liên hệ Phòng Đào tạo.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {gradesToInput.map((grade) => (
+                    <div key={grade} className="space-y-2 rounded-xl border border-slate-200 bg-white p-3">
+                      <span className="inline-block rounded-md bg-indigo-100 px-2 py-0.5 text-xs font-bold text-indigo-800">
+                        Lớp {grade}
+                      </span>
+                      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                        {subjectCombinationItems.map((item) => (
+                          <div key={`${grade}-${item.subjectName}`} className="space-y-1">
+                            <label className="block text-[11px] font-medium text-slate-600">
+                              {item.subjectName}
+                            </label>
+                            <input
+                              type="number"
+                              step="0.1"
+                              placeholder="Điểm TB môn"
+                              value={scoresMap[`${grade}_${item.subjectName}`] ?? ''}
+                              onChange={(e) => handleScoreChange(grade, item.subjectName, e.target.value)}
+                              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-semibold focus:bg-white focus:outline-none"
+                            />
                           </div>
                         ))}
                       </div>
                     </div>
-                  )}
-              </div>
-            )}
-
-            {/* ========================================================= */}
-            {/* C. ĐIỂM TỔNG CỘNG XÉT TUYỂN */}
-            {/* ========================================================= */}
-            <div className="grid grid-cols-1 gap-4 border-t border-slate-100 pt-2 sm:grid-cols-3">
-              {watchAdmissionType === 'EXAM_SCORE' && (
-                <div>
-                  <label className="mb-1 block text-xs font-medium text-slate-700">
-                    Tổng Điểm Thi Xét Tuyển
-                  </label>
-                  <input
-                    type="number"
-                    step="0.05"
-                    placeholder="VD: 24.5"
-                    {...register('totalExamScore')}
-                    className="w-full rounded-xl border border-amber-200 bg-amber-50/50 px-3 py-2 text-sm font-semibold text-amber-900"
-                  />
+                  ))}
                 </div>
               )}
+            </div>
+
+            {/* ========================================================= */}
+            {/* C. ĐIỂM TB TỔ HỢP — TỰ ĐỘNG TÍNH TỪ CÁC Ô ĐIỂM Ở TRÊN */}
+            {/* ========================================================= */}
+            <div className="grid grid-cols-1 gap-4 border-t border-slate-100 pt-2 sm:grid-cols-3">
               <div>
-                <label className="mb-1 block text-xs font-medium text-slate-700">
-                  Điểm Xét Tuyển (Đã Tính / Quy Đổi)
+                <label className="mb-1 flex items-center justify-between text-xs font-medium text-slate-700">
+                  <span>Điểm TB Tổ Hợp (Tự động)</span>
                 </label>
                 <input
                   type="number"
                   step="0.01"
-                  placeholder="Tự động hoặc nhập tay"
-                  {...register('scoreCalculated')}
+                  readOnly
+                  {...register('avgSubjectScore')}
                   className="w-full rounded-xl border border-indigo-200 bg-indigo-50/50 px-3 py-2 text-sm font-bold text-indigo-700"
                 />
+                <p className="mt-1 text-[10px] text-slate-400">
+                  Tính trung bình cộng tất cả điểm môn đã nhập ở mục B, dùng để so với điểm sàn/điểm chuẩn của
+                  ngành.
+                </p>
               </div>
             </div>
           </div>
-          {/* SECTION 4: ƯU TIÊN & XÉT TUYỂN THẲNG */}
-          <div className="space-y-4 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
-            <div className="flex items-center gap-2 border-b border-slate-100 pb-3 text-indigo-600">
-              <Award className="h-5 w-5" />
-              <h2 className="text-sm font-bold tracking-wide text-slate-800 uppercase">
-                4. Chế Độ Ưu Tiên & Xét Tuyển Thẳng
-              </h2>
-            </div>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-              <div>
-                <label className="mb-1 block text-xs font-medium text-slate-700">Khu Vực Ưu Tiên</label>
-                <select
-                  {...register('priorityRegion')}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
-                >
-                  <option value="">-- Không chọn --</option>
-                  <option value="KV1">Khu vực 1 (KV1)</option>
-                  <option value="KV2_NT">Khu vực 2 Nông thôn (KV2-NT)</option>
-                  <option value="KV2">Khu vực 2 (KV2)</option>
-                  <option value="KV3">Khu vực 3 (KV3)</option>
-                </select>
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium text-slate-700">Đối Tượng Ưu Tiên</label>
-                <select
-                  {...register('priorityObject')}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
-                >
-                  <option value="NONE">Không có</option>
-                  <option value="CON_THUONG_BINH_LIET_SI">Con thương binh / Liệt sĩ</option>
-                  <option value="DAN_TOC_THIEU_SO">Dân tộc thiểu số</option>
-                  <option value="HO_NGHEO">Hộ nghèo / Cận nghèo</option>
-                  <option value="KHUYET_TAT">Người khuyết tật</option>
-                  <option value="KHAC">Đối tượng khác</option>
-                </select>
-              </div>
-              <div>
-                <label className="mb-1 block text-xs font-medium text-slate-700">
-                  Điểm Ưu Tiên Cộng Thêm
-                </label>
-                <input
-                  type="number"
-                  step="0.25"
-                  {...register('priorityScore')}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm"
-                />
-              </div>
-            </div>
 
-            {/* Cấu hình Xét Tuyển Thẳng */}
-            <div className="flex flex-col gap-4 border-t border-slate-100 pt-2 sm:flex-row sm:items-center">
-              <label className="flex cursor-pointer items-center gap-2">
-                <input
-                  type="checkbox"
-                  {...register('isDirectAdmission')}
-                  className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
-                />
-                <span className="text-xs font-bold text-slate-800">Đăng ký Xét Tuyển Thẳng</span>
-              </label>
-              {watchIsDirect && (
-                <div className="flex-1">
-                  <select
-                    {...register('directReason')}
-                    className="w-full rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-1.5 text-xs font-medium text-emerald-900"
-                  >
-                    <option value="">-- Chọn lý do xét tuyển thẳng --</option>
-                    <option value="HSG_QUOC_GIA">Học sinh giỏi Quốc Gia</option>
-                    <option value="HSG_CAP_TINH">Học sinh giỏi Cấp Tỉnh / Thành Phố</option>
-                    <option value="CHUNG_CHI_NGHE">Có Chứng chỉ nghề phù hợp</option>
-                    <option value="CON_DIEN_CHINH_SACH">Con diện chính sách đặc biệt</option>
-                    <option value="KHAC">Lý do khác</option>
-                  </select>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* SECTION 5: THÔNG TIN PHỤ HUYNH & GHI CHÚ */}
+          {/* SECTION 4: THÔNG TIN PHỤ HUYNH & GHI CHÚ */}
           <div className="space-y-4 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm">
             <div className="flex items-center gap-2 border-b border-slate-100 pb-3 text-indigo-600">
               <Users className="h-5 w-5" />
               <h2 className="text-sm font-bold tracking-wide text-slate-800 uppercase">
-                5. Thông Tin Phụ Huynh / Người Giám Hộ
+                4. Thông Tin Phụ Huynh / Người Giám Hộ
               </h2>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
