@@ -2378,25 +2378,11 @@ export interface components {
             major?: components["schemas"]["MajorDto"];
             subjectCombination?: components["schemas"]["SubjectCombinationDetailDto"];
         };
-        DocumentConfigItemDto: {
-            id: number;
-            documentConfigId: number;
-            name: string;
-            code?: string;
-            required?: boolean;
-            sortOrder?: number;
-        };
         DocumentConfigDto: {
             id: number;
             name: string;
             /** Format: date-time */
             startDate: string;
-            admissionCampaignId?: number;
-            /** @enum {string} */
-            educationLevel?: "THCS" | "THPT";
-            /** @enum {string} */
-            trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
-            items?: components["schemas"]["DocumentConfigItemDto"][];
         };
         AdmissionCampaignDetailDto: {
             id: number;
@@ -2783,31 +2769,35 @@ export interface components {
         };
         CreateDocumentConfigItemDto: {
             name: string;
-            code?: string;
-            /** @default true */
-            required: boolean;
-            sortOrder?: number;
+            code?: string | null;
+            required?: boolean | null;
+            sortOrder?: number | null;
         };
         CreateDocumentConfigDto: {
             name: string;
             /** Format: date-time */
-            startDate?: string;
-            admissionCampaignId?: number;
-            /** @enum {string} */
-            educationLevel?: "THCS" | "THPT";
-            /** @enum {string} */
-            trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
+            startDate: string;
             items?: components["schemas"]["CreateDocumentConfigItemDto"][];
+        };
+        DocumentConfigItemDto: {
+            id: number;
+            documentConfigId: number;
+            name: string;
+            code?: string | null;
+            required?: boolean | null;
+            sortOrder?: number | null;
+        };
+        DocumentConfigDetailDto: {
+            id: number;
+            name: string;
+            /** Format: date-time */
+            startDate: string;
+            items?: components["schemas"]["DocumentConfigItemDto"][];
         };
         UpdateDocumentConfigDto: {
             name?: string;
             /** Format: date-time */
             startDate?: string;
-            admissionCampaignId?: number;
-            /** @enum {string} */
-            educationLevel?: "THCS" | "THPT";
-            /** @enum {string} */
-            trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             items?: components["schemas"]["CreateDocumentConfigItemDto"][];
         };
         CreateUserDto: {
@@ -5492,12 +5482,8 @@ export interface operations {
     DocumentConfigController_findAll: {
         parameters: {
             query?: {
+                id?: number;
                 name?: string;
-                admissionCampaignId?: number;
-                educationLevel?: "THCS" | "THPT";
-                trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
-                page?: number;
-                limit?: number;
             };
             header?: never;
             path?: never;
@@ -5509,7 +5495,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["DocumentConfigDetailDto"][];
+                };
             };
         };
     };
