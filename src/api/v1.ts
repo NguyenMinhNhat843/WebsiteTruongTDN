@@ -428,95 +428,6 @@ export interface paths {
         patch: operations["DocumentConfigController_update"];
         trace?: never;
     };
-    "/priority-rules": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Danh sách quy tắc điểm ưu tiên */
-        get: operations["PriorityRuleController_findAll"];
-        put?: never;
-        /** Thêm cấu hình quy tắc điểm ưu tiên */
-        post: operations["PriorityRuleController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/priority-rules/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Chi tiết quy tắc điểm ưu tiên */
-        get: operations["PriorityRuleController_findOne"];
-        put?: never;
-        post?: never;
-        /** Xóa quy tắc điểm ưu tiên */
-        delete: operations["PriorityRuleController_remove"];
-        options?: never;
-        head?: never;
-        /** Cập nhật quy tắc điểm ưu tiên */
-        patch: operations["PriorityRuleController_update"];
-        trace?: never;
-    };
-    "/admission-interests": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Danh sách thí sinh đăng ký nhu cầu tư vấn */
-        get: operations["AdmissionInterestController_findAll"];
-        put?: never;
-        /** Đăng ký nhu cầu tư vấn (Online) */
-        post: operations["AdmissionInterestController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/admission-interests/{id}/notify": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /** Đánh dấu đã thông báo / liên hệ tư vấn */
-        patch: operations["AdmissionInterestController_markAsNotified"];
-        trace?: never;
-    };
-    "/admission-interests/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Xóa nhu cầu tư vấn */
-        delete: operations["AdmissionInterestController_remove"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/users/{id}": {
         parameters: {
             query?: never;
@@ -2375,17 +2286,13 @@ export interface components {
         CreateAdmissionCampaignMajorDto: {
             majorId: number;
             /** @enum {string} */
-            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            trainingType: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             quota: number;
-            acceptedAdmissionTypes: ("ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT")[];
-            subjectCombinationId?: number;
+            subjectCombinationId: number;
             minScorePerSubject?: number;
             minTotalScore?: number;
-            minGpaAverage?: number;
             /** @enum {string} */
             minConduct?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            transcriptScoreMethod?: "LAST_YEAR_ONLY" | "AVERAGE_ALL_YEARS";
             cutoffScore?: number;
         };
         CreateAdmissionCampaignDto: {
@@ -2430,7 +2337,7 @@ export interface components {
         SubjectCombinationItemDto: {
             id: number;
             subjectCombinationId: number;
-            subjectCode: string;
+            subjectName: string;
         };
         SubjectCombinationDetailDto: {
             id: number;
@@ -2443,17 +2350,13 @@ export interface components {
             admissionCampaignId: number;
             majorId: number;
             /** @enum {string} */
-            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            trainingType: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             quota: number;
-            acceptedAdmissionTypes: ("ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT")[];
-            subjectCombinationId?: number;
+            subjectCombinationId: number;
             minScorePerSubject?: number;
             minTotalScore?: number;
-            minGpaAverage?: number;
             /** @enum {string} */
             minConduct?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            transcriptScoreMethod?: "LAST_YEAR_ONLY" | "AVERAGE_ALL_YEARS";
             cutoffScore?: number;
             major?: components["schemas"]["MajorDto"];
             subjectCombination?: components["schemas"]["SubjectCombinationDetailDto"];
@@ -2475,7 +2378,7 @@ export interface components {
             /** @enum {string} */
             educationLevel?: "THCS" | "THPT";
             /** @enum {string} */
-            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             items?: components["schemas"]["DocumentConfigItemDto"][];
         };
         AdmissionCampaignDetailDto: {
@@ -2537,37 +2440,29 @@ export interface components {
             admissionCampaignId: number;
             majorId: number;
             /** @enum {string} */
-            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            trainingType: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             quota: number;
-            acceptedAdmissionTypes: ("ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT")[];
-            subjectCombinationId?: number;
+            subjectCombinationId: number;
             minScorePerSubject?: number;
             minTotalScore?: number;
-            minGpaAverage?: number;
             /** @enum {string} */
             minConduct?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            transcriptScoreMethod?: "LAST_YEAR_ONLY" | "AVERAGE_ALL_YEARS";
             cutoffScore?: number;
         };
         UpdateAdmissionCampaignMajorDto: {
             majorId?: number;
             /** @enum {string} */
-            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             quota?: number;
-            acceptedAdmissionTypes?: ("ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT")[];
             subjectCombinationId?: number;
             minScorePerSubject?: number;
             minTotalScore?: number;
-            minGpaAverage?: number;
             /** @enum {string} */
             minConduct?: "TOT" | "KHA" | "TB" | "YEU";
-            /** @enum {string} */
-            transcriptScoreMethod?: "LAST_YEAR_ONLY" | "AVERAGE_ALL_YEARS";
             cutoffScore?: number;
         };
         CreateSubjectCombinationItemDto: {
-            subjectCode: string;
+            subjectName: string;
         };
         CreateSubjectCombinationDto: {
             code: string;
@@ -2588,10 +2483,6 @@ export interface components {
             name?: string;
             items?: components["schemas"]["CreateSubjectCombinationItemDto"][];
         };
-        CreateExamScoreDto: {
-            subjectCode: string;
-            score: number;
-        };
         CreateTranscriptSubjectScoreDto: {
             gradeLevel: number;
             subjectCode: string;
@@ -2603,8 +2494,6 @@ export interface components {
             /** @enum {string} */
             status: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
             /** @enum {string} */
-            admissionType: "ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT";
-            /** @enum {string} */
             educationLevel: "THCS" | "THPT";
             fullName: string;
             identityNumber: string;
@@ -2630,8 +2519,6 @@ export interface components {
             conduct8?: "TOT" | "KHA" | "TB" | "YEU" | null;
             /** @enum {string|null} */
             conduct9?: "TOT" | "KHA" | "TB" | "YEU" | null;
-            /** @enum {string|null} */
-            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC" | null;
             fatherName?: string | null;
             fatherPhone?: string | null;
             gpa10?: number | null;
@@ -2647,20 +2534,16 @@ export interface components {
             motherName?: string | null;
             motherPhone?: string | null;
             note?: string | null;
-            /** @enum {string|null} */
-            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC" | null;
-            /** @enum {string|null} */
-            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3" | null;
             priorityScore?: number | null;
             scoreCalculated?: number | null;
             studentId?: number | null;
-            subjectCombinationId?: number | null;
             thcsGradYear?: number | null;
             thptGradYear?: number | null;
             totalExamScore?: number | null;
             villageId?: number | null;
             wardCode?: string | null;
-            examScores: components["schemas"]["CreateExamScoreDto"][];
+            avgSubjectScore?: number | null;
+            subjectCombinationId?: number | null;
             transcriptSubjectScores: components["schemas"]["CreateTranscriptSubjectScoreDto"][];
         };
         AdmissionProfileDto: {
@@ -2670,8 +2553,6 @@ export interface components {
             /** @enum {string} */
             status: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
             /** @enum {string} */
-            admissionType: "ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT";
-            /** @enum {string} */
             educationLevel: "THCS" | "THPT";
             fullName: string;
             identityNumber: string;
@@ -2697,8 +2578,6 @@ export interface components {
             conduct8?: "TOT" | "KHA" | "TB" | "YEU" | null;
             /** @enum {string|null} */
             conduct9?: "TOT" | "KHA" | "TB" | "YEU" | null;
-            /** @enum {string|null} */
-            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC" | null;
             fatherName?: string | null;
             fatherPhone?: string | null;
             gpa10?: number | null;
@@ -2714,19 +2593,16 @@ export interface components {
             motherName?: string | null;
             motherPhone?: string | null;
             note?: string | null;
-            /** @enum {string|null} */
-            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC" | null;
-            /** @enum {string|null} */
-            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3" | null;
             priorityScore?: number | null;
             scoreCalculated?: number | null;
             studentId?: number | null;
-            subjectCombinationId?: number | null;
             thcsGradYear?: number | null;
             thptGradYear?: number | null;
             totalExamScore?: number | null;
             villageId?: number | null;
             wardCode?: string | null;
+            avgSubjectScore?: number | null;
+            subjectCombinationId?: number | null;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -2736,13 +2612,54 @@ export interface components {
             data: components["schemas"]["AdmissionProfileDto"][];
             total: number;
         };
+        TranscriptSubjectScoreDto: {
+            id: number;
+            gradeLevel: number;
+            subjectCode: string;
+            score: number;
+        };
+        AdmissionDocumentDto: {
+            id: number;
+            admissionProfileId: number;
+            documentConfigItemId: number;
+            fileUrl: string;
+            fileName: string;
+            fileSize: number;
+            /** @enum {string} */
+            status: "PENDING" | "APPROVED" | "REJECTED";
+            rejectionReason?: string | null;
+            /** Format: date-time */
+            verifiedAt?: string | null;
+            verifiedByUserId?: number | null;
+            isLatest: boolean;
+            /** Format: date-time */
+            uploadedAt: string;
+        };
+        AdmissionStatusLogDto: {
+            id: number;
+            admissionProfileId: number;
+            /** @enum {string|null} */
+            fromStatus?: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED" | null;
+            isSystem: boolean;
+            reason?: string | null;
+            /** @enum {string} */
+            toStatus: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
+            byUserId?: number | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        AdmissionProfileDetailDto: {
+            profile: components["schemas"]["AdmissionProfileDto"];
+            admissionCampaign?: components["schemas"]["AdmissionCampaignDetailDto"];
+            transcriptSubjectScores: components["schemas"]["TranscriptSubjectScoreDto"][];
+            documents: components["schemas"]["AdmissionDocumentDto"][];
+            statusLogs: components["schemas"]["AdmissionStatusLogDto"][];
+        };
         UpdateAdmissionProfileDto: {
             applicationCode?: string;
             admissionCampaignMajorId?: number;
             /** @enum {string} */
             status?: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
-            /** @enum {string} */
-            admissionType?: "ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT";
             /** @enum {string} */
             educationLevel?: "THCS" | "THPT";
             fullName?: string;
@@ -2769,8 +2686,6 @@ export interface components {
             conduct8?: "TOT" | "KHA" | "TB" | "YEU" | null;
             /** @enum {string|null} */
             conduct9?: "TOT" | "KHA" | "TB" | "YEU" | null;
-            /** @enum {string|null} */
-            directReason?: "HSG_QUOC_GIA" | "HSG_CAP_TINH" | "CHUNG_CHI_NGHE" | "CON_DIEN_CHINH_SACH" | "KHAC" | null;
             fatherName?: string | null;
             fatherPhone?: string | null;
             gpa10?: number | null;
@@ -2786,20 +2701,16 @@ export interface components {
             motherName?: string | null;
             motherPhone?: string | null;
             note?: string | null;
-            /** @enum {string|null} */
-            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC" | null;
-            /** @enum {string|null} */
-            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3" | null;
             priorityScore?: number | null;
             scoreCalculated?: number | null;
             studentId?: number | null;
-            subjectCombinationId?: number | null;
             thcsGradYear?: number | null;
             thptGradYear?: number | null;
             totalExamScore?: number | null;
             villageId?: number | null;
             wardCode?: string | null;
-            examScores?: components["schemas"]["CreateExamScoreDto"][];
+            avgSubjectScore?: number | null;
+            subjectCombinationId?: number | null;
             transcriptSubjectScores?: components["schemas"]["CreateTranscriptSubjectScoreDto"][];
         };
         ChangeProfileStatusDto: {
@@ -2813,23 +2724,6 @@ export interface components {
             fileUrl: string;
             fileName: string;
             fileSize: number;
-        };
-        AdmissionDocumentDto: {
-            id: number;
-            admissionProfileId: number;
-            documentConfigItemId: number;
-            fileUrl: string;
-            fileName: string;
-            fileSize: number;
-            /** @enum {string} */
-            status: "PENDING" | "APPROVED" | "REJECTED";
-            rejectionReason?: string;
-            /** Format: date-time */
-            verifiedAt?: string;
-            verifiedByUserId?: number;
-            isLatest: boolean;
-            /** Format: date-time */
-            uploadedAt: string;
         };
         VerifyAdmissionDocumentDto: {
             /** @enum {string} */
@@ -2851,7 +2745,7 @@ export interface components {
             /** @enum {string} */
             educationLevel?: "THCS" | "THPT";
             /** @enum {string} */
-            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             items?: components["schemas"]["CreateDocumentConfigItemDto"][];
         };
         UpdateDocumentConfigDto: {
@@ -2862,56 +2756,8 @@ export interface components {
             /** @enum {string} */
             educationLevel?: "THCS" | "THPT";
             /** @enum {string} */
-            trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+            trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             items?: components["schemas"]["CreateDocumentConfigItemDto"][];
-        };
-        CreatePriorityRuleDto: {
-            academicYearId: number;
-            /** @enum {string} */
-            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
-            /** @enum {string} */
-            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
-            bonusScore: number;
-        };
-        PriorityRuleDto: {
-            id: number;
-            academicYearId: number;
-            /** @enum {string} */
-            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
-            /** @enum {string} */
-            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
-            bonusScore: number;
-        };
-        UpdatePriorityRuleDto: {
-            academicYearId?: number;
-            /** @enum {string} */
-            priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
-            /** @enum {string} */
-            priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
-            bonusScore?: number;
-        };
-        CreateAdmissionInterestDto: {
-            fullName: string;
-            phone: string;
-            identityNumber?: string;
-            majorId: number;
-            /** @enum {string} */
-            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
-            note?: string;
-        };
-        AdmissionInterestDto: {
-            id: number;
-            fullName: string;
-            phone: string;
-            identityNumber?: string;
-            majorId: number;
-            /** @enum {string} */
-            trainingType: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
-            note?: string;
-            /** Format: date-time */
-            notifiedAt?: string;
-            /** Format: date-time */
-            createdAt: string;
         };
         CreateUserDto: {
             /**
@@ -5050,8 +4896,8 @@ export interface operations {
             query?: {
                 /** @description ID Ngành học cần lọc */
                 majorId?: number;
-                /** @description Hệ đào tạo (9+, Trung cấp, Sơ cấp, GDTX...) */
-                trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+                /** @description Hệ đào tạo Trung cấp, Sơ cấp */
+                trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
             };
             header?: never;
             path?: never;
@@ -5139,7 +4985,7 @@ export interface operations {
             query?: {
                 admissionCampaignId?: number;
                 majorId?: number;
-                trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+                trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
                 page?: number;
                 limit?: number;
             };
@@ -5340,7 +5186,6 @@ export interface operations {
                 applicationCode?: string;
                 admissionCampaignMajorId?: number;
                 status?: "REGISTERED" | "SUBMITTED" | "APPROVED" | "CONFIRMED" | "REJECTED" | "ENROLLED" | "CANCELLED";
-                admissionType?: "ACADEMIC_TRANSCRIPT_SUBJECT" | "ACADEMIC_TRANSCRIPT_GPA" | "EXAM_SCORE" | "DIRECT";
                 fullName?: string;
                 identityNumber?: string;
                 phone?: string;
@@ -5404,7 +5249,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["AdmissionProfileDto"];
+                    "application/json": components["schemas"]["AdmissionProfileDetailDto"];
                 };
             };
         };
@@ -5591,7 +5436,7 @@ export interface operations {
                 name?: string;
                 admissionCampaignId?: number;
                 educationLevel?: "THCS" | "THPT";
-                trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
+                trainingType?: "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY";
                 page?: number;
                 limit?: number;
             };
@@ -5694,205 +5539,6 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["DocumentConfigDto"];
                 };
-            };
-        };
-    };
-    PriorityRuleController_findAll: {
-        parameters: {
-            query?: {
-                academicYearId?: number;
-                priorityRegion?: "KV1" | "KV2_NT" | "KV2" | "KV3";
-                priorityObject?: "NONE" | "CON_THUONG_BINH_LIET_SI" | "DAN_TOC_THIEU_SO" | "HO_NGHEO" | "KHUYET_TAT" | "KHAC";
-                page?: number;
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PriorityRuleController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreatePriorityRuleDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PriorityRuleDto"];
-                };
-            };
-        };
-    };
-    PriorityRuleController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PriorityRuleDto"];
-                };
-            };
-        };
-    };
-    PriorityRuleController_remove: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    PriorityRuleController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdatePriorityRuleDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PriorityRuleDto"];
-                };
-            };
-        };
-    };
-    AdmissionInterestController_findAll: {
-        parameters: {
-            query?: {
-                fullName?: string;
-                phone?: string;
-                majorId?: number;
-                trainingType?: "DUAL_PROGRAM_9PLUS" | "VOCATIONAL_INTERMEDIATE" | "VOCATIONAL_ELEMENTARY" | "CONTINUING_EDUCATION";
-                isNotified?: boolean;
-                page?: number;
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    AdmissionInterestController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateAdmissionInterestDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdmissionInterestDto"];
-                };
-            };
-        };
-    };
-    AdmissionInterestController_markAsNotified: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AdmissionInterestDto"];
-                };
-            };
-        };
-    };
-    AdmissionInterestController_remove: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
             };
         };
     };

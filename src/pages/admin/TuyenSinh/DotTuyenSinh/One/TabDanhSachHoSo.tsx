@@ -1,17 +1,21 @@
 import React, { useState } from 'react'
 import { Search, Plus, FileText, Eye, Trash2, Loader2 } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
-import { $api } from '../../../../api/client'
-import { useDebounce } from '../../../../hooks/useDebounce'
-import { APPLICATION_STATUS_MAP, APPLICATION_STATUS_TABS } from '../../../../api/enum'
-import type { ApplicationStatusEnum } from '../../../../api/enum'
-import { HoSoDetailModal } from './HoSoDetailModal'
+import { $api } from '../../../../../api/client'
+import { useDebounce } from '../../../../../hooks/useDebounce'
+import { APPLICATION_STATUS_MAP, APPLICATION_STATUS_TABS } from '../../../../../api/enum'
+import type { ApplicationStatusEnum } from '../../../../../api/enum'
+import { HoSoDetailModal } from '../../HoSoTuyenSinh/HoSoDetailModal'
 
-const HoSoTuyenSinhHome: React.FC = () => {
+interface TabDanhSachHoSoProps {
+  admissionCampaignId: number
+}
+
+const TabDanhSachHoSo: React.FC<TabDanhSachHoSoProps> = ({ admissionCampaignId }) => {
   const navigate = useNavigate()
 
   // Filters & State
-  const [activeTabStatus, setActiveTabStatus] = useState<string>('')
+  const [activeTabStatus, setActiveTabStatus] = useState<ApplicationStatusEnum | undefined>(undefined)
   const [searchInput, setSearchInput] = useState('')
   const debouncedSearch = useDebounce(searchInput, 500)
   const [page, setPage] = useState(1)
@@ -20,66 +24,76 @@ const HoSoTuyenSinhHome: React.FC = () => {
   // Selected Detail Modal
   const [selectedProfileId, setSelectedProfileId] = useState<number | null>(null)
 
-  // Query Admission Profiles list
+  // Query Admission Profiles list cho ĐỢT XÉT TUYỂN HIỆN TẠI
   const {
     data: response,
     isLoading,
     refetch,
-  } = $api.useQuery('get', '/admission-profiles', {
-    params: {
-      query: {
-        fullName: debouncedSearch || undefined,
-        identityNumber: debouncedSearch || undefined,
-        applicationCode: debouncedSearch || undefined,
-        phone: debouncedSearch || undefined,
-        status: (activeTabStatus as any) || undefined,
-        page,
-        limit,
+  } = $api.useQuery(
+    'get',
+    '/admission-profiles',
+    {
+      params: {
+        query: {
+          admissionCampaignId: admissionCampaignId,
+          fullName: debouncedSearch || undefined,
+          identityNumber: debouncedSearch || undefined,
+          applicationCode: debouncedSearch || undefined,
+          phone: debouncedSearch || undefined,
+          status: activeTabStatus || undefined,
+          page,
+          limit,
+        },
       },
     },
-  })
+    {
+      enabled: !!admissionCampaignId,
+    },
+  )
 
   const profiles = response?.data || []
   const total = response?.total || 0
   const totalPages = Math.ceil(total / limit)
 
-  // Mutation Delete
+  // Mutation Delete Profile
   const { mutate: deleteProfile } = $api.useMutation('delete', '/admission-profiles/{id}', {
     onSuccess: () => refetch(),
   })
 
   return (
-    <div className="space-y-6 p-6">
-      {/* Header */}
-      <div className="flex flex-col justify-between gap-4 rounded-2xl border border-slate-100 bg-white p-6 shadow-sm sm:flex-row sm:items-center">
+    <div className="space-y-6">
+      {/* Header mini trong Tab */}
+      <div className="flex flex-col justify-between gap-4 rounded-2xl border border-slate-100 bg-white p-5 shadow-sm sm:flex-row sm:items-center">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl font-bold text-slate-800">Quản Lý & Phân Loại Hồ Sơ Tuyển Sinh</h1>
+            <h2 className="text-base font-bold text-slate-800">Danh Sách Hồ Sơ Đợt Tuyển Sinh</h2>
             <span className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-600">
               {total} hồ sơ
             </span>
           </div>
           <p className="mt-1 text-xs text-slate-500">
-            Theo dõi, phân loại trạng thái đăng ký, duyệt trúng tuyển & đối chiếu hồ sơ nhập học.
+            Quản lý và xét duyệt các hồ sơ nộp trực tiếp vào đợt tuyển sinh này.
           </p>
         </div>
 
         <button
-          onClick={() => navigate('/admin/tuyen-sinh/ho-so-tuyen-sinh/tao-moi')}
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-medium text-white shadow-sm shadow-indigo-200 transition-colors hover:bg-indigo-700"
+          onClick={() =>
+            navigate(`/admin/tuyen-sinh/ho-so-tuyen-sinh/tao-moi?campaignId=${admissionCampaignId}`)
+          }
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-medium text-white shadow-sm shadow-indigo-200 transition-colors hover:bg-indigo-700"
         >
           <Plus className="h-4 w-4" />
-          Tạo hồ sơ tuyển sinh mới
+          Thêm hồ sơ đợt này
         </button>
       </div>
 
       {/* Tabs Phân loại trạng thái */}
-      <div className="flex items-center gap-1.5 overflow-x-auto rounded-2xl border border-slate-100 bg-white p-2 shadow-sm">
+      <div className="custom-scrollbar flex items-center gap-1.5 overflow-x-auto rounded-2xl border border-slate-100 bg-white p-2 shadow-sm">
         {APPLICATION_STATUS_TABS.map((tab) => (
           <button
             key={tab.value}
             onClick={() => {
-              setActiveTabStatus(tab.value)
+              setActiveTabStatus(tab.value as ApplicationStatusEnum | undefined)
               setPage(1)
             }}
             className={`rounded-xl px-3.5 py-2 text-xs font-medium whitespace-nowrap transition-all ${
@@ -116,9 +130,9 @@ const HoSoTuyenSinhHome: React.FC = () => {
         ) : profiles.length === 0 ? (
           <div className="p-12 text-center">
             <FileText className="mx-auto mb-3 h-12 w-12 text-slate-300" />
-            <p className="text-sm font-medium text-slate-600">Không tìm thấy hồ sơ tuyển sinh nào</p>
+            <p className="text-sm font-medium text-slate-600">Không có hồ sơ nào trong đợt tuyển sinh này</p>
             <p className="mt-1 text-xs text-slate-400">
-              Thử thay đổi từ khóa tìm kiếm hoặc chuyển tab trạng thái khác.
+              Thử tìm kiếm với từ khóa khác hoặc chuyển sang trạng thái hồ sơ khác.
             </p>
           </div>
         ) : (
@@ -225,4 +239,4 @@ const HoSoTuyenSinhHome: React.FC = () => {
   )
 }
 
-export default HoSoTuyenSinhHome
+export default TabDanhSachHoSo

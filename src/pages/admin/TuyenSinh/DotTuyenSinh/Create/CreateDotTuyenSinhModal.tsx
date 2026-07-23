@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { useForm, useFieldArray, useWatch, Controller } from 'react-hook-form'
+import { useForm, useFieldArray, useWatch } from 'react-hook-form'
 import { Plus, Trash2, X, Layers, Info, Calculator } from 'lucide-react'
 import { $api } from '../../../../../api/client'
 import type { components } from '../../../../../api/v1'
@@ -18,17 +18,6 @@ interface ModalProps {
   onSuccess?: () => void
   initialData?: AdmissionCampaignDetailDto | null
 }
-
-// Danh sách phương thức xét tuyển hỗ trợ
-const ADMISSION_TYPES_OPTIONS: {
-  value: CreateAdmissionCampaignMajorDto['acceptedAdmissionTypes'][number]
-  label: string
-}[] = [
-  { value: 'ACADEMIC_TRANSCRIPT_SUBJECT', label: 'Học bạ theo môn' },
-  { value: 'ACADEMIC_TRANSCRIPT_GPA', label: 'Học bạ GPA chung' },
-  { value: 'EXAM_SCORE', label: 'Điểm thi tốt nghiệp' },
-  { value: 'DIRECT', label: 'Xét tuyển thẳng' },
-]
 
 const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSuccess, initialData }) => {
   const isEdit = Boolean(initialData?.id)
@@ -69,7 +58,6 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
     handleSubmit,
     control,
     reset,
-    watch,
     formState: { errors },
   } = useForm<CreateAdmissionCampaignDto>({
     defaultValues: initFormData,
@@ -104,13 +92,10 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
             majorId: item.majorId,
             trainingType: item.trainingType || 'VOCATIONAL_INTERMEDIATE',
             quota: item.quota || 0,
-            acceptedAdmissionTypes: item.acceptedAdmissionTypes || ['ACADEMIC_TRANSCRIPT_GPA'],
             subjectCombinationId: item.subjectCombinationId ? Number(item.subjectCombinationId) : undefined,
             minScorePerSubject: item.minScorePerSubject,
             minTotalScore: item.minTotalScore,
-            minGpaAverage: item.minGpaAverage,
             minConduct: item.minConduct,
-            transcriptScoreMethod: item.transcriptScoreMethod,
             cutoffScore: item.cutoffScore,
           })) || [],
       })
@@ -128,10 +113,9 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
         ...item,
         majorId: Number(item.majorId),
         quota: Number(item.quota),
-        subjectCombinationId: item.subjectCombinationId ? Number(item.subjectCombinationId) : undefined,
+        subjectCombinationId: Number(item.subjectCombinationId),
         minScorePerSubject: item.minScorePerSubject ? Number(item.minScorePerSubject) : undefined,
         minTotalScore: item.minTotalScore ? Number(item.minTotalScore) : undefined,
-        minGpaAverage: item.minGpaAverage ? Number(item.minGpaAverage) : undefined,
         cutoffScore: item.cutoffScore ? Number(item.cutoffScore) : undefined,
       })),
     }
@@ -228,6 +212,9 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
                 {errors.academicYearId && (
                   <p className="mt-1 text-xs text-red-500">{errors.academicYearId.message}</p>
                 )}
+                <p className="mt-1 text-[11px] text-slate-400">
+                  Mỗi năm học chỉ nên tạo 1 đợt tuyển sinh — cần nhận hồ sơ thêm thì gia hạn Ngày kết thúc.
+                </p>
               </div>
 
               {/* Mã & Tên đợt tuyển sinh */}
@@ -237,7 +224,7 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
                 </label>
                 <input
                   type="text"
-                  placeholder="VD: DTS2026_DOT1"
+                  placeholder="VD: TS-2026"
                   {...register('code', { required: 'Nhập mã đợt' })}
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
                 />
@@ -250,7 +237,7 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
                 </label>
                 <input
                   type="text"
-                  placeholder="VD: Tuyển sinh Đợt 1 năm 2026"
+                  placeholder="VD: Tuyển sinh Năm học 2026"
                   {...register('name', { required: 'Nhập tên đợt' })}
                   className="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
                 />
@@ -346,7 +333,7 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
                       majorId: 0,
                       quota: 10,
                       trainingType: 'VOCATIONAL_INTERMEDIATE',
-                      acceptedAdmissionTypes: ['ACADEMIC_TRANSCRIPT_GPA'],
+                      subjectCombinationId: 0,
                     })
                   }
                   className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-3 py-1.5 text-xs font-semibold text-indigo-600 transition-colors hover:bg-indigo-100"
@@ -423,9 +410,7 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
                             className="w-full rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
                           >
                             <option value="VOCATIONAL_INTERMEDIATE">Trung cấp</option>
-                            <option value="DUAL_PROGRAM_9PLUS">Chương trình 9+</option>
                             <option value="VOCATIONAL_ELEMENTARY">Sơ cấp nghề</option>
-                            <option value="CONTINUING_EDUCATION">GDTX</option>
                           </select>
                         </div>
 
@@ -446,192 +431,89 @@ const CreateDotTuyenSinhModal: React.FC<ModalProps> = ({ isOpen, onClose, onSucc
                         </div>
                       </div>
 
-                      {/* Dòng 2: Phương thức xét tuyển (Checkbox Group) */}
-                      <div>
-                        <label className="mb-1.5 block text-[11px] font-semibold text-slate-600">
-                          Phương thức xét tuyển áp dụng <span className="text-red-500">*</span>
-                        </label>
-                        <Controller
-                          control={control}
-                          name={`campaignMajors.${index}.acceptedAdmissionTypes` as const}
-                          defaultValue={['ACADEMIC_TRANSCRIPT_GPA']}
-                          render={({ field }) => (
-                            <div className="flex flex-wrap gap-2">
-                              {ADMISSION_TYPES_OPTIONS.map((opt) => {
-                                const isChecked = field.value?.includes(opt.value)
-                                return (
-                                  <button
-                                    type="button"
-                                    key={opt.value}
-                                    onClick={() => {
-                                      const current = field.value || []
-                                      if (isChecked) {
-                                        field.onChange(current.filter((v) => v !== opt.value))
-                                      } else {
-                                        field.onChange([...current, opt.value])
-                                      }
-                                    }}
-                                    className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-all ${
-                                      isChecked
-                                        ? 'border-indigo-300 bg-indigo-50 text-indigo-700 shadow-sm'
-                                        : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-100'
-                                    }`}
-                                  >
-                                    {opt.label}
-                                  </button>
-                                )
+                      {/* Dòng 2: Điều kiện xét tuyển — chỉ còn 1 phương thức duy nhất:
+                          Học bạ theo tổ hợp 3 môn + hạnh kiểm */}
+                      <div className="rounded-xl border border-amber-200/80 bg-amber-50/50 p-2.5">
+                        <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-amber-800">
+                          <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                          Điều kiện xét tuyển (Học bạ theo tổ hợp môn + hạnh kiểm)
+                        </div>
+                        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                          {/* Tổ hợp môn */}
+                          <div>
+                            <label className="mb-1 block text-[10px] font-medium text-slate-600">
+                              Tổ hợp môn <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                              {...register(`campaignMajors.${index}.subjectCombinationId` as const, {
+                                required: 'Chọn tổ hợp môn',
+                                valueAsNumber: true,
                               })}
-                            </div>
-                          )}
-                        />
-                      </div>
-
-                      {/* Dòng 3: Cấu hình Tiêu chuẩn & Điểm sàn theo từng nhóm phương thức */}
-                      {(() => {
-                        // Lấy danh sách phương thức đã chọn của ngành hiện tại
-                        const selectedTypes = watch
-                          ? watch(`campaignMajors.${index}.acceptedAdmissionTypes`)
-                          : []
-
-                        const hasSubjectBased = selectedTypes?.some((t: string) =>
-                          ['ACADEMIC_TRANSCRIPT_SUBJECT', 'EXAM_SCORE', 'DIRECT'].includes(t),
-                        )
-
-                        const hasGpaBased = selectedTypes?.includes('ACADEMIC_TRANSCRIPT_GPA')
-
-                        return (
-                          <div className="space-y-3 border-t border-slate-200/60 pt-3">
-                            {/* KHỐI 1: Cấu hình cho Xét Tổ hợp môn / Điểm thi / Học bạ môn / Tuyển thẳng */}
-                            {hasSubjectBased && (
-                              <div className="rounded-xl border border-amber-200/80 bg-amber-50/50 p-2.5">
-                                <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-amber-800">
-                                  <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-                                  Điều kiện Xét theo Tổ hợp môn / Điểm thi / Tuyển thẳng
-                                </div>
-                                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-                                  {/* Tổ hợp môn */}
-                                  <div>
-                                    <label className="mb-1 block text-[10px] font-medium text-slate-600">
-                                      Tổ hợp môn <span className="text-red-500">*</span>
-                                    </label>
-                                    <select
-                                      {...register(`campaignMajors.${index}.subjectCombinationId` as const, {
-                                        valueAsNumber: true,
-                                      })}
-                                      className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
-                                    >
-                                      <option value="">-- Không yêu cầu --</option>
-                                      {subjectCombinations?.data?.map((sc) => (
-                                        <option key={sc.id} value={sc.id}>
-                                          {sc.code} ({sc.name})
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </div>
-
-                                  {/* Điểm sàn tổng */}
-                                  <div>
-                                    <label className="mb-1 block text-[10px] font-medium text-slate-600">
-                                      Điểm sàn tổng tổ hợp
-                                    </label>
-                                    <input
-                                      type="number"
-                                      step="0.1"
-                                      placeholder="VD: 15.0"
-                                      {...register(`campaignMajors.${index}.minTotalScore` as const, {
-                                        valueAsNumber: true,
-                                      })}
-                                      className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
-                                    />
-                                  </div>
-
-                                  {/* Điểm sàn tối thiểu mỗi môn */}
-                                  <div>
-                                    <label className="mb-1 block text-[10px] font-medium text-slate-600">
-                                      Điểm sàn min / môn
-                                    </label>
-                                    <input
-                                      type="number"
-                                      step="0.1"
-                                      placeholder="VD: 5.0"
-                                      {...register(`campaignMajors.${index}.minScorePerSubject` as const, {
-                                        valueAsNumber: true,
-                                      })}
-                                      className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* KHỐI 2: Cấu hình cho Xét Học bạ chung (GPA) */}
-                            {hasGpaBased && (
-                              <div className="rounded-xl border border-indigo-200/80 bg-indigo-50/50 p-2.5">
-                                <div className="mb-2 flex items-center gap-1.5 text-[11px] font-bold text-indigo-800">
-                                  <span className="h-1.5 w-1.5 rounded-full bg-indigo-600" />
-                                  Điều kiện Dành cho xét Học bạ chung
-                                </div>
-                                <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
-                                  {/* Điểm TB Học bạ tối thiểu */}
-                                  <div>
-                                    <label className="mb-1 block text-[10px] font-medium text-slate-600">
-                                      Điểm TB học bạ min <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                      type="number"
-                                      step="0.1"
-                                      placeholder="VD: 6.5"
-                                      {...register(`campaignMajors.${index}.minGpaAverage` as const, {
-                                        valueAsNumber: true,
-                                      })}
-                                      className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
-                                    />
-                                  </div>
-
-                                  {/* Hạnh kiểm tối thiểu */}
-                                  <div>
-                                    <label className="mb-1 block text-[10px] font-medium text-slate-600">
-                                      Hạnh kiểm tối thiểu
-                                    </label>
-                                    <select
-                                      {...register(`campaignMajors.${index}.minConduct` as const)}
-                                      className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
-                                    >
-                                      <option value="">Không chọn</option>
-                                      <option value="TOT">Tốt</option>
-                                      <option value="KHA">Khá trở lên</option>
-                                      <option value="TB">Trung bình</option>
-                                      <option value="YEU">Yếu</option>
-                                    </select>
-                                  </div>
-
-                                  {/* Phương thức tính điểm học bạ */}
-                                  <div>
-                                    <label className="mb-1 block text-[10px] font-medium text-slate-600">
-                                      Cách tính điểm học bạ
-                                    </label>
-                                    <select
-                                      {...register(`campaignMajors.${index}.transcriptScoreMethod` as const)}
-                                      className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
-                                    >
-                                      <option value="AVERAGE_ALL_YEARS">TB cả năm cấp 3</option>
-                                      <option value="LAST_YEAR_ONLY">Chỉ năm Lớp 12</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-
-                            {/* Thông báo nếu chưa chọn phương thức xét tuyển nào */}
-                            {!hasSubjectBased && !hasGpaBased && (
-                              <p className="text-[11px] text-slate-400 italic">
-                                Vui lòng chọn ít nhất một phương thức xét tuyển ở trên để cấu hình điều kiện
-                                tuyển sinh.
-                              </p>
-                            )}
+                              className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                            >
+                              <option value="">-- Chọn tổ hợp --</option>
+                              {subjectCombinations?.data?.map((sc) => (
+                                <option key={sc.id} value={sc.id}>
+                                  {sc.code} ({sc.name})
+                                </option>
+                              ))}
+                            </select>
                           </div>
-                        )
-                      })()}
+
+                          {/* Hạnh kiểm tối thiểu */}
+                          <div>
+                            <label className="mb-1 block text-[10px] font-medium text-slate-600">
+                              Hạnh kiểm tối thiểu
+                            </label>
+                            <select
+                              {...register(`campaignMajors.${index}.minConduct` as const)}
+                              className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-700 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                            >
+                              <option value="">Không yêu cầu</option>
+                              <option value="TOT">Tốt</option>
+                              <option value="KHA">Khá trở lên</option>
+                              <option value="TB">Trung bình trở lên</option>
+                              <option value="YEU">Yếu</option>
+                            </select>
+                          </div>
+
+                          {/* Điểm sàn tổng */}
+                          <div>
+                            <label className="mb-1 block text-[10px] font-medium text-slate-600">
+                              Điểm sàn TB tổ hợp
+                            </label>
+                            <input
+                              type="number"
+                              step="0.1"
+                              placeholder="VD: 5.0"
+                              {...register(`campaignMajors.${index}.minTotalScore` as const, {
+                                valueAsNumber: true,
+                              })}
+                              className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                            />
+                          </div>
+
+                          {/* Điểm sàn tối thiểu mỗi môn */}
+                          <div>
+                            <label className="mb-1 block text-[10px] font-medium text-slate-600">
+                              Điểm sàn min / môn
+                            </label>
+                            <input
+                              type="number"
+                              step="0.1"
+                              placeholder="VD: 2.0"
+                              {...register(`campaignMajors.${index}.minScorePerSubject` as const, {
+                                valueAsNumber: true,
+                              })}
+                              className="w-full rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-xs text-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
+                            />
+                          </div>
+                        </div>
+                        <p className="mt-2 text-[10px] text-slate-400">
+                          Điểm học bạ lấy theo tổ hợp môn ở trên, tính trung bình 4 năm cấp 2 (lớp 6-9) hoặc 3
+                          năm cấp 3 (lớp 10-12) tùy trình độ học vấn của thí sinh khi nộp hồ sơ.
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>

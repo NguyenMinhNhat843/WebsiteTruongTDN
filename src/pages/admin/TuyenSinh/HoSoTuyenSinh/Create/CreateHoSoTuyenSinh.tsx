@@ -15,11 +15,14 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { $api } from '../../../../api/client'
-import type { components } from '../../../../api/v1'
-import { useGetMajors } from '../../../../hooks/useMajor'
-import type { TrainingTypeEnum } from '../../../../api/enum'
-import { cleanEmptyFields } from '../../../../util/cleanEmptyField'
+import { $api } from '../../../../../api/client'
+import type { components } from '../../../../../api/v1'
+import { useGetMajors } from '../../../../../hooks/useMajor'
+import type { TrainingTypeEnum } from '../../../../../api/enum'
+import { cleanEmptyFields } from '../../../../../util/cleanEmptyField'
+/*
+eslint-disable @typescript-eslint/no-explicit-any
+*/
 
 export type CreateAdmissionProfileDto = components['schemas']['CreateAdmissionProfileDto']
 
@@ -65,7 +68,6 @@ const TaoHoSoTuyenSinh: React.FC = () => {
   }, [activeCampaigns, selectedCampaignMajorId])
   console.log('selectedCampaignMajor', selectedCampaignMajor)
 
-  const subjectCombination = selectedCampaignMajor?.subjectCombination
   const subjectCombinationItems = selectedCampaignMajor?.subjectCombination?.items || []
   // Danh sách các lớp cần nhập theo Trình độ học vấn
   const gradesToInput = selectedEducationLevel === 'THCS' ? [6, 7, 8, 9] : [10, 11, 12]
