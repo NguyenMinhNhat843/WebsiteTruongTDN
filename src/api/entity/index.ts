@@ -4,6 +4,7 @@ export type DepartmentDto = components['schemas']['DepartmentDto']
 export type UserResponseDto = components['schemas']['UserResponseDto']
 export type GradeResponseDto = components['schemas']['GradeStudentDto']
 export type AcademicYearDto = components['schemas']['AcademicYearDto']
+export type StudentDetailDto = components['schemas']['StudentDetailDto']
 
 // Admission entities
 export type AdmissionCampaignDto = components['schemas']['AdmissionCampaignDto']
@@ -32,9 +33,3 @@ export type VerifyAdmissionDocumentDto = components['schemas']['VerifyAdmissionD
 
 export type DocumentConfigDto = components['schemas']['DocumentConfigDto']
 export type CreateDocumentConfigDto = components['schemas']['CreateDocumentConfigDto']
-
-export type PriorityRuleDto = components['schemas']['PriorityRuleDto']
-export type CreatePriorityRuleDto = components['schemas']['CreatePriorityRuleDto']
-
-export type AdmissionInterestDto = components['schemas']['AdmissionInterestDto']
-export type CreateAdmissionInterestDto = components['schemas']['CreateAdmissionInterestDto']

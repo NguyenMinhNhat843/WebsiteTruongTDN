@@ -1,145 +1,135 @@
-import { useState } from "react";
-import { $api } from "../../../api/client";
-import type { components, paths } from "../../../api/v1";
-import { Trash2, Search, Loader2, Filter, Layers } from "lucide-react";
-import CreateMonHocModal from "./CreateMonHoc";
+import { useState } from 'react'
+import { $api } from '../../../api/client'
+import type { components, paths } from '../../../api/v1'
+import { Trash2, Edit2, Search, Loader2, Filter, BookOpen, Layers, ChevronDown } from 'lucide-react'
+import CreateMonHocModal from './CreateMonHoc'
 
-export type SubjectDto = components["schemas"]["SubjectDto"];
-export type QuerySubject = paths["/subjects"]["get"]["parameters"]["query"];
+export type SubjectDto = components['schemas']['SubjectDto']
+export type QuerySubject = paths['/subjects']['get']['parameters']['query']
 
 const MonHocList = () => {
   // State quản lý bộ lọc
   const [filters, setFilters] = useState({
-    keyword: "",
-    departmentId: "" as string | number,
-  });
+    keyword: '',
+    departmentId: '' as string | number,
+  })
 
-  // 2. Chuyển state lưu ID thành lưu toàn bộ object Subject được chọn để Update
-  const [subjectSelected, setSubjectSelected] = useState<SubjectDto | null>(
-    null,
-  );
-  // State quản lý trạng thái đóng/mở modal
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  // State lưu môn học đang được chọn để chỉnh sửa
+  const [subjectSelected, setSubjectSelected] = useState<SubjectDto | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Gọi API lấy danh sách phòng ban để đổ vào Bộ lọc
-  const { data: departments, isLoading: isLoadingDepartments } = $api.useQuery(
-    "get",
-    "/departments",
-  );
+  // Fetch danh sách phòng ban
+  const { data: departments, isLoading: isLoadingDepartments } = $api.useQuery('get', '/departments')
 
-  // Fetch data môn học kèm điều kiện lọc
+  // Params tìm kiếm
   const queryParams: QuerySubject = {
     keyword: filters.keyword || undefined,
-    departmentId: filters.departmentId
-      ? Number(filters.departmentId)
-      : undefined,
-  };
+    departmentId: filters.departmentId ? Number(filters.departmentId) : undefined,
+  }
 
+  // Fetch dữ liệu môn học
   const {
     data: subjects,
     isLoading: isLoadingSubjects,
     refetch,
-  } = $api.useQuery("get", "/subjects", {
-    params: {
-      query: queryParams,
-    },
-  });
+  } = $api.useQuery('get', '/subjects', {
+    params: { query: queryParams },
+  })
 
-  // API Xóa môn học
-  const { mutate: deleteSubject, isPending: isDeletingSubject } =
-    $api.useMutation("delete", "/subjects/{id}", {
+  // Mutation xóa môn học
+  const { mutate: deleteSubject, isPending: isDeletingSubject } = $api.useMutation(
+    'delete',
+    '/subjects/{id}',
+    {
       onSuccess: () => {
-        alert("Xóa môn học thành công!");
-        refetch();
+        alert('Xóa môn học thành công!')
+        refetch()
       },
       onError: (error) => {
-        alert("Có lỗi xảy ra khi xóa!");
-        console.error(error);
+        alert('Có lỗi xảy ra khi xóa!')
+        console.error(error)
       },
-    });
+    },
+  )
 
   const handleDelete = (id: number, name: string) => {
     if (confirm(`Bạn có chắc chắn muốn xóa môn học "${name}" không?`)) {
       deleteSubject({
-        params: {
-          path: { id },
-        },
-      });
+        params: { path: { id } },
+      })
     }
-  };
+  }
 
   const getDepartmentName = (id: number | null | undefined) => {
-    if (!id || !departments) return "---";
-    const dept = departments.find((d: any) => d.id === id);
-    return dept ? dept.deptName : "Không xác định";
-  };
+    if (!id || !departments) return '---'
+    const dept = departments.find((d) => d.id === id)
+    return dept ? dept.deptName : 'Không xác định'
+  }
 
   const renderSubjectType = (type: string | undefined) => {
-    if (!type) return <span className="text-gray-400">---</span>;
+    if (!type) return <span className="text-slate-400">---</span>
 
     switch (type.toUpperCase()) {
-      case "GENERAL":
+      case 'GENERAL':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-gray-100 text-gray-700 border border-gray-200">
+          <span className="inline-flex items-center rounded-md border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs font-bold whitespace-nowrap text-slate-700">
             Đại cương
           </span>
-        );
-      case "BASE_MAJOR":
+        )
+      case 'BASE_MAJOR':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-amber-50 text-amber-700 border border-amber-100">
+          <span className="inline-flex items-center rounded-md border border-amber-200/60 bg-amber-50 px-2.5 py-1 text-xs font-bold whitespace-nowrap text-amber-700">
             Cơ sở ngành
           </span>
-        );
-      case "SPECIALIZED":
+        )
+      case 'SPECIALIZED':
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-purple-50 text-purple-700 border border-purple-100">
+          <span className="inline-flex items-center rounded-md border border-indigo-200/60 bg-indigo-50 px-2.5 py-1 text-xs font-bold whitespace-nowrap text-indigo-700">
             Chuyên ngành
           </span>
-        );
+        )
       default:
         return (
-          <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-600 border border-blue-100">
+          <span className="inline-flex items-center rounded-md border border-blue-200/60 bg-blue-50 px-2.5 py-1 text-xs font-bold whitespace-nowrap text-blue-700">
             {type}
           </span>
-        );
+        )
     }
-  };
+  }
 
-  // 3. Hàm kích hoạt mở modal để Cập nhật
   const handleOpenEditModal = (subject: SubjectDto) => {
-    setSubjectSelected(subject);
-    setIsModalOpen(true);
-  };
+    setSubjectSelected(subject)
+    setIsModalOpen(true)
+  }
 
-  // 4. Hàm đóng modal và dọn dẹp state sạch sẽ
   const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setSubjectSelected(null);
-  };
+    setIsModalOpen(false)
+    setSubjectSelected(null)
+  }
 
   return (
-    <div className="space-y-6 font-sans bg-[#f4f6f9] min-h-screen rounded-2xl text-base p-1">
-      {/* --- Bộ Lọc --- */}
-      <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
-        <div className="flex items-center gap-2 font-bold text-gray-700 border-b pb-3 border-gray-100">
-          <Filter className="w-5 h-5 text-indigo-600" />
-          <span>Điều kiện tìm kiếm</span>
+    <div className="space-y-5">
+      {/* --- Thanh Bộ Lọc (Filter Bar) --- */}
+      <div className="flex flex-col items-center justify-between gap-4 rounded-xl border border-slate-200/80 bg-white p-5 shadow-sm md:flex-row">
+        <div className="flex shrink-0 items-center gap-2 text-xs font-bold tracking-wider text-slate-500 uppercase">
+          <Filter size={16} className="text-indigo-600" />
+          <span>Lọc môn học</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid w-full min-w-[550px] grid-cols-1 gap-3 md:w-auto md:grid-cols-2">
+          {/* Tìm kiếm từ khóa */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Nhập mã, tên môn học cần tìm..."
+              placeholder="Tìm theo mã hoặc tên môn học..."
               value={filters.keyword}
-              onChange={(e) =>
-                setFilters((prev) => ({ ...prev, keyword: e.target.value }))
-              }
-              className="pl-10 pr-4 py-2.5 w-full text-base border border-gray-300 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all placeholder:text-gray-400"
+              onChange={(e) => setFilters((prev) => ({ ...prev, keyword: e.target.value }))}
+              className="w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2.5 pr-3 pl-9 text-sm transition-all placeholder:text-slate-400 hover:bg-white focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:outline-none"
             />
           </div>
 
+          {/* Chọn phòng ban/khoa */}
           <div className="relative">
             <select
               value={filters.departmentId}
@@ -150,127 +140,143 @@ const MonHocList = () => {
                 }))
               }
               disabled={isLoadingDepartments}
-              className="px-4 py-2.5 w-full text-base border border-gray-300 rounded-xl bg-gray-50/50 hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all text-gray-700 disabled:opacity-60 appearance-none cursor-pointer"
+              className="w-full cursor-pointer appearance-none rounded-lg border border-slate-200 bg-slate-50/50 py-2.5 pr-8 pl-3 text-sm text-slate-700 transition-all hover:bg-white focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:outline-none disabled:opacity-60"
             >
-              <option value="">-- Tất cả phòng ban --</option>
-              {departments?.map((dept: any) => (
+              <option value="">-- Tất cả khoa quản lý --</option>
+              {departments?.map((dept) => (
                 <option key={dept.id} value={dept.id}>
                   {dept.deptName}
                 </option>
               ))}
             </select>
+            <ChevronDown className="pointer-events-none absolute top-1/2 right-2.5 h-4 w-4 -translate-y-1/2 text-slate-400" />
             {isLoadingDepartments && (
-              <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 animate-spin text-gray-400" />
+              <Loader2 className="absolute top-1/2 right-8 h-4 w-4 -translate-y-1/2 animate-spin text-slate-400" />
             )}
           </div>
         </div>
       </div>
 
       {/* --- Bảng Danh Sách Dữ Liệu --- */}
-      <div className="overflow-hidden border border-gray-100 rounded-2xl bg-white shadow-sm">
-        <div className="overflow-x-auto custom-scrollbar">
-          <table className="min-w-[1150px] w-full table-fixed divide-y divide-gray-100 text-left text-base">
-            <thead className="bg-gray-50 text-gray-600 font-bold uppercase tracking-wider text-sm border-b border-gray-200">
-              <tr>
-                <th className="px-6 py-4 font-bold w-30">Mã môn học</th>
-                <th className="px-6 py-4 font-bold w-[220px]">Tên môn học</th>
-                <th className="px-6 py-4 font-bold text-center w-28">
-                  Tín chỉ
-                </th>
-                <th className="px-6 py-4 font-bold text-center w-36">
-                  Loại môn học
-                </th>
-                <th className="px-6 py-4 font-bold text-center w-24">
-                  Lý thuyết
-                </th>
-                <th className="px-6 py-4 font-bold text-center w-24">
-                  Thực hành
-                </th>
-                <th className="px-6 py-4 font-bold text-center w-24">Thi</th>
-                <th className="px-6 py-4 font-bold min-w-[180px]">
-                  Đơn vị quản lý
-                </th>
-                <th className="px-6 py-4 text-center w-28 font-bold">
-                  Chức năng
-                </th>
+      <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left text-sm">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50/80 text-xs font-bold tracking-tight text-slate-600 uppercase">
+                <th className="w-32 px-4 py-4 whitespace-nowrap">Mã môn</th>
+                <th className="min-w-[260px] px-4 py-4">Tên môn học</th>
+                <th className="w-28 px-4 py-4 text-center whitespace-nowrap">Tín chỉ</th>
+                <th className="w-40 px-4 py-4 text-center whitespace-nowrap">Khối kiến thức</th>
+                <th className="w-24 px-4 py-4 text-center whitespace-nowrap">Lý thuyết</th>
+                <th className="w-24 px-4 py-4 text-center whitespace-nowrap">Thực hành</th>
+                <th className="w-20 px-4 py-4 text-center whitespace-nowrap">Thi</th>
+                <th className="min-w-[180px] px-4 py-4">Đơn vị quản lý</th>
+                <th className="w-24 px-4 py-4 text-right whitespace-nowrap">Thao tác</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200 text-gray-700">
+
+            <tbody className="divide-y divide-slate-100 text-slate-700">
               {isLoadingSubjects ? (
                 <tr>
-                  <td
-                    colSpan={9}
-                    className="px-6 py-16 text-center text-gray-400"
-                  >
-                    <div className="flex flex-col items-center justify-center gap-3">
-                      <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-                      <span className="text-base font-medium text-gray-500">
-                        Đang tải danh sách môn học...
-                      </span>
+                  <td colSpan={9} className="px-4 py-16 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <Loader2 className="h-6 w-6 animate-spin text-indigo-600" />
+                      <span className="text-sm font-medium text-slate-500">Đang tải dữ liệu môn học...</span>
                     </div>
                   </td>
                 </tr>
               ) : !subjects || subjects.length === 0 ? (
                 <tr>
-                  <td
-                    colSpan={9}
-                    className="px-6 py-16 text-center text-gray-500 text-base"
-                  >
-                    Không tìm thấy bản ghi nào hợp lệ.
+                  <td colSpan={9} className="px-4 py-16 text-center">
+                    <div className="flex flex-col items-center justify-center gap-2">
+                      <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-slate-400">
+                        <BookOpen size={28} />
+                      </div>
+                      <p className="text-sm font-bold text-slate-700">Không tìm thấy môn học nào</p>
+                      <p className="text-xs text-slate-400">
+                        Thử điều chỉnh lại bộ lọc tìm kiếm hoặc thêm mới môn học.
+                      </p>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 subjects.map((subject) => (
-                  <tr
-                    key={subject.id}
-                    className="hover:bg-indigo-50/40 transition-colors group"
-                  >
-                    <td className="px-6 py-4.5 font-mono text-sm font-bold text-gray-800">
-                      {subject.subjectCode}
+                  <tr key={subject.id} className="group transition-colors hover:bg-slate-50/80">
+                    {/* Mã môn học */}
+                    <td className="px-4 py-3.5 font-mono font-bold whitespace-nowrap text-slate-800">
+                      <span className="rounded border border-slate-200 bg-slate-100 px-2.5 py-1">
+                        {subject.subjectCode}
+                      </span>
                     </td>
-                    <td className="px-6 py-4.5">
-                      {/* 5. Sự kiện Click truyền nguyên object sang hàm xử lý mở Modal */}
+
+                    {/* Tên môn học - Cho phép tự do xuống hàng */}
+                    <td className="px-4 py-3.5">
                       <button
+                        type="button"
                         onClick={() => handleOpenEditModal(subject)}
-                        className="text-indigo-600 font-bold hover:text-indigo-800 hover:underline text-left transition-colors cursor-pointer text-base focus:outline-none"
+                        className="text-left text-sm leading-snug font-bold text-slate-800 transition-colors hover:text-indigo-600"
                       >
                         {subject.subjectName}
                       </button>
                     </td>
-                    <td className="px-6 py-4.5 text-center">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-100">
+
+                    {/* Tín chỉ */}
+                    <td className="px-4 py-3.5 text-center whitespace-nowrap">
+                      <span className="inline-block rounded border border-slate-200/60 bg-slate-50 px-2.5 py-1 font-bold text-slate-900">
                         {subject.credits} TC
                       </span>
                     </td>
-                    <td className="px-6 py-4.5 text-center">
+
+                    {/* Loại môn học */}
+                    <td className="px-4 py-3.5 text-center whitespace-nowrap">
                       {renderSubjectType(subject.knowledgeBlock)}
                     </td>
-                    <td className="px-6 py-4.5 text-center font-medium text-gray-900">
+
+                    {/* Lý thuyết / Thực hành / Thi */}
+                    <td className="px-4 py-3.5 text-center font-medium whitespace-nowrap text-slate-700">
                       {subject.theoryHours}h
                     </td>
-                    <td className="px-6 py-4.5 text-center font-medium text-gray-900">
+                    <td className="px-4 py-3.5 text-center font-medium whitespace-nowrap text-slate-700">
                       {subject.practiceHours}h
                     </td>
-                    <td className="px-6 py-4.5 text-center font-medium text-gray-950">
+                    <td className="px-4 py-3.5 text-center font-medium whitespace-nowrap text-slate-700">
                       {subject.testHours}h
                     </td>
-                    <td className="px-6 py-4.5">
-                      <div className="flex items-center gap-2 text-sm text-gray-800 font-medium">
-                        <Layers className="w-4 h-4 text-gray-400" />
-                        <span>{getDepartmentName(subject.departmentId)}</span>
+
+                    {/* Đơn vị quản lý */}
+                    <td className="px-4 py-3.5">
+                      <div className="flex items-center gap-1.5 font-medium text-slate-700">
+                        <Layers size={14} className="shrink-0 text-slate-400" />
+                        <span
+                          className="max-w-[200px] truncate"
+                          title={getDepartmentName(subject.departmentId)}
+                        >
+                          {getDepartmentName(subject.departmentId)}
+                        </span>
                       </div>
                     </td>
-                    <td className="px-6 py-4.5 text-center">
-                      <button
-                        disabled={isDeletingSubject}
-                        onClick={() =>
-                          handleDelete(subject.id, subject.subjectName)
-                        }
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all inline-flex items-center disabled:opacity-40 group-hover:scale-105 cursor-pointer"
-                        title="Xóa dòng này"
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
+
+                    {/* Thao tác */}
+                    <td className="px-4 py-3.5 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-1 opacity-80 transition-opacity group-hover:opacity-100">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEditModal(subject)}
+                          className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                          title="Chỉnh sửa"
+                        >
+                          <Edit2 size={16} />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={isDeletingSubject}
+                          onClick={() => handleDelete(subject.id, subject.subjectName)}
+                          className="rounded-md p-1.5 text-slate-400 transition-colors hover:bg-rose-50 hover:text-rose-600 disabled:opacity-40"
+                          title="Xóa môn học"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))
@@ -280,22 +286,20 @@ const MonHocList = () => {
         </div>
       </div>
 
-      {/* --- 6. Gọi Modal đồng bộ Tạo mới / Cập nhật --- */}
+      {/* Modal Tạo mới / Cập nhật */}
       <CreateMonHocModal
         isOpen={isModalOpen}
-        initialData={subjectSelected} // Truyền dữ liệu sang (null = Create, object = Update)
+        initialData={subjectSelected}
         onClose={handleCloseModal}
-        isPending={false} // Hoặc logic loading thêm mới từ Provider nếu cần
+        isPending={false}
         onSubmit={(data, cleanResetForm) => {
-          // Logic xử lý tạo mới gốc từ cha (nếu có)
-          // Ví dụ: createMonHocApi(data)
-          cleanResetForm();
-          handleCloseModal();
-          refetch();
+          cleanResetForm()
+          handleCloseModal()
+          refetch()
         }}
       />
     </div>
-  );
-};
+  )
+}
 
-export default MonHocList;
+export default MonHocList

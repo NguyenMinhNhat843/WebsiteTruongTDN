@@ -1,203 +1,239 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { useHocSinhContext } from "../../HocSinhProvider";
-import { $api } from "../../../../../api/client";
+import React, { useState, useMemo, useEffect } from 'react'
+import { useHocSinhContext } from '../../HocSinhProvider'
+import { $api } from '../../../../../api/client'
 import {
   Filter,
-  RefreshCw,
-  Search,
+  RotateCcw,
   BookOpen,
   GraduationCap,
+  Users,
   Loader2,
   AlertCircle,
-} from "lucide-react";
+  X,
+  ChevronDown,
+  IdCard,
+} from 'lucide-react'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const Filters = () => {
-  const { data: majorList } = $api.useQuery("get", "/majors");
-  const { data: rawKhoaHocList, isLoading: isLoadingKhoaHocs } = $api.useQuery(
-    "get",
-    "/batches",
-  );
+  // Call APIs lấy dữ liệu Ngành, Khóa học và Lớp học
+  const { data: majorList } = $api.useQuery('get', '/majors')
+  const { data: rawKhoaHocList, isLoading: isLoadingKhoaHocs } = $api.useQuery('get', '/batches')
+  const { data: rawClassList, isLoading: isLoadingClasses } = $api.useQuery('get', '/classes')
 
-  const { setFilters, filters } = useHocSinhContext();
+  const { setFilters, filters } = useHocSinhContext()
 
-  // Giữ lại state cục bộ riêng cho keyword để làm debounce mượt mà hơn khi gõ phím
-  const [keywordInput, setKeywordInput] = useState(filters.keyword || "");
+  // State cục bộ riêng cho mã sinh viên để debounce gõ phím
+  const [studentCodeInput, setStudentCodeInput] = useState(filters?.studentCode || '')
 
-  // 1. Debounce riêng cho ô Tìm kiếm Từ khóa (đợi ngưng gõ 400ms mới call API)
+  // 1. Debounce cho ô Mã sinh viên (400ms mới setFilters)
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       setFilters((prev) => ({
         ...prev,
-        keyword: keywordInput.trim() || undefined,
-        page: 1, // Reset về trang 1 khi tìm kiếm từ khóa mới
-      }));
-    }, 400);
+        studentCode: studentCodeInput.trim() || undefined,
+        page: 1, // Reset về trang 1 khi tìm kiếm mã mới
+      }))
+    }, 400)
 
-    return () => clearTimeout(delayDebounceFn);
-  }, [keywordInput, setFilters]);
+    return () => clearTimeout(delayDebounceFn)
+  }, [studentCodeInput, setFilters])
 
-  // Đồng bộ lại ô input nếu bộ lọc bị xóa từ bên ngoài (hoặc nút Xóa bộ lọc)
+  // Đồng bộ lại ô input nếu bộ lọc bị xóa từ bên ngoài
   useEffect(() => {
-    setKeywordInput(filters.keyword || "");
-  }, [filters.keyword]);
-
-  // Quy đổi dữ liệu sang định dạng { value, label } cho Khóa học dựa trên majorId của context
-  const filteredBatchesOptions = useMemo(() => {
-    if (!filters.majorId) return [];
-    const selectedMajorId = Number(filters.majorId);
-
-    return (rawKhoaHocList || [])
-      .filter((batch: any) => Number(batch.majorId) === selectedMajorId)
-      .map((batch: any) => ({
-        value: batch.id,
-        label: batch.name || batch.batchName || `Khóa ${batch.id}`,
-      }));
-  }, [filters.majorId, rawKhoaHocList]);
+    setStudentCodeInput(filters?.studentCode || '')
+  }, [filters?.studentCode])
 
   // Chuẩn hóa danh sách Ngành học
   const majorOptions = useMemo(() => {
     return (majorList || []).map((major: any) => ({
-      value: major.id,
+      value: Number(major.id),
       label: major.name || major.majorName || `Ngành ${major.id}`,
-    }));
-  }, [majorList]);
+    }))
+  }, [majorList])
 
-  // Thay đổi ngành học -> Cập nhật context trực tiếp & reset khóa học liền lúc
+  // Destructure lấy các thuộc tính cần dùng ra ngoài
+  const majorId = filters?.majorId
+  const batchId = filters?.batchId
+
+  // Lọc Khóa học dựa trên majorId đang chọn
+  const filteredBatchesOptions = useMemo(() => {
+    if (!majorId) return []
+    const selectedMajorId = Number(majorId)
+
+    return (rawKhoaHocList || [])
+      .filter((batch: any) => Number(batch.majorId) === selectedMajorId)
+      .map((batch: any) => ({
+        value: Number(batch.id),
+        label: batch.name || batch.batchName || `Khóa ${batch.id}`,
+      }))
+  }, [majorId, rawKhoaHocList])
+
+  // Lọc Lớp học dựa trên batchId đang chọn
+  const filteredClassOptions = useMemo(() => {
+    if (!batchId) return []
+    const selectedBatchId = Number(batchId)
+
+    return (rawClassList || [])
+      .filter((cls: any) => Number(cls.batchId) === selectedBatchId)
+      .map((cls: any) => ({
+        value: Number(cls.id),
+        label: cls.className || cls.classCode || `Lớp ${cls.id}`,
+      }))
+  }, [batchId, rawClassList])
+
+  // Handler: Thay đổi ngành học
   const handleMajorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+    const value = e.target.value
     setFilters((prev) => ({
       ...prev,
       majorId: value ? Number(value) : undefined,
-      batchId: undefined, // Reset Khóa học ngay tại đây
+      batchId: undefined, // Reset Khóa học
+      classId: undefined, // Reset Lớp học
       page: 1,
-    }));
-  };
+    }))
+  }
 
-  // Thay đổi khóa học -> Cập nhật context trực tiếp
+  // Handler: Thay đổi khóa học
   const handleBatchChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+    const value = e.target.value
     setFilters((prev) => ({
       ...prev,
       batchId: value ? Number(value) : undefined,
+      classId: undefined, // Reset Lớp học
       page: 1,
-    }));
-  };
+    }))
+  }
 
-  // Nút xóa bộ lọc ở thanh Header
-  const handleClearFilters = () => {
-    setKeywordInput("");
+  // Handler: Thay đổi lớp học
+  const handleClassChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value
     setFilters((prev) => ({
       ...prev,
-      keyword: undefined,
+      classId: value ? Number(value) : undefined,
+      page: 1,
+    }))
+  }
+
+  // Handler: Nút đặt lại bộ lọc
+  const handleClearFilters = () => {
+    setStudentCodeInput('')
+    setFilters((prev) => ({
+      ...prev,
+      studentCode: undefined,
       majorId: undefined,
       batchId: undefined,
+      classId: undefined,
       page: 1,
-    }));
-  };
+    }))
+  }
 
-  // Kiểm tra xem đang có bộ lọc nào được active không (bỏ qua page, limit, status...)
+  // Kiểm tra xem đang có bộ lọc nâng cao nào active không
   const hasActiveFilters = Boolean(
-    filters.keyword || filters.majorId || filters.batchId,
-  );
+    filters?.studentCode || filters?.majorId || filters?.batchId || filters?.classId,
+  )
 
   return (
-    <div className="p-4 bg-white rounded-xl shadow-sm border border-gray-200/80 mb-6 transition-all duration-200 hover:shadow-md">
-      {/* Tiêu đề & Nút xóa bộ lọc đưa lên cùng 1 hàng */}
-      <div className="flex items-center justify-between mb-4 border-b border-gray-100 pb-2">
-        <div className="flex items-center gap-2 text-gray-800 font-semibold text-base">
-          <Filter className="w-5 h-5 text-blue-500" />
-          Bộ lọc tìm kiếm
+    <div className="mb-6 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md">
+      {/* HEADER BỘ LỌC */}
+      <div className="mb-4 flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="flex items-center gap-2.5 text-sm font-semibold tracking-wide text-slate-800">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+            <Filter className="h-4 w-4" />
+          </div>
+          <span>Bộ lọc tìm kiếm</span>
         </div>
 
         {hasActiveFilters && (
           <button
             type="button"
             onClick={handleClearFilters}
-            className="px-2.5 py-1 text-xs font-medium text-gray-500 hover:text-red-600 border border-gray-200 rounded-md hover:bg-red-50 hover:border-red-200 transition-all duration-150 flex items-center gap-1 cursor-pointer"
+            className="group inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition-all hover:border-rose-200 hover:bg-rose-50 hover:text-rose-600"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
-            Xóa bộ lọc
+            <RotateCcw className="h-3.5 w-3.5 text-slate-400 transition-transform duration-300 group-hover:-rotate-90 group-hover:text-rose-500" />
+            <span>Đặt lại bộ lọc</span>
           </button>
         )}
       </div>
 
-      {/* Lưới 3 ô nhập liệu có kích thước hoàn toàn bằng đều nhau */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* 1. Ô TÌM KIẾM TỪ KHÓA */}
+      {/* GRID CÁC TRƯỜNG LỌC */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {/* 1. Ô TÌM KIẾM THEO MÃ SINH VIÊN */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-gray-600 flex items-center gap-1">
-            Từ khóa
-          </label>
+          <label className="text-xs font-semibold text-slate-600">Mã sinh viên</label>
           <div className="relative flex items-center">
-            <span className="absolute left-3 text-gray-400">
-              <Search className="w-4 h-4" />
+            <span className="pointer-events-none absolute left-3 text-slate-400">
+              <IdCard className="h-4 w-4" />
             </span>
             <input
               type="text"
-              placeholder="Mã SV, họ tên, email..."
-              value={keywordInput}
-              onChange={(e) => setKeywordInput(e.target.value)}
-              className="w-full pl-9 pr-3 py-2.5 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+              placeholder="Nhập mã sinh viên..."
+              value={studentCodeInput}
+              onChange={(e) => setStudentCodeInput(e.target.value)}
+              className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pr-8 pl-9 text-xs font-medium text-slate-700 placeholder-slate-400 transition-all focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none"
             />
+            {studentCodeInput && (
+              <button
+                type="button"
+                onClick={() => setStudentCodeInput('')}
+                className="absolute right-2.5 text-slate-400 hover:text-slate-600"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
           </div>
         </div>
 
         {/* 2. Ô CHỌN NGÀNH HỌC */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-gray-600">
-            Ngành học
-          </label>
+          <label className="text-xs font-semibold text-slate-600">Ngành học</label>
           <div className="relative flex items-center">
-            <span className="absolute left-3 text-gray-400 pointer-events-none">
-              <BookOpen className="w-4 h-4" />
+            <span className="pointer-events-none absolute left-3 text-slate-400">
+              <BookOpen className="h-4 w-4" />
             </span>
             <select
-              value={filters.majorId || ""}
+              value={filters?.majorId || ''}
               onChange={handleMajorChange}
-              className="w-full pl-9 pr-8 py-2.5 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none cursor-pointer"
+              className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pr-8 pl-9 text-xs font-medium text-slate-700 transition-all focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none"
             >
-              <option value="">-- Chọn ngành học --</option>
-              {majorOptions.map((option: any) => (
+              <option value="">-- Tất cả ngành học --</option>
+              {majorOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
             </select>
-            {/* Custom mũi tên chỉ xuống để đồng nhất giao diện */}
-            <span className="absolute right-3 text-gray-400 pointer-events-none text-xs">
-              ▼
+            <span className="pointer-events-none absolute right-3 text-slate-400">
+              <ChevronDown className="h-4 w-4" />
             </span>
           </div>
         </div>
 
-        {/* 3. Ô CHỌN KHÓA HỌC (Phụ thuộc vào ngành học) */}
+        {/* 3. Ô CHỌN KHÓA HỌC */}
         <div className="flex flex-col gap-1.5">
-          <label className="text-xs font-semibold text-gray-600">
-            Khóa học
-          </label>
+          <label className="text-xs font-semibold text-slate-600">Khóa học</label>
           <div className="relative flex items-center">
-            <span className="absolute left-3 text-gray-400 pointer-events-none">
+            <span className="pointer-events-none absolute left-3 text-slate-400">
               {isLoadingKhoaHocs ? (
-                <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
-              ) : !filters.majorId ? (
-                <AlertCircle className="w-4 h-4 text-amber-500" />
+                <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
+              ) : !filters?.majorId ? (
+                <AlertCircle className="h-4 w-4 text-amber-500" />
               ) : (
-                <GraduationCap className="w-4 h-4" />
+                <GraduationCap className="h-4 w-4" />
               )}
             </span>
             <select
-              value={filters.batchId || ""}
+              value={filters?.batchId || ''}
               onChange={handleBatchChange}
-              disabled={!filters.majorId || isLoadingKhoaHocs}
-              className="w-full pl-9 pr-8 py-2.5 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all appearance-none cursor-pointer disabled:bg-gray-50 disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed"
+              disabled={!filters?.majorId || isLoadingKhoaHocs}
+              className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pr-8 pl-9 text-xs font-medium text-slate-700 transition-all focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400"
             >
-              {!filters.majorId ? (
-                <option value="">⚠️ Chọn ngành trước</option>
+              {!filters?.majorId ? (
+                <option value="">⚠️ Chọn ngành học trước</option>
               ) : (
                 <>
-                  <option value="">-- Chọn khóa học --</option>
-                  {filteredBatchesOptions.map((option: any) => (
+                  <option value="">-- Tất cả khóa học --</option>
+                  {filteredBatchesOptions.map((option) => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
@@ -205,14 +241,52 @@ const Filters = () => {
                 </>
               )}
             </select>
-            <span className="absolute right-3 text-gray-400 pointer-events-none text-xs">
-              ▼
+            <span className="pointer-events-none absolute right-3 text-slate-400">
+              <ChevronDown className="h-4 w-4" />
+            </span>
+          </div>
+        </div>
+
+        {/* 4. Ô CHỌN LỚP HỌC */}
+        <div className="flex flex-col gap-1.5">
+          <label className="text-xs font-semibold text-slate-600">Lớp học</label>
+          <div className="relative flex items-center">
+            <span className="pointer-events-none absolute left-3 text-slate-400">
+              {isLoadingClasses ? (
+                <Loader2 className="h-4 w-4 animate-spin text-indigo-500" />
+              ) : !filters?.batchId ? (
+                <AlertCircle className="h-4 w-4 text-amber-500" />
+              ) : (
+                <Users className="h-4 w-4" />
+              )}
+            </span>
+            <select
+              value={filters?.classId || ''}
+              onChange={handleClassChange}
+              disabled={!filters?.batchId || isLoadingClasses}
+              className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-white py-2.5 pr-8 pl-9 text-xs font-medium text-slate-700 transition-all focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 focus:outline-none disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400"
+            >
+              {!filters?.batchId ? (
+                <option value="">⚠️ Chọn khóa học trước</option>
+              ) : (
+                <>
+                  <option value="">-- Tất cả lớp học --</option>
+                  {filteredClassOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </>
+              )}
+            </select>
+            <span className="pointer-events-none absolute right-3 text-slate-400">
+              <ChevronDown className="h-4 w-4" />
             </span>
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Filters;
+export default Filters

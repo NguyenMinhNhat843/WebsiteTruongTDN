@@ -306,6 +306,23 @@ export interface paths {
         patch: operations["AdmissionProfileController_update"];
         trace?: never;
     };
+    "/admission-profiles/student/{studentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Chi tiết hồ sơ xét tuyển theo ID học sinh */
+        get: operations["AdmissionProfileController_findByStudentId"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/admission-profiles/{id}/status": {
         parameters: {
             query?: never;
@@ -2248,54 +2265,6 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
-        DocumentProgressDto: {
-            current: number;
-            total: number;
-        };
-        QualifiedStudentResponseDto: {
-            id: number;
-            studentCode: string;
-            identityNumber: string;
-            userId: number;
-            /**
-             * @default THCS
-             * @enum {string}
-             */
-            educationLevel: "THCS" | "THPT";
-            /**
-             * @default STUDYING
-             * @enum {string}
-             */
-            status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
-            fullName: string;
-            avatarUrl: string | null;
-            batchId: number | null;
-            classId: number | null;
-            /** Format: date-time */
-            dob: string | null;
-            email: string | null;
-            /** Format: date-time */
-            enrollmentDate: string | null;
-            /** @enum {string|null} */
-            gender: "MALE" | "FEMALE" | "OTHER" | null;
-            /** Format: date-time */
-            graduationDate: string | null;
-            majorId: number | null;
-            phone: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            batch?: components["schemas"]["BatchDto"];
-            class?: components["schemas"]["ClassDto"];
-            major?: components["schemas"]["MajorDto"];
-            documentProgress?: components["schemas"]["DocumentProgressDto"];
-            isQualified: boolean;
-        };
-        ResponseStudentPaginationDto: {
-            students: components["schemas"]["QualifiedStudentResponseDto"][];
-            total: number;
-        };
         StudentDetailDto: {
             id: number;
             studentCode: string;
@@ -2333,7 +2302,10 @@ export interface components {
             batch?: components["schemas"]["BatchDto"];
             class?: components["schemas"]["ClassDto"];
             major?: components["schemas"]["MajorDto"];
-            documentProgress?: components["schemas"]["DocumentProgressDto"];
+        };
+        ResponseStudentPaginationDto: {
+            data: components["schemas"]["StudentDetailDto"][];
+            total: number;
         };
         AssignStudentsToClassesDto: {
             batchId?: number;
@@ -3131,7 +3103,7 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            headOfDepartmentName?: Record<string, never> | null;
+            headOfDepartmentName?: string | null;
             totalMajors: number;
             totalStaffs: number;
             totalStudents: number;
@@ -3281,45 +3253,18 @@ export interface components {
             curriculumSubjects?: components["schemas"]["CurriculumSubjectPayload"][];
         };
         CreateSemesterDto: {
-            /**
-             * @description Tên học kỳ
-             * @example HK1-2026
-             */
             name: string;
-            /**
-             * @description Năm học của học kỳ
-             * @example 2026
-             */
-            year: number;
-            /**
-             * @description Học kỳ thứ mấy trong năm (1 hoặc 2)
-             * @example 1
-             */
-            term: number;
-            /**
-             * @description Ngày bắt đầu học kỳ
-             * @example 2026-09-01
-             */
+            schoolYear: string | null;
+            year: number | null;
+            term: number | null;
+            /** Format: date-time */
             startDate: string;
-            /**
-             * @description Ngày kết thúc học kỳ
-             * @example 2027-01-15
-             */
+            /** Format: date-time */
             endDate: string;
-            /**
-             * @description Số tuần học chính thức trong học kỳ (không bắt buộc)
-             * @example 18
-             */
-            teachingWeeks?: number;
-            schoolYear?: string;
-            /** @enum {string} */
-            status?: "CLOSE" | "ACTIVE" | "UPCOMING" | "DRAFT";
-            /**
-             * @description Đánh dấu là học kỳ hiện tại
-             * @default false
-             * @example false
-             */
+            teachingWeeks: number | null;
             isCurrent: boolean;
+            /** @enum {string|null} */
+            status: "CLOSE" | "ACTIVE" | "UPCOMING" | "DRAFT" | null;
         };
         SemesterResponseDto: {
             /** @example 1 */
@@ -3364,45 +3309,18 @@ export interface components {
             feeInvoiceCount?: number;
         };
         UpdateSemesterDto: {
-            /**
-             * @description Tên học kỳ
-             * @example HK1-2026
-             */
             name?: string;
-            /**
-             * @description Năm học của học kỳ
-             * @example 2026
-             */
-            year?: number;
-            /**
-             * @description Học kỳ thứ mấy trong năm (1 hoặc 2)
-             * @example 1
-             */
-            term?: number;
-            /**
-             * @description Ngày bắt đầu học kỳ
-             * @example 2026-09-01
-             */
+            schoolYear?: string | null;
+            year?: number | null;
+            term?: number | null;
+            /** Format: date-time */
             startDate?: string;
-            /**
-             * @description Ngày kết thúc học kỳ
-             * @example 2027-01-15
-             */
+            /** Format: date-time */
             endDate?: string;
-            /**
-             * @description Số tuần học chính thức trong học kỳ (không bắt buộc)
-             * @example 18
-             */
-            teachingWeeks?: number;
-            schoolYear?: string;
-            /** @enum {string} */
-            status?: "CLOSE" | "ACTIVE" | "UPCOMING" | "DRAFT";
-            /**
-             * @description Đánh dấu là học kỳ hiện tại
-             * @default false
-             * @example false
-             */
-            isCurrent: boolean;
+            teachingWeeks?: number | null;
+            isCurrent?: boolean;
+            /** @enum {string|null} */
+            status?: "CLOSE" | "ACTIVE" | "UPCOMING" | "DRAFT" | null;
         };
         CreateClassDto: {
             classCode: string;
@@ -3803,7 +3721,85 @@ export interface components {
             classSubjectIds: number[];
             haveTongKetSheet?: boolean;
         };
-        ClassSubjectResponseDto: {
+        StaffDto: {
+            id?: number;
+            /** @example Nguyễn Văn C */
+            fullName: string;
+            /**
+             * Format: date-time
+             * @example 1990-01-01
+             */
+            dob: string;
+            /** @enum {string} */
+            EmployeeRole?: "STAFF" | "TEACHER";
+            /** @example staff@school.edu.vn */
+            email?: string;
+            /** @example 0901234567 */
+            phone?: string;
+            /** @example 0251369874 */
+            identityNumber?: string;
+            /** @description true: Nam, false: Nữ */
+            gender?: boolean;
+            /** @description Mã số nhân viên (duy nhất) */
+            staffCode?: string;
+            userId?: number | null;
+            position?: Record<string, never> | null;
+            address?: string | null;
+            avatarUrl?: string | null;
+            contractType?: string | null;
+            departmentId?: number | null;
+            isTeacher?: boolean | null;
+            salaryCoefficient?: number | null;
+            hireDate?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
+            /** Format: date-time */
+            updatedAt?: string;
+        };
+        SemesterDto: {
+            id: number;
+            name: string;
+            schoolYear: string | null;
+            year: number | null;
+            term: number | null;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string;
+            teachingWeeks: number | null;
+            isCurrent: boolean;
+            /** @enum {string|null} */
+            status: "CLOSE" | "ACTIVE" | "UPCOMING" | "DRAFT" | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        GradeStudentDto: {
+            id: number;
+            studentId: number;
+            classSubjectId: number;
+            kttx1: number | null;
+            kttx2: number | null;
+            kttx3: number | null;
+            ktdk1: number | null;
+            ktdk2: number | null;
+            ktdk3: number | null;
+            ktdk4: number | null;
+            diemKiemTra1: number | null;
+            diemKiemTra2: number | null;
+            diemBaoCao: number | null;
+            diemChuyenMon: number | null;
+            diemYThuc: number | null;
+            diemTongKet1: number | null;
+            diemTongKet2: number | null;
+            diemTB: number | null;
+            rating: number | null;
+            note: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ClassSubjectDetailDto: {
             id: number;
             teacherId: number | null;
             classId: number | null;
@@ -3813,83 +3809,12 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
-            baseClass?: components["schemas"]["ClassResponseDto"];
-            teacher?: components["schemas"]["StaffResponseDto"];
-            semester?: components["schemas"]["SemesterResponseDto"];
-            subject?: components["schemas"]["ResponseSubjectDto"];
-        };
-        GradeStudentDto: {
-            id: number;
-            kttx1?: number;
-            kttx2?: number;
-            kttx3?: number;
-            ktdk1?: number;
-            ktdk2?: number;
-            ktdk3?: number;
-            ktdk4?: number;
-            rating?: string;
-            diemKiemTra1?: number;
-            diemKiemTra2?: number;
-            diemTB?: number;
-            diemTongKet1?: number;
-            diemTongKet2?: number;
-            finalScore?: number;
-            diemBaoCao?: number;
-            diemChuyenMon?: number;
-            diemYThuc?: number;
-            courseOfferId: number;
-            /**
-             * @description ID của sinh viên đăng ký
-             * @example 20260001
-             */
-            studentId: number;
-            note?: string | null;
-            /**
-             * Format: date-time
-             * @description Thời điểm tạo bản ghi
-             * @example 2026-05-16T02:15:00.000Z
-             */
-            createdAt: string;
-            /**
-             * Format: date-time
-             * @description Thời điểm cập nhật bản ghi gần nhất
-             * @example 2026-05-16T03:00:00.000Z
-             */
-            updatedAt: string;
-            /** @description Thông tin chi tiết của sinh viên đăng ký */
-            student: components["schemas"]["StudentDetailDto"];
-        };
-        CourseOfferDetailResponseDto: {
-            id: number;
-            courseCode: string;
-            courseName?: string | null;
-            teacherId?: number | null;
-            classId?: number | null;
-            semesterId: number;
-            subjectId: number;
-            /** @example 40 */
-            maxStudents: number;
-            /** @example 35 */
-            currentStudents: number;
-            /** @enum {string} */
-            status: "planned" | "open" | "closed" | "cancelled";
-            /** Format: date-time */
-            startDate?: string | null;
-            /** Format: date-time */
-            endDate?: string | null;
-            /** Format: date-time */
-            registrationStart?: string | null;
-            /** Format: date-time */
-            registrationEnd?: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-            baseClass?: components["schemas"]["ClassResponseDto"] | null;
-            subject?: components["schemas"]["ResponseSubjectDto"] | null;
-            semester?: components["schemas"]["SemesterResponseDto"] | null;
-            teacher?: components["schemas"]["StaffResponseDto"] | null;
-            gradeStudents?: components["schemas"]["GradeStudentDto"][] | null;
+            teacher?: components["schemas"]["StaffDto"];
+            subject?: components["schemas"]["ClassDto"];
+            baseClass?: components["schemas"]["SemesterDto"];
+            semester?: components["schemas"]["SemesterDto"];
+            gradeStudents?: components["schemas"]["GradeStudentDto"][];
+            classSubjectSessions?: components["schemas"]["ClassSubjectSessionDto"][];
         };
         StudentInfoResponseDto: {
             studentId: number;
@@ -3953,50 +3878,35 @@ export interface components {
             success: boolean;
             data: components["schemas"]["AcademicWidgetDataDto"];
         };
-        UpdateCourseRegistrationDto: {
+        UpdateGradeDto: {
             id?: number;
-            kttx1?: number;
-            kttx2?: number;
-            kttx3?: number;
-            ktdk1?: number;
-            ktdk2?: number;
-            ktdk3?: number;
-            ktdk4?: number;
-            rating?: string;
-            diemKiemTra1?: number;
-            diemKiemTra2?: number;
-            diemTB?: number;
-            diemTongKet1?: number;
-            diemTongKet2?: number;
-            finalScore?: number;
-            diemBaoCao?: number;
-            diemChuyenMon?: number;
-            diemYThuc?: number;
-            courseOfferId?: number;
-            /**
-             * @description ID của sinh viên đăng ký
-             * @example 20260001
-             */
             studentId?: number;
+            classSubjectId?: number;
+            kttx1?: number | null;
+            kttx2?: number | null;
+            kttx3?: number | null;
+            ktdk1?: number | null;
+            ktdk2?: number | null;
+            ktdk3?: number | null;
+            ktdk4?: number | null;
+            diemKiemTra1?: number | null;
+            diemKiemTra2?: number | null;
+            diemBaoCao?: number | null;
+            diemChuyenMon?: number | null;
+            diemYThuc?: number | null;
+            diemTongKet1?: number | null;
+            diemTongKet2?: number | null;
+            diemTB?: number | null;
+            rating?: number | null;
             note?: string | null;
-            /**
-             * Format: date-time
-             * @description Thời điểm tạo bản ghi
-             * @example 2026-05-16T02:15:00.000Z
-             */
+            /** Format: date-time */
             createdAt?: string;
-            /**
-             * Format: date-time
-             * @description Thời điểm cập nhật bản ghi gần nhất
-             * @example 2026-05-16T03:00:00.000Z
-             */
+            /** Format: date-time */
             updatedAt?: string;
-            /** @description Thông tin chi tiết của sinh viên đăng ký */
-            student?: components["schemas"]["StudentDetailDto"];
         };
         SaveGradesDto: {
             classSubjectId: number;
-            grades?: components["schemas"]["UpdateCourseRegistrationDto"][];
+            grades?: components["schemas"]["UpdateGradeDto"][];
         };
         CreateCriterionDto: {
             maxScore: number;
@@ -5379,6 +5289,27 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdmissionProfileDto"];
+                };
+            };
+        };
+    };
+    AdmissionProfileController_findByStudentId: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                studentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdmissionProfileDetailDto"];
                 };
             };
         };
@@ -7673,7 +7604,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CourseOfferDetailResponseDto"];
+                    "application/json": components["schemas"]["ClassSubjectDetailDto"];
                 };
             };
         };
@@ -7767,7 +7698,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ClassSubjectResponseDto"][];
+                    "application/json": components["schemas"]["ClassSubjectDto"][];
                 };
             };
         };

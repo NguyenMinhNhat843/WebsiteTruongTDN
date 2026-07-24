@@ -79,7 +79,6 @@ const MonHocIndex = lazy(() => import('./pages/admin/MonHoc/MonHocIndex'))
 const HocSinhLayout = lazy(() => import('./pages/admin/HoSoHocSinh/HocSinhLayout'))
 const DanhSachHoSoHocSinh = lazy(() => import('./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoHocSinhList'))
 const CreateStudent = lazy(() => import('./pages/admin/HoSoHocSinh/Create/Create'))
-const HoSoHocSinhOne = lazy(() => import('./pages/admin/HoSoHocSinh/HoSoHocSinhOne/HoSoHocSinhOne'))
 const HocKyLayout = lazy(() => import('./pages/admin/HocKy/HocKyLayout'))
 const HocKyList = lazy(() => import('./pages/admin/HocKy/HocKyList'))
 const NhanVienLayout = lazy(() => import('./pages/admin/QuanLyNhanVien/NhanVienLayout'))
@@ -216,7 +215,6 @@ function App() {
               <Route element={<HocSinhLayout />}>
                 <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
                 <Route path="hoc-sinh/ho-so/create" element={<CreateStudent />} />
-                <Route path="hoc-sinh/ho-so/:maSinhVien" element={<HoSoHocSinhOne />} />
               </Route>
 
               <Route path="nam-hoc" element={<NamHocHome />} />

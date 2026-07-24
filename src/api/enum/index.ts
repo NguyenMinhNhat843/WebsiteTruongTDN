@@ -1,16 +1,14 @@
 import type { components } from '../v1'
 
 // Enum cho trạng thái học sinh
-export type StudentStatusEnum = components['schemas']['StudentResponseDto']['status']
-export const STUDENT_STATUS_MAP: Record<NonNullable<StudentStatusEnum>, string> = {
-  registered: 'Đợi tư vấn',
-  pending: 'Chờ xét tuyển',
-  failed: 'Không đậu',
-  approved: 'Đã đậu / Chờ nhập học',
-  studying: 'Đã nhập học / Đang học',
-  dropped: 'Thôi học',
-  graduated: 'Đã tốt nghiệp',
+export type StudentStatusEnum = components['schemas']['StudentDetailDto']['status']
+export const STUDENT_STATUS_MAP: Record<StudentStatusEnum, string> = {
+  STUDYING: 'Đang học',
+  SUSPENDED: 'Tạm dừng học',
+  DROPPED: 'Thôi học',
+  GRADUATED: 'Đã tốt nghiệp',
 }
+
 export const STUDENT_STATUS_TABS = [
   { value: '' as StudentStatusEnum, label: 'Tất cả' },
   ...Object.entries(STUDENT_STATUS_MAP).map(([value, label]) => ({

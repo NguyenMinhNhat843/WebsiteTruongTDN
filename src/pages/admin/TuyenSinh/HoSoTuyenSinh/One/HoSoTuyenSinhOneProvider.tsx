@@ -1,4 +1,5 @@
 import { $api } from '../../../../../api/client'
+import type { AdmissionProfileDto } from '../../../../../api/entity'
 import type { ApplicationStatusEnum, DocumentStatusEnum } from '../../../../../api/enum'
 import type { components } from '../../../../../api/v1'
 import { createContextProvider } from '../../../../../util/createContextProvider'
@@ -7,8 +8,8 @@ type AdmissionProfileDetail = components['schemas']['AdmissionProfileDetailDto']
 type TranscriptSubjectScore = NonNullable<AdmissionProfileDetail['transcriptSubjectScores']>[number]
 
 export const [HoSoTuyenSinhOneProvider, useHoSoTuyenSinhOneContext] = createContextProvider(
-  (initValue: { profileId: number; onClose: () => void }) => {
-    const { profileId, onClose } = initValue
+  (initValue: { profileId: number; onClose: () => void; profile?: AdmissionProfileDto }) => {
+    const { profileId, onClose, profile: initialProfile } = initValue
     // Query Profile Detail (Response tự động infer kiểu AdmissionProfileDetail)
     const {
       data: profileData,
@@ -24,7 +25,7 @@ export const [HoSoTuyenSinhOneProvider, useHoSoTuyenSinhOneContext] = createCont
     )
 
     // Trường hợp API trả về trực tiếp object hoặc unwrap qua response wrapper (.data)
-    const profile = profileData?.profile
+    const profile = initialProfile || profileData?.profile
     const transcriptScores = profileData?.transcriptSubjectScores || []
     const admissionCampaign = profileData?.admissionCampaignMajor?.admissionCampaign
     const admissionCampaignMajor = profileData?.admissionCampaignMajor

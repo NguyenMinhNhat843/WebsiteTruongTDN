@@ -7,15 +7,17 @@ import TabCommonInfo from './TabCommonInfo'
 import TabAdmissionInfo from './TabAdmissionInfo'
 import TabAdmissionDocument from './TabAdmissionDocument'
 import TabNhatKyHoSo from './TabNhatKyHoSo'
+import type { AdmissionProfileDto } from '../../../../../api/entity'
 
 interface Props {
   profileId: number
+  profile?: AdmissionProfileDto
   onClose: () => void
   onRefetch: () => void
 }
-export const HoSoDetailModal = ({ profileId, onClose }: Props) => {
+export const HoSoDetailModal = ({ profileId, profile, onClose }: Props) => {
   return (
-    <HoSoTuyenSinhOneProvider profileId={profileId} onClose={onClose}>
+    <HoSoTuyenSinhOneProvider profileId={profileId} onClose={onClose} profile={profile}>
       <Inner />
     </HoSoTuyenSinhOneProvider>
   )
