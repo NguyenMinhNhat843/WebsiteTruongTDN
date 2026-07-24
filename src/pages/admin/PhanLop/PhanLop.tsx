@@ -35,7 +35,7 @@ const PhanLop = () => {
     })) || []
 
   // LẤY DANH SÁCH SINH VIÊN TỪ STRUCTURE MỚI
-  const studentList = students?.students || []
+  const studentList = students?.data || []
 
   // Hàm helper format ngày sinh (DD/MM/YYYY)
   const formatDate = (dateString?: string | null) => {
@@ -202,7 +202,7 @@ const PhanLop = () => {
                       <td className="px-6 py-4">
                         {st.batch ? (
                           <span className="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 transition-colors group-hover:bg-blue-100">
-                            {`${st.batch.batchCode} - ${st.batch.batchName}`}
+                            {`${st.batch.batchCode}`}
                           </span>
                         ) : (
                           <span className="text-slate-400 italic">Chưa có</span>

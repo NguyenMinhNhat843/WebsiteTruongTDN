@@ -3810,8 +3810,8 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
             teacher?: components["schemas"]["StaffDto"];
-            subject?: components["schemas"]["ClassDto"];
-            baseClass?: components["schemas"]["SemesterDto"];
+            subject?: components["schemas"]["SubjectDto"];
+            baseClass?: components["schemas"]["ClassDto"];
             semester?: components["schemas"]["SemesterDto"];
             gradeStudents?: components["schemas"]["GradeStudentDto"][];
             classSubjectSessions?: components["schemas"]["ClassSubjectSessionDto"][];
@@ -7698,7 +7698,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ClassSubjectDto"][];
+                    "application/json": components["schemas"]["ClassSubjectDetailDto"][];
                 };
             };
         };

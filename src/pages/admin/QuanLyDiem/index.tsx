@@ -341,9 +341,6 @@ const GradeManagementPage = () => {
                     {/* Lớp học */}
                     <td className="px-4 py-3.5">
                       <div className="font-medium text-gray-800">{item.baseClass?.className || 'N/A'}</div>
-                      <div className="text-xs text-gray-400">
-                        Mã lớp: {item.baseClass?.classCode || 'N/A'}
-                      </div>
                     </td>
 
                     {/* Học kỳ */}
