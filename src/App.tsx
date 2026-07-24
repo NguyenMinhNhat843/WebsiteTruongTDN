@@ -33,6 +33,7 @@ import TaoHoSoTuyenSinh from './pages/admin/TuyenSinh/HoSoTuyenSinh/Create/Creat
 import ToHopMonHome from './pages/admin/TuyenSinh/ToHopMon'
 import HoSoTuyenSinhHome from './pages/admin/TuyenSinh/HoSoTuyenSinh'
 import CauHinhTuyenSinhHome from './pages/admin/TuyenSinh/CauHinhTuyenSinh'
+import QuanLyDiem from './pages/admin/QuanLyDiem'
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -178,6 +179,8 @@ function App() {
                 <Route path="dao-tao/tien-do-dao-tao" element={<TienDoDaoTao />} />
                 <Route path="dao-tao/thoi-khoa-bieu" element={<ThoiKhoaBieuWrapper />} />
               </Route>
+              <Route path="quan-ly-diem" element={<QuanLyDiem />} />
+              <Route path="quan-ly-diem/nhap-diem/:idClassSubject" element={<NhapDiemPage />} />
 
               <Route element={<PhanLopLayout />}>
                 <Route path="hoc-sinh/phan-lop" element={<PhanLop />} />

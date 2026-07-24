@@ -1,24 +1,23 @@
-import { $api } from "../../../../../api/client";
-import { createContextProvider } from "../../../../../util/createContextProvider";
-import type { LopHocResponseDto } from "../../LopHocProvider";
+import { $api } from '../../../../../api/client'
+import { createContextProvider } from '../../../../../util/createContextProvider'
 
 export const [NhapDiemProvider, useNhapDiemContext] = createContextProvider(
-  ({
-    props,
-  }: {
-    props: { classSubjectId: number; lopHocDetail: LopHocResponseDto };
-  }) => {
+  ({ props }: { props: { classSubjectId: number } }) => {
     /**
      * Lưu bảng điểm
      */
-    const { mutate: saveGradeTable, isPending: isPendingSaveGradeTable } =
-      $api.useMutation("patch", "/grades/save-grades");
+    const { mutate: saveGradeTable, isPending: isPendingSaveGradeTable } = $api.useMutation(
+      'patch',
+      '/grades/save-grades',
+    )
 
     /**
      * Export excel
      */
-    const { mutate: exportExcel, isPending: isExportingExcel } =
-      $api.useMutation("post", "/course-offers/export-excel");
+    const { mutate: exportExcel, isPending: isExportingExcel } = $api.useMutation(
+      'post',
+      '/class-subject/export-excel',
+    )
 
     /**
      * Lấy bảng điểm của classSubject
@@ -28,8 +27,8 @@ export const [NhapDiemProvider, useNhapDiemContext] = createContextProvider(
       isLoading: isClassSubjectLoading,
       refetch: refetchClassSubject,
     } = $api.useQuery(
-      "get",
-      "/course-offers/{id}",
+      'get',
+      '/class-subject/{id}',
       {
         params: {
           path: {
@@ -40,7 +39,8 @@ export const [NhapDiemProvider, useNhapDiemContext] = createContextProvider(
       {
         enabled: !!props.classSubjectId,
       },
-    );
+    )
+    const baseClass = classSubject?.baseClass
 
     return {
       saveGradeTable,
@@ -50,8 +50,8 @@ export const [NhapDiemProvider, useNhapDiemContext] = createContextProvider(
       classSubject,
       isClassSubjectLoading,
       refetchClassSubject,
+      baseClass,
       props,
-      lopHocDetail: props.lopHocDetail,
-    };
+    }
   },
-);
+)

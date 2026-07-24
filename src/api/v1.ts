@@ -1352,7 +1352,7 @@ export interface paths {
         patch: operations["PostController_update"];
         trace?: never;
     };
-    "/course-offers/{id}": {
+    "/class-subject/{id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -1370,7 +1370,7 @@ export interface paths {
         patch: operations["ClassSubjectController_updateClassSubject"];
         trace?: never;
     };
-    "/course-offers/gen-classSubject-grades": {
+    "/class-subject/gen-classSubject-grades": {
         parameters: {
             query?: never;
             header?: never;
@@ -1387,7 +1387,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-offers/export-excel": {
+    "/class-subject/export-excel": {
         parameters: {
             query?: never;
             header?: never;
@@ -1403,7 +1403,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-offers": {
+    "/class-subject": {
         parameters: {
             query?: never;
             header?: never;
@@ -1420,7 +1420,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/course-offers/student/{id}/export-excel": {
+    "/class-subject/student/{id}/export-excel": {
         parameters: {
             query?: never;
             header?: never;
@@ -2179,9 +2179,6 @@ export interface components {
             studentCode: string;
             identityNumber: string;
             userId: number;
-            batchId?: number;
-            majorId?: number;
-            classId?: number;
             /**
              * @default THCS
              * @enum {string}
@@ -2192,30 +2189,74 @@ export interface components {
              * @enum {string}
              */
             status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
-            /** Format: date-time */
-            enrollmentDate?: string;
-            /** Format: date-time */
-            graduationDate?: string;
             fullName: string;
-            email?: string;
-            /** @enum {string} */
-            gender?: "MALE" | "FEMALE" | "OTHER";
+            avatarUrl: string | null;
+            batchId: number | null;
+            classId: number | null;
             /** Format: date-time */
-            dob?: string;
-            phone?: string;
-            avatarUrl?: string;
+            dob: string | null;
+            email: string | null;
+            /** Format: date-time */
+            enrollmentDate: string | null;
+            /** @enum {string|null} */
+            gender: "MALE" | "FEMALE" | "OTHER" | null;
+            /** Format: date-time */
+            graduationDate: string | null;
+            majorId: number | null;
+            phone: string | null;
+        };
+        BatchDto: {
+            id: number;
+            batchCode: string;
+            batchName: string;
+            majorId: number;
+            academicYearId?: number | null;
+            curriculumId?: number | null;
+            description?: string | null;
+            endTerm?: number | null;
+            endYear: number;
+            startYear: number;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        ClassDto: {
+            id: number;
+            classCode: string;
+            className: string;
+            majorId: number;
+            batchId?: number | null;
+            formTeacherId?: number | null;
+            currentSize: number;
+            maxStudents: number;
+            status: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        MajorDto: {
+            id: number;
+            deptId: number;
+            description?: Record<string, never> | null;
+            majorCode: string;
+            majorName: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
         };
         DocumentProgressDto: {
             current: number;
             total: number;
         };
         QualifiedStudentResponseDto: {
+            id: number;
             studentCode: string;
             identityNumber: string;
             userId: number;
-            batchId?: number;
-            majorId?: number;
-            classId?: number;
             /**
              * @default THCS
              * @enum {string}
@@ -2226,21 +2267,28 @@ export interface components {
              * @enum {string}
              */
             status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
-            /** Format: date-time */
-            enrollmentDate?: string;
-            /** Format: date-time */
-            graduationDate?: string;
             fullName: string;
-            email?: string;
-            /** @enum {string} */
-            gender?: "MALE" | "FEMALE" | "OTHER";
+            avatarUrl: string | null;
+            batchId: number | null;
+            classId: number | null;
             /** Format: date-time */
-            dob?: string;
-            phone?: string;
-            avatarUrl?: string;
-            batch?: Record<string, never>;
-            class?: Record<string, never>;
-            major?: Record<string, never>;
+            dob: string | null;
+            email: string | null;
+            /** Format: date-time */
+            enrollmentDate: string | null;
+            /** @enum {string|null} */
+            gender: "MALE" | "FEMALE" | "OTHER" | null;
+            /** Format: date-time */
+            graduationDate: string | null;
+            majorId: number | null;
+            phone: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            batch?: components["schemas"]["BatchDto"];
+            class?: components["schemas"]["ClassDto"];
+            major?: components["schemas"]["MajorDto"];
             documentProgress?: components["schemas"]["DocumentProgressDto"];
             isQualified: boolean;
         };
@@ -2248,13 +2296,11 @@ export interface components {
             students: components["schemas"]["QualifiedStudentResponseDto"][];
             total: number;
         };
-        StudentResponseDto: {
+        StudentDetailDto: {
+            id: number;
             studentCode: string;
             identityNumber: string;
             userId: number;
-            batchId?: number;
-            majorId?: number;
-            classId?: number;
             /**
              * @default THCS
              * @enum {string}
@@ -2265,21 +2311,28 @@ export interface components {
              * @enum {string}
              */
             status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
-            /** Format: date-time */
-            enrollmentDate?: string;
-            /** Format: date-time */
-            graduationDate?: string;
             fullName: string;
-            email?: string;
-            /** @enum {string} */
-            gender?: "MALE" | "FEMALE" | "OTHER";
+            avatarUrl: string | null;
+            batchId: number | null;
+            classId: number | null;
             /** Format: date-time */
-            dob?: string;
-            phone?: string;
-            avatarUrl?: string;
-            batch?: Record<string, never>;
-            class?: Record<string, never>;
-            major?: Record<string, never>;
+            dob: string | null;
+            email: string | null;
+            /** Format: date-time */
+            enrollmentDate: string | null;
+            /** @enum {string|null} */
+            gender: "MALE" | "FEMALE" | "OTHER" | null;
+            /** Format: date-time */
+            graduationDate: string | null;
+            majorId: number | null;
+            phone: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            batch?: components["schemas"]["BatchDto"];
+            class?: components["schemas"]["ClassDto"];
+            major?: components["schemas"]["MajorDto"];
             documentProgress?: components["schemas"]["DocumentProgressDto"];
         };
         AssignStudentsToClassesDto: {
@@ -2291,9 +2344,6 @@ export interface components {
             studentCode?: string;
             identityNumber?: string;
             userId?: number;
-            batchId?: number;
-            majorId?: number;
-            classId?: number;
             /**
              * @default THCS
              * @enum {string}
@@ -2304,18 +2354,21 @@ export interface components {
              * @enum {string}
              */
             status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
-            /** Format: date-time */
-            enrollmentDate?: string;
-            /** Format: date-time */
-            graduationDate?: string;
             fullName?: string;
-            email?: string;
-            /** @enum {string} */
-            gender?: "MALE" | "FEMALE" | "OTHER";
+            avatarUrl?: string | null;
+            batchId?: number | null;
+            classId?: number | null;
             /** Format: date-time */
-            dob?: string;
-            phone?: string;
-            avatarUrl?: string;
+            dob?: string | null;
+            email?: string | null;
+            /** Format: date-time */
+            enrollmentDate?: string | null;
+            /** @enum {string|null} */
+            gender?: "MALE" | "FEMALE" | "OTHER" | null;
+            /** Format: date-time */
+            graduationDate?: string | null;
+            majorId?: number | null;
+            phone?: string | null;
         };
         CreateAdmissionCampaignMajorDto: {
             majorId: number;
@@ -2357,17 +2410,6 @@ export interface components {
             endDate: string;
             /** @default false */
             isCurrent: boolean;
-        };
-        MajorDto: {
-            id: number;
-            deptId: number;
-            description?: Record<string, never> | null;
-            majorCode: string;
-            majorName: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
         };
         SubjectCombinationItemDto: {
             id: number;
@@ -3703,7 +3745,7 @@ export interface components {
             updatedAt: string;
             /** @example 2024-01-01T12:00:00Z */
             lastLoginAt?: Record<string, never>;
-            student?: components["schemas"]["StudentResponseDto"];
+            student?: components["schemas"]["StudentDetailDto"];
             staff?: components["schemas"]["ResponseStaffDto"];
         };
         PostResponseDto: {
@@ -3815,7 +3857,7 @@ export interface components {
              */
             updatedAt: string;
             /** @description Thông tin chi tiết của sinh viên đăng ký */
-            student: components["schemas"]["StudentResponseDto"];
+            student: components["schemas"]["StudentDetailDto"];
         };
         CourseOfferDetailResponseDto: {
             id: number;
@@ -3950,7 +3992,7 @@ export interface components {
              */
             updatedAt?: string;
             /** @description Thông tin chi tiết của sinh viên đăng ký */
-            student?: components["schemas"]["StudentResponseDto"];
+            student?: components["schemas"]["StudentDetailDto"];
         };
         SaveGradesDto: {
             classSubjectId: number;
@@ -4329,46 +4371,11 @@ export interface components {
             data: components["schemas"]["FeeInvoiceDto"][];
             total: number;
         };
-        BatchDto: {
-            id: number;
-            batchCode: string;
-            batchName: string;
-            majorId: number;
-            academicYearId?: number | null;
-            curriculumId?: number | null;
-            description?: string | null;
-            endTerm?: number | null;
-            endYear: number;
-            startYear: number;
-            status: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        ClassDto: {
-            id: number;
-            classCode: string;
-            className: string;
-            majorId: number;
-            batchId?: number | null;
-            formTeacherId?: number | null;
-            currentSize: number;
-            maxStudents: number;
-            status: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
         ResponseStudentDebtDto: {
             id: number;
             studentCode: string;
             identityNumber: string;
             userId: number;
-            batchId?: number;
-            majorId?: number;
-            classId?: number;
             /**
              * @default THCS
              * @enum {string}
@@ -4379,18 +4386,21 @@ export interface components {
              * @enum {string}
              */
             status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
-            /** Format: date-time */
-            enrollmentDate?: string;
-            /** Format: date-time */
-            graduationDate?: string;
             fullName: string;
-            email?: string;
-            /** @enum {string} */
-            gender?: "MALE" | "FEMALE" | "OTHER";
+            avatarUrl: string | null;
+            batchId: number | null;
+            classId: number | null;
             /** Format: date-time */
-            dob?: string;
-            phone?: string;
-            avatarUrl?: string;
+            dob: string | null;
+            email: string | null;
+            /** Format: date-time */
+            enrollmentDate: string | null;
+            /** @enum {string|null} */
+            gender: "MALE" | "FEMALE" | "OTHER" | null;
+            /** Format: date-time */
+            graduationDate: string | null;
+            majorId: number | null;
+            phone: string | null;
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -4699,13 +4709,13 @@ export interface operations {
             query?: {
                 studentCode?: string;
                 identityNumber?: string;
-                batchId?: number;
-                majorId?: number;
-                classId?: number;
                 status?: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
                 fullName?: string;
-                email?: string;
-                phone?: string;
+                batchId?: number | null;
+                classId?: number | null;
+                email?: string | null;
+                majorId?: number | null;
+                phone?: string | null;
                 page?: number;
                 limit?: number;
             };
@@ -4824,7 +4834,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StudentResponseDto"];
+                    "application/json": components["schemas"]["StudentDetailDto"];
                 };
             };
         };
@@ -4845,7 +4855,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StudentResponseDto"];
+                    "application/json": components["schemas"]["StudentDetailDto"];
                 };
             };
         };
@@ -4865,7 +4875,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ResponseStudentPaginationDto"];
+                };
             };
         };
     };
