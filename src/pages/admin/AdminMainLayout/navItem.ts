@@ -75,15 +75,6 @@ const navItems: NavItem[] = [
         label: 'Lịch thi & Đợt thi',
         href: '/admin/thi/lich-thi',
         roles: ['admin', 'staff', 'teacher'],
-        // Admin/Staff: Tạo đợt thi, đồng bộ điểm danh, gán phòng.
-        // Teacher: Xem lịch coi thi/lịch thi của lớp mình.
-      },
-      {
-        id: 'diem-danh-phong-thi',
-        label: 'Điểm danh & Vi phạm',
-        href: '/admin/thi/diem-danh-phong-thi',
-        roles: ['admin', 'staff', 'teacher'],
-        // Dành cho giám thị/giáo viên: Đánh dấu đi thi (isAttended), ghi nhận vi phạm (isViolated, note).
       },
     ],
   },

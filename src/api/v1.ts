@@ -2454,6 +2454,23 @@ export interface paths {
         patch: operations["StudentExamDetailController_update"];
         trace?: never;
     };
+    "/student-exam-details/scores": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cập nhật điểm thi hàng loạt */
+        patch: operations["StudentExamDetailController_updateScores"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -5109,6 +5126,7 @@ export interface components {
             isAttended: boolean;
             isViolated: boolean;
             violationNote: string | null;
+            examScore: number | null;
             /** Format: date-time */
             createdAt: string;
             student: components["schemas"]["StudentDto"] | null;
@@ -5167,6 +5185,7 @@ export interface components {
             isAttended: boolean;
             isViolated: boolean;
             violationNote: string | null;
+            examScore: number | null;
         };
         UpdateStudentExamDetailDto: {
             id?: number;
@@ -5177,8 +5196,16 @@ export interface components {
             isAttended?: boolean;
             isViolated?: boolean;
             violationNote?: string | null;
+            examScore?: number | null;
             /** Format: date-time */
             createdAt?: string;
+        };
+        StudentScoreItem: {
+            studentExamDetailId: number;
+            examScore: number;
+        };
+        UpdateBulkExamScoreDto: {
+            scores: components["schemas"]["StudentScoreItem"][];
         };
     };
     responses: never;
@@ -10546,6 +10573,27 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StudentExamDetailDetailDto"];
                 };
+            };
+        };
+    };
+    StudentExamDetailController_updateScores: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateBulkExamScoreDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

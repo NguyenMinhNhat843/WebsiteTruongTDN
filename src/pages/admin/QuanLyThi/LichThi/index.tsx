@@ -15,7 +15,7 @@ import {
 import { $api } from '../../../../api/client'
 import type { components } from '../../../../api/v1'
 import ModalCreateDotThi from './CreateDotThi'
-import ModalDotThiDetail from './DotThiDetail'
+import ModalDotThiDetail from './One/DotThiDetail'
 
 export type CreateExamScheduleDto = components['schemas']['CreateExamScheduleDto']
 

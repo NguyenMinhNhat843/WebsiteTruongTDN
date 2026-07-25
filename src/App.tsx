@@ -224,9 +224,6 @@ function App() {
 
               {/* Quản lý Thi */}
               <Route path="thi/lich-thi" element={<LichThiIndex />} />
-              <Route path="thi/danh-sach-du-thi" element={<div>Danh sách dự thi</div>} />
-              <Route path="thi/diem-danh-phong-thi" element={<div>Điểm danh & Vi phạm</div>} />
-              <Route path="thi/xet-dieu-kien-thi" element={<div>Xét điều kiện dự thi</div>} />
 
               {/* Học phí */}
               <Route path="hoc-phi" element={<DotHocPhiIndex />} />
