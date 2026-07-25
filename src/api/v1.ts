@@ -57,6 +57,22 @@ export interface paths {
         patch: operations["StudentController_update"];
         trace?: never;
     };
+    "/students/class-subject/{classSubjectId}/for-exam": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StudentController_getStudentsForExam"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/students/me": {
         parameters: {
             query?: never;
@@ -2556,6 +2572,23 @@ export interface components {
         ResponseStudentPaginationDto: {
             data: components["schemas"]["StudentDetailDto"][];
             total: number;
+        };
+        StudentExamDetailForExamScheduleDto: {
+            id: number;
+            studentCode: string;
+            fullName: string;
+            /** Format: date-time */
+            dob: string | null;
+            /** @enum {string|null} */
+            gender: "MALE" | "FEMALE" | "OTHER" | null;
+            phone: string | null;
+            diemTB?: number | null;
+            totalPeriods?: number | null;
+            absentPeriods?: number | null;
+            absentPercentage?: number | null;
+            examStatus?: string | null;
+            isManuallyLocked?: boolean | null;
+            lockReason?: string | null;
         };
         AssignStudentsToClassesDto: {
             batchId?: number;
@@ -5269,6 +5302,27 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    StudentController_getStudentsForExam: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                classSubjectId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentExamDetailForExamScheduleDto"][];
+                };
             };
         };
     };

@@ -1,51 +1,29 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { Loader2 } from 'lucide-react'
+import { Toaster } from 'sonner'
 import './App.css'
 
 import { AppProvider } from './AppProvider'
 import ProtectedRoute from './features/auth/components/ProtectedRoute'
-import { Loader2 } from 'lucide-react'
-import PhongHocIndex from './pages/admin/PhongHoc'
-import DiemRenLuyenIndex from './pages/admin/DiemRenLuyen'
-import DiemRenLuyen_TieuChiDanhGiaIndex from './pages/admin/DiemRenLuyen_TieuChiDanhGia'
-import { Toaster } from 'sonner'
-import CauHinhChung from './pages/admin/CauHinhHeThong'
-import TinHocUngDung from './pages/client/ChuongTrinhDaoTao/TinHocUngDung'
-import DichVuDuLichChiTiet from './pages/client/ChuongTrinhDaoTao/DichVuDuLich'
-import TiengAnhChiTiet from './pages/client/ChuongTrinhDaoTao/TiengAnhChiTiet'
-import DotHocPhiIndex from './pages/admin/HocPhi'
-import CoSoVatChat from './pages/client/CoSoVatChat'
-import DoiTacTuyenDung from './pages/client/DoiTacDaoTaoVaTuyenDung'
-import DotHocPhiOne from './pages/admin/HocPhi/One/DotHocPhiOne'
-import DiaChiTree from './pages/admin/DiaChi'
-import TuitionDashboard from './pages/admin/HocPhi/TongQuan'
-import StudentMainLayout from './pages/student/Layout/StudentMainLayout'
-import StudentChuongTrinhKhung from './pages/student/ChuongTrinhKhung'
-import WeeklySchedule from './pages/student/ThoiKhoaBieu'
-import StudentbangDiem from './pages/student/BangDiem'
-import StudentTuition from './pages/student/HocPhi'
-import PhieuDiemRenLuyenIndex from './pages/student/PhieuDiemRenLuyen'
-import DotTuyenSinhHome from './pages/admin/TuyenSinh/DotTuyenSinh'
-import NamHocHome from './pages/admin/NamHoc'
-import AdmissionCampaignDetail from './pages/admin/TuyenSinh/DotTuyenSinh/One/DotTuyenSinhDetail'
-import TaoHoSoTuyenSinh from './pages/admin/TuyenSinh/HoSoTuyenSinh/Create/CreateHoSoTuyenSinh'
-import ToHopMonHome from './pages/admin/TuyenSinh/ToHopMon'
-import HoSoTuyenSinhHome from './pages/admin/TuyenSinh/HoSoTuyenSinh'
-import CauHinhTuyenSinhHome from './pages/admin/TuyenSinh/CauHinhTuyenSinh'
-import QuanLyDiem from './pages/admin/QuanLyDiem'
-import { DiemDanhSheet } from './pages/admin/DiemDanh'
-import LichThiIndex from './pages/admin/QuanLyThi/LichThi'
 
-// --- LAZY LOADING COMPONENTS ---
-
-// Layouts chung
+// --- LAZY LOADING: LAYOUTS ---
 const MainLayout = lazy(() => import('./pages/client/layout/MainLayout'))
 const PostLayout = lazy(() => import('./pages/client/PostDetail/PostLayout'))
 const AdminMainLayout = lazy(() => import('./pages/admin/AdminMainLayout/AdminMainLayout'))
 const MemberLayout = lazy(() => import('./pages/MembersDashboard/MemberSideBar/MemberLayout'))
+const StudentMainLayout = lazy(() => import('./pages/student/Layout/StudentMainLayout'))
 
-// Client Pages
+// Layout sub-modules Admin
+const LopHocLayout = lazy(() => import('./pages/admin/LopDanhNghia/LopHocLayout'))
+const PhanLopLayout = lazy(() => import('./pages/admin/PhanLop/PhanLopLayout'))
+const KhoaIndex = lazy(() => import('./pages/admin/Khoa/KhoaIndex'))
+const HocSinhLayout = lazy(() => import('./pages/admin/HoSoHocSinh/HocSinhLayout'))
+const HocKyLayout = lazy(() => import('./pages/admin/HocKy/HocKyLayout'))
+const NhanVienLayout = lazy(() => import('./pages/admin/QuanLyNhanVien/NhanVienLayout'))
+
+// --- LAZY LOADING: CLIENT PAGES ---
 const Home = lazy(() => import('./pages/client/Home/Home'))
 const GioiThieuVeTruong = lazy(() => import('./pages/client/GioiThieuVeTruong'))
 const BoMayToChuc = lazy(() => import('./pages/client/BoMayToChuc/BoMayToChuc'))
@@ -55,8 +33,13 @@ const LienHe = lazy(() => import('./pages/client/LienHe/LienHe'))
 const DangKyTuVan = lazy(() => import('./pages/client/DangKyTuVan/DangKyTuVan'))
 const NewsList = lazy(() => import('./pages/client/NewsList'))
 const UserPostDetail = lazy(() => import('./pages/client/PostDetail/UserPostDetail'))
+const CoSoVatChat = lazy(() => import('./pages/client/CoSoVatChat'))
+const DoiTacTuyenDung = lazy(() => import('./pages/client/DoiTacDaoTaoVaTuyenDung'))
+const TinHocUngDung = lazy(() => import('./pages/client/ChuongTrinhDaoTao/TinHocUngDung'))
+const DichVuDuLichChiTiet = lazy(() => import('./pages/client/ChuongTrinhDaoTao/DichVuDuLich'))
+const TiengAnhChiTiet = lazy(() => import('./pages/client/ChuongTrinhDaoTao/TiengAnhChiTiet'))
 
-// Admin Pages
+// --- LAZY LOADING: ADMIN PAGES ---
 const LoginPage = lazy(() => import('./pages/admin/Login'))
 const Dashboard = lazy(() => import('./pages/admin/Dashboard/Home'))
 const AdminPostPreview = lazy(() => import('./pages/admin/QuanLyBaiViet/AdminPostPreview'))
@@ -65,38 +48,61 @@ const UpdatePost = lazy(() => import('./pages/admin/QuanLyBaiViet/create/UpdateP
 const PostList = lazy(() => import('./pages/admin/QuanLyBaiViet/list/PostList'))
 const ChuongTrinhKhung = lazy(() => import('./pages/admin/ChuongTrinhKhung/ChuongTrinhKhungIndex'))
 const TaoChuongTrinhKhung = lazy(() => import('./pages/admin/ChuongTrinhKhung/Create/TaoChuongTrinhKhung'))
-const LopHocLayout = lazy(() => import('./pages/admin/LopDanhNghia/LopHocLayout'))
 const LopHocList = lazy(() => import('./pages/admin/LopDanhNghia/LopHocList'))
 const LopHocOne = lazy(() => import('./pages/admin/LopDanhNghia/LopHocOne/index'))
 const NhapDiemPage = lazy(() => import('./pages/admin/LopDanhNghia/LopHocOne/TableNhapDiem/NhapDiemPage'))
 const TienDoDaoTao = lazy(() => import('./pages/admin/TienDoGiangDay'))
 const ThoiKhoaBieuWrapper = lazy(() => import('./pages/admin/ThoiKhoaBieu/ThoiKhoaBieuWrapper'))
-const PhanLopLayout = lazy(() => import('./pages/admin/PhanLop/PhanLopLayout'))
 const PhanLop = lazy(() => import('./pages/admin/PhanLop/PhanLop'))
-const KhoaIndex = lazy(() => import('./pages/admin/Khoa/KhoaIndex'))
 const KhoaList = lazy(() => import('./pages/admin/Khoa/KhoaList'))
 const KhoaDaoTao = lazy(() => import('./pages/admin/khoaHoc/KhoaDaoTaoIndex'))
 const NganhIndex = lazy(() => import('./pages/admin/Nganh/NganhIndex'))
 const MonHocIndex = lazy(() => import('./pages/admin/MonHoc/MonHocIndex'))
-const HocSinhLayout = lazy(() => import('./pages/admin/HoSoHocSinh/HocSinhLayout'))
+const PhongHocIndex = lazy(() => import('./pages/admin/PhongHoc'))
 const DanhSachHoSoHocSinh = lazy(() => import('./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoHocSinhList'))
 const CreateStudent = lazy(() => import('./pages/admin/HoSoHocSinh/Create/Create'))
-const HocKyLayout = lazy(() => import('./pages/admin/HocKy/HocKyLayout'))
 const HocKyList = lazy(() => import('./pages/admin/HocKy/HocKyList'))
-const NhanVienLayout = lazy(() => import('./pages/admin/QuanLyNhanVien/NhanVienLayout'))
+const NamHocHome = lazy(() => import('./pages/admin/NamHoc'))
 const QuanLyTaiKhoan = lazy(() => import('./pages/admin/QuanLyAccount'))
 const QuanLyNhanVien = lazy(() => import('./pages/admin/QuanLyNhanVien/NhanVienList/QuanLyNhanVienList'))
 const NhanVienOne = lazy(() => import('./pages/admin/QuanLyNhanVien/NhanVienOne/NhanVienOne'))
+const QuanLyDiem = lazy(() => import('./pages/admin/QuanLyDiem'))
+const DiemRenLuyenIndex = lazy(() => import('./pages/admin/DiemRenLuyen'))
+const DiemRenLuyen_TieuChiDanhGiaIndex = lazy(() => import('./pages/admin/DiemRenLuyen_TieuChiDanhGia'))
+const DotHocPhiIndex = lazy(() => import('./pages/admin/HocPhi'))
+const DotHocPhiOne = lazy(() => import('./pages/admin/HocPhi/One/DotHocPhiOne'))
+const TuitionDashboard = lazy(() => import('./pages/admin/HocPhi/TongQuan'))
+const DiaChiTree = lazy(() => import('./pages/admin/DiaChi'))
+const DotTuyenSinhHome = lazy(() => import('./pages/admin/TuyenSinh/DotTuyenSinh'))
+const AdmissionCampaignDetail = lazy(
+  () => import('./pages/admin/TuyenSinh/DotTuyenSinh/One/DotTuyenSinhDetail'),
+)
+const ToHopMonHome = lazy(() => import('./pages/admin/TuyenSinh/ToHopMon'))
+const HoSoTuyenSinhHome = lazy(() => import('./pages/admin/TuyenSinh/HoSoTuyenSinh'))
+const TaoHoSoTuyenSinh = lazy(
+  () => import('./pages/admin/TuyenSinh/HoSoTuyenSinh/Create/CreateHoSoTuyenSinh'),
+)
+const CauHinhTuyenSinhHome = lazy(() => import('./pages/admin/TuyenSinh/CauHinhTuyenSinh'))
+const LichThiIndex = lazy(() => import('./pages/admin/QuanLyThi/LichThi'))
+const CauHinhChung = lazy(() => import('./pages/admin/CauHinhHeThong'))
 const HuongDanSuDung = lazy(() => import('./pages/HuongDanSuDung'))
-const StudentDashboard = lazy(() => import('./pages/student/Dashboard'))
+import { DiemDanhSheet } from './pages/admin/DiemDanh'
 
-// Teacher (Member) Pages
+// --- LAZY LOADING: TEACHER PAGES ---
 const MemberDashboard = lazy(() => import('./pages/MembersDashboard/Home'))
 const LopHocGiangDay = lazy(() => import('./pages/MembersDashboard/LopGiangDay/LopGiangDay'))
 const LopHocOneTeacher = lazy(() => import('./pages/MembersDashboard/LopGiangDay/LopHocOneTeacher'))
 const ThoiKhoaBieu = lazy(() => import('./pages/MembersDashboard/ThoiKhoaBieu/ThoiKhoaBieu'))
 
-// --- CONFIGURATION ---
+// --- LAZY LOADING: STUDENT PAGES ---
+const StudentDashboard = lazy(() => import('./pages/student/Dashboard'))
+const StudentChuongTrinhKhung = lazy(() => import('./pages/student/ChuongTrinhKhung'))
+const WeeklySchedule = lazy(() => import('./pages/student/ThoiKhoaBieu'))
+const StudentbangDiem = lazy(() => import('./pages/student/BangDiem'))
+const StudentTuition = lazy(() => import('./pages/student/HocPhi'))
+const PhieuDiemRenLuyenIndex = lazy(() => import('./pages/student/PhieuDiemRenLuyen'))
+
+// --- QUERY CLIENT SETUP ---
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -106,18 +112,13 @@ const queryClient = new QueryClient({
   },
 })
 
-// Component hiển thị khi đang tải trang (Loading Fallback)
-const LoadingSpinner = () => {
-  return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-3 bg-gray-50">
-      {/* Icon xoay mượt mà */}
-      <Loader2 className="h-10 w-10 animate-spin text-blue-600 dark:text-blue-400" />
-
-      {/* Chữ hiển thị phía dưới */}
-      <p className="animate-pulse text-sm font-medium text-gray-500 dark:text-gray-400">Đang tải trang...</p>
-    </div>
-  )
-}
+// --- LOADING FALLBACK ---
+const LoadingSpinner = () => (
+  <div className="flex h-screen w-full flex-col items-center justify-center gap-3 bg-gray-50">
+    <Loader2 className="h-10 w-10 animate-spin text-blue-600 dark:text-blue-400" />
+    <p className="animate-pulse text-sm font-medium text-gray-500 dark:text-gray-400">Đang tải trang...</p>
+  </div>
+)
 
 function App() {
   return (
@@ -125,7 +126,9 @@ function App() {
       <AppProvider>
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
-            {/* Route cho trang chủ và các trang thông tin chung */}
+            {/* ========================================================= */}
+            {/* 1. PUBLIC / CLIENT ROUTES                                 */}
+            {/* ========================================================= */}
             <Route element={<MainLayout />}>
               <Route path="/" element={<Home />} />
               <Route path="/gioi-thieu-chung" element={<GioiThieuVeTruong />} />
@@ -141,13 +144,17 @@ function App() {
               <Route path="/chuong-trinh-dao-tao/tieng-anh" element={<TiengAnhChiTiet />} />
               <Route path="/tuyen-dung" element={<NewsList />} />
               <Route path="/tin-tuc" element={<NewsList />} />
+
+              {/* Xem chi tiết bài viết */}
               <Route element={<PostLayout />}>
                 <Route path="tin-tuc/xem-truoc" element={<AdminPostPreview />} />
                 <Route path="tin-tuc/:slug" element={<UserPostDetail />} />
               </Route>
             </Route>
 
-            {/* ============================= Admin ==================================== */}
+            {/* ========================================================= */}
+            {/* 2. ADMIN ROUTES                                           */}
+            {/* ========================================================= */}
             <Route path="/admin/login" element={<LoginPage />} />
             <Route
               path="/admin"
@@ -160,31 +167,52 @@ function App() {
               <Route index element={<Navigate to="/admin/home" replace />} />
               <Route path="home" element={<Dashboard />} />
 
-              {/* Truyền thông */}
-              <Route>
-                <Route path="truyen-thong-bao-chi/tao-bai-viet" element={<CreatePost />} />
-                <Route path="truyen-thong-bao-chi/:id/edit" element={<UpdatePost />} />
-                <Route path="truyen-thong-bao-chi/bai-viet" element={<PostList />} />
+              {/* Truyền thông & Bài viết */}
+              <Route path="truyen-thong-bao-chi/tao-bai-viet" element={<CreatePost />} />
+              <Route path="truyen-thong-bao-chi/:id/edit" element={<UpdatePost />} />
+              <Route path="truyen-thong-bao-chi/bai-viet" element={<PostList />} />
+
+              {/* Quản lý Đào tạo & Lớp học */}
+              <Route path="dao-tao/chuong-trinh-khung" element={<ChuongTrinhKhung />} />
+              <Route path="dao-tao/tao-chuong-trinh-khung" element={<TaoChuongTrinhKhung />} />
+              <Route path="dao-tao/tien-do-dao-tao" element={<TienDoDaoTao />} />
+              <Route path="dao-tao/thoi-khoa-bieu" element={<ThoiKhoaBieuWrapper />} />
+              <Route element={<LopHocLayout />}>
+                <Route path="dao-tao/lop-hoc" element={<LopHocList />} />
+                <Route path="dao-tao/lop-hoc/:idLopHoc" element={<LopHocOne />} />
+                <Route path="dao-tao/lop-hoc/:idLopHoc/:idClassSubject" element={<NhapDiemPage />} />
               </Route>
 
-              {/* Quản lý đào tạo */}
-              <Route>
-                <Route path="dao-tao/chuong-trinh-khung" element={<ChuongTrinhKhung />} />
-                <Route path="dao-tao/tao-chuong-trinh-khung" element={<TaoChuongTrinhKhung />} />
-                <Route element={<LopHocLayout />}>
-                  <Route path="dao-tao/lop-hoc" element={<LopHocList />} />
-                  <Route path="dao-tao/lop-hoc/:idLopHoc" element={<LopHocOne />} />
-                  <Route path="dao-tao/lop-hoc/:idLopHoc/:idClassSubject" element={<NhapDiemPage />} />
-                </Route>
-                <Route path="dao-tao/tien-do-dao-tao" element={<TienDoDaoTao />} />
-                <Route path="dao-tao/thoi-khoa-bieu" element={<ThoiKhoaBieuWrapper />} />
-              </Route>
+              {/* Quản lý Điểm & Điểm danh */}
               <Route path="quan-ly-diem" element={<QuanLyDiem />} />
               <Route path="quan-ly-diem/nhap-diem/:idClassSubject" element={<NhapDiemPage />} />
+              <Route path="quan-ly-diem/diem-danh/:classSubjectId" element={<DiemDanhSheet />} />
 
+              {/* Danh mục Tổ chức & Đào tạo */}
+              <Route path="khoa-dao-tao" element={<KhoaDaoTao />} />
+              <Route path="nganh-hoc" element={<NganhIndex />} />
+              <Route path="mon-hoc" element={<MonHocIndex />} />
+              <Route path="phong-hoc" element={<PhongHocIndex />} />
+              <Route path="nam-hoc" element={<NamHocHome />} />
+              <Route element={<KhoaIndex />}>
+                <Route path="dao-tao/khoa" element={<KhoaList />} />
+              </Route>
+              <Route element={<HocKyLayout />}>
+                <Route path="hoc-ky" element={<HocKyList />} />
+              </Route>
+
+              {/* Công tác Học sinh & Phân lớp */}
+              <Route element={<HocSinhLayout />}>
+                <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
+                <Route path="hoc-sinh/ho-so/create" element={<CreateStudent />} />
+              </Route>
               <Route element={<PhanLopLayout />}>
                 <Route path="hoc-sinh/phan-lop" element={<PhanLop />} />
               </Route>
+
+              {/* Điểm rèn luyện */}
+              <Route path="diem-ren-luyen" element={<DiemRenLuyenIndex />} />
+              <Route path="diem-ren-luyen/tieu-chi-danh-gia" element={<DiemRenLuyen_TieuChiDanhGiaIndex />} />
 
               {/* Tuyển sinh */}
               <Route path="tuyen-sinh/dot-tuyen-sinh" element={<DotTuyenSinhHome />} />
@@ -194,66 +222,33 @@ function App() {
               <Route path="tuyen-sinh/ho-so-tuyen-sinh/tao-moi" element={<TaoHoSoTuyenSinh />} />
               <Route path="tuyen-sinh/cau-hinh-tuyen-sinh" element={<CauHinhTuyenSinhHome />} />
 
-              {/* Khoa */}
-              <Route element={<KhoaIndex />}>
-                <Route path="dao-tao/khoa" element={<KhoaList />} />
-              </Route>
-
-              {/* Khóa học */}
-              <Route path="khoa-dao-tao" element={<KhoaDaoTao />} />
-
-              {/* Ngành học */}
-              <Route path="nganh-hoc" element={<NganhIndex />} />
-
-              {/* Môn học */}
-              <Route path="mon-hoc" element={<MonHocIndex />} />
-              <Route path="phong-hoc" element={<PhongHocIndex />} />
-
-              <Route path="diem-ren-luyen" element={<DiemRenLuyenIndex />} />
-              <Route path="diem-ren-luyen/tieu-chi-danh-gia" element={<DiemRenLuyen_TieuChiDanhGiaIndex />} />
-
-              {/* Quản lý thi */}
-              <Route path="thi">
-                <Route path="lich-thi" element={<LichThiIndex />} />
-                <Route path="danh-sach-du-thi" element={<div>Danh sách dự thi</div>} />
-                <Route path="diem-danh-phong-thi" element={<div>Điểm danh & Vi phạm</div>} />
-                <Route path="xet-dieu-kien-thi" element={<div>Xét điều kiện dự thi</div>} />
-              </Route>
-
-              {/* Công tác học sinh */}
-              <Route element={<HocSinhLayout />}>
-                <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
-                <Route path="hoc-sinh/ho-so/create" element={<CreateStudent />} />
-              </Route>
-
-              <Route path="nam-hoc" element={<NamHocHome />} />
-
-              {/* Học kỳ */}
-              <Route element={<HocKyLayout />}>
-                <Route path="hoc-ky" element={<HocKyList />} />
-              </Route>
+              {/* Quản lý Thi */}
+              <Route path="thi/lich-thi" element={<LichThiIndex />} />
+              <Route path="thi/danh-sach-du-thi" element={<div>Danh sách dự thi</div>} />
+              <Route path="thi/diem-danh-phong-thi" element={<div>Điểm danh & Vi phạm</div>} />
+              <Route path="thi/xet-dieu-kien-thi" element={<div>Xét điều kiện dự thi</div>} />
 
               {/* Học phí */}
               <Route path="hoc-phi" element={<DotHocPhiIndex />} />
-              <Route path="hoc-phi/:id" element={<DotHocPhiOne />} />
               <Route path="hoc-phi/tong-quan" element={<TuitionDashboard />} />
+              <Route path="hoc-phi/:id" element={<DotHocPhiOne />} />
 
-              {/* Địa chỉ */}
-              <Route path="dia-chi" element={<DiaChiTree />} />
-
-              {/* Quản trị nhân sự */}
+              {/* Nhân sự & Tài khoản */}
               <Route element={<NhanVienLayout />}>
                 <Route path="account" element={<QuanLyTaiKhoan />} />
                 <Route path="users" element={<QuanLyNhanVien />} />
                 <Route path="users/:staffCode" element={<NhanVienOne />} />
               </Route>
 
-              {/* Cài đặt hệ thống */}
+              {/* Cấu hình & Hệ thống */}
+              <Route path="dia-chi" element={<DiaChiTree />} />
               <Route path="cai-dat/cau-hinh-chung" element={<CauHinhChung />} />
               <Route path="cai-dat/huong-dan-su-dung" element={<HuongDanSuDung />} />
             </Route>
 
-            {/* ========================= Giáo viên ============================= */}
+            {/* ========================================================= */}
+            {/* 3. TEACHER (MEMBER) ROUTES                                */}
+            {/* ========================================================= */}
             <Route
               path="/teacher/*"
               element={
@@ -266,11 +261,13 @@ function App() {
               <Route path="lop-hoc" element={<LopHocGiangDay />} />
               <Route path="lop-hoc/:idLopHoc" element={<LopHocOneTeacher />} />
               <Route path="nhap-diem/:idClassSubject" element={<NhapDiemPage />} />
-              <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
               <Route path="diem-danh/:classSubjectId" element={<DiemDanhSheet />} />
+              <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
             </Route>
 
-            {/* ========================= Học sinh / Sinh viên ============================= */}
+            {/* ========================================================= */}
+            {/* 4. STUDENT ROUTES                                         */}
+            {/* ========================================================= */}
             <Route
               path="/student/*"
               element={
@@ -280,8 +277,6 @@ function App() {
               }
             >
               <Route path="home" element={<StudentDashboard />} />
-
-              {/* Học tập */}
               <Route path="dao-tao/thoi-khoa-bieu" element={<WeeklySchedule />} />
               <Route path="dao-tao/khung-chuong-trinh" element={<StudentChuongTrinhKhung />} />
               <Route path="diem-so" element={<StudentbangDiem />} />
@@ -289,8 +284,13 @@ function App() {
               <Route path="hoc-phi" element={<StudentTuition />} />
             </Route>
 
-            {/* Route 404 */}
-            <Route path="*" element={<div>Page Not Found</div>} />
+            {/* ========================================================= */}
+            {/* 5. FALLBACK / 404                                         */}
+            {/* ========================================================= */}
+            <Route
+              path="*"
+              element={<div className="p-8 text-center text-slate-600">404 - Trang không tồn tại</div>}
+            />
           </Routes>
         </Suspense>
       </AppProvider>
