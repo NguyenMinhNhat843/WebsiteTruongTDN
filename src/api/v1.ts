@@ -2454,6 +2454,23 @@ export interface paths {
         patch: operations["StudentExamDetailController_update"];
         trace?: never;
     };
+    "/student-exam-details/attendance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Cập nhật điểm danh hàng loạt */
+        patch: operations["StudentExamDetailController_updateAttendance"];
+        trace?: never;
+    };
     "/student-exam-details/scores": {
         parameters: {
             query?: never;
@@ -5187,6 +5204,16 @@ export interface components {
             violationNote: string | null;
             examScore: number | null;
         };
+        UpdateAttendanceDto: {
+            attendances: components["schemas"]["AttendanceItemDto"][];
+        };
+        StudentScoreItem: {
+            studentExamDetailId: number;
+            examScore: number;
+        };
+        UpdateBulkExamScoreDto: {
+            scores: components["schemas"]["StudentScoreItem"][];
+        };
         UpdateStudentExamDetailDto: {
             id?: number;
             studentId?: number;
@@ -5199,13 +5226,6 @@ export interface components {
             examScore?: number | null;
             /** Format: date-time */
             createdAt?: string;
-        };
-        StudentScoreItem: {
-            studentExamDetailId: number;
-            examScore: number;
-        };
-        UpdateBulkExamScoreDto: {
-            scores: components["schemas"]["StudentScoreItem"][];
         };
     };
     responses: never;
@@ -10573,6 +10593,27 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["StudentExamDetailDetailDto"];
                 };
+            };
+        };
+    };
+    StudentExamDetailController_updateAttendance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAttendanceDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };

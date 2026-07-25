@@ -9,7 +9,11 @@ export const [DotThiOneProvider, useDotThiOneContext] = createContextProvider(
   (initValue: { examScheduleId: number | null; isOpen: boolean; onClose: () => void }) => {
     const { examScheduleId, isOpen, onClose } = initValue
     // API lấy detail đợt thi
-    const { data: dotThiDetail, isLoading } = $api.useQuery(
+    const {
+      data: dotThiDetail,
+      isLoading,
+      refetch: refetchDotThiDetail,
+    } = $api.useQuery(
       'get',
       '/exam-schedules/{id}',
       {
@@ -71,6 +75,7 @@ export const [DotThiOneProvider, useDotThiOneContext] = createContextProvider(
       isUpdatingScores,
       studentsForExam,
       isLoadingStudents,
+      refetchDotThiDetail,
     }
   },
 )
