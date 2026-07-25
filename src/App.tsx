@@ -34,6 +34,7 @@ import ToHopMonHome from './pages/admin/TuyenSinh/ToHopMon'
 import HoSoTuyenSinhHome from './pages/admin/TuyenSinh/HoSoTuyenSinh'
 import CauHinhTuyenSinhHome from './pages/admin/TuyenSinh/CauHinhTuyenSinh'
 import QuanLyDiem from './pages/admin/QuanLyDiem'
+import { DiemDanhSheet } from './pages/admin/DiemDanh'
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -92,7 +93,6 @@ const StudentDashboard = lazy(() => import('./pages/student/Dashboard'))
 const MemberDashboard = lazy(() => import('./pages/MembersDashboard/Home'))
 const LopHocGiangDay = lazy(() => import('./pages/MembersDashboard/LopGiangDay/LopGiangDay'))
 const LopHocOneTeacher = lazy(() => import('./pages/MembersDashboard/LopGiangDay/LopHocOneTeacher'))
-const BangDiem = lazy(() => import('./pages/MembersDashboard/NhapDiem/BangDiem'))
 const ThoiKhoaBieu = lazy(() => import('./pages/MembersDashboard/ThoiKhoaBieu/ThoiKhoaBieu'))
 
 // --- CONFIGURATION ---
@@ -256,9 +256,9 @@ function App() {
               <Route path="home" element={<MemberDashboard />} />
               <Route path="lop-hoc" element={<LopHocGiangDay />} />
               <Route path="lop-hoc/:idLopHoc" element={<LopHocOneTeacher />} />
-              <Route path="lop-hoc/:idLopHoc/:idClassSubject" element={<BangDiem />} />
-              <Route path="nhap-diem" element={<BangDiem />} />
+              <Route path="nhap-diem/:idClassSubject" element={<NhapDiemPage />} />
               <Route path="thoi-khoa-bieu" element={<ThoiKhoaBieu />} />
+              <Route path="diem-danh/:classSubjectId" element={<DiemDanhSheet />} />
             </Route>
 
             {/* ========================= Học sinh / Sinh viên ============================= */}

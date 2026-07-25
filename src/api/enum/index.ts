@@ -86,3 +86,6 @@ export const DOCUMENT_STATUS_MAP: Record<
   APPROVED: { label: 'Đã duyệt', colorClass: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   REJECTED: { label: 'Từ chối / Yêu cầu nộp lại', colorClass: 'bg-rose-50 text-rose-700 border-rose-200' },
 }
+
+// Attendance Enum
+export type AttendanceStatus = components['schemas']['AttendanceDto']['status']

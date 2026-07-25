@@ -1,5 +1,4 @@
 import { useMemo, useState, useEffect } from 'react'
-import { type ClassSubjectGrade } from '../LopHocOneProvider'
 import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import { RefreshCw, Save, Loader2 } from 'lucide-react'
 import ButtonAction from '../../../../../components/ui/ButtonAction'
@@ -94,7 +93,7 @@ const NhapDiem = () => {
   // Đồng bộ hóa dữ liệu từ Context vào State
   useEffect(() => {
     if (classSubject?.gradeStudents) {
-      const initialData = classSubject.gradeStudents.map((regis: ClassSubjectGrade, index: number) => {
+      const initialData = classSubject.gradeStudents.map((regis, index: number) => {
         const baseRow = {
           stt: index + 1,
           studentId: regis.studentId || regis.student?.id || 0,

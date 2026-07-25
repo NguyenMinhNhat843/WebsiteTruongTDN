@@ -2,9 +2,6 @@ import { useEffect, useState } from 'react'
 import { createContextProvider } from '../../../../util/createContextProvider'
 import { $api } from '../../../../api/client'
 import { useParams } from 'react-router-dom'
-import type { components } from '../../../../api/v1'
-
-export type ClassSubjectGrade = components['schemas']['GradeStudentDto']
 
 export const [LopHocOneProvider, useLopHocOneContext] = createContextProvider(() => {
   const [isOpenModalAddStudent, setIsOpenModalAddStudent] = useState(false)

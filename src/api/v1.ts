@@ -2188,6 +2188,131 @@ export interface paths {
         patch: operations["AcademicYearController_update"];
         trace?: never;
     };
+    "/attendance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách bản ghi điểm danh (có bộ lọc) */
+        get: operations["AttendanceController_findAll"];
+        put?: never;
+        /** Điểm danh cho 1 sinh viên */
+        post: operations["AttendanceController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attendance/sheet/{classSubjectId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy ma trận/bảng điểm danh cho Frontend */
+        get: operations["AttendanceController_getAttendanceSheet"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attendance/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin chi tiết 1 bản ghi điểm danh */
+        get: operations["AttendanceController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa 1 bản ghi điểm danh (Chỉ Admin) */
+        delete: operations["AttendanceController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật lại điểm danh của 1 sinh viên */
+        patch: operations["AttendanceController_update"];
+        trace?: never;
+    };
+    "/attendance/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Lưu điểm danh hàng loạt cho cả lớp học */
+        post: operations["AttendanceController_bulkAttendance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attendance-summary": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách / Tra cứu tổng hợp chuyên cần & điều kiện thi */
+        get: operations["AttendanceSummaryController_findAll"];
+        put?: never;
+        /** Tạo thủ công bản ghi tổng hợp chuyên cần */
+        post: operations["AttendanceSummaryController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/attendance-summary/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết 1 bản ghi tổng hợp chuyên cần */
+        get: operations["AttendanceSummaryController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa bản ghi tổng hợp chuyên cần (Chỉ Admin) */
+        delete: operations["AttendanceSummaryController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật bản ghi tổng hợp (Khóa điều kiện thi, điều chỉnh trạng thái) */
+        patch: operations["AttendanceSummaryController_update"];
+        trace?: never;
+    };
+    "/attendance-summary/recalculate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Yêu cầu tính toán lại % vắng mặt & xét điều kiện thi cho 1 SV */
+        post: operations["AttendanceSummaryController_recalculate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -3773,7 +3898,42 @@ export interface components {
             /** Format: date-time */
             createdAt: string;
         };
-        GradeStudentDto: {
+        StudentDto: {
+            id: number;
+            studentCode: string;
+            identityNumber: string;
+            userId: number;
+            /**
+             * @default THCS
+             * @enum {string}
+             */
+            educationLevel: "THCS" | "THPT";
+            /**
+             * @default STUDYING
+             * @enum {string}
+             */
+            status: "STUDYING" | "SUSPENDED" | "DROPPED" | "GRADUATED";
+            fullName: string;
+            avatarUrl: string | null;
+            batchId: number | null;
+            classId: number | null;
+            /** Format: date-time */
+            dob: string | null;
+            email: string | null;
+            /** Format: date-time */
+            enrollmentDate: string | null;
+            /** @enum {string|null} */
+            gender: "MALE" | "FEMALE" | "OTHER" | null;
+            /** Format: date-time */
+            graduationDate: string | null;
+            majorId: number | null;
+            phone: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        NestedGradeStudentDto: {
             id: number;
             studentId: number;
             classSubjectId: number;
@@ -3798,6 +3958,7 @@ export interface components {
             createdAt: string;
             /** Format: date-time */
             updatedAt: string;
+            student?: components["schemas"]["StudentDto"];
         };
         ClassSubjectDetailDto: {
             id: number;
@@ -3813,7 +3974,7 @@ export interface components {
             subject?: components["schemas"]["SubjectDto"];
             baseClass?: components["schemas"]["ClassDto"];
             semester?: components["schemas"]["SemesterDto"];
-            gradeStudents?: components["schemas"]["GradeStudentDto"][];
+            gradeStudents?: components["schemas"]["NestedGradeStudentDto"][];
             classSubjectSessions?: components["schemas"]["ClassSubjectSessionDto"][];
         };
         StudentInfoResponseDto: {
@@ -4604,6 +4765,158 @@ export interface components {
             endDate?: string;
             /** @default false */
             isCurrent: boolean;
+        };
+        AttendanceDetailDto: {
+            id: number;
+            studentId: number;
+            classSubjectId: number;
+            scheduleDetailId: number;
+            /** @enum {string} */
+            status: "PRESENT" | "ABSENT";
+            note: string | null;
+            recordedById: number | null;
+            /** Format: date-time */
+            recordedAt: string;
+            student?: components["schemas"]["StudentDto"];
+            scheduleDetail?: components["schemas"]["ClassSubjectScheduleDetailDto"];
+            classSubject?: components["schemas"]["ClassSubjectDto"];
+            recordBy?: components["schemas"]["StaffDto"];
+        };
+        AttendanceSheetInfoDto: {
+            classSubjectId: number;
+            subjectName: string;
+            className?: string | null;
+            teacherName?: string | null;
+            semesterName: string;
+        };
+        AttendanceSheetScheduleDto: {
+            scheduleDetailId: number;
+            weekNumber: number;
+            /** Format: date-time */
+            studyDate?: string | null;
+            dayOfWeek: string;
+            shift: string;
+            startPeriod: number;
+            endPeriod: number;
+            countPeriod?: number | null;
+            roomCode?: string | null;
+        };
+        AttendanceItemDto: {
+            /** @enum {string} */
+            status: "PRESENT" | "ABSENT";
+            note?: string | null;
+        };
+        AttendanceSummaryShortDto: {
+            totalPeriods: number;
+            totalAbsentPeriods: number;
+            absentPercentage: number;
+            /** @enum {string} */
+            examStatus: "ELIGIBLE" | "INELIGIBLE" | "PENDING";
+            isManuallyLocked: boolean;
+        };
+        AttendanceSheetStudentDto: {
+            studentId: number;
+            studentCode: string;
+            fullName: string;
+            /** Format: date-time */
+            dob?: string | null;
+            /** @description Map dạng: { [scheduleDetailId]: { status, note } } */
+            attendances: {
+                [key: string]: components["schemas"]["AttendanceItemDto"];
+            };
+            summary?: components["schemas"]["AttendanceSummaryShortDto"] | null;
+        };
+        AttendanceSheetResponseDto: {
+            info: components["schemas"]["AttendanceSheetInfoDto"];
+            schedules: components["schemas"]["AttendanceSheetScheduleDto"][];
+            students: components["schemas"]["AttendanceSheetStudentDto"][];
+        };
+        CreateAttendanceDto: {
+            studentId: number;
+            classSubjectId: number;
+            scheduleDetailId: number;
+            /** @enum {string} */
+            status: "PRESENT" | "ABSENT";
+            note: string | null;
+        };
+        AttendanceDto: {
+            id: number;
+            studentId: number;
+            classSubjectId: number;
+            scheduleDetailId: number;
+            /** @enum {string} */
+            status: "PRESENT" | "ABSENT";
+            note: string | null;
+            recordedById: number | null;
+            /** Format: date-time */
+            recordedAt: string;
+        };
+        NestedAttendanceForCreateBulkDto: {
+            studentId: number;
+            /** @enum {string} */
+            status: "PRESENT" | "ABSENT";
+            note: string | null;
+        };
+        CreateBulkAttendanceDto: {
+            scheduleDetailId: number;
+            classSubjectId: number;
+            attendances: components["schemas"]["NestedAttendanceForCreateBulkDto"][];
+        };
+        AttendanceSummaryDetailDto: {
+            id: number;
+            studentId: number;
+            classSubjectId: number;
+            totalPeriods: number;
+            totalAbsentPeriods: number;
+            absentPercentage: number;
+            /** @enum {string} */
+            examStatus: "ELIGIBLE" | "INELIGIBLE" | "PENDING";
+            isManuallyLocked: boolean;
+            lockReason: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            student?: components["schemas"]["StudentDto"];
+            classSubject?: components["schemas"]["ClassSubjectDto"];
+        };
+        CreateAttendanceSummaryDto: {
+            studentId: number;
+            classSubjectId: number;
+            totalPeriods: number;
+            totalAbsentPeriods: number;
+            absentPercentage: number;
+            /** @enum {string} */
+            examStatus: "ELIGIBLE" | "INELIGIBLE" | "PENDING";
+            isManuallyLocked: boolean;
+            lockReason: string | null;
+        };
+        AttendanceSummaryDto: {
+            id: number;
+            studentId: number;
+            classSubjectId: number;
+            totalPeriods: number;
+            totalAbsentPeriods: number;
+            absentPercentage: number;
+            /** @enum {string} */
+            examStatus: "ELIGIBLE" | "INELIGIBLE" | "PENDING";
+            isManuallyLocked: boolean;
+            lockReason: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateAttendanceSummaryDto: {
+            studentId?: number;
+            classSubjectId?: number;
+            totalPeriods?: number;
+            totalAbsentPeriods?: number;
+            absentPercentage?: number;
+            /** @enum {string} */
+            examStatus?: "ELIGIBLE" | "INELIGIBLE" | "PENDING";
+            isManuallyLocked?: boolean;
+            lockReason?: string | null;
         };
     };
     responses: never;
@@ -7678,13 +7991,10 @@ export interface operations {
     ClassSubjectController_getAll: {
         parameters: {
             query?: {
-                id?: number;
                 teacherId?: number | null;
                 classId?: number | null;
                 semesterId?: number;
                 subjectId?: number;
-                createdAt?: string;
-                updatedAt?: string;
                 majorId?: number;
             };
             header?: never;
@@ -9375,6 +9685,285 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    AttendanceController_findAll: {
+        parameters: {
+            query?: {
+                classSubjectId?: number;
+                scheduleDetailId?: number;
+                studentId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceDetailDto"][];
+                };
+            };
+        };
+    };
+    AttendanceController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAttendanceDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceDto"];
+                };
+            };
+        };
+    };
+    AttendanceController_getAttendanceSheet: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                classSubjectId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceSheetResponseDto"];
+                };
+            };
+        };
+    };
+    AttendanceController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceDetailDto"];
+                };
+            };
+        };
+    };
+    AttendanceController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AttendanceController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceDto"];
+                };
+            };
+        };
+    };
+    AttendanceController_bulkAttendance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBulkAttendanceDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AttendanceSummaryController_findAll: {
+        parameters: {
+            query?: {
+                id?: number;
+                studentId?: number;
+                classSubjectId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceSummaryDetailDto"][];
+                };
+            };
+        };
+    };
+    AttendanceSummaryController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAttendanceSummaryDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceSummaryDto"];
+                };
+            };
+        };
+    };
+    AttendanceSummaryController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceSummaryDetailDto"];
+                };
+            };
+        };
+    };
+    AttendanceSummaryController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    AttendanceSummaryController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAttendanceSummaryDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceSummaryDto"];
+                };
+            };
+        };
+    };
+    AttendanceSummaryController_recalculate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AttendanceSummaryDto"];
+                };
             };
         };
     };
