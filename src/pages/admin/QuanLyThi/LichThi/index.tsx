@@ -6,21 +6,26 @@ import {
   Plus,
   Filter,
   RefreshCw,
-  Users,
   ChevronLeft,
   ChevronRight,
   AlertCircle,
   BookOpen,
+  Eye,
 } from 'lucide-react'
 import { $api } from '../../../../api/client'
 import type { components } from '../../../../api/v1'
 import ModalCreateDotThi from './CreateDotThi'
+import ModalDotThiDetail from './DotThiDetail'
 
 export type CreateExamScheduleDto = components['schemas']['CreateExamScheduleDto']
 
 const LichThiIndex = () => {
-  // --- States mở Modal ---
+  // --- States mở Modal Tạo đợt thi ---
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+
+  // --- States mở Modal Chi tiết đợt thi ---
+  const [selectedDetailId, setSelectedDetailId] = useState<number | null>(null)
+  const [isDetailOpen, setIsDetailOpen] = useState<boolean>(false)
 
   // --- States bộ lọc ---
   const [selectedSemesterId, setSelectedSemesterId] = useState<number | undefined>(undefined)
@@ -35,7 +40,6 @@ const LichThiIndex = () => {
 
   // --- Fetch API ---
   const { data: semesters } = $api.useQuery('get', '/semesters')
-
   const { data: rooms } = $api.useQuery('get', '/rooms')
 
   // Lấy danh sách đợt thi
@@ -64,6 +68,12 @@ const LichThiIndex = () => {
     setShift('')
     setExamTurn(undefined)
     setPage(1)
+  }
+
+  // Hàm mở modal chi tiết
+  const handleOpenDetail = (id: number) => {
+    setSelectedDetailId(id)
+    setIsDetailOpen(true)
   }
 
   // Tính toán số trang
@@ -198,21 +208,20 @@ const LichThiIndex = () => {
                 <th className="px-4 py-3.5">Thời gian / Ca</th>
                 <th className="px-4 py-3.5">Phòng thi</th>
                 <th className="px-4 py-3.5 text-center">Đợt thi</th>
-                <th className="px-4 py-3.5 text-center">Số SV dự thi</th>
-                <th className="px-4 py-3.5">Ghi chú</th>
+                <th className="px-4 py-3.5 text-center">Thao tác</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 text-sm">
               {isLoadingExamSchedules ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500">
+                  <td colSpan={6} className="py-12 text-center text-slate-500">
                     <RefreshCw className="mx-auto mb-2 h-6 w-6 animate-spin text-indigo-600" />
                     Đang tải danh sách lịch thi...
                   </td>
                 </tr>
               ) : examSchedulesData?.data?.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500">
+                  <td colSpan={6} className="py-12 text-center text-slate-500">
                     <AlertCircle className="mx-auto mb-2 h-8 w-8 text-slate-400" />
                     Không tìm thấy lịch thi nào phù hợp.
                   </td>
@@ -273,17 +282,15 @@ const LichThiIndex = () => {
                       Lần {item.examTurn}
                     </td>
 
-                    {/* Số SV dự thi */}
+                    {/* Thao tác (Icon con mắt mở chi tiết) */}
                     <td className="px-4 py-3.5 text-center">
-                      <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700">
-                        <Users className="h-3.5 w-3.5" />
-                        {item.studentExams?.length || 0} SV
-                      </span>
-                    </td>
-
-                    {/* Ghi chú */}
-                    <td className="max-w-xs truncate px-4 py-3.5 text-xs text-slate-500">
-                      {item.note || '-'}
+                      <button
+                        onClick={() => handleOpenDetail(item.id)}
+                        title="Xem chi tiết đợt thi"
+                        className="rounded-lg p-2 text-slate-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600 active:bg-indigo-100"
+                      >
+                        <Eye className="h-4 w-4" />
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -329,6 +336,16 @@ const LichThiIndex = () => {
         onSuccess={() => {
           refetchExamSchedules()
         }}
+      />
+
+      {/* --- COMPONENT MODAL CHI TIẾT ĐỢT THI --- */}
+      <ModalDotThiDetail
+        isOpen={isDetailOpen}
+        onClose={() => {
+          setIsDetailOpen(false)
+          setSelectedDetailId(null)
+        }}
+        examScheduleId={selectedDetailId}
       />
     </div>
   )
