@@ -2313,6 +2313,131 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/exam-schedules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách các Đợt thi / Lịch thi (Có lọc & phân trang) */
+        get: operations["ExamScheduleController_findAll"];
+        put?: never;
+        /** Tạo mới Lịch thi (Tự động lọc & gán Sinh viên vắng <= 20% vào đợt thi) */
+        post: operations["ExamScheduleController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/exam-schedules/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy chi tiết Lịch thi (Kèm danh sách Sinh viên dự thi) */
+        get: operations["ExamScheduleController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa Lịch thi (Tự động xóa danh sách thi) */
+        delete: operations["ExamScheduleController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin Lịch thi */
+        patch: operations["ExamScheduleController_update"];
+        trace?: never;
+    };
+    "/exam-schedules/add-student": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Thêm thủ công 1 Sinh viên vào Đợt thi (Trường hợp đặc biệt) */
+        post: operations["ExamScheduleController_addStudentToExam"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/exam-schedules/{id}/sync-attendance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Đồng bộ lại danh sách thi theo dữ liệu điểm danh mới nhất (Chỉ quét bù SV đủ điều kiện chưa có trong đợt thi) */
+        post: operations["ExamScheduleController_syncStudentsFromAttendance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/student-exam-details": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy danh sách sinh viên dự thi (Có lọc & phân trang) */
+        get: operations["StudentExamDetailController_findAll"];
+        put?: never;
+        /** Thêm 1 sinh viên vào danh sách phòng thi */
+        post: operations["StudentExamDetailController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/student-exam-details/bulk/{examScheduleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Thêm hàng loạt sinh viên vào phòng thi (Gán danh sách thi) */
+        post: operations["StudentExamDetailController_createMany"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/student-exam-details/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lấy thông tin chi tiết sinh viên dự thi theo ID */
+        get: operations["StudentExamDetailController_findOne"];
+        put?: never;
+        post?: never;
+        /** Xóa sinh viên khỏi phòng thi */
+        delete: operations["StudentExamDetailController_remove"];
+        options?: never;
+        head?: never;
+        /** Cập nhật thông tin dự thi (Số báo danh, Số ghế, Điểm danh, Vi phạm) */
+        patch: operations["StudentExamDetailController_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -4917,6 +5042,110 @@ export interface components {
             examStatus?: "ELIGIBLE" | "INELIGIBLE" | "PENDING";
             isManuallyLocked?: boolean;
             lockReason?: string | null;
+        };
+        CreateExamScheduleDto: {
+            classSubjectId: number;
+            /** Format: date-time */
+            examDate: string;
+            examTurn: number;
+            startTime: string | null;
+            endTime: string | null;
+            shift: string | null;
+            roomId: number | null;
+            note: string | null;
+        };
+        NestedClassSubjectForExamScheduleDto: {
+            id: number;
+            teacherId: number | null;
+            classId: number | null;
+            semesterId: number;
+            subjectId: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            subject: components["schemas"]["SubjectDto"] | null;
+            baseClass: components["schemas"]["ClassDto"] | null;
+        };
+        StudentExamDetailDetailDto: {
+            id: number;
+            studentId: number;
+            examScheduleId: number;
+            deskNumber: string | null;
+            identificationNum: string | null;
+            isAttended: boolean;
+            isViolated: boolean;
+            violationNote: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            student: components["schemas"]["StudentDto"] | null;
+        };
+        ExamScheduleDetailDto: {
+            id: number;
+            classSubjectId: number;
+            /** Format: date-time */
+            examDate: string;
+            examTurn: number;
+            startTime: string | null;
+            endTime: string | null;
+            shift: string | null;
+            roomId: number | null;
+            note: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            classSubject: components["schemas"]["NestedClassSubjectForExamScheduleDto"] | null;
+            room: components["schemas"]["RoomDto"] | null;
+            studentExams: components["schemas"]["StudentExamDetailDetailDto"][] | null;
+        };
+        ExamSchedulePaginationDto: {
+            data: components["schemas"]["ExamScheduleDetailDto"][];
+            total: number;
+        };
+        UpdateExamScheduleDto: {
+            classSubjectId?: number;
+            /** Format: date-time */
+            examDate?: string;
+            examTurn?: number;
+            startTime?: string | null;
+            endTime?: string | null;
+            shift?: string | null;
+            roomId?: number | null;
+            note?: string | null;
+        };
+        AddStudentToExamDto: {
+            /**
+             * @description ID của Lịch thi / Đợt thi
+             * @example 1
+             */
+            examScheduleId: number;
+            /**
+             * @description ID của Sinh viên
+             * @example 10
+             */
+            studentId: number;
+        };
+        CreateStudentExamDetailDto: {
+            studentId: number;
+            examScheduleId: number;
+            deskNumber: string | null;
+            identificationNum: string | null;
+            isAttended: boolean;
+            isViolated: boolean;
+            violationNote: string | null;
+        };
+        UpdateStudentExamDetailDto: {
+            id?: number;
+            studentId?: number;
+            examScheduleId?: number;
+            deskNumber?: string | null;
+            identificationNum?: string | null;
+            isAttended?: boolean;
+            isViolated?: boolean;
+            violationNote?: string | null;
+            /** Format: date-time */
+            createdAt?: string;
         };
     };
     responses: never;
@@ -9963,6 +10192,305 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AttendanceSummaryDto"];
+                };
+            };
+        };
+    };
+    ExamScheduleController_findAll: {
+        parameters: {
+            query: {
+                classSubjectId?: number;
+                examDate?: string;
+                examTurn?: number;
+                shift?: string | null;
+                roomId?: number | null;
+                page: number;
+                limit: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExamSchedulePaginationDto"];
+                };
+            };
+        };
+    };
+    ExamScheduleController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateExamScheduleDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExamScheduleDetailDto"];
+                };
+            };
+        };
+    };
+    ExamScheduleController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của Lịch thi */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExamScheduleDetailDto"];
+                };
+            };
+        };
+    };
+    ExamScheduleController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của Lịch thi */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa lịch thi thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExamScheduleController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của Lịch thi */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateExamScheduleDto"];
+            };
+        };
+        responses: {
+            /** @description Cập nhật lịch thi thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExamScheduleDetailDto"];
+                };
+            };
+        };
+    };
+    ExamScheduleController_addStudentToExam: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AddStudentToExamDto"];
+            };
+        };
+        responses: {
+            /** @description Thêm sinh viên vào đợt thi thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    ExamScheduleController_syncStudentsFromAttendance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của Lịch thi */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Đồng bộ danh sách thi thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StudentExamDetailController_findAll: {
+        parameters: {
+            query: {
+                studentId?: number;
+                examScheduleId?: number;
+                page: number;
+                limit: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Trả về danh sách sinh viên trong phòng thi kèm phân trang. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StudentExamDetailController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateStudentExamDetailDto"];
+            };
+        };
+        responses: {
+            /** @description Thêm sinh viên vào phòng thi thành công. */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentExamDetailDetailDto"];
+                };
+            };
+        };
+    };
+    StudentExamDetailController_createMany: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                examScheduleId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StudentExamDetailController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của bản ghi */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentExamDetailDetailDto"];
+                };
+            };
+        };
+    };
+    StudentExamDetailController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của bản ghi */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Xóa thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    StudentExamDetailController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của bản ghi */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateStudentExamDetailDto"];
+            };
+        };
+        responses: {
+            /** @description Cập nhật thành công. */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentExamDetailDetailDto"];
                 };
             };
         };

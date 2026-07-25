@@ -35,6 +35,7 @@ import HoSoTuyenSinhHome from './pages/admin/TuyenSinh/HoSoTuyenSinh'
 import CauHinhTuyenSinhHome from './pages/admin/TuyenSinh/CauHinhTuyenSinh'
 import QuanLyDiem from './pages/admin/QuanLyDiem'
 import { DiemDanhSheet } from './pages/admin/DiemDanh'
+import LichThiIndex from './pages/admin/QuanLyThi/LichThi'
 
 // --- LAZY LOADING COMPONENTS ---
 
@@ -210,6 +211,14 @@ function App() {
 
               <Route path="diem-ren-luyen" element={<DiemRenLuyenIndex />} />
               <Route path="diem-ren-luyen/tieu-chi-danh-gia" element={<DiemRenLuyen_TieuChiDanhGiaIndex />} />
+
+              {/* Quản lý thi */}
+              <Route path="thi">
+                <Route path="lich-thi" element={<LichThiIndex />} />
+                <Route path="danh-sach-du-thi" element={<div>Danh sách dự thi</div>} />
+                <Route path="diem-danh-phong-thi" element={<div>Điểm danh & Vi phạm</div>} />
+                <Route path="xet-dieu-kien-thi" element={<div>Xét điều kiện dự thi</div>} />
+              </Route>
 
               {/* Công tác học sinh */}
               <Route element={<HocSinhLayout />}>

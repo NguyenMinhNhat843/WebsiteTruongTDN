@@ -64,7 +64,44 @@ const navItems: NavItem[] = [
       },
     ],
   },
-  // --- NHÓM DANH MỤC (TÁCH HẲN RA CẤP 1) ---
+  {
+    id: 'quan-ly-thi',
+    label: 'Quản lý Thi',
+    icon: '📝',
+    roles: ['admin', 'staff', 'teacher'],
+    children: [
+      {
+        id: 'lich-thi',
+        label: 'Lịch thi & Đợt thi',
+        href: '/admin/thi/lich-thi',
+        roles: ['admin', 'staff', 'teacher'],
+        // Admin/Staff: Tạo đợt thi, đồng bộ điểm danh, gán phòng.
+        // Teacher: Xem lịch coi thi/lịch thi của lớp mình.
+      },
+      {
+        id: 'danh-sach-du-thi',
+        label: 'Danh sách dự thi',
+        href: '/admin/thi/danh-sach-du-thi',
+        roles: ['admin', 'staff', 'teacher'],
+        // Xem/In danh sách thi, xếp SBD, xếp số ghế, thêm thủ công sinh viên (add-student).
+      },
+      {
+        id: 'diem-danh-phong-thi',
+        label: 'Điểm danh & Vi phạm',
+        href: '/admin/thi/diem-danh-phong-thi',
+        roles: ['admin', 'staff', 'teacher'],
+        // Dành cho giám thị/giáo viên: Đánh dấu đi thi (isAttended), ghi nhận vi phạm (isViolated, note).
+      },
+      {
+        id: 'xet-dieu-kien-thi',
+        label: 'Xét điều kiện dự thi',
+        href: '/admin/thi/xet-dieu-kien-thi',
+        roles: ['admin', 'staff'],
+        // Quản lý sinh viên bị cấm thi (vắng > 20%), duyệt đơn hoãn thi/miễn cấm thi, bấm nút "Đồng bộ điểm danh".
+      },
+    ],
+  },
+  // --- NHÓM DANH MỤC ---
   {
     id: 'danh-muc-he-thong',
     label: 'Danh mục',
