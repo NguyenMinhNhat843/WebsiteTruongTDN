@@ -3574,6 +3574,33 @@ export interface components {
             /** Format: date-time */
             updatedAt: string;
         };
+        ManagementPositionDto: {
+            id: number;
+            code: string;
+            name: string;
+            priority: number;
+            reductionPercent: number;
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        StaffPositionWithDetailsDto: {
+            id: number;
+            staffId: number;
+            positionId: number;
+            departmentId: number | null;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+            position: components["schemas"]["ManagementPositionDto"] | null;
+        };
         UpdateStaffPositionDto: {
             staffId?: number;
             positionId?: number;
@@ -3589,18 +3616,6 @@ export interface components {
             priority: number;
             reductionPercent: number;
             isActive: boolean;
-        };
-        ManagementPositionDto: {
-            id: number;
-            code: string;
-            name: string;
-            priority: number;
-            reductionPercent: number;
-            isActive: boolean;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
         };
         UpdateManagementPositionDto: {
             code?: string;
@@ -7113,7 +7128,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StaffPositionDto"][];
+                    "application/json": components["schemas"]["StaffPositionWithDetailsDto"][];
                 };
             };
         };
