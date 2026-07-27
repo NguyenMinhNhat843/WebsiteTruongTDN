@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Plus, Edit2, Search, AlertCircle, Calendar } from 'lucide-react'
+import { Plus, Edit2, Search, AlertCircle, Calendar, RefreshCw } from 'lucide-react'
 import { $api } from '../../../../api/client'
 import ModalPhanBoDinhMuc from './ModalPhanBoDinhMuc'
 import type { TeachingUotaDto } from '../../../../api/entity'
@@ -29,7 +29,7 @@ export default function TeachingQuotaManagement() {
     }
   }, [academicYears])
 
-  // 2. Lấy danh sách định mức từ API /teaching-quotas (lọc theo academicYearId nếu backend hỗ trợ)
+  // 2. Lấy danh sách định mức từ API /teaching-quotas
   const {
     data: quotasData,
     isLoading: isLoadingQuotas,
@@ -50,6 +50,29 @@ export default function TeachingQuotaManagement() {
       },
     },
   })
+
+  // 4. API đồng bộ định mức giảng dạy cho tất cả giáo viên trong năm
+  const { mutate: syncQuotas, isPending: isSyncing } = $api.useMutation(
+    'post',
+    '/teaching-quotas/sync-actual-hours/academic-year/{academicYearId}',
+    {
+      onSuccess: () => {
+        refetchQuotas()
+      },
+    },
+  )
+
+  // Trực tiếp kích hoạt đồng bộ
+  const handleSyncQuotas = () => {
+    if (!selectedAcademicYearId) return
+    syncQuotas({
+      params: {
+        path: {
+          academicYearId: selectedAcademicYearId,
+        },
+      },
+    })
+  }
 
   const isLoading = isLoadingQuotas || isLoadingStaff || isLoadingYears
 
@@ -79,7 +102,7 @@ export default function TeachingQuotaManagement() {
 
         <div className="flex flex-col items-center gap-3 sm:flex-row">
           {/* BỘ LỌC NĂM HỌC */}
-          <div className="relative w-full sm:w-60">
+          <div className="relative w-full sm:w-56">
             <Calendar className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <select
               value={selectedAcademicYearId || ''}
@@ -98,16 +121,26 @@ export default function TeachingQuotaManagement() {
           </div>
 
           {/* THANH TÌM KIẾM */}
-          <div className="relative w-full sm:w-64">
+          <div className="relative w-full sm:w-56">
             <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
-              placeholder="Tìm theo tên giáo viên..."
+              placeholder="Tìm tên giáo viên..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full rounded-xl border border-slate-200 bg-white py-2 pr-4 pl-9 text-xs text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
+
+          {/* NÚT ĐỒNG BỘ ĐỊNH MỨC */}
+          <button
+            onClick={handleSyncQuotas}
+            disabled={isSyncing || !selectedAcademicYearId}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
+            {isSyncing ? 'Đang đồng bộ...' : 'Đồng bộ giờ dạy'}
+          </button>
         </div>
       </div>
 

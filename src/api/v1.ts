@@ -735,6 +735,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/teaching-quotas/sync-actual-hours/academic-year/{academicYearId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Đồng bộ giờ dạy thực tế của tất cả giảng viên theo năm học */
+        post: operations["TeachingQuotaController_syncAllTeachersActualHours"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/teaching-quotas/{id}": {
         parameters: {
             query?: never;
@@ -3836,6 +3853,7 @@ export interface components {
         CreateSemesterDto: {
             name: string;
             schoolYear: string | null;
+            academicYearId: number | null;
             year: number | null;
             term: number | null;
             /** Format: date-time */
@@ -3858,6 +3876,7 @@ export interface components {
             term: number;
             /** @example 2025-2026 */
             schoolYear: string;
+            academicYearId: number | null;
             /**
              * Format: date-time
              * @example 2026-09-01
@@ -3892,6 +3911,7 @@ export interface components {
         UpdateSemesterDto: {
             name?: string;
             schoolYear?: string | null;
+            academicYearId?: number | null;
             year?: number | null;
             term?: number | null;
             /** Format: date-time */
@@ -4341,6 +4361,7 @@ export interface components {
             id: number;
             name: string;
             schoolYear: string | null;
+            academicYearId: number | null;
             year: number | null;
             term: number | null;
             /** Format: date-time */
@@ -7040,6 +7061,29 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TeachingQuotaDto"];
+                };
+            };
+        };
+    };
+    TeachingQuotaController_syncAllTeachersActualHours: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description ID của năm học */
+                academicYearId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Kết quả đồng bộ danh sách giảng viên */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
                 };
             };
         };
