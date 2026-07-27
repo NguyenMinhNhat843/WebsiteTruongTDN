@@ -38,6 +38,7 @@ export type CreateDocumentConfigDto = components['schemas']['CreateDocumentConfi
 
 // Đinh mức giảng dạy
 export type TeachingLevelDto = components['schemas']['TeachingLevelDto']
+export type TeachingUotaDto = components['schemas']['TeachingQuotaDto']
 
 // Chức vụ
 export type ManagementPositionDto = components['schemas']['ManagementPositionDto']

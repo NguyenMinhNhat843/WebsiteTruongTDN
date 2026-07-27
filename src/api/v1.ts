@@ -7003,6 +7003,7 @@ export interface operations {
                 teachingLevelId?: number;
                 page?: number;
                 limit?: number;
+                academicYearId?: number;
             };
             header?: never;
             path?: never;

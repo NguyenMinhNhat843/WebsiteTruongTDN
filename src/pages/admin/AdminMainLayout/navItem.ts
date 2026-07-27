@@ -268,6 +268,13 @@ const navItems: NavItem[] = [
         roles: ['admin'],
       },
       {
+        id: 'dinh-muc-giang-day',
+        label: 'Định mức giảng dạy',
+        icon: '📏',
+        href: '/admin/dinh-muc-giang-day-giao-vien',
+        roles: ['admin'],
+      },
+      {
         id: 'quan-ly-tai-khoan',
         label: 'Quản lý tài khoản',
         icon: '🔐',

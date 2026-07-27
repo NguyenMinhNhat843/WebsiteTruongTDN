@@ -89,6 +89,7 @@ const HuongDanSuDung = lazy(() => import('./pages/HuongDanSuDung'))
 import { DiemDanhSheet } from './pages/admin/DiemDanh'
 import KhungDinhMucGiangDay from './pages/admin/DinhMucGiangDay/KhungDinhMucGiangDay'
 import QuanLyChucVu from './pages/admin/QuanLyChucVu'
+import TeachingQuotaManagement from './pages/admin/QuanLyNhanVien/DinhMucGiangDay'
 
 // --- LAZY LOADING: TEACHER PAGES ---
 const MemberDashboard = lazy(() => import('./pages/MembersDashboard/Home'))
@@ -238,6 +239,7 @@ function App() {
               <Route element={<NhanVienLayout />}>
                 <Route path="account" element={<QuanLyTaiKhoan />} />
                 <Route path="users" element={<QuanLyNhanVien />} />
+                <Route path="dinh-muc-giang-day-giao-vien" element={<TeachingQuotaManagement />} />
                 <Route path="users/:staffCode" element={<NhanVienOne />} />
               </Route>
 
