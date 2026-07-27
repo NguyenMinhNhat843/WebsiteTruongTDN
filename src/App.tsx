@@ -87,6 +87,7 @@ const LichThiIndex = lazy(() => import('./pages/admin/QuanLyThi/LichThi'))
 const CauHinhChung = lazy(() => import('./pages/admin/CauHinhHeThong'))
 const HuongDanSuDung = lazy(() => import('./pages/HuongDanSuDung'))
 import { DiemDanhSheet } from './pages/admin/DiemDanh'
+import KhungDinhMucGiangDay from './pages/admin/KhungDinhMucGiangDay'
 
 // --- LAZY LOADING: TEACHER PAGES ---
 const MemberDashboard = lazy(() => import('./pages/MembersDashboard/Home'))
@@ -194,6 +195,7 @@ function App() {
               <Route path="mon-hoc" element={<MonHocIndex />} />
               <Route path="phong-hoc" element={<PhongHocIndex />} />
               <Route path="nam-hoc" element={<NamHocHome />} />
+              <Route path="khung-dinh-muc-giang-day" element={<KhungDinhMucGiangDay />} />
               <Route element={<KhoaIndex />}>
                 <Route path="dao-tao/khoa" element={<KhoaList />} />
               </Route>

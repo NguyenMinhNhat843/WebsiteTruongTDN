@@ -35,3 +35,6 @@ export type VerifyAdmissionDocumentDto = components['schemas']['VerifyAdmissionD
 
 export type DocumentConfigDto = components['schemas']['DocumentConfigDto']
 export type CreateDocumentConfigDto = components['schemas']['CreateDocumentConfigDto']
+
+// Đinh mức giảng dạy
+export type TeachingLevelDto = components['schemas']['TeachingLevelDto']
