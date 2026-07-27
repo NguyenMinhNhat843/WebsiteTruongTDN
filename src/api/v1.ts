@@ -687,6 +687,102 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/teaching-levels": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TeachingLevelController_findAll"];
+        put?: never;
+        post: operations["TeachingLevelController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/teaching-levels/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TeachingLevelController_findOne"];
+        put?: never;
+        post?: never;
+        delete: operations["TeachingLevelController_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["TeachingLevelController_update"];
+        trace?: never;
+    };
+    "/teaching-quotas": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TeachingQuotaController_findAll"];
+        put?: never;
+        post: operations["TeachingQuotaController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/teaching-quotas/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["TeachingQuotaController_findOne"];
+        put?: never;
+        post?: never;
+        delete: operations["TeachingQuotaController_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["TeachingQuotaController_update"];
+        trace?: never;
+    };
+    "/staff-positions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StaffPositionController_findAll"];
+        put?: never;
+        post: operations["StaffPositionController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/staff-positions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["StaffPositionController_findOne"];
+        put?: never;
+        post?: never;
+        delete: operations["StaffPositionController_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["StaffPositionController_update"];
+        trace?: never;
+    };
     "/auth/register": {
         parameters: {
             query?: never;
@@ -3188,7 +3284,7 @@ export interface components {
              */
             dob: string;
             /** @enum {string} */
-            EmployeeRole?: "STAFF" | "TEACHER";
+            employeeRole?: "STAFF" | "TEACHER";
             /** @example staff@school.edu.vn */
             email?: string;
             /** @example 0901234567 */
@@ -3227,7 +3323,7 @@ export interface components {
              */
             dob?: string;
             /** @enum {string} */
-            EmployeeRole?: "STAFF" | "TEACHER";
+            employeeRole?: "STAFF" | "TEACHER";
             /** @example staff@school.edu.vn */
             email?: string;
             /** @example 0901234567 */
@@ -3270,7 +3366,7 @@ export interface components {
              */
             dob: string;
             /** @enum {string} */
-            EmployeeRole?: "STAFF" | "TEACHER";
+            employeeRole?: "STAFF" | "TEACHER";
             /** @example staff@school.edu.vn */
             email?: string;
             /** @example 0901234567 */
@@ -3359,6 +3455,101 @@ export interface components {
         UpdateTeacherSubjectDto: {
             teacherId?: number;
             subjectId?: number;
+        };
+        CreateTeachingLevelDto: {
+            code: string;
+            name: string;
+            academicYearId: number;
+            minHours: number;
+            maxHours: number;
+        };
+        TeachingLevelDto: {
+            id: number;
+            code: string;
+            name: string;
+            academicYearId: number;
+            minHours: number;
+            maxHours: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        TeachingLevelPaginationResponseDto: {
+            data: components["schemas"]["TeachingLevelDto"][];
+            total: number;
+        };
+        UpdateTeachingLevelDto: {
+            code?: string;
+            name?: string;
+            academicYearId?: number;
+            minHours?: number;
+            maxHours?: number;
+        };
+        CreateTeachingQuotaDto: {
+            staffId: number;
+            teachingLevelId: number;
+            baseHours: number;
+            reductionPercent: number;
+            actualHours: number;
+            finalHours: number;
+        };
+        TeachingQuotaDto: {
+            id: number;
+            staffId: number;
+            teachingLevelId: number;
+            baseHours: number;
+            reductionPercent: number;
+            actualHours: number;
+            finalHours: number;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        TeachingQuotaPaginationResponseDto: {
+            data: components["schemas"]["TeachingQuotaDto"][];
+            total: number;
+        };
+        UpdateTeachingQuotaDto: {
+            staffId?: number;
+            teachingLevelId?: number;
+            baseHours?: number;
+            reductionPercent?: number;
+            actualHours?: number;
+            finalHours?: number;
+        };
+        CreateStaffPositionDto: {
+            staffId: number;
+            positionId: number;
+            departmentId: number | null;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string | null;
+        };
+        StaffPositionDto: {
+            id: number;
+            staffId: number;
+            positionId: number;
+            departmentId: number | null;
+            /** Format: date-time */
+            startDate: string;
+            /** Format: date-time */
+            endDate: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateStaffPositionDto: {
+            staffId?: number;
+            positionId?: number;
+            departmentId?: number | null;
+            /** Format: date-time */
+            startDate?: string;
+            /** Format: date-time */
+            endDate?: string | null;
         };
         RegisterDto: {
             /** @example newuser */
@@ -3937,7 +4128,7 @@ export interface components {
              */
             dob: string;
             /** @enum {string} */
-            EmployeeRole?: "STAFF" | "TEACHER";
+            employeeRole?: "STAFF" | "TEACHER";
             /** @example staff@school.edu.vn */
             email?: string;
             /** @example 0901234567 */
@@ -4048,7 +4239,7 @@ export interface components {
              */
             dob: string;
             /** @enum {string} */
-            EmployeeRole?: "STAFF" | "TEACHER";
+            employeeRole?: "STAFF" | "TEACHER";
             /** @example staff@school.edu.vn */
             email?: string;
             /** @example 0901234567 */
@@ -6614,6 +6805,348 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    TeachingLevelController_findAll: {
+        parameters: {
+            query?: {
+                code?: string;
+                name?: string;
+                academicYearId?: number;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeachingLevelPaginationResponseDto"];
+                };
+            };
+        };
+    };
+    TeachingLevelController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTeachingLevelDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeachingLevelDto"];
+                };
+            };
+        };
+    };
+    TeachingLevelController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeachingLevelDto"];
+                };
+            };
+        };
+    };
+    TeachingLevelController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeachingLevelDto"];
+                };
+            };
+        };
+    };
+    TeachingLevelController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTeachingLevelDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeachingLevelDto"];
+                };
+            };
+        };
+    };
+    TeachingQuotaController_findAll: {
+        parameters: {
+            query?: {
+                staffId?: number;
+                teachingLevelId?: number;
+                page?: number;
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeachingQuotaPaginationResponseDto"];
+                };
+            };
+        };
+    };
+    TeachingQuotaController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTeachingQuotaDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeachingQuotaDto"];
+                };
+            };
+        };
+    };
+    TeachingQuotaController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeachingQuotaDto"];
+                };
+            };
+        };
+    };
+    TeachingQuotaController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeachingQuotaDto"];
+                };
+            };
+        };
+    };
+    TeachingQuotaController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTeachingQuotaDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeachingQuotaDto"];
+                };
+            };
+        };
+    };
+    StaffPositionController_findAll: {
+        parameters: {
+            query?: {
+                staffId?: number;
+                positionId?: number;
+                departmentId?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffPositionDto"][];
+                };
+            };
+        };
+    };
+    StaffPositionController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateStaffPositionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffPositionDto"];
+                };
+            };
+        };
+    };
+    StaffPositionController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffPositionDto"];
+                };
+            };
+        };
+    };
+    StaffPositionController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffPositionDto"];
+                };
+            };
+        };
+    };
+    StaffPositionController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateStaffPositionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StaffPositionDto"];
+                };
             };
         };
     };
