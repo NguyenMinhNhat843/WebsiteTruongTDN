@@ -783,6 +783,38 @@ export interface paths {
         patch: operations["StaffPositionController_update"];
         trace?: never;
     };
+    "/management-positions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ManagementPositionController_getData"];
+        put?: never;
+        post: operations["ManagementPositionController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/management-positions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ManagementPositionController_findOne"];
+        put?: never;
+        post?: never;
+        delete: operations["ManagementPositionController_remove"];
+        options?: never;
+        head?: never;
+        patch: operations["ManagementPositionController_update"];
+        trace?: never;
+    };
     "/auth/register": {
         parameters: {
             query?: never;
@@ -3550,6 +3582,32 @@ export interface components {
             startDate?: string;
             /** Format: date-time */
             endDate?: string | null;
+        };
+        CreateManagementPositionDto: {
+            code: string;
+            name: string;
+            priority: number;
+            reductionPercent: number;
+            isActive: boolean;
+        };
+        ManagementPositionDto: {
+            id: number;
+            code: string;
+            name: string;
+            priority: number;
+            reductionPercent: number;
+            isActive: boolean;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        UpdateManagementPositionDto: {
+            code?: string;
+            name?: string;
+            priority?: number;
+            reductionPercent?: number;
+            isActive?: boolean;
         };
         RegisterDto: {
             /** @example newuser */
@@ -7146,6 +7204,119 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StaffPositionDto"];
+                };
+            };
+        };
+    };
+    ManagementPositionController_getData: {
+        parameters: {
+            query?: {
+                code?: string;
+                name?: string;
+                isActive?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManagementPositionDto"][];
+                };
+            };
+        };
+    };
+    ManagementPositionController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateManagementPositionDto"];
+            };
+        };
+        responses: {
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManagementPositionDto"];
+                };
+            };
+        };
+    };
+    ManagementPositionController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManagementPositionDto"];
+                };
+            };
+        };
+    };
+    ManagementPositionController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManagementPositionDto"];
+                };
+            };
+        };
+    };
+    ManagementPositionController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateManagementPositionDto"];
+            };
+        };
+        responses: {
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ManagementPositionDto"];
                 };
             };
         };
