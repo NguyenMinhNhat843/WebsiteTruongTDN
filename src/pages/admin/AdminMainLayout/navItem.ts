@@ -134,12 +134,6 @@ const navItems: NavItem[] = [
         roles: ['admin', 'staff'],
       },
       {
-        id: 'khung-dinh-muc-giang-day',
-        label: 'Khung định mức giảng dạy',
-        href: '/admin/khung-dinh-muc-giang-day',
-        roles: ['admin', 'staff'],
-      },
-      {
         id: 'quan-ly-chuc-vu',
         label: 'Quản lý chức vụ',
         href: '/admin/quan-ly-chuc-vu',

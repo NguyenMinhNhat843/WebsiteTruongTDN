@@ -87,7 +87,6 @@ const LichThiIndex = lazy(() => import('./pages/admin/QuanLyThi/LichThi'))
 const CauHinhChung = lazy(() => import('./pages/admin/CauHinhHeThong'))
 const HuongDanSuDung = lazy(() => import('./pages/HuongDanSuDung'))
 import { DiemDanhSheet } from './pages/admin/DiemDanh'
-import KhungDinhMucGiangDay from './pages/admin/DinhMucGiangDay/KhungDinhMucGiangDay'
 import QuanLyChucVu from './pages/admin/QuanLyChucVu'
 import TeachingQuotaManagement from './pages/admin/QuanLyNhanVien/DinhMucGiangDay'
 
@@ -197,7 +196,6 @@ function App() {
               <Route path="mon-hoc" element={<MonHocIndex />} />
               <Route path="phong-hoc" element={<PhongHocIndex />} />
               <Route path="nam-hoc" element={<NamHocHome />} />
-              <Route path="khung-dinh-muc-giang-day" element={<KhungDinhMucGiangDay />} />
               <Route path="quan-ly-chuc-vu" element={<QuanLyChucVu />} />
               <Route element={<KhoaIndex />}>
                 <Route path="dao-tao/khoa" element={<KhoaList />} />

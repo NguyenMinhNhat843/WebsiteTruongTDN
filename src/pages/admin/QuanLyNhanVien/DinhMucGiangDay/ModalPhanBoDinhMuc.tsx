@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { AlertCircle, CheckCircle2, Loader2, ShieldCheck, X } from 'lucide-react'
+import { CheckCircle2, Loader2, ShieldCheck, X } from 'lucide-react'
 import { $api } from '../../../../api/client'
 
 interface ModalPhanBoDinhMucProps {
@@ -35,23 +35,7 @@ const ModalPhanBoDinhMuc = ({
     },
   )
 
-  // 2. API lấy quy định định mức giảng dạy theo năm học
-  const { data: teachingLevels, isLoading: isLoadingTeachingLevels } = $api.useQuery(
-    'get',
-    '/teaching-levels',
-    {
-      params: {
-        query: {
-          academicYearId: academicYearId!,
-        },
-      },
-    },
-    {
-      enabled: isOpen && !!academicYearId,
-    },
-  )
-
-  // 3. API Phân bổ định mức (POST /teaching-quotas)
+  // 2. API Phân bổ định mức (POST /teaching-quotas)
   const { mutate: createTeachingQuota, isPending: isSubmitting } = $api.useMutation(
     'post',
     '/teaching-quotas',
@@ -63,14 +47,10 @@ const ModalPhanBoDinhMuc = ({
     },
   )
 
-  // 4. Logic lấy Khung quy định định mức giảng dạy chuẩn (Phần tử đầu tiên)
-  const defaultLevel = teachingLevels?.data?.[0]
-
-  // 5. Logic tìm Chức vụ có PRIORITY cao nhất (số priority lớn nhất hoặc nhỏ nhất tùy hệ thống, ở đây xếp từ lớn đến nhỏ)
+  // 3. Logic tìm Chức vụ có PRIORITY cao nhất để lấy % giảm trừ
   const highestPriorityPosition = useMemo(() => {
     if (!positions || positions.length === 0) return null
 
-    // Lọc ra các position hợp lệ và tìm priority cao nhất
     return [...positions]
       .filter((p) => p.position !== null)
       .sort((a, b) => (b.position?.priority ?? 0) - (a.position?.priority ?? 0))[0]
@@ -79,32 +59,31 @@ const ModalPhanBoDinhMuc = ({
   // Lấy % giảm trừ từ chức vụ có priority cao nhất
   const reductionPercent = highestPriorityPosition?.position?.reductionPercent ?? 0
 
-  // State lưu thông tin Form
-  const [baseHours, setBaseHours] = useState<number>(0)
+  // State lưu thông tin Form (Mặc định 450 giờ chuẩn)
+  const [baseHours, setBaseHours] = useState<number>(450)
   const [actualHours, setActualHours] = useState<number>(0)
 
-  // Cập nhật giá trị mặc định khi dữ liệu teachingLevels load xong
+  // Reset/Re-init state khi mở Modal
   useEffect(() => {
-    if (defaultLevel) {
-      setBaseHours(defaultLevel.minHours)
+    if (isOpen) {
+      setBaseHours(450)
+      setActualHours(0)
     }
-  }, [defaultLevel])
+  }, [isOpen])
 
   // Tính số giờ thực tế sau giảm trừ
   const finalHours = Math.round(baseHours * (1 - reductionPercent / 100))
 
   if (!isOpen) return null
 
-  const isLoadingData = isLoadingPositions || isLoadingTeachingLevels
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (!staffId || !defaultLevel?.id) return
+    if (!staffId || !academicYearId) return
 
     createTeachingQuota({
       body: {
         staffId,
-        teachingLevelId: defaultLevel.id,
+        academicYearId,
         baseHours: Number(baseHours),
         reductionPercent: Number(reductionPercent),
         actualHours: Number(actualHours),
@@ -135,20 +114,10 @@ const ModalPhanBoDinhMuc = ({
         </div>
 
         {/* BODY */}
-        {isLoadingData ? (
+        {isLoadingPositions ? (
           <div className="flex flex-col items-center justify-center py-12 text-sm text-slate-400">
             <Loader2 className="mb-2 h-8 w-8 animate-spin text-blue-600" />
-            Đang tải dữ liệu định mức & chức vụ...
-          </div>
-        ) : !defaultLevel ? (
-          <div className="p-6 text-center">
-            <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-amber-50 text-amber-600">
-              <AlertCircle className="h-5 w-5" />
-            </div>
-            <p className="text-sm font-semibold text-slate-700">Chưa thiết lập khung định mức giảng dạy!</p>
-            <p className="mt-1 text-xs text-slate-500">
-              Vui lòng tạo quy định định mức (Teaching Level) cho năm học này trước khi phân bổ.
-            </p>
+            Đang tải dữ liệu chức vụ giáo viên...
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4 p-5">
@@ -172,38 +141,11 @@ const ModalPhanBoDinhMuc = ({
               </div>
             </div>
 
-            {/* KHUNG ĐỊNH MỨC QUY ĐỊNH */}
+            {/* NHẬP ĐỊNH MỨC CƠ BẢN (BASE HOURS) & ĐỊNH MỨC SAU GIẢM */}
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="mb-1 block text-xs font-semibold text-slate-600">
-                  Khung định mức áp dụng
-                </label>
-                <input
-                  type="text"
-                  disabled
-                  value={`${defaultLevel.name} (${defaultLevel.minHours}h - ${defaultLevel.maxHours}h)`}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-700"
-                />
-              </div>
-
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-600">
-                  % Giảm trừ được hưởng
-                </label>
-                <input
-                  type="text"
-                  disabled
-                  value={`${reductionPercent}%`}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-emerald-600"
-                />
-              </div>
-            </div>
-
-            {/* NHẬP ĐỊNH MỨC CƠ BẢN (BASE HOURS) */}
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-600">
-                  Số giờ chuẩn (Base Hours) (*)
+                  Số giờ chuẩn / năm (*)
                 </label>
                 <input
                   type="number"
@@ -212,12 +154,13 @@ const ModalPhanBoDinhMuc = ({
                   value={baseHours}
                   onChange={(e) => setBaseHours(Number(e.target.value))}
                   className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  placeholder="Ví dụ: 450"
                 />
               </div>
 
               <div>
                 <label className="mb-1 block text-xs font-semibold text-slate-600">
-                  Định mức sau giảm (Final Hours)
+                  Định mức sau giảm (Final)
                 </label>
                 <input
                   type="number"
@@ -228,7 +171,7 @@ const ModalPhanBoDinhMuc = ({
               </div>
             </div>
 
-            {/* ĐÃ THỰC HIỆN (ACTUAL HOURS - TÙY CHỌN NHẬP BAN ĐẦU) */}
+            {/* SỐ GIỜ ĐÃ DẠY BAN ĐẦU */}
             <div>
               <label className="mb-1 block text-xs font-semibold text-slate-600">
                 Số giờ đã dạy ban đầu (Actual Hours)

@@ -687,38 +687,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/teaching-levels": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["TeachingLevelController_findAll"];
-        put?: never;
-        post: operations["TeachingLevelController_create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/teaching-levels/{id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["TeachingLevelController_findOne"];
-        put?: never;
-        post?: never;
-        delete: operations["TeachingLevelController_remove"];
-        options?: never;
-        head?: never;
-        patch: operations["TeachingLevelController_update"];
-        trace?: never;
-    };
     "/teaching-quotas": {
         parameters: {
             query?: never;
@@ -3505,39 +3473,9 @@ export interface components {
             teacherId?: number;
             subjectId?: number;
         };
-        CreateTeachingLevelDto: {
-            code: string;
-            name: string;
-            academicYearId: number;
-            minHours: number;
-            maxHours: number;
-        };
-        TeachingLevelDto: {
-            id: number;
-            code: string;
-            name: string;
-            academicYearId: number;
-            minHours: number;
-            maxHours: number;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        TeachingLevelPaginationResponseDto: {
-            data: components["schemas"]["TeachingLevelDto"][];
-            total: number;
-        };
-        UpdateTeachingLevelDto: {
-            code?: string;
-            name?: string;
-            academicYearId?: number;
-            minHours?: number;
-            maxHours?: number;
-        };
         CreateTeachingQuotaDto: {
             staffId: number;
-            teachingLevelId: number;
+            academicYearId: number;
             baseHours: number;
             reductionPercent: number;
             actualHours: number;
@@ -3546,7 +3484,7 @@ export interface components {
         TeachingQuotaDto: {
             id: number;
             staffId: number;
-            teachingLevelId: number;
+            academicYearId: number;
             baseHours: number;
             reductionPercent: number;
             actualHours: number;
@@ -3562,7 +3500,7 @@ export interface components {
         };
         UpdateTeachingQuotaDto: {
             staffId?: number;
-            teachingLevelId?: number;
+            academicYearId?: number;
             baseHours?: number;
             reductionPercent?: number;
             actualHours?: number;
@@ -6902,129 +6840,13 @@ export interface operations {
             };
         };
     };
-    TeachingLevelController_findAll: {
-        parameters: {
-            query?: {
-                code?: string;
-                name?: string;
-                academicYearId?: number;
-                page?: number;
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TeachingLevelPaginationResponseDto"];
-                };
-            };
-        };
-    };
-    TeachingLevelController_create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateTeachingLevelDto"];
-            };
-        };
-        responses: {
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TeachingLevelDto"];
-                };
-            };
-        };
-    };
-    TeachingLevelController_findOne: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TeachingLevelDto"];
-                };
-            };
-        };
-    };
-    TeachingLevelController_remove: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TeachingLevelDto"];
-                };
-            };
-        };
-    };
-    TeachingLevelController_update: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateTeachingLevelDto"];
-            };
-        };
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TeachingLevelDto"];
-                };
-            };
-        };
-    };
     TeachingQuotaController_findAll: {
         parameters: {
             query?: {
                 staffId?: number;
-                teachingLevelId?: number;
+                academicYearId?: number;
                 page?: number;
                 limit?: number;
-                academicYearId?: number;
             };
             header?: never;
             path?: never;
