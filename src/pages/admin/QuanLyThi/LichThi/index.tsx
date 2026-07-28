@@ -1,17 +1,6 @@
-import { useState } from 'react'
-import {
-  Calendar,
-  Clock,
-  Plus,
-  Filter,
-  RotateCcw,
-  BookOpen,
-  Eye,
-  CalendarDays,
-  DoorClosed,
-  Search,
-} from 'lucide-react'
-import { Table, Select, DatePicker, Button, Tag, Tooltip, ConfigProvider, Empty } from 'antd'
+import { useMemo, useState } from 'react'
+import { Calendar, Clock, Plus, Filter, RotateCcw, BookOpen, Eye, CalendarDays } from 'lucide-react'
+import { Table, DatePicker, Button, Tag, Tooltip, ConfigProvider, Empty } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import dayjs from 'dayjs'
 import { $api } from '../../../../api/client'
@@ -20,6 +9,9 @@ import ModalCreateDotThi from './CreateDotThi'
 import ModalDotThiDetail from './One/DotThiDetail'
 import PageShell from '../../../../components/ui/PageShell'
 import type { ExamScheduleDetailDto } from '../../../../api/entity'
+import ButtonAction from '../../../../components/ui/ButtonAction'
+import SelectSearchInput from '../../../../components/ui/Form/SelectInput'
+import { SEMESTER_MAP } from '../../../../api/enum'
 
 export type CreateExamScheduleDto = components['schemas']['CreateExamScheduleDto']
 
@@ -45,6 +37,64 @@ const LichThiIndex = () => {
   // --- Fetch API ---
   const { data: semesters, isLoading: isLoadingSemesters } = $api.useQuery('get', '/semesters')
   const { data: rooms, isLoading: isLoadingRooms } = $api.useQuery('get', '/rooms')
+
+  // --- Map danh sách Học kỳ sang format của SelectSearchInput kèm Badge Trạng thái ---
+  const semesterOptions = useMemo(() => {
+    if (!semesters) return []
+
+    const filteredSemesters = semesters.filter((s) => s.status === 'ACTIVE' || s.status === 'CLOSE')
+
+    const sortedSemesters = filteredSemesters.sort((a, b) => {
+      const priority = { ACTIVE: 1, CLOSE: 2 }
+      const priorityA = a.status ? (priority[a.status as 'ACTIVE' | 'CLOSE'] ?? 99) : 99
+      const priorityB = b.status ? (priority[b.status as 'ACTIVE' | 'CLOSE'] ?? 99) : 99
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB
+      }
+
+      const dateA = a.startDate ? new Date(a.startDate).getTime() : 0
+      const dateB = b.startDate ? new Date(b.startDate).getTime() : 0
+
+      return dateA - dateB
+    })
+
+    return sortedSemesters.map((s) => {
+      const statusInfo = s.status ? SEMESTER_MAP[s.status] : null
+
+      return {
+        value: s.id,
+        label: (
+          <div className="flex w-full items-center justify-between gap-2">
+            <div className="flex items-center gap-2 truncate">
+              <span className="font-medium">{s.name}</span>
+              {s.schoolYear && <span className="text-xs text-slate-400">({s.schoolYear})</span>}
+            </div>
+
+            {statusInfo && (
+              <span
+                className={`inline-flex shrink-0 items-center rounded-md border px-2 py-0.5 text-[11px] font-medium ${statusInfo.colorClass}`}
+              >
+                {statusInfo.label}
+              </span>
+            )}
+          </div>
+        ),
+        searchText: `${s.name} ${s.schoolYear || ''} ${statusInfo?.label || ''}`,
+      }
+    })
+  }, [semesters])
+
+  // --- Map danh sách Phòng thi sang format SelectSearchInput ---
+  const roomOptions = useMemo(
+    () =>
+      rooms?.map((r) => ({
+        label: r.roomCode,
+        value: r.id,
+        subLabel: r.building ? `Tòa ${r.building}` : undefined,
+      })) || [],
+    [rooms],
+  )
 
   // Lấy danh sách đợt thi
   const {
@@ -143,16 +193,14 @@ const LichThiIndex = () => {
           return <span className="text-xs text-slate-400 italic">Chưa xếp phòng</span>
         }
 
-        // Mapping màu sắc theo từng loại phòng thi
         const roomTypeColorMap: Record<string, string> = {
-          THEORY: 'emerald', // Lý thuyết (Xanh lá)
-          PRACTICE: 'blue', // Thực hành (Xanh dương)
-          COMPUTER_LAB: 'purple', // Phòng máy tính (Tím)
-          WORKSHOP: 'amber', // Xưởng / Thực tập (Cam)
-          FUNCTIONAL: 'cyan', // Phòng chức năng (Xanh lam)
+          THEORY: 'emerald',
+          PRACTICE: 'blue',
+          COMPUTER_LAB: 'purple',
+          WORKSHOP: 'amber',
+          FUNCTIONAL: 'cyan',
         }
 
-        // Mặc định là 'emerald' nếu type không thuộc các loại trên
         const tagColor = roomTypeColorMap[record.room.type] || 'emerald'
 
         return (
@@ -209,9 +257,7 @@ const LichThiIndex = () => {
           fontFamily: 'inherit',
         },
         components: {
-          Select: { controlHeight: 40 },
           DatePicker: { controlHeight: 40 },
-          InputNumber: { controlHeight: 40 },
           Button: { controlHeight: 40 },
         },
       }}
@@ -221,13 +267,11 @@ const LichThiIndex = () => {
         sub="Lập kế hoạch đợt thi và tự động gán sinh viên đủ điều kiện dự thi"
         icon={CalendarDays}
         renderRight={
-          <button
+          <ButtonAction
+            label="Tạo đợt thi mới"
+            icon={<Plus size={16} />}
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:bg-indigo-700 active:scale-[0.98]"
-          >
-            <Plus className="h-4 w-4" />
-            Tạo đợt thi mới
-          </button>
+          />
         }
       >
         <div className="space-y-6">
@@ -253,109 +297,35 @@ const LichThiIndex = () => {
               </Button>
             </div>
 
-            {/* Grid 4 Cột Filter Inputs */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {/* Grid 3 Cột Filter Inputs */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {/* 1. Học kỳ */}
-              <div className="flex flex-col gap-1.5">
-                <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-slate-700 uppercase">
-                  <BookOpen className="h-3.5 w-3.5 text-indigo-600" />
-                  Học kỳ
-                </label>
-                <Select
-                  allowClear
-                  placeholder="-- Tất cả học kỳ --"
-                  loading={isLoadingSemesters}
-                  value={selectedSemesterId}
-                  onChange={(val) => {
-                    setSelectedSemesterId(val)
-                    setPage(1)
-                  }}
-                  options={semesters?.map((sem) => {
-                    let statusTag = null
-                    const statusUpper = sem.status?.toUpperCase()
-
-                    if (statusUpper === 'ACTIVE') {
-                      statusTag = (
-                        <Tag color="success" className="m-0 rounded-md border-none px-2 py-0.5 font-medium">
-                          Đang hoạt động
-                        </Tag>
-                      )
-                    } else if (statusUpper === 'UPCOMING') {
-                      statusTag = (
-                        <Tag
-                          color="processing"
-                          className="m-0 rounded-md border-none px-2 py-0.5 font-medium"
-                        >
-                          Sắp tới
-                        </Tag>
-                      )
-                    } else {
-                      statusTag = (
-                        <Tag
-                          color="default"
-                          className="m-0 rounded-md border-none bg-slate-100 px-2 py-0.5 font-medium text-slate-500"
-                        >
-                          Đã kết thúc
-                        </Tag>
-                      )
-                    }
-
-                    return {
-                      value: sem.id,
-                      label: (
-                        <div className="flex items-center justify-between font-medium text-slate-800">
-                          <span className="truncate">{sem.name}</span>
-                          {statusTag}
-                        </div>
-                      ),
-                      searchValue: sem.name,
-                    }
-                  })}
-                  optionFilterProp="searchValue"
-                  className="custom-enhanced-input w-full"
-                  popupClassName="rounded-xl shadow-lg border border-slate-100"
-                  showSearch
-                />
-              </div>
+              <SelectSearchInput
+                label="Học kỳ"
+                placeholder="-- Tất cả học kỳ --"
+                options={semesterOptions}
+                value={selectedSemesterId ?? ''}
+                isLoading={isLoadingSemesters}
+                onChange={(e) => {
+                  const val = e.target.value ? Number(e.target.value) : undefined
+                  setSelectedSemesterId(val)
+                  setPage(1)
+                }}
+              />
 
               {/* 2. Phòng thi */}
-              <div className="flex flex-col gap-1.5">
-                {/* Phòng thi - High Contrast UI */}
-                <div className="flex flex-col gap-1.5">
-                  <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-slate-700 uppercase">
-                    <DoorClosed className="h-3.5 w-3.5 text-indigo-600" />
-                    Phòng thi
-                  </label>
-
-                  <Select
-                    allowClear
-                    placeholder="-- Tất cả phòng thi --"
-                    loading={isLoadingRooms}
-                    value={selectedRoomId}
-                    onChange={(val) => {
-                      setSelectedRoomId(val)
-                      setPage(1)
-                    }}
-                    options={rooms?.map((room) => ({
-                      value: room.id,
-                      label: (
-                        <span className="font-semibold text-slate-900">
-                          {room.roomCode}{' '}
-                          <span className="text-xs font-normal text-slate-500">
-                            ({room.building || 'N/A'})
-                          </span>
-                        </span>
-                      ),
-                      searchValue: `${room.roomCode} ${room.building}`,
-                    }))}
-                    className="custom-prominent-input w-full"
-                    popupClassName="rounded-xl shadow-xl border border-slate-200 p-1"
-                    showSearch
-                    optionFilterProp="searchValue"
-                    suffixIcon={<Search className="h-4 w-4 text-slate-400" />}
-                  />
-                </div>
-              </div>
+              <SelectSearchInput
+                label="Phòng thi"
+                placeholder="-- Tất cả phòng thi --"
+                options={roomOptions}
+                value={selectedRoomId ?? ''}
+                isLoading={isLoadingRooms}
+                onChange={(e) => {
+                  const val = e.target.value ? Number(e.target.value) : undefined
+                  setSelectedRoomId(val)
+                  setPage(1)
+                }}
+              />
 
               {/* 3. Ngày thi */}
               <div className="flex flex-col gap-1.5">
@@ -371,31 +341,7 @@ const LichThiIndex = () => {
                     setExamDate(date ? date.format('YYYY-MM-DD') : '')
                     setPage(1)
                   }}
-                  className="custom-enhanced-input h-[38px] w-full rounded-lg border-slate-300 bg-slate-50/70 font-medium text-slate-800 hover:border-indigo-400 hover:bg-white focus:border-indigo-500 focus:bg-white"
-                />
-              </div>
-
-              {/* 4. Ca thi */}
-              <div className="flex flex-col gap-1.5">
-                <label className="flex items-center gap-1.5 text-xs font-bold tracking-wider text-slate-700 uppercase">
-                  <Clock className="h-3.5 w-3.5 text-indigo-600" />
-                  Ca thi
-                </label>
-                <Select
-                  allowClear
-                  placeholder="-- Tất cả ca --"
-                  value={shift || undefined}
-                  onChange={(val) => {
-                    setShift(val || '')
-                    setPage(1)
-                  }}
-                  options={[
-                    { value: 'Sáng', label: '☀️ Ca Sáng' },
-                    { value: 'Chiều', label: '🌤️ Ca Chiều' },
-                    { value: 'Tối', label: '🌙 Ca Tối' },
-                  ]}
-                  className="custom-enhanced-input w-full"
-                  popupClassName="rounded-xl shadow-lg border border-slate-100"
+                  className="custom-enhanced-input h-[40px] w-full rounded-lg border-slate-300 bg-slate-50/70 font-medium text-slate-800 hover:border-indigo-400 hover:bg-white focus:border-indigo-500 focus:bg-white"
                 />
               </div>
             </div>
