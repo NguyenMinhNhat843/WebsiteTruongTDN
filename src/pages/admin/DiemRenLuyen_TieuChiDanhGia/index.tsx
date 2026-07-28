@@ -1,102 +1,94 @@
-import { useState } from "react";
-import {
-  Plus,
-  Award,
-  Loader2,
-  RefreshCw,
-  Trash2,
-  Edit2,
-  X,
-  ClipboardCheck,
-} from "lucide-react";
-import { $api } from "../../../api/client";
-import CreateTieuChiChamDiem from "./CreateTieuChiChamDiem";
-import PageShell from "../../../components/ui/PageShell"; // Đường dẫn thực tế tới component PageShell của bạn
-import { toast } from "sonner";
+import { useState } from 'react'
+import { Plus, Award, Loader2, RefreshCw, Trash2, Edit2, X, ClipboardCheck } from 'lucide-react'
+import { $api } from '../../../api/client'
+import CreateTieuChiChamDiem from './CreateTieuChiChamDiem'
+import PageShell from '../../../components/ui/PageShell' // Đường dẫn thực tế tới component PageShell của bạn
+import { toast } from 'sonner'
+import ButtonAction from '../../../components/ui/ButtonAction'
 
 export type UpdateCriterionDto = {
-  maxScore: number;
-  sortOrder: number;
-  title: string;
-};
+  maxScore: number
+  sortOrder: number
+  title: string
+}
 
 const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false)
   // State quản lý tiêu chí đang được chọn để chỉnh sửa (nếu null nghĩa là modal đang đóng)
   const [editingItem, setEditingItem] = useState<{
-    id: number;
-    title: string;
-    maxScore: number;
-    sortOrder: number;
-  } | null>(null);
+    id: number
+    title: string
+    maxScore: number
+    sortOrder: number
+  } | null>(null)
 
   // Lấy dữ liệu danh sách tiêu chí từ API
-  const {
-    data: tieuChiDanhGia,
-    isLoading,
-    refetch,
-  } = $api.useQuery("get", "/assessment/criteria");
+  const { data: tieuChiDanhGia, isLoading, refetch } = $api.useQuery('get', '/assessment/criteria')
 
   // Hàm định dạng ngày tháng hiển thị gọn gàng
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-  };
+    return new Date(dateString).toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+  }
 
   // API Xóa
-  const { mutate: deleteTieuChiChamDiem, isPending: isDeleting } =
-    $api.useMutation("delete", "/assessment/criteria/{id}", {
+  const { mutate: deleteTieuChiChamDiem, isPending: isDeleting } = $api.useMutation(
+    'delete',
+    '/assessment/criteria/{id}',
+    {
       onSuccess: () => {
-        toast.success("Xóa tiêu chí thành công!");
-        refetch();
+        toast.success('Xóa tiêu chí thành công!')
+        refetch()
       },
-      onError: (error) => {
-        toast.error("Xóa thất bại: " + (error as any)?.message);
+      onError: () => {
+        toast.error('Xóa thất bại')
       },
-    });
+    },
+  )
 
   // API Sửa
-  const { mutate: updateTieuChiChamDiem, isPending: isUpdating } =
-    $api.useMutation("patch", "/assessment/criteria/{id}", {
+  const { mutate: updateTieuChiChamDiem, isPending: isUpdating } = $api.useMutation(
+    'patch',
+    '/assessment/criteria/{id}',
+    {
       onSuccess: () => {
-        toast.success("Cập nhật tiêu chí thành công!");
-        setEditingItem(null); // Đóng modal sửa
-        refetch(); // Tải lại danh sách
+        toast.success('Cập nhật tiêu chí thành công!')
+        setEditingItem(null)
+        refetch()
       },
-      onError: (error) => {
-        toast.error("Cập nhật thất bại: " + (error as any)?.message);
+      onError: () => {
+        toast.error('Cập nhật thất bại')
       },
-    });
+    },
+  )
 
   // Xử lý khi nhấn nút Xóa
   const handleDelete = (id: number, title: string) => {
-    if (
-      window.confirm(`Bạn có chắc chắn muốn xóa tiêu chí: "${title}" không?`)
-    ) {
-      deleteTieuChiChamDiem({ params: { path: { id } } });
+    if (window.confirm(`Bạn có chắc chắn muốn xóa tiêu chí: "${title}" không?`)) {
+      deleteTieuChiChamDiem({ params: { path: { id } } })
     }
-  };
+  }
 
   // Xử lý khi Submit form chỉnh sửa
   const handleUpdateSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!editingItem) return;
+    e.preventDefault()
+    if (!editingItem) return
 
-    const formData = new FormData(e.currentTarget);
+    const formData = new FormData(e.currentTarget)
     const body: UpdateCriterionDto = {
-      title: formData.get("title") as string,
-      maxScore: Number(formData.get("maxScore")),
-      sortOrder: Number(formData.get("sortOrder")),
-    };
+      title: formData.get('title') as string,
+      maxScore: Number(formData.get('maxScore')),
+      sortOrder: Number(formData.get('sortOrder')),
+    }
 
     updateTieuChiChamDiem({
       params: { path: { id: editingItem.id } },
-      body: body as any,
-    });
-  };
+      body: body,
+    })
+  }
 
   return (
     <PageShell
@@ -105,78 +97,66 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
       icon={ClipboardCheck}
       isLoading={isLoading}
       renderRight={
-        <button
-          type="button"
-          onClick={() => setIsModalOpen(true)}
-          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-xs"
-        >
-          <Plus className="h-4 w-4" />
-          Tạo tiêu chí
-        </button>
+        <ButtonAction label="Tạo tiêu chí" icon={<Plus size={16} />} onClick={() => setIsModalOpen(true)} />
       }
     >
       {/* 1. KHÔNG CÓ DỮ LIỆU */}
       {!tieuChiDanhGia || tieuChiDanhGia.length === 0 ? (
-        <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-2xl py-16 px-4 text-center bg-white">
-          <div className="p-3 bg-blue-50 text-blue-500 rounded-full mb-3">
+        <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-white px-4 py-16 text-center">
+          <div className="mb-3 rounded-full bg-blue-50 p-3 text-blue-500">
             <Award className="h-6 w-6" />
           </div>
-          <h3 className="text-sm font-bold text-gray-900">
-            Chưa có tiêu chí nào được tạo
-          </h3>
-          <p className="text-xs text-gray-500 max-w-sm mt-1 leading-relaxed">
-            Hệ thống chưa ghi nhận tiêu chí chấm điểm rèn luyện nào. Hãy bắt đầu
-            bằng cách bấm nút "Tạo tiêu chí".
+          <h3 className="text-sm font-bold text-gray-900">Chưa có tiêu chí nào được tạo</h3>
+          <p className="mt-1 max-w-sm text-xs leading-relaxed text-gray-500">
+            Hệ thống chưa ghi nhận tiêu chí chấm điểm rèn luyện nào. Hãy bắt đầu bằng cách bấm nút "Tạo tiêu
+            chí".
           </p>
         </div>
       ) : (
         /* 2. BẢNG DỮ LIỆU CHUẨN XANH DƯƠNG */
-        <div className="overflow-hidden bg-white border border-slate-200 rounded-2xl shadow-xs">
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full border-collapse text-left">
               <thead>
-                <tr className="bg-blue-50/50 border-b border-slate-200 text-xs font-bold text-blue-900/80 uppercase tracking-wider">
-                  <th className="px-6 py-4 w-20 text-center">STT</th>
+                <tr className="border-b border-slate-200 bg-blue-50/50 text-xs font-bold tracking-wider text-blue-900/80 uppercase">
+                  <th className="w-20 px-6 py-4 text-center">STT</th>
                   <th className="px-6 py-4">Nội dung tiêu chí đánh giá</th>
-                  <th className="px-6 py-4 w-32 text-center">Điểm tối đa</th>
-                  <th className="px-6 py-4 w-40">Ngày cấu hình</th>
-                  <th className="px-6 py-4 w-36 text-center">Thao tác</th>
+                  <th className="w-32 px-6 py-4 text-center">Điểm tối đa</th>
+                  <th className="w-40 px-6 py-4">Ngày cấu hình</th>
+                  <th className="w-36 px-6 py-4 text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 text-sm text-slate-700">
                 {tieuChiDanhGia.map((item, index) => (
-                  <tr
-                    key={item.id}
-                    className="hover:bg-slate-50/40 transition-colors"
-                  >
+                  <tr key={item.id} className="transition-colors hover:bg-slate-50/40">
                     {/* Số thứ tự hiển thị chuẩn theo chỉ mục index */}
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <span className="inline-flex items-center justify-center bg-blue-50 border border-blue-100 text-blue-700 text-xs font-bold px-2 py-1 rounded-lg min-w-[26px]">
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                      <span className="inline-flex min-w-[26px] items-center justify-center rounded-lg border border-blue-100 bg-blue-50 px-2 py-1 text-xs font-bold text-blue-700">
                         {index + 1}
                       </span>
                     </td>
 
                     {/* Tiêu đề / Nội dung tiêu chí */}
-                    <td className="px-6 py-4 font-semibold text-slate-900 max-w-md">
-                      <div className="line-clamp-2 hover:line-clamp-none transition-all duration-300 whitespace-pre-wrap leading-relaxed">
+                    <td className="max-w-md px-6 py-4 font-semibold text-slate-900">
+                      <div className="line-clamp-2 leading-relaxed whitespace-pre-wrap transition-all duration-300 hover:line-clamp-none">
                         {item.title}
                       </div>
                     </td>
 
                     {/* Điểm tối đa (maxScore) */}
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
-                      <span className="inline-flex items-center font-bold text-blue-700 bg-blue-50/60 px-2.5 py-1 rounded-lg border border-blue-100">
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
+                      <span className="inline-flex items-center rounded-lg border border-blue-100 bg-blue-50/60 px-2.5 py-1 font-bold text-blue-700">
                         {item.maxScore} đ
                       </span>
                     </td>
 
                     {/* Ngày tạo hoặc cập nhật gần nhất */}
-                    <td className="px-6 py-4 whitespace-nowrap text-slate-500 font-medium">
+                    <td className="px-6 py-4 font-medium whitespace-nowrap text-slate-500">
                       {formatDate(item.updatedAt || item.createdAt)}
                     </td>
 
                     {/* Thao tác Sửa / Xóa */}
-                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <td className="px-6 py-4 text-center whitespace-nowrap">
                       <div className="flex items-center justify-center gap-1.5">
                         {/* NÚT SỬA */}
                         <button
@@ -190,7 +170,7 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
                               sortOrder: item.sortOrder || 0,
                             })
                           }
-                          className="inline-flex items-center justify-center p-1.5 text-blue-600 hover:text-blue-800 hover:bg-blue-50 active:scale-90 rounded-lg transition-all cursor-pointer"
+                          className="inline-flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-blue-600 transition-all hover:bg-blue-50 hover:text-blue-800 active:scale-90"
                         >
                           <Edit2 className="h-4 w-4 stroke-[2.2]" />
                         </button>
@@ -201,7 +181,7 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
                           title="Xóa tiêu chí"
                           disabled={isDeleting}
                           onClick={() => handleDelete(item.id, item.title)}
-                          className="inline-flex items-center justify-center p-1.5 text-rose-600 hover:text-rose-800 hover:bg-rose-50 active:scale-90 rounded-lg transition-all cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
+                          className="inline-flex cursor-pointer items-center justify-center rounded-lg p-1.5 text-rose-600 transition-all hover:bg-rose-50 hover:text-rose-800 active:scale-90 disabled:pointer-events-none disabled:opacity-40"
                         >
                           <Trash2 className="h-4 w-4 stroke-[2.2]" />
                         </button>
@@ -214,17 +194,13 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
           </div>
 
           {/* Footer nhỏ thống kê */}
-          <div className="bg-slate-50/50 px-6 py-4 border-t border-slate-200 flex justify-between items-center text-xs text-slate-500 font-medium">
+          <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50/50 px-6 py-4 text-xs font-medium text-slate-500">
             <span>
-              Tổng cộng:{" "}
-              <strong className="text-slate-800">
-                {tieuChiDanhGia.length}
-              </strong>{" "}
-              tiêu chí đánh giá
+              Tổng cộng: <strong className="text-slate-800">{tieuChiDanhGia.length}</strong> tiêu chí đánh giá
             </span>
             <button
               onClick={() => refetch()}
-              className="inline-flex items-center gap-1.5 hover:text-blue-600 transition-colors font-bold"
+              className="inline-flex items-center gap-1.5 font-bold transition-colors hover:text-blue-600"
             >
               <RefreshCw className="h-3.5 w-3.5" /> Làm mới dữ liệu
             </button>
@@ -237,29 +213,27 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSuccess={() => {
-          refetch();
+          refetch()
         }}
       />
 
       {/* 4. Modal cập nhật tiêu chí (Tông màu xanh dương đồng bộ) */}
       {editingItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs animate-fade-in">
-          <div className="bg-white rounded-2xl shadow-xl border border-slate-100 max-w-md w-full overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/50">
-              <h3 className="text-base font-bold text-slate-900">
-                Cập nhật tiêu chí đánh giá
-              </h3>
+        <div className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-xl">
+            <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/50 px-6 py-4">
+              <h3 className="text-base font-bold text-slate-900">Cập nhật tiêu chí đánh giá</h3>
               <button
                 onClick={() => setEditingItem(null)}
-                className="text-slate-400 hover:text-slate-600 transition-colors p-1 rounded-lg hover:bg-slate-100"
+                className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <form onSubmit={handleUpdateSubmit} className="p-6 space-y-5">
+            <form onSubmit={handleUpdateSubmit} className="space-y-5 p-6">
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label className="mb-1.5 block text-xs font-bold tracking-wider text-slate-500 uppercase">
                   Nội dung tiêu chí
                 </label>
                 <textarea
@@ -267,13 +241,13 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
                   required
                   defaultValue={editingItem.title}
                   rows={3}
-                  className="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                  className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                  <label className="mb-1.5 block text-xs font-bold tracking-wider text-slate-500 uppercase">
                     Điểm tối đa
                   </label>
                   <input
@@ -282,12 +256,12 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
                     required
                     min={0}
                     defaultValue={editingItem.maxScore}
-                    className="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                    className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                  <label className="mb-1.5 block text-xs font-bold tracking-wider text-slate-500 uppercase">
                     Thứ tự sắp xếp
                   </label>
                   <input
@@ -296,23 +270,23 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
                     required
                     min={0}
                     defaultValue={editingItem.sortOrder}
-                    className="w-full px-3 py-2 text-sm border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all"
+                    className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm transition-all focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 mt-6">
+              <div className="mt-6 flex items-center justify-end gap-2 border-t border-slate-100 pt-2">
                 <button
                   type="button"
                   onClick={() => setEditingItem(null)}
-                  className="px-4 py-2.5 text-sm font-bold text-slate-700 bg-white border border-slate-300 rounded-xl hover:bg-slate-50 active:bg-slate-100 transition-colors"
+                  className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-bold text-slate-700 transition-colors hover:bg-slate-50 active:bg-slate-100"
                 >
                   Hủy bỏ
                 </button>
                 <button
                   type="submit"
                   disabled={isUpdating}
-                  className="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold text-white bg-blue-600 rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-bold text-white transition-colors hover:bg-blue-700 active:bg-blue-800 disabled:opacity-50"
                 >
                   {isUpdating && <Loader2 className="h-4 w-4 animate-spin" />}
                   Lưu thay đổi
@@ -323,7 +297,7 @@ const DiemRenLuyen_TieuChiDanhGiaIndex = () => {
         </div>
       )}
     </PageShell>
-  );
-};
+  )
+}
 
-export default DiemRenLuyen_TieuChiDanhGiaIndex;
+export default DiemRenLuyen_TieuChiDanhGiaIndex

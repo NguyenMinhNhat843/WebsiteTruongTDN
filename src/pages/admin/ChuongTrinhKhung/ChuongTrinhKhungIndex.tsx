@@ -1,29 +1,23 @@
-import { Plus, School2, Loader2 } from "lucide-react";
-import {
-  ChuongTrinhKhungProvider,
-  useChuongTrinhKhungContext,
-} from "./ChuongTrinhKhungProvider";
-import ChuongTrinhKhungList from "./List/ChuongTrinhKhungList";
-import PageShell from "../../../components/ui/PageShell";
-import ChuongTrinhKhungOne from "./ChuongTrinhKhungOne/ChuongTrinhKhungOne";
-import { useNavigate } from "react-router-dom";
+import { Plus, School2, Loader2, BookOpen } from 'lucide-react'
+import { ChuongTrinhKhungProvider, useChuongTrinhKhungContext } from './ChuongTrinhKhungProvider'
+import ChuongTrinhKhungList from './List/ChuongTrinhKhungList'
+import PageShell from '../../../components/ui/PageShell'
+import ChuongTrinhKhungOne from './ChuongTrinhKhungOne/ChuongTrinhKhungOne'
+import { useNavigate } from 'react-router-dom'
+import ButtonAction from '../../../components/ui/ButtonAction'
 
 export default function CurriculumFrameworkPage() {
   return (
     <ChuongTrinhKhungProvider>
       <Inner />
     </ChuongTrinhKhungProvider>
-  );
+  )
 }
 
 function Inner() {
-  const {
-    curriculums,
-    isCurriculumsPending,
-    isCurriculumOnePending,
-    curriculumOne,
-  } = useChuongTrinhKhungContext();
-  const navigate = useNavigate();
+  const { curriculums, isCurriculumsFetching, isCurriculumOneFetching, curriculumOne } =
+    useChuongTrinhKhungContext()
+  const navigate = useNavigate()
 
   return (
     <PageShell
@@ -31,42 +25,33 @@ function Inner() {
       sub="Quản lý các chương trình khung đào tạo, bao gồm thông tin chung và danh mục môn học / mô-đun."
       icon={School2}
       renderRight={
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => navigate("/admin/dao-tao/tao-chuong-trinh-khung")}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 
-          text-white text-sm font-semibold px-4 py-2.5 rounded-xl 
-          transition-all shadow-sm hover:shadow-md active:scale-95"
-          >
-            <Plus className="w-4 h-4" />
-            Thêm chương trình
-          </button>
-        </div>
+        <ButtonAction
+          label="Thêm chương trình"
+          variant="primary"
+          icon={<Plus size={16} />}
+          onClick={() => navigate('/admin/dao-tao/tao-chuong-trinh-khung')}
+        />
       }
     >
       <div className="min-h-screen bg-[#f8fafc]">
-        {/* Đổi nền sang slate-50 sáng sủa hơn */}
         <div className="space-y-6">
-          {/* Cấu trúc Master / Detail */}
-          <div className="flex gap-6 items-start">
-            {/* Cột danh sách (Trái) */}
+          <div className="flex items-start gap-6">
             <div className="w-96 shrink-0">
-              {isCurriculumsPending ? (
-                // Skeleton Loading cho danh sách bên trái
+              {isCurriculumsFetching ? (
                 <div className="space-y-3">
                   {[1, 2, 3].map((i) => (
                     <div
                       key={i}
-                      className="bg-white border border-slate-100 rounded-xl p-4 animate-pulse space-y-3"
+                      className="animate-pulse space-y-3 rounded-xl border border-slate-100 bg-white p-4"
                     >
-                      <div className="flex justify-between items-center">
-                        <div className="h-5 bg-slate-200 rounded-full w-24" />
-                        <div className="h-4 bg-slate-100 rounded w-14" />
+                      <div className="flex items-center justify-between">
+                        <div className="h-5 w-24 rounded-full bg-slate-200" />
+                        <div className="h-4 w-14 rounded bg-slate-100" />
                       </div>
-                      <div className="h-5 bg-slate-200 rounded w-3/4" />
-                      <div className="pt-2 border-t border-slate-50 flex justify-between">
-                        <div className="h-4 bg-slate-100 rounded w-1/2" />
-                        <div className="h-4 bg-slate-200 rounded w-12" />
+                      <div className="h-5 w-3/4 rounded bg-slate-200" />
+                      <div className="flex justify-between border-t border-slate-50 pt-2">
+                        <div className="h-4 w-1/2 rounded bg-slate-100" />
+                        <div className="h-4 w-12 rounded bg-slate-200" />
                       </div>
                     </div>
                   ))}
@@ -77,48 +62,29 @@ function Inner() {
             </div>
 
             {/* Cột Chi tiết (Phải) */}
-            <div className="flex-1 min-w-0">
-              {isCurriculumOnePending ? (
+            <div className="min-w-0 flex-1">
+              {isCurriculumOneFetching ? (
                 // Hiệu ứng Loading khi đang tải chi tiết 1 chương trình
-                <div className="bg-white rounded-xl border border-slate-200 p-8 min-h-[400px] flex flex-col items-center justify-center text-center">
-                  <Loader2 className="w-8 h-8 text-blue-500 animate-spin mb-3" />
-                  <p className="text-sm font-medium text-slate-500 animate-pulse">
+                <div className="flex min-h-[400px] flex-col items-center justify-center rounded-xl border border-slate-200 bg-white p-8 text-center">
+                  <Loader2 className="mb-3 h-8 w-8 animate-spin text-blue-500" />
+                  <p className="animate-pulse text-sm font-medium text-slate-500">
                     Đang tải thông tin chi tiết...
                   </p>
                 </div>
               ) : curriculumOne ? (
                 <ChuongTrinhKhungOne data={curriculumOne} />
               ) : (
-                // Trạng thái trống (Empty State) chỉn chu hơn
-                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm flex flex-col items-center justify-center py-24 px-6 text-center">
-                  <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center shadow-inner mb-4">
-                    <svg
-                      width="28"
-                      height="28"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      className="text-slate-400"
-                    >
-                      <path
-                        d="M4 19V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                      />
-                      <path
-                        d="M8 10h8M8 14h5"
-                        stroke="currentColor"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                      />
-                    </svg>
+                // Trạng thái trống (Empty State)
+                <div className="flex flex-col items-center justify-center rounded-2xl border border-slate-200/80 bg-white px-6 py-24 text-center shadow-sm">
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 text-slate-400 shadow-inner transition-colors">
+                    <BookOpen className="h-7 w-7 stroke-[1.75]" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-slate-700 text-base">
+                    <h4 className="text-base font-semibold text-slate-700">
                       Chọn chương trình để xem chi tiết
                     </h4>
-                    <p className="text-sm text-slate-400 mt-1 max-w-xs mx-auto">
-                      Vui lòng bấm vào một chương trình học ở danh sách bên trái
-                      để theo dõi cấu trúc môn học.
+                    <p className="mx-auto mt-1 max-w-xs text-sm text-slate-400">
+                      Vui lòng bấm vào một chương trình học ở danh sách bên trái để theo dõi cấu trúc môn học.
                     </p>
                   </div>
                 </div>
@@ -128,5 +94,5 @@ function Inner() {
         </div>
       </div>
     </PageShell>
-  );
+  )
 }

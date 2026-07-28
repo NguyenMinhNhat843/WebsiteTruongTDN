@@ -255,7 +255,6 @@ const Inner = () => {
                     }
                     onClick={() => setShowExportMenu(!showExportMenu)}
                   />
-
                   {showExportMenu && (
                     <div className="animate-in fade-in slide-in-from-top-2 absolute right-0 z-50 mt-2 w-60 rounded-xl border border-gray-100 bg-white py-1.5 shadow-xl duration-150">
                       <button
@@ -287,11 +286,11 @@ const Inner = () => {
                   <SelectOption
                     containerClassName="w-52"
                     value={selectedSemesterId ?? ''}
-                    onChange={(e) => setselectedSemesterId(Number(e.target.value))}
+                    onChange={(val) => setselectedSemesterId(val ? Number(val) : null)}
                     options={
                       hocKysData?.map((hocKy) => ({
                         value: hocKy.id,
-                        label: `${hocKy.name} ${hocKy.isCurrent ? '(Hiện tại)' : ''}`,
+                        label: `${hocKy.name} ${hocKy.status === 'ACTIVE' ? '(Hiện tại)' : ''}`,
                       })) || []
                     }
                   />

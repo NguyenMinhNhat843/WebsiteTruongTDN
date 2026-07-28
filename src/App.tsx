@@ -20,7 +20,6 @@ const LopHocLayout = lazy(() => import('./pages/admin/LopDanhNghia/LopHocLayout'
 const PhanLopLayout = lazy(() => import('./pages/admin/PhanLop/PhanLopLayout'))
 const KhoaIndex = lazy(() => import('./pages/admin/Khoa/KhoaIndex'))
 const HocSinhLayout = lazy(() => import('./pages/admin/HoSoHocSinh/HocSinhLayout'))
-const HocKyLayout = lazy(() => import('./pages/admin/HocKy/HocKyLayout'))
 const NhanVienLayout = lazy(() => import('./pages/admin/QuanLyNhanVien/NhanVienLayout'))
 
 // --- LAZY LOADING: CLIENT PAGES ---
@@ -54,14 +53,11 @@ const NhapDiemPage = lazy(() => import('./pages/admin/LopDanhNghia/LopHocOne/Tab
 const TienDoDaoTao = lazy(() => import('./pages/admin/TienDoGiangDay'))
 const ThoiKhoaBieuWrapper = lazy(() => import('./pages/admin/ThoiKhoaBieu/ThoiKhoaBieuWrapper'))
 const PhanLop = lazy(() => import('./pages/admin/PhanLop/PhanLop'))
-const KhoaList = lazy(() => import('./pages/admin/Khoa/KhoaList'))
 const KhoaDaoTao = lazy(() => import('./pages/admin/khoaHoc/KhoaDaoTaoIndex'))
 const NganhIndex = lazy(() => import('./pages/admin/Nganh/NganhIndex'))
 const MonHocIndex = lazy(() => import('./pages/admin/MonHoc/MonHocIndex'))
 const PhongHocIndex = lazy(() => import('./pages/admin/PhongHoc'))
 const DanhSachHoSoHocSinh = lazy(() => import('./pages/admin/HoSoHocSinh/HoSoHocSinhList/HoSoHocSinhList'))
-const CreateStudent = lazy(() => import('./pages/admin/HoSoHocSinh/Create/Create'))
-const HocKyList = lazy(() => import('./pages/admin/HocKy/HocKyList'))
 const NamHocHome = lazy(() => import('./pages/admin/NamHoc'))
 const QuanLyTaiKhoan = lazy(() => import('./pages/admin/QuanLyAccount'))
 const QuanLyNhanVien = lazy(() => import('./pages/admin/QuanLyNhanVien/NhanVienList/QuanLyNhanVienList'))
@@ -84,11 +80,11 @@ const TaoHoSoTuyenSinh = lazy(
 )
 const CauHinhTuyenSinhHome = lazy(() => import('./pages/admin/TuyenSinh/CauHinhTuyenSinh'))
 const LichThiIndex = lazy(() => import('./pages/admin/QuanLyThi/LichThi'))
-const CauHinhChung = lazy(() => import('./pages/admin/CauHinhHeThong'))
 const HuongDanSuDung = lazy(() => import('./pages/HuongDanSuDung'))
 import { DiemDanhSheet } from './pages/admin/DiemDanh'
 import QuanLyChucVu from './pages/admin/QuanLyChucVu'
 import TeachingQuotaManagement from './pages/admin/QuanLyNhanVien/DinhMucGiangDay'
+import HocKyIndex from './pages/admin/HocKy/HocKyIndex'
 
 // --- LAZY LOADING: TEACHER PAGES ---
 const MemberDashboard = lazy(() => import('./pages/MembersDashboard/Home'))
@@ -197,17 +193,12 @@ function App() {
               <Route path="phong-hoc" element={<PhongHocIndex />} />
               <Route path="nam-hoc" element={<NamHocHome />} />
               <Route path="quan-ly-chuc-vu" element={<QuanLyChucVu />} />
-              <Route element={<KhoaIndex />}>
-                <Route path="dao-tao/khoa" element={<KhoaList />} />
-              </Route>
-              <Route element={<HocKyLayout />}>
-                <Route path="hoc-ky" element={<HocKyList />} />
-              </Route>
+              <Route path="dao-tao/khoa" element={<KhoaIndex />} />
+              <Route path="hoc-ky" element={<HocKyIndex />} />
 
               {/* Công tác Học sinh & Phân lớp */}
               <Route element={<HocSinhLayout />}>
                 <Route path="hoc-sinh/ho-so" element={<DanhSachHoSoHocSinh />} />
-                <Route path="hoc-sinh/ho-so/create" element={<CreateStudent />} />
               </Route>
               <Route element={<PhanLopLayout />}>
                 <Route path="hoc-sinh/phan-lop" element={<PhanLop />} />
@@ -243,7 +234,6 @@ function App() {
 
               {/* Cấu hình & Hệ thống */}
               <Route path="dia-chi" element={<DiaChiTree />} />
-              <Route path="cai-dat/cau-hinh-chung" element={<CauHinhChung />} />
               <Route path="cai-dat/huong-dan-su-dung" element={<HuongDanSuDung />} />
             </Route>
 

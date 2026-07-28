@@ -5,6 +5,7 @@ import { $api } from '../../../api/client'
 import { CreateHocKyModal } from './CreateHocKyModal'
 import { Calendar, CheckCircle2, Clock, Loader2, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
+import type { SemesterStatusEnum } from '../../../api/enum'
 
 interface Props {
   hocKyList: HocKyDto[]
@@ -70,19 +71,38 @@ const HocKyTable = ({ hocKyList, isHocKyListPending, columnsAdditional }: Props)
         ),
       },
       {
-        accessorKey: 'isCurrent',
+        accessorKey: 'status',
         header: 'Trạng thái',
         cell: (info) => {
-          const isCurrent = info.getValue() as boolean
-          return isCurrent ? (
-            <span className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
-              <CheckCircle2 size={12} /> Hiện tại
-            </span>
-          ) : (
-            <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500">
-              Lưu trữ
-            </span>
-          )
+          const status = info.getValue() as SemesterStatusEnum
+
+          switch (status) {
+            case 'ACTIVE':
+              return (
+                <span className="inline-flex items-center gap-1 rounded-full border border-green-200 bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
+                  <CheckCircle2 size={12} /> Đang hoạt động
+                </span>
+              )
+            case 'UPCOMING':
+              return (
+                <span className="inline-flex items-center gap-1 rounded-full border border-blue-200 bg-blue-100 px-2.5 py-1 text-xs font-medium text-blue-700">
+                  Sắp diễn ra
+                </span>
+              )
+            case 'DRAFT':
+              return (
+                <span className="inline-flex items-center gap-1 rounded-full border border-amber-200 bg-amber-100 px-2.5 py-1 text-xs font-medium text-amber-700">
+                  Bản nháp
+                </span>
+              )
+            case 'CLOSE':
+            default:
+              return (
+                <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500">
+                  Đã đóng
+                </span>
+              )
+          }
         },
       },
       {

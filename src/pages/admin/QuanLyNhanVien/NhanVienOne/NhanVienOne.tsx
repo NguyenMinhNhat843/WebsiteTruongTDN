@@ -21,6 +21,7 @@ const NhanVienOne = () => {
     isOpenModalMonHoc,
     setIsOpenModalMonHoc,
   } = useQuanLyNguoiDungContext()
+  console.log('staffDetail: ', staffDetail)
 
   const [isOpenRegisterModal, setIsOpenRegisterModal] = useState(false)
   const [isOpenPositionModal, setIsOpenPositionModal] = useState(false)
@@ -49,12 +50,12 @@ const NhanVienOne = () => {
     {
       params: {
         query: {
-          staffId: staffDetail!.id!,
+          staffId: staffDetail?.id as number,
         },
       },
     },
     {
-      enabled: !!staffDetail?.id,
+      enabled: staffDetail && Boolean(staffDetail.id),
     },
   )
 

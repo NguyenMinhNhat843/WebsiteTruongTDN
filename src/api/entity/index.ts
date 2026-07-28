@@ -7,6 +7,7 @@ export type AcademicYearDto = components['schemas']['AcademicYearDto']
 export type StudentDetailDto = components['schemas']['StudentDetailDto']
 export type ClassDto = components['schemas']['ClassDto']
 export type ClassSubjectDetailDto = components['schemas']['ClassSubjectDetailDto']
+export type SubjectDto = components['schemas']['SubjectDto']
 
 // Admission entities
 export type AdmissionCampaignDto = components['schemas']['AdmissionCampaignDto']
@@ -37,8 +38,10 @@ export type DocumentConfigDto = components['schemas']['DocumentConfigDto']
 export type CreateDocumentConfigDto = components['schemas']['CreateDocumentConfigDto']
 
 // Đinh mức giảng dạy
-export type TeachingLevelDto = components['schemas']['TeachingLevelDto']
 export type TeachingUotaDto = components['schemas']['TeachingQuotaDto']
 
 // Chức vụ
 export type ManagementPositionDto = components['schemas']['ManagementPositionDto']
+
+// EXAM schduel: LỊCH thi
+export type ExamScheduleDetailDto = components['schemas']['ExamScheduleDetailDto']

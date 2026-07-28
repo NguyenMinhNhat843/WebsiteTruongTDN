@@ -1,14 +1,17 @@
-import React, { forwardRef, type ButtonHTMLAttributes } from "react";
-import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
+import React, { forwardRef, type ButtonHTMLAttributes } from 'react'
+import clsx from 'clsx'
+import { twMerge } from 'tailwind-merge'
+import { ICON_SIZES, SIZE_CLASSES } from '../constant/inputSize.constant'
+
+// 1. Tách hằng số Icon Sizes
 
 export interface ButtonActionProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  icon?: React.ReactNode;
-  size?: "sm" | "md" | "lg";
-  variant?: "primary" | "secondary" | "outline" | "danger" | "export";
-  loading?: boolean;
-  label?: string;
-  withText?: boolean;
+  icon?: React.ReactNode
+  size?: 'sm' | 'md' | 'lg'
+  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'export'
+  loading?: boolean
+  label?: string
+  withText?: boolean
 }
 
 const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
@@ -16,8 +19,8 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
     {
       children,
       icon,
-      size = "md",
-      variant = "primary", // Mặc định là primary
+      size = 'md',
+      variant = 'primary',
       loading = false,
       disabled,
       className,
@@ -26,42 +29,36 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
     },
     ref,
   ) => {
-    // Loại bỏ border cố định để các variant tự quyết định màu sắc
     const baseClasses =
-      "inline-flex items-center justify-center font-semibold \
-      transition-all duration-150 ease-in-out \
+      'inline-flex items-center justify-center font-semibold \
+      transition-all duration-200 \
       cursor-pointer \
-      focus:outline-none \
+      focus:outline-none focus:ring-4 \
       active:scale-95 active:opacity-90 \
       hover:shadow-sm hover:-translate-y-[1px] \
-      disabled:opacity-70 disabled:cursor-not-allowed";
+      disabled:opacity-70 disabled:cursor-not-allowed'
 
-    // Định nghĩa bảng màu theo hệ thống Variant hiện đại
     const variantClasses = {
       primary:
-        "bg-blue-600 hover:bg-blue-700 text-white shadow-sm border border-transparent",
+        'bg-blue-600 hover:bg-blue-700 text-white shadow-sm border border-transparent focus:border-blue-500 focus:ring-blue-100',
       secondary:
-        "bg-slate-100 hover:bg-slate-200 text-slate-800 border border-transparent",
+        'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-transparent focus:border-slate-400 focus:ring-slate-200',
       outline:
-        "bg-white hover:bg-slate-50 text-slate-700 border border-slate-300",
+        'bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 focus:border-blue-500 focus:ring-blue-50',
       danger:
-        "bg-red-600 hover:bg-red-700 text-white shadow-sm border border-transparent",
+        'bg-red-600 hover:bg-red-700 text-white shadow-sm border border-transparent focus:border-red-500 focus:ring-red-100',
       export:
-        "bg-green-600 hover:bg-green-700 text-white shadow-sm border border-transparent",
-    };
+        'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm border border-transparent focus:border-emerald-500 focus:ring-emerald-100',
+    }
 
-    const hasText = Boolean(children || label);
+    const hasText = Boolean(children || label)
+    const content = children || label
+    const isLoading = loading && !disabled
+    const ariaLabel = props['aria-label'] || (icon && !children ? 'Action' : undefined)
 
-    const sizeClasses = {
-      sm: clsx("h-8 rounded-lg text-xs", hasText ? "px-3" : "w-8"),
-      md: clsx("h-10 rounded-xl text-sm", hasText ? "px-4" : "w-10"),
-      lg: clsx("h-12 rounded-xl text-md", hasText ? "px-6" : "w-12"),
-    };
-
-    const content = children || label;
-    const isLoading = loading && !disabled;
-    const ariaLabel =
-      props["aria-label"] || (icon && !children ? "Action" : undefined);
+    const iconSize = ICON_SIZES[size]
+    const currentSize = SIZE_CLASSES[size]
+    const computedSizeClass = clsx(currentSize.base, hasText ? currentSize.withText : currentSize.iconOnly)
 
     return (
       <button
@@ -69,10 +66,10 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
         className={twMerge(
           clsx(
             baseClasses,
-            variantClasses[variant], // Áp dụng style màu sắc theo variant
-            sizeClasses[size],
-            !hasText && "aspect-square p-0",
-            { "opacity-75 cursor-wait": isLoading },
+            variantClasses[variant],
+            computedSizeClass,
+            !hasText && 'aspect-square p-0',
+            { 'cursor-wait opacity-75': isLoading },
             className,
           ),
         )}
@@ -83,19 +80,13 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
         {isLoading ? (
           <span className="flex items-center justify-center">
             <svg
-              className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
+              className="mr-2 -ml-1 animate-spin text-current"
+              style={{ width: iconSize, height: iconSize }}
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
             >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              />
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path
                 className="opacity-75"
                 fill="currentColor"
@@ -106,14 +97,14 @@ const ButtonAction = forwardRef<HTMLButtonElement, ButtonActionProps>(
           </span>
         ) : (
           <div className="flex items-center justify-center">
-            {icon && <span className={clsx(hasText && "mr-2")}>{icon}</span>}
+            {icon && <span className={clsx(hasText && 'mr-2')}>{icon}</span>}
             {hasText && <span>{content}</span>}
           </div>
         )}
       </button>
-    );
+    )
   },
-);
+)
 
-ButtonAction.displayName = "ButtonAction";
-export default ButtonAction;
+ButtonAction.displayName = 'ButtonAction'
+export default ButtonAction

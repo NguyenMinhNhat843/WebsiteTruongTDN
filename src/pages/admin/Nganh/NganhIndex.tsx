@@ -1,4 +1,4 @@
-import { Edit, PlusIcon, Trash2 } from 'lucide-react'
+import { Edit, GraduationCap, Plus, Trash2 } from 'lucide-react'
 import PageShell from '../../../components/ui/PageShell'
 import { NganhProvider, useNganhContext } from './NganhProvider'
 import CreateNganhModal from './CreateNganhHoc'
@@ -21,12 +21,14 @@ const Inner = () => {
     <PageShell
       title="Quản lý ngành học"
       sub="Trang quản lý các ngành học trong hệ thống"
+      icon={GraduationCap}
       renderRight={
         <button
-          className="flex transform items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all duration-150 hover:from-purple-700 hover:to-indigo-700 hover:shadow active:scale-98"
+          type="button"
+          className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-blue-700 hover:shadow focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none active:scale-95"
           onClick={() => setIsOpenModalCreate(true)}
         >
-          <PlusIcon className="h-4 w-4" />
+          <Plus className="h-4 w-4 stroke-[2.5]" />
           Thêm ngành học
         </button>
       }

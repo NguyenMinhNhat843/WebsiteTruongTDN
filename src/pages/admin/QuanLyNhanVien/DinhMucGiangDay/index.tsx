@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react'
-import { Plus, Edit2, Search, AlertCircle, Calendar, RefreshCw } from 'lucide-react'
+import { Plus, Edit2, AlertCircle, Calendar, RefreshCw, UserCheck } from 'lucide-react'
 import { $api } from '../../../../api/client'
 import ModalPhanBoDinhMuc from './ModalPhanBoDinhMuc'
 import type { TeachingUotaDto } from '../../../../api/entity'
+import PageShell from '../../../../components/ui/PageShell'
+import ButtonAction from '../../../../components/ui/ButtonAction'
+import { SelectOption } from '../../../../components/ui/Form/SelectOption'
+import SearchInput from '../../../../components/ui/Form/SearchInput'
 
 export default function TeachingQuotaManagement() {
   const [searchTerm, setSearchTerm] = useState('')
@@ -90,218 +94,215 @@ export default function TeachingQuotaManagement() {
     .filter((staff) => staff.fullName?.toLowerCase().includes(searchTerm.toLowerCase()))
 
   return (
-    <div className="space-y-6 p-6">
-      {/* HEADER & THANH CÔNG CỤ */}
-      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-          <h1 className="text-xl font-bold text-slate-800">Quản Lý Định Mức Giảng Dạy</h1>
-          <p className="text-xs text-slate-500">
-            Phân bổ và theo dõi tiến độ hoàn thành giờ dạy của từng giáo viên
-          </p>
-        </div>
+    <PageShell
+      title="Quản Lý Định Mức Giảng Dạy"
+      sub="Phân bổ và theo dõi tiến độ hoàn thành giờ dạy của từng giáo viên"
+      icon={UserCheck}
+      renderRight={
+        <div className="flex gap-4">
+          <SelectOption
+            icon={<Calendar />}
+            placeholder="-- Chọn năm học --"
+            value={selectedAcademicYearId}
+            onChange={(val) => setSelectedAcademicYearId(Number(val))}
+            options={
+              academicYears?.data?.map((year) => ({
+                value: year.id,
+                label: `${year.code} ${year.isCurrent ? '(Hiện tại)' : ''}`,
+              })) || []
+            }
+            containerClassName="w-full sm:w-56"
+            className="font-semibold text-slate-700"
+          />
 
-        <div className="flex flex-col items-center gap-3 sm:flex-row">
-          {/* BỘ LỌC NĂM HỌC */}
-          <div className="relative w-full sm:w-56">
-            <Calendar className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <select
-              value={selectedAcademicYearId || ''}
-              onChange={(e) => setSelectedAcademicYearId(Number(e.target.value))}
-              className="w-full rounded-xl border border-slate-200 bg-white py-2 pr-4 pl-9 text-xs font-semibold text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            >
-              <option value="" disabled>
-                -- Chọn năm học --
-              </option>
-              {academicYears?.data?.map((year) => (
-                <option key={year.id} value={year.id}>
-                  {year.code} {year.isCurrent ? '(Hiện tại)' : ''}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* THANH TÌM KIẾM */}
-          <div className="relative w-full sm:w-56">
-            <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Tìm tên giáo viên..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white py-2 pr-4 pl-9 text-xs text-slate-700 shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-            />
-          </div>
-
-          {/* NÚT ĐỒNG BỘ ĐỊNH MỨC */}
-          <button
+          <ButtonAction
+            label="Đồng bộ giờ dạy"
+            loading={isSyncing}
+            icon={<RefreshCw size={16} />}
             onClick={handleSyncQuotas}
             disabled={isSyncing || !selectedAcademicYearId}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto"
-          >
-            <RefreshCw className={`h-3.5 w-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
-            {isSyncing ? 'Đang đồng bộ...' : 'Đồng bộ giờ dạy'}
-          </button>
+          />
         </div>
-      </div>
+      }
+    >
+      <div className="space-y-6">
+        {/* THANH TÌM KIẾM */}
+        <div className="w-full sm:w-94">
+          <SearchInput
+            value={searchTerm}
+            onChange={(val) => setSearchTerm(val)}
+            placeholder="Tìm tên giáo viên..."
+          />
+        </div>
 
-      {/* BẢNG DANH SÁCH GIÁO VIÊN & ĐỊNH MỨC */}
-      <div className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
-        {isLoading ? (
-          <div className="py-12 text-center text-sm text-slate-400">
-            Đang tải dữ liệu định mức & danh sách...
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left">
-              <thead>
-                <tr className="border-b border-slate-100 bg-slate-50/50 text-[11px] font-bold tracking-wider text-slate-400 uppercase">
-                  <th className="px-4 py-3">Giáo viên</th>
-                  <th className="px-4 py-3">Mã GV</th>
-                  <th className="px-4 py-3 text-center">Định mức chuẩn</th>
-                  <th className="px-4 py-3 text-center">Giảm trừ (%)</th>
-                  <th className="px-4 py-3 text-center">Định mức sau giảm</th>
-                  <th className="px-4 py-3">Thực hiện / Định mức</th>
-                  <th className="px-4 py-3 text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-sm">
-                {filteredStaffList.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="py-8 text-center text-slate-400">
-                      Không tìm thấy dữ liệu giáo viên
-                    </td>
+        {/* BẢNG DANH SÁCH GIÁO VIÊN & ĐỊNH MỨC */}
+        <div className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+          {isLoading ? (
+            <div className="py-16 text-center text-sm font-medium text-slate-400">
+              <div className="mb-2 inline-block h-6 w-6 animate-spin rounded-full border-2 border-slate-300 border-t-blue-600" />
+              <p>Đang tải dữ liệu định mức & danh sách...</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse text-left">
+                <thead>
+                  <tr className="border-b border-slate-100 bg-slate-50/70 text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                    <th className="px-5 py-3.5">Giáo viên</th>
+                    <th className="px-4 py-3.5">Mã GV</th>
+                    <th className="px-4 py-3.5 text-center">Định mức chuẩn</th>
+                    <th className="px-4 py-3.5 text-center">Giảm trừ (%)</th>
+                    <th className="px-4 py-3.5 text-center">Định mức sau giảm</th>
+                    <th className="px-5 py-3.5">Thực hiện / Định mức</th>
+                    <th className="px-5 py-3.5 text-right">Thao tác</th>
                   </tr>
-                ) : (
-                  filteredStaffList.map((staff) => {
-                    const quota = quotaMap.get(staff.id!)
+                </thead>
+                <tbody className="divide-y divide-slate-100 text-sm">
+                  {filteredStaffList.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="py-12 text-center text-slate-400">
+                        Không tìm thấy dữ liệu giáo viên phù hợp
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredStaffList.map((staff) => {
+                      const quota = quotaMap.get(staff.id!)
 
-                    const actualHours = quota?.actualHours || 0
-                    const targetHours = quota?.finalHours || quota?.baseHours || 0
-                    const percentProgress = targetHours
-                      ? Math.min(Math.round((actualHours / targetHours) * 100), 100)
-                      : 0
+                      const actualHours = quota?.actualHours || 0
+                      const targetHours = quota?.finalHours || quota?.baseHours || 0
+                      const percentProgress = targetHours
+                        ? Math.min(Math.round((actualHours / targetHours) * 100), 100)
+                        : 0
 
-                    return (
-                      <tr key={staff.id} className="transition-colors hover:bg-slate-50/80">
-                        {/* Tên & Avatar */}
-                        <td className="px-4 py-3">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-600">
-                              {staff.fullName?.charAt(0)}
-                            </div>
-                            <div>
-                              <span className="block font-semibold text-slate-800">{staff.fullName}</span>
-                              <span className="text-[11px] text-slate-400">{staff.email}</span>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td className="px-4 py-3 font-mono text-xs text-slate-600">
-                          {staff.staffCode || '-'}
-                        </td>
-
-                        {/* Định mức cơ bản */}
-                        <td className="px-4 py-3 text-center font-medium text-slate-700">
-                          {quota ? `${quota.baseHours}h` : '-'}
-                        </td>
-
-                        {/* Tỷ lệ giảm trừ */}
-                        <td className="px-4 py-3 text-center">
-                          {quota?.reductionPercent ? (
-                            <span className="inline-flex items-center rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700">
-                              -{quota.reductionPercent}%
-                            </span>
-                          ) : (
-                            <span className="text-slate-400">0%</span>
-                          )}
-                        </td>
-
-                        {/* Định mức thực tế (sau giảm trừ) */}
-                        <td className="px-4 py-3 text-center font-bold text-slate-800">
-                          {quota ? `${quota.finalHours}h` : '-'}
-                        </td>
-
-                        {/* Thanh Tiến Độ Progress Bar */}
-                        <td className="min-w-[180px] px-4 py-3">
-                          {quota ? (
-                            <div className="space-y-1">
-                              <div className="flex justify-between text-xs font-medium">
-                                <span className="font-semibold text-slate-700">
-                                  {actualHours} / {targetHours}h
+                      return (
+                        <tr key={staff.id} className="transition-colors hover:bg-slate-50/80">
+                          {/* Tên & Avatar */}
+                          <td className="px-5 py-3.5">
+                            <div className="flex items-center gap-3">
+                              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-600 ring-2 ring-white">
+                                {staff.fullName?.charAt(0)?.toUpperCase()}
+                              </div>
+                              <div className="min-w-0">
+                                <span className="block truncate font-semibold text-slate-800">
+                                  {staff.fullName}
                                 </span>
-                                <span
-                                  className={`text-[11px] font-bold ${
-                                    percentProgress >= 100 ? 'text-emerald-600' : 'text-blue-600'
-                                  }`}
-                                >
-                                  {percentProgress}%
+                                <span className="block truncate text-[11px] text-slate-400">
+                                  {staff.email}
                                 </span>
                               </div>
-                              <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                                <div
-                                  className={`h-full transition-all duration-300 ${
-                                    percentProgress >= 100 ? 'bg-emerald-500' : 'bg-blue-600'
-                                  }`}
-                                  style={{ width: `${percentProgress}%` }}
-                                />
-                              </div>
                             </div>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-500">
-                              <AlertCircle className="h-3.5 w-3.5" /> Chưa phân bổ
-                            </span>
-                          )}
-                        </td>
+                          </td>
 
-                        {/* Nút Phân bổ / Cập nhật */}
-                        <td className="px-4 py-3 text-right">
-                          {quota ? (
-                            <button
-                              onClick={() =>
-                                setSelectedStaff({
-                                  id: staff.id!,
-                                  name: staff.fullName,
-                                })
-                              }
-                              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-100"
-                            >
-                              <Edit2 className="h-3.5 w-3.5 text-slate-500" /> Cập nhật
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() =>
-                                setSelectedStaff({
-                                  id: staff.id!,
-                                  name: staff.fullName,
-                                })
-                              }
-                              className="inline-flex items-center gap-1 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
-                            >
-                              <Plus className="h-3.5 w-3.5" /> Phân bổ
-                            </button>
-                          )}
-                        </td>
-                      </tr>
-                    )
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
+                          <td className="px-4 py-3.5 font-mono text-xs text-slate-600">
+                            {staff.staffCode || '-'}
+                          </td>
+
+                          {/* Định mức cơ bản */}
+                          <td className="px-4 py-3.5 text-center font-medium text-slate-700">
+                            {quota ? `${quota.baseHours}h` : '-'}
+                          </td>
+
+                          {/* Tỷ lệ giảm trừ */}
+                          <td className="px-4 py-3.5 text-center">
+                            {quota?.reductionPercent ? (
+                              <span className="inline-flex items-center rounded-full border border-amber-200/60 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                                -{quota.reductionPercent}%
+                              </span>
+                            ) : (
+                              <span className="text-slate-400">0%</span>
+                            )}
+                          </td>
+
+                          {/* Định mức thực tế (sau giảm trừ) */}
+                          <td className="px-4 py-3.5 text-center font-bold text-slate-800">
+                            {quota ? `${quota.finalHours}h` : '-'}
+                          </td>
+
+                          {/* Thanh Tiến Độ Progress Bar */}
+                          <td className="min-w-[200px] px-5 py-3.5">
+                            {quota ? (
+                              <div className="space-y-1.5">
+                                <div className="flex justify-between text-xs font-medium">
+                                  <span className="font-semibold text-slate-700">
+                                    {actualHours} / {targetHours}h
+                                  </span>
+                                  <span
+                                    className={`text-[11px] font-bold ${
+                                      percentProgress >= 100 ? 'text-emerald-600' : 'text-blue-600'
+                                    }`}
+                                  >
+                                    {percentProgress}%
+                                  </span>
+                                </div>
+                                <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                                  <div
+                                    className={`h-full rounded-full transition-all duration-300 ${
+                                      percentProgress >= 100 ? 'bg-emerald-500' : 'bg-blue-600'
+                                    }`}
+                                    style={{ width: `${percentProgress}%` }}
+                                  />
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 rounded-full border border-rose-100 bg-rose-50 px-2.5 py-1 text-xs font-medium text-rose-600">
+                                <AlertCircle className="h-3.5 w-3.5 shrink-0" /> Chưa phân bổ
+                              </span>
+                            )}
+                          </td>
+
+                          {/* Nút Phân bổ / Cập nhật bằng ButtonAction */}
+                          <td className="px-5 py-3.5 text-right">
+                            {quota ? (
+                              <ButtonAction
+                                size="sm"
+                                variant="outline"
+                                icon={<Edit2 size={14} />}
+                                onClick={() =>
+                                  setSelectedStaff({
+                                    id: staff.id!,
+                                    name: staff.fullName,
+                                  })
+                                }
+                              >
+                                Cập nhật
+                              </ButtonAction>
+                            ) : (
+                              <ButtonAction
+                                size="sm"
+                                variant="primary"
+                                icon={<Plus size={14} />}
+                                onClick={() =>
+                                  setSelectedStaff({
+                                    id: staff.id!,
+                                    name: staff.fullName,
+                                  })
+                                }
+                              >
+                                Phân bổ
+                              </ButtonAction>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        {/* MODAL PHÂN BỔ ĐỊNH MỨC MỚI */}
+        {selectedStaff && (
+          <ModalPhanBoDinhMuc
+            isOpen={!!selectedStaff}
+            onClose={() => setSelectedStaff(null)}
+            staffId={selectedStaff.id}
+            staffName={selectedStaff.name}
+            academicYearId={selectedAcademicYearId}
+            onSuccess={() => refetchQuotas()}
+          />
         )}
       </div>
-
-      {/* MODAL PHÂN BỔ ĐỊNH MỨC MỚI */}
-      {selectedStaff && (
-        <ModalPhanBoDinhMuc
-          isOpen={!!selectedStaff}
-          onClose={() => setSelectedStaff(null)}
-          staffId={selectedStaff.id}
-          staffName={selectedStaff.name}
-          academicYearId={selectedAcademicYearId}
-          onSuccess={() => refetchQuotas()}
-        />
-      )}
-    </div>
+    </PageShell>
   )
 }

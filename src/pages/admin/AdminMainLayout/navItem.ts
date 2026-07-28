@@ -213,12 +213,6 @@ const navItems: NavItem[] = [
         roles: ['admin', 'staff'],
       },
       {
-        id: 'ho-so-hoc-sinh/create',
-        label: 'Tạo hồ sơ học sinh',
-        href: '/admin/hoc-sinh/ho-so/create',
-        roles: ['admin', 'staff'],
-      },
-      {
         id: 'phan-lop',
         label: 'Phân lớp',
         href: '/admin/hoc-sinh/phan-lop',
@@ -284,12 +278,6 @@ const navItems: NavItem[] = [
     icon: '⚙',
     roles: ['admin'],
     children: [
-      {
-        id: 'cau-hinh-chung',
-        label: 'Cấu hình chung',
-        href: '/admin/cai-dat/cau-hinh-chung',
-        roles: ['admin'],
-      },
       {
         id: 'huong-dan-su-dung',
         label: 'Hướng dẫn sử dụng',

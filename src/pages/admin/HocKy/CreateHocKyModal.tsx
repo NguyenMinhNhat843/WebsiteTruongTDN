@@ -1,10 +1,11 @@
 import { useForm } from 'react-hook-form'
-import { X, Calendar, Tag, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { X, Calendar, Tag, Loader2, AlertCircle, CheckCircle2, Activity } from 'lucide-react'
 import type { CreateHocKyDto, HocKyDto } from './HocKyProvider'
 import { useEffect } from 'react'
 import { DateInputv2 } from '../../../components/ui/Form/DateInputv2'
 import { useQueryClient } from '@tanstack/react-query'
 import { $api } from '../../../api/client'
+import { SEMESTER_MAP } from '../../../api/enum'
 
 interface Props {
   isOpen: boolean
@@ -16,8 +17,9 @@ interface Props {
 }
 
 // Kiểu dữ liệu bổ sung cho Form internal
-type FormValues = CreateHocKyDto & {
+type FormValues = Omit<CreateHocKyDto, 'isCurrent'> & {
   academicYearId?: number
+  status?: 'DRAFT' | 'UPCOMING' | 'ACTIVE' | 'CLOSE'
 }
 
 // Helper: Convert DD/MM/YYYY -> ISO String (Gửi lên Backend)
@@ -66,7 +68,7 @@ export const CreateHocKyModal = ({
     reset,
   } = useForm<FormValues>({
     defaultValues: {
-      isCurrent: false,
+      status: 'UPCOMING',
     },
   })
 
@@ -92,7 +94,7 @@ export const CreateHocKyModal = ({
           academicYearId: semester.academicYearId!,
           year: semester.year,
           name: semester.name,
-          isCurrent: semester.isCurrent,
+          status: semester.status ?? 'UPCOMING',
           startDate: formatDateToValue(semester.startDate),
           endDate: formatDateToValue(semester.endDate),
         })
@@ -100,7 +102,7 @@ export const CreateHocKyModal = ({
         // Nếu mở modal dạng tạo mới thì clear form
         const currentAcademicYear = academicYears?.data?.find((a) => a.isCurrent)
         reset({
-          isCurrent: false,
+          status: 'UPCOMING',
           academicYearId: currentAcademicYear?.id,
           term: undefined,
           name: '',
@@ -120,14 +122,11 @@ export const CreateHocKyModal = ({
       const selectedYearObj = academicYears?.data?.find((item) => item.id === Number(watchAcademicYearId))
 
       if (selectedYearObj) {
-        // Ví dụ: selectedYearObj.code = "2026-2027"
-        // Lấy năm đầu tiên (2026) lưu vào field `year` cũ
         const startYearNum = parseInt(selectedYearObj.code.split('-')[0], 10)
         if (!isNaN(startYearNum)) {
           setValue('year', startYearNum)
         }
 
-        // Tự sinh tên Học kỳ: HK1 2026-2027
         if (watchTerm) {
           setValue('name', `HK${watchTerm} ${selectedYearObj.code}`)
         }
@@ -139,14 +138,13 @@ export const CreateHocKyModal = ({
     const formattedStartDate = parseDateStringToISO(data.startDate)
     const formattedEndDate = parseDateStringToISO(data.endDate)
 
-    // Lấy object Academic Year tương ứng
     const selectedYearObj = academicYears?.data.find((item) => item.id === Number(data.academicYearId))
 
     const payload = {
       ...data,
       academicYearId: Number(data.academicYearId),
       year: Number(data.year),
-      schoolYear: selectedYearObj?.code || '', // Giữ lại field schoolYear cho backend cũ
+      schoolYear: selectedYearObj?.code || '',
       startDate: formattedStartDate,
       endDate: formattedEndDate,
     }
@@ -157,7 +155,7 @@ export const CreateHocKyModal = ({
         body: payload,
       })
     } else if (createHocKy) {
-      createHocKy(payload, () => {
+      createHocKy(payload as CreateHocKyDto, () => {
         reset()
         onClose()
       })
@@ -258,6 +256,23 @@ export const CreateHocKyModal = ({
             )}
           </div>
 
+          {/* Trạng thái học kỳ */}
+          <div>
+            <label className="mb-2 flex items-center gap-2 text-xs font-bold text-gray-600 uppercase">
+              <Activity size={14} /> Trạng thái
+            </label>
+            <select
+              {...register('status', { required: 'Vui lòng chọn trạng thái' })}
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm font-medium text-gray-700 transition-all outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100"
+            >
+              {Object.entries(SEMESTER_MAP).map(([key, item]) => (
+                <option key={key} value={key}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Ngày bắt đầu & Kết thúc */}
           <div className="grid grid-cols-2 gap-4">
             <DateInputv2
@@ -286,23 +301,6 @@ export const CreateHocKyModal = ({
               })}
             />
           </div>
-
-          {/* Checkbox Học kỳ hiện tại */}
-          <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-indigo-100 bg-indigo-50/50 p-3 transition-colors hover:bg-indigo-50">
-            <div className="relative flex items-center">
-              <input
-                type="checkbox"
-                {...register('isCurrent')}
-                className="h-5 w-5 rounded border-gray-300 text-indigo-600 transition-all focus:ring-indigo-500"
-              />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-indigo-900">Đặt làm học kỳ hiện tại</span>
-              <span className="text-[11px] text-indigo-600">
-                Mọi dữ liệu tài chính và môn học sẽ mặc định vào kỳ này
-              </span>
-            </div>
-          </label>
 
           {/* Thông báo lỗi từ Server */}
           {isError && (

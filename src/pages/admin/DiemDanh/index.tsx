@@ -11,8 +11,10 @@ import {
   BookOpen,
   User,
   Check,
+  CalendarX,
+  ArrowRight,
 } from 'lucide-react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import type { AttendanceStatus } from '../../../api/enum'
 
@@ -45,6 +47,7 @@ const useBulkAttendance = () => {
 }
 
 export const DiemDanhSheet = () => {
+  const navigate = useNavigate()
   const { classSubjectId } = useParams<{ classSubjectId: string }>()
   const classSubjectIdNum = classSubjectId ? parseInt(classSubjectId, 10) : null
 
@@ -68,7 +71,7 @@ export const DiemDanhSheet = () => {
     }
   }, [sheetData, selectedScheduleId])
 
-  // Resetpending changes khi đổi buổi học
+  // Reset pending changes khi đổi buổi học
   useEffect(() => {
     setPendingChanges({})
   }, [selectedScheduleId])
@@ -87,6 +90,29 @@ export const DiemDanhSheet = () => {
   if (!sheetData) return null
 
   const { info, schedules, students } = sheetData
+
+  // --- KIỂM TRA NẾU CHƯA CÓ BUỔI HỌC / KẾ HOẠCH GIẢNG DẠY ---
+  if (!schedules || schedules.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center shadow-sm">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-amber-50 text-amber-600">
+          <CalendarX className="h-8 w-8" />
+        </div>
+        <h3 className="mt-4 text-lg font-bold text-slate-800">Chưa có buổi học nào được thiết lập!</h3>
+        <p className="mt-1 max-w-md text-xs text-slate-500">
+          Hình như bạn chưa thiết lập kế hoạch giảng dạy cho lớp môn học này. Hãy tạo kế hoạch giảng dạy để có
+          thể bắt đầu điểm danh.
+        </p>
+        <button
+          onClick={() => navigate('/admin/dao-tao/tien-do-dao-tao')}
+          className="mt-5 inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+        >
+          Thiết lập kế hoạch giảng dạy
+          <ArrowRight className="h-4 w-4" />
+        </button>
+      </div>
+    )
+  }
 
   // Lọc danh sách sinh viên theo từ khóa tìm kiếm
   const filteredStudents = students.filter(
@@ -253,19 +279,13 @@ export const DiemDanhSheet = () => {
         <table className="w-full text-left text-xs text-slate-600">
           <thead className="bg-slate-100 text-[11px] tracking-wider text-slate-700 uppercase">
             <tr>
-              {/* Cột 1: STT */}
               <th className="sticky left-0 z-20 w-[48px] min-w-[48px] bg-slate-100 px-2 py-3 text-center">
                 STT
               </th>
-
-              {/* Cột 2: MSSV (Tránh dùng w-28 bị lệch padding, dùng px cố định) */}
               <th className="sticky left-[48px] z-20 w-[112px] min-w-[112px] bg-slate-100 px-3 py-3">MSSV</th>
-
-              {/* Cột 3: Họ và tên (Bắt đầu ở 48 + 112 = 160px) */}
               <th className="sticky left-[160px] z-20 min-w-[180px] bg-slate-100 px-3 py-3 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                 Họ và tên
               </th>
-              {/* RENDER CÁC CỘT BUỔI HỌC */}
               {schedules.map((sch) => {
                 const isSelected = sch.scheduleDetailId === selectedScheduleId
                 return (
@@ -289,7 +309,6 @@ export const DiemDanhSheet = () => {
                 )
               })}
 
-              {/* CỘT TỔNG HỢP & XÉT THI */}
               <th className="border-l-2 border-slate-300 bg-slate-100 px-3 py-3 text-center font-bold">
                 Vắng (Tiết)
               </th>
@@ -301,7 +320,6 @@ export const DiemDanhSheet = () => {
           <tbody className="divide-y divide-slate-100">
             {filteredStudents.map((student, idx) => {
               const summary = student.summary
-              console.log(summary?.totalPeriods)
 
               return (
                 <tr key={student.studentId} className="hover:bg-slate-50/80">
@@ -315,7 +333,6 @@ export const DiemDanhSheet = () => {
                     {student.fullName}
                   </td>
 
-                  {/* CÁC Ô ĐIỂM DANH THEO BUỔI */}
                   {schedules.map((sch) => {
                     const status = getStudentStatus(student.studentId, sch.scheduleDetailId)
                     const isEditingCell = sch.scheduleDetailId === selectedScheduleId
@@ -328,7 +345,6 @@ export const DiemDanhSheet = () => {
                         }`}
                       >
                         {isEditingCell ? (
-                          /* Ô đang chỉnh sửa -> Render Quick Selector Buttons */
                           <div className="flex justify-center gap-1">
                             <button
                               title="Có mặt"
@@ -354,7 +370,6 @@ export const DiemDanhSheet = () => {
                             </button>
                           </div>
                         ) : (
-                          /* Ô xem lại lịch sử -> Render Icon trạng thái */
                           <div className="flex justify-center">
                             {status === 'PRESENT' && <CheckCircle2 className="h-4 w-4 text-emerald-500" />}
                             {status === 'ABSENT' && <XCircle className="h-4 w-4 text-rose-500" />}
@@ -365,8 +380,6 @@ export const DiemDanhSheet = () => {
                     )
                   })}
 
-                  {/* THÔNG TIN TỔNG HỢP & ĐIỀU KIỆN THI */}
-                  {/* Vắng, % vắng */}
                   <td className="border-l-2 border-slate-200 px-3 py-2 text-center font-semibold text-slate-700">
                     {summary?.totalAbsentPeriods ?? 0} / {summary?.totalPeriods ?? 0}
                   </td>

@@ -1,18 +1,18 @@
-import { Plus } from "lucide-react";
-import PageShell from "../../../components/ui/PageShell";
-import { KhoaDaoTaoProvider, useKhoaDaoTaoContext } from "./KhoaHocProvider";
-import CreateBatchModal from "./CreateKhoaDaoTao";
-import KhoaDaoTaoTable from "./TableKhoaDaotao";
-import { UpdateBatchModal } from "./UpdateKhoaDaoTaoModal";
-import ButtonAction from "../../../components/ui/ButtonAction";
+import { GraduationCap, Plus } from 'lucide-react'
+import PageShell from '../../../components/ui/PageShell'
+import { KhoaDaoTaoProvider, useKhoaDaoTaoContext } from './KhoaHocProvider'
+import CreateBatchModal from './CreateKhoaDaoTao'
+import KhoaDaoTaoTable from './TableKhoaDaotao'
+import { UpdateBatchModal } from './UpdateKhoaDaoTaoModal'
+import ButtonAction from '../../../components/ui/ButtonAction'
 
 const KhoaDaoTao = () => {
   return (
     <KhoaDaoTaoProvider>
       <Inner />
     </KhoaDaoTaoProvider>
-  );
-};
+  )
+}
 
 const Inner = () => {
   const {
@@ -25,33 +25,25 @@ const Inner = () => {
     setBatchSelected,
     updateBatch,
     isUpdating,
-  } = useKhoaDaoTaoContext();
+    isBatchesPending,
+  } = useKhoaDaoTaoContext()
 
   return (
     <PageShell
       title="Quản lý khóa đào tạo"
       sub="Trang quản lý các khóa đào tạo trong hệ thống"
+      icon={GraduationCap}
       renderRight={
-        <div className="flex gap-4 items-center">
-          {/* Nút thêm khóa đào tạo */}
-          <ButtonAction
-            variant="primary"
-            icon={
-              <Plus
-                size={20}
-                strokeWidth={3}
-                className="transition-transform group-hover:rotate-90 duration-300"
-              />
-            }
-            onClick={() => setIsOpenModalCreateBatch(true)}
-          >
-            Thêm khóa đào tạo
-          </ButtonAction>
-        </div>
+        <ButtonAction
+          label="Thêm khóa đào tạo"
+          variant="primary"
+          icon={<Plus size={20} />}
+          onClick={() => setIsOpenModalCreateBatch(true)}
+        />
       }
     >
       {/* Main Table */}
-      <KhoaDaoTaoTable data={batches || []} />
+      <KhoaDaoTaoTable data={batches || []} isLoading={isBatchesPending} />
 
       {/* Modal Form */}
       <CreateBatchModal
@@ -62,10 +54,10 @@ const Inner = () => {
             { body: data },
             {
               onSuccess: () => {
-                setIsOpenModalCreateBatch(false);
+                setIsOpenModalCreateBatch(false)
               },
             },
-          );
+          )
         }}
         isPending={isAddBatchPending}
       />
@@ -87,14 +79,14 @@ const Inner = () => {
             },
             {
               onSuccess: () => {
-                setBatchSelected(null);
+                setBatchSelected(null)
               },
             },
           )
         }
       />
     </PageShell>
-  );
-};
+  )
+}
 
-export default KhoaDaoTao;
+export default KhoaDaoTao

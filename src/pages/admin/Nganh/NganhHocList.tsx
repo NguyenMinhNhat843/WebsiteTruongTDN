@@ -7,16 +7,15 @@ interface Props {
 }
 
 const NganhHocList = ({ data, renderActions }: Props) => {
-  // Empty State - Tối giản & Trang nhã
   if (!data || data.length === 0) {
     return (
       <div className="flex w-full flex-col items-center justify-center rounded-xl border border-slate-200/80 bg-white py-16 text-center shadow-sm">
-        <div className="mb-3 rounded-xl border border-slate-100 bg-slate-50 p-4 text-slate-400">
+        <div className="mb-3 rounded-xl border border-blue-100 bg-blue-50/50 p-4 text-blue-500">
           <FolderOpen size={32} strokeWidth={1.5} />
         </div>
         <p className="text-sm font-bold text-slate-800">Chưa có dữ liệu ngành học</p>
         <p className="mt-1 max-w-sm text-xs text-slate-500">
-          Không tìm thấy ngành học nào trong hệ thống. Vui lòng thêm mới hoặc điều chỉnh lại bộ lọc search.
+          Không tìm thấy ngành học nào trong hệ thống. Vui lòng thêm mới hoặc điều chỉnh lại bộ lọc tìm kiếm.
         </p>
       </div>
     )
@@ -27,12 +26,12 @@ const NganhHocList = ({ data, renderActions }: Props) => {
       {data.map((item, index) => (
         <div
           key={item.id || index}
-          className="group relative flex flex-col justify-between rounded-xl border border-slate-200/90 bg-white p-5 shadow-sm transition-all duration-200 hover:border-slate-300 hover:shadow-md"
+          className="group relative flex flex-col justify-between rounded-xl border border-slate-200/90 bg-white p-5 shadow-sm transition-all duration-200 hover:border-blue-300 hover:shadow-md"
         >
           <div>
             {/* Header Card: Mã ngành & Thao tác */}
             <div className="mb-3 flex items-center justify-between gap-3">
-              <span className="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 font-mono text-xs font-bold tracking-wide text-slate-700 uppercase">
+              <span className="inline-flex items-center rounded-md border border-blue-100 bg-blue-50 px-2.5 py-1 font-mono text-xs font-bold tracking-wide text-blue-700 uppercase">
                 {item.majorCode}
               </span>
 
@@ -45,7 +44,7 @@ const NganhHocList = ({ data, renderActions }: Props) => {
             </div>
 
             {/* Tên ngành học */}
-            <h3 className="line-clamp-2 min-h-[48px] text-base leading-snug font-bold text-slate-900 transition-colors group-hover:text-indigo-600">
+            <h3 className="line-clamp-2 text-base leading-snug font-bold text-slate-900 transition-colors group-hover:text-blue-600">
               {item.majorName}
             </h3>
 
@@ -53,7 +52,7 @@ const NganhHocList = ({ data, renderActions }: Props) => {
             <div className="mt-4 space-y-2.5 border-t border-slate-100 pt-4 text-xs text-slate-600">
               {/* Khoa trực thuộc */}
               <div className="flex items-start gap-2.5">
-                <Building2 size={15} className="mt-0.5 shrink-0 text-slate-400" />
+                <Building2 size={15} className="mt-0.5 shrink-0 text-blue-500" />
                 <div className="min-w-0">
                   <span className="block text-[11px] font-medium text-slate-400">Đơn vị quản lý</span>
                   <span

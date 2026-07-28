@@ -1,12 +1,12 @@
-import { KhoaProvider } from "./KhoaProvider";
-import { Outlet } from "react-router-dom";
+import KhoaList from './KhoaList'
+import { KhoaProvider } from './KhoaProvider'
 
 const KhoaIndex = () => {
   return (
     <KhoaProvider>
-      <Outlet />
+      <KhoaList />
     </KhoaProvider>
-  );
-};
+  )
+}
 
-export default KhoaIndex;
+export default KhoaIndex

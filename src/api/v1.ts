@@ -2646,7 +2646,8 @@ export interface components {
             endTerm?: number | null;
             endYear: number;
             startYear: number;
-            status: string;
+            /** @enum {string} */
+            status: "ADMISSION" | "ACTIVE" | "GRADUATED";
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -3684,7 +3685,8 @@ export interface components {
             endTerm?: number | null;
             endYear: number;
             startYear: number;
-            status: string;
+            /** @enum {string} */
+            status: "ADMISSION" | "ACTIVE" | "GRADUATED";
         };
         BatchResponseDto: {
             id: number;
@@ -3697,7 +3699,8 @@ export interface components {
             endTerm?: number | null;
             endYear: number;
             startYear: number;
-            status: string;
+            /** @enum {string} */
+            status: "ADMISSION" | "ACTIVE" | "GRADUATED";
             /** Format: date-time */
             createdAt: string;
             /** Format: date-time */
@@ -3714,7 +3717,8 @@ export interface components {
             endTerm?: number | null;
             endYear?: number;
             startYear?: number;
-            status?: string;
+            /** @enum {string} */
+            status?: "ADMISSION" | "ACTIVE" | "GRADUATED";
         };
         CurriculumSubjectPayload: {
             semesterNumber: number;
@@ -3946,22 +3950,18 @@ export interface components {
             building: string | null;
             capacity: number | null;
             roomCode: string;
-            /**
-             * @example Thực hành
-             * @enum {string}
-             */
-            type: "Lý thuyết" | "Thực hành" | "Phòng Lab/Máy tính" | "Xưởng thực tập" | "Phòng chức năng";
+            roomName: string | null;
+            /** @enum {string} */
+            type: "THEORY" | "PRACTICE" | "WORKSHOP" | "COMPUTER_LAB" | "FUNCTIONAL";
         };
         RoomDto: {
             id: number;
             building: string | null;
             capacity: number | null;
             roomCode: string;
-            /**
-             * @example Thực hành
-             * @enum {string}
-             */
-            type: "Lý thuyết" | "Thực hành" | "Phòng Lab/Máy tính" | "Xưởng thực tập" | "Phòng chức năng";
+            roomName: string | null;
+            /** @enum {string} */
+            type: "THEORY" | "PRACTICE" | "WORKSHOP" | "COMPUTER_LAB" | "FUNCTIONAL";
             /** Format: date-time */
             createdAt: string;
         };
@@ -3969,11 +3969,9 @@ export interface components {
             building?: string | null;
             capacity?: number | null;
             roomCode?: string;
-            /**
-             * @example Thực hành
-             * @enum {string}
-             */
-            type?: "Lý thuyết" | "Thực hành" | "Phòng Lab/Máy tính" | "Xưởng thực tập" | "Phòng chức năng";
+            roomName?: string | null;
+            /** @enum {string} */
+            type?: "THEORY" | "PRACTICE" | "WORKSHOP" | "COMPUTER_LAB" | "FUNCTIONAL";
         };
         CreateClassSubjectSessionDto: {
             classSubjectId: number;
@@ -8171,7 +8169,8 @@ export interface operations {
                 building?: string | null;
                 capacity?: number | null;
                 roomCode?: string;
-                type?: "Lý thuyết" | "Thực hành" | "Phòng Lab/Máy tính" | "Xưởng thực tập" | "Phòng chức năng";
+                roomName?: string | null;
+                type?: "THEORY" | "PRACTICE" | "WORKSHOP" | "COMPUTER_LAB" | "FUNCTIONAL";
                 createdAt?: string;
             };
             header?: never;

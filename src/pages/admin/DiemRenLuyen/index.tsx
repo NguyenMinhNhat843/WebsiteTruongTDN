@@ -1,54 +1,42 @@
-import { useState } from "react";
-import {
-  Plus,
-  Calendar,
-  Shield,
-  ShieldAlert,
-  Loader2,
-  FileText,
-  ArrowUpRight,
-  Trash2,
-} from "lucide-react";
-import { $api } from "../../../api/client";
-import CreateDotDanhGia from "./Create/CreateDotDanhGia";
-import DetailDotDanhGiaModal from "./One/DetailDotDanhGiaModal";
+import { useState } from 'react'
+import { Plus, Calendar, Shield, ShieldAlert, Loader2, FileText, ArrowUpRight, Trash2 } from 'lucide-react'
+import { $api } from '../../../api/client'
+import CreateDotDanhGia from './Create/CreateDotDanhGia'
+import DetailDotDanhGiaModal from './One/DetailDotDanhGiaModal'
+import { toast } from 'sonner'
+import PageShell from '../../../components/ui/PageShell'
+import ButtonAction from '../../../components/ui/ButtonAction'
 
 const DiemRenLuyenIndex = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedPeriodId, setSelectedPeriodId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedPeriodId, setSelectedPeriodId] = useState<number | null>(null)
 
   // Lấy dữ liệu danh sách đợt đánh giá
-  const {
-    data: periods,
-    isLoading: isLoadingPeriods,
-    refetch,
-  } = $api.useQuery("get", "/assessment/periods");
+  const { data: periods, isLoading: isLoadingPeriods, refetch } = $api.useQuery('get', '/assessment/periods')
 
   // Hook Mutation Xóa đợt đánh giá
   const { mutate: deletePeriod, isPending: isDeleting } = $api.useMutation(
-    "delete",
-    "/assessment/periods/{id}",
+    'delete',
+    '/assessment/periods/{id}',
     {
       onSuccess: () => {
-        alert("Xóa đợt đánh giá thành công!");
-        refetch();
+        toast.success('Xóa đợt đánh giá thành công!')
+        refetch()
       },
-      onError: (err) => {
-        alert(
-          "Xóa thất bại: " + ((err as any)?.message || "Lỗi kết nối server"),
-        );
+      onError: () => {
+        toast.error('Lỗi kết nối server')
       },
     },
-  );
+  )
 
   // Hàm định dạng ngày tháng hiển thị trực quan
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  };
+    return new Date(dateString).toLocaleDateString('vi-VN', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  }
 
   const handleDelete = (id: number, name: string) => {
     if (
@@ -56,144 +44,131 @@ const DiemRenLuyenIndex = () => {
         `Bạn có chắc chắn muốn xóa đợt đánh giá: "${name}" không?\nHành động này sẽ xóa toàn bộ liên kết tiêu chí liên quan.`,
       )
     ) {
-      deletePeriod({ params: { path: { id } } });
+      deletePeriod({ params: { path: { id } } })
     }
-  };
+  }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto space-y-6">
-      {/* 1. Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-gray-100 pb-5">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 tracking-tight">
-            Quản lý điểm rèn luyện
-          </h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Theo dõi, kích hoạt hoặc khóa dữ liệu các đợt chấm điểm rèn luyện
-            của sinh viên.
-          </p>
-        </div>
-
-        <button
-          type="button"
+    <PageShell
+      title="Điểm rèn luyện"
+      sub="Quản lý các đợt đánh giá điểm rèn luyện của sinh viên, bao gồm tạo mới, chỉnh sửa và xóa."
+      icon={Calendar}
+      renderRight={
+        <ButtonAction
+          label="Tạo đợt đánh giá mới"
+          icon={<Plus size={16} />}
           onClick={() => setIsModalOpen(true)}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500/20"
-        >
-          <Plus className="h-4 w-4" />
-          Tạo đợt đánh giá
-        </button>
-      </div>
-
-      {/* 2. Danh sách dạng Card */}
-      {isLoadingPeriods ? (
-        <div className="flex flex-col items-center justify-center py-20 text-gray-400 gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-          <p className="text-sm font-medium">
-            Đang tải danh sách đợt đánh giá...
-          </p>
-        </div>
-      ) : !periods || periods.length === 0 ? (
-        <div className="flex flex-col items-center justify-center border-2 border-dashed border-gray-200 rounded-xl py-16 px-4 text-center">
-          <div className="p-3 bg-gray-50 text-gray-400 rounded-full mb-3">
-            <Calendar className="h-6 w-6" />
+          variant="primary"
+        />
+      }
+    >
+      <div className="space-y-6">
+        {/* 2. Danh sách dạng Card */}
+        {isLoadingPeriods ? (
+          <div className="flex flex-col items-center justify-center gap-3 py-20 text-gray-400">
+            <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+            <p className="text-sm font-medium">Đang tải danh sách đợt đánh giá...</p>
           </div>
-          <h3 className="text-sm font-semibold text-gray-900">
-            Không có dữ liệu
-          </h3>
-          <p className="text-xs text-gray-500 max-w-sm mt-1">
-            Hiện chưa có đợt đánh giá nào. Hãy nhấn nút "Tạo đợt đánh giá" để
-            bắt đầu.
-          </p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {periods.map((period) => (
-            <div
-              key={period.id}
-              className="group relative flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-5 shadow-sm hover:shadow-md hover:border-gray-300 transition-all duration-200"
-            >
-              <div>
-                {/* Phần Trạng thái (Badges) */}
-                <div className="flex items-center justify-between gap-2 mb-4">
-                  {period.isActive ? (
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-green-50 text-green-700 border border-green-200/60">
-                      <span className="h-1.5 w-1.5 rounded-full bg-green-600 animate-pulse" />
-                      Đang hoạt động
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600 border border-gray-200/60">
-                      Tạm ẩn
-                    </span>
-                  )}
-
-                  <div className="flex items-center gap-2">
-                    {period.isFrozen ? (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200/60">
-                        <ShieldAlert className="h-3.5 w-3.5 text-amber-600" />
-                        Đã khóa
+        ) : !periods || periods.length === 0 ? (
+          <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-200 px-4 py-16 text-center">
+            <div className="mb-3 rounded-full bg-gray-50 p-3 text-gray-400">
+              <Calendar className="h-6 w-6" />
+            </div>
+            <h3 className="text-sm font-semibold text-gray-900">Không có dữ liệu</h3>
+            <p className="mt-1 max-w-sm text-xs text-gray-500">
+              Hiện chưa có đợt đánh giá nào. Hãy nhấn nút "Tạo đợt đánh giá" để bắt đầu.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {periods.map((period) => (
+              <div
+                key={period.id}
+                className="group relative flex flex-col justify-between rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all duration-200 hover:border-gray-300 hover:shadow-md"
+              >
+                <div>
+                  {/* Phần Trạng thái (Badges) */}
+                  <div className="mb-4 flex items-center justify-between gap-2">
+                    {period.isActive ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-md border border-green-200/60 bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700">
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-green-600" />
+                        Đang hoạt động
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700 border border-blue-200/60">
-                        <Shield className="h-3.5 w-3.5 text-blue-600" />
-                        Mở nhập
+                      <span className="inline-flex items-center rounded-md border border-gray-200/60 bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-600">
+                        Tạm ẩn
                       </span>
                     )}
 
-                    {/* Nút xóa nhanh */}
-                    <button
-                      type="button"
-                      disabled={isDeleting}
-                      onClick={() => handleDelete(period.id, period.name)}
-                      className="text-gray-400 hover:text-red-600 transition-colors bg-transparent border-0 cursor-pointer p-1 rounded hover:bg-gray-50 disabled:opacity-50"
-                      title="Xóa đợt đánh giá"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      {period.isFrozen ? (
+                        <span className="inline-flex items-center gap-1 rounded-md border border-amber-200/60 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-700">
+                          <ShieldAlert className="h-3.5 w-3.5 text-amber-600" />
+                          Đã khóa
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-md border border-blue-200/60 bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+                          <Shield className="h-3.5 w-3.5 text-blue-600" />
+                          Mở nhập
+                        </span>
+                      )}
+
+                      {/* Nút xóa nhanh */}
+                      <button
+                        type="button"
+                        disabled={isDeleting}
+                        onClick={() => handleDelete(period.id, period.name)}
+                        className="cursor-pointer rounded border-0 bg-transparent p-1 text-gray-400 transition-colors hover:bg-gray-50 hover:text-red-600 disabled:opacity-50"
+                        title="Xóa đợt đánh giá"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
+
+                  {/* Tên đợt đánh giá */}
+                  <h3 className="line-clamp-2 min-h-[2.75rem] text-base leading-snug font-semibold text-gray-900 transition-colors group-hover:text-blue-600">
+                    {period.name}
+                  </h3>
                 </div>
 
-                {/* Tên đợt đánh giá */}
-                <h3 className="font-semibold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 min-h-[2.75rem] text-base leading-snug">
-                  {period.name}
-                </h3>
-              </div>
+                {/* Phần thông tin chân Card & Nút hành động */}
+                <div className="mt-5 flex items-center justify-between border-t border-gray-100 pt-4 text-xs text-gray-500">
+                  <div className="flex items-center gap-1.5">
+                    <FileText className="h-3.5 w-3.5 text-gray-400" />
+                    <span>Tạo ngày: {formatDate(period.createdAt)}</span>
+                  </div>
 
-              {/* Phần thông tin chân Card & Nút hành động */}
-              <div className="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
-                <div className="flex items-center gap-1.5">
-                  <FileText className="h-3.5 w-3.5 text-gray-400" />
-                  <span>Tạo ngày: {formatDate(period.createdAt)}</span>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedPeriodId(period.id)}
+                    className="inline-flex cursor-pointer items-center gap-1 border-0 bg-transparent font-medium text-blue-600 transition-colors hover:text-blue-800"
+                  >
+                    Chi tiết
+                    <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </button>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={() => setSelectedPeriodId(period.id)}
-                  className="inline-flex items-center gap-1 font-medium text-blue-600 hover:text-blue-800 transition-colors bg-transparent border-0 cursor-pointer"
-                >
-                  Chi tiết
-                  <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </button>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
 
-      {/* 3. Modal tạo mới */}
-      <CreateDotDanhGia
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSuccess={() => refetch()}
-      />
+        {/* 3. Modal tạo mới */}
+        <CreateDotDanhGia
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          onSuccess={() => refetch()}
+        />
 
-      {/* 4. Modal Chi tiết & Chỉnh sửa tích hợp */}
-      <DetailDotDanhGiaModal
-        periodId={selectedPeriodId}
-        onClose={() => setSelectedPeriodId(null)}
-        onSuccess={() => refetch()}
-      />
-    </div>
-  );
-};
+        {/* 4. Modal Chi tiết & Chỉnh sửa tích hợp */}
+        <DetailDotDanhGiaModal
+          periodId={selectedPeriodId}
+          onClose={() => setSelectedPeriodId(null)}
+          onSuccess={() => refetch()}
+        />
+      </div>
+    </PageShell>
+  )
+}
 
-export default DiemRenLuyenIndex;
+export default DiemRenLuyenIndex

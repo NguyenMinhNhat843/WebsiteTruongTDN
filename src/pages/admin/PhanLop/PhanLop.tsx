@@ -110,10 +110,10 @@ const PhanLop = () => {
                     label: n.majorName,
                   })) || []),
                 ]}
-                value={selectedMajorId || ''}
-                onChange={(e) => setSelectedMajorId(e.target.value ? Number(e.target.value) : null)}
-                className="w-full rounded-xl border border-slate-200 bg-white p-3 transition-all outline-none hover:border-blue-400 focus:ring-4 focus:ring-blue-100"
-                labelClassName="text-sm font-semibold text-slate-700 ml-1 mb-2 block"
+                value={selectedMajorId ?? ''}
+                onChange={(val) => setSelectedMajorId(val ? Number(val) : null)}
+                className="w-full rounded-xl border border-slate-200 bg-white hover:border-blue-400"
+                labelClassName="text-sm font-semibold text-slate-700"
               />
               {isPendingNganhs && (
                 <span className="mt-1 ml-1 block animate-pulse text-xs text-blue-500 italic">
@@ -127,13 +127,11 @@ const PhanLop = () => {
               <SelectOption
                 label="Chọn Khóa đào tạo"
                 options={batchOptions}
-                value={selectedBatchId || ''}
+                value={selectedBatchId ?? ''}
                 disabled={isPendingbatches || !selectedMajorId}
-                onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                  setSelectedBatchId(Number(e.target.value))
-                }
-                className="w-full rounded-xl border border-slate-200 bg-white p-3 transition-all outline-none hover:border-blue-400 focus:ring-4 focus:ring-blue-100"
-                labelClassName="text-sm font-semibold text-slate-700 ml-1 mb-2 block"
+                onChange={(val) => setSelectedBatchId(val ? Number(val) : null)}
+                className="w-full rounded-xl border border-slate-200 bg-white hover:border-blue-400"
+                labelClassName="text-sm font-semibold text-slate-700"
               />
               {isPendingbatches && (
                 <span className="mt-1 ml-1 block animate-pulse text-xs text-slate-400 italic">

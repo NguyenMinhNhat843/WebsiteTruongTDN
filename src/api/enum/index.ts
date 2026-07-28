@@ -89,3 +89,30 @@ export const DOCUMENT_STATUS_MAP: Record<
 
 // Attendance Enum
 export type AttendanceStatus = components['schemas']['AttendanceDto']['status']
+
+// Semester Enum
+export type SemesterStatusEnum = components['schemas']['SemesterDto']['status']
+export const SEMESTER_MAP: Record<NonNullable<SemesterStatusEnum>, { label: string; colorClass: string }> = {
+  DRAFT: { label: 'Bản nháp', colorClass: 'bg-amber-50 text-amber-700 border-amber-200' },
+  UPCOMING: { label: 'Sắp diễn ra', colorClass: 'bg-blue-50 text-blue-700 border-blue-200' },
+  ACTIVE: { label: 'Đang hoạt động', colorClass: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  CLOSE: { label: 'Đã đóng', colorClass: 'bg-gray-50 text-gray-700 border-gray-200' },
+}
+
+// Room enum
+export type RoomTypeEnum = components['schemas']['RoomDto']['type']
+export const ROOM_TYPE_MAP: Record<NonNullable<RoomTypeEnum>, string> = {
+  THEORY: 'Lý thuyết',
+  PRACTICE: 'Thực hành',
+  COMPUTER_LAB: 'Phòng Lab/Máy tính',
+  WORKSHOP: 'Xưởng thực tập',
+  FUNCTIONAL: 'Phòng chức năng',
+}
+
+// Batch
+export type BatchStatusEnum = components['schemas']['BatchDto']['status']
+export const BATCH_STATUS_MAP: Record<NonNullable<BatchStatusEnum>, { label: string; colorClass: string }> = {
+  ACTIVE: { label: 'Đang học', colorClass: 'bg-amber-50 text-amber-700 border-amber-200' },
+  ADMISSION: { label: 'Đang tuyển sinh', colorClass: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  GRADUATED: { label: 'Tốt nghiệp', colorClass: 'bg-gray-50 text-gray-700 border-gray-200' },
+}

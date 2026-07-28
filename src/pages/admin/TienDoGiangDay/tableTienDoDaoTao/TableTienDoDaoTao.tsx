@@ -7,11 +7,12 @@ import type { components } from '../../../../api/v1'
 import { $api } from '../../../../api/client'
 import { toast } from 'sonner'
 import ButtonAction from '../../../../components/ui/ButtonAction'
-import { FileText } from 'lucide-react'
+import { FileText, School2 } from 'lucide-react'
 import { downloadFromBlob } from '../../../../util/download'
 import { Filters } from './Filters'
 import { TableContent } from './TableContent'
 import { type DataRow } from './types'
+import PageShell from '../../../../components/ui/PageShell'
 
 export type UpsertPlanTrainingDto = components['schemas']['UpsertTrainingPlanDto']
 
@@ -390,7 +391,11 @@ const TableTienDoDaoTao = () => {
   }
 
   return (
-    <div>
+    <PageShell
+      title="Tiến độ đào tạo"
+      sub="Quản lý và theo dõi tiến độ đào tạo của các môn học trong lớp học"
+      icon={School2}
+    >
       <Filters
         classIdParam={classIdParam}
         semesterIdParam={semesterIdParam}
@@ -426,7 +431,7 @@ const TableTienDoDaoTao = () => {
         <div className="mt-4 flex justify-end">
           <ButtonAction
             variant="export"
-            label="Xuất bảng điểm học kỳ"
+            label="Xuất bảng tiến độ đào tạo"
             icon={<FileText className="h-4 w-4" />}
             loading={isLoadingExportExcel}
             onClick={() => {
@@ -465,7 +470,7 @@ const TableTienDoDaoTao = () => {
           </button>
         </div>
       </div>
-    </div>
+    </PageShell>
   )
 }
 

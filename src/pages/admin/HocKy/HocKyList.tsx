@@ -1,9 +1,10 @@
-import HocKyTable from "./TableHocKy";
-import { useHocKyContext } from "./HocKyProvider";
-import PageShell from "../../../components/ui/PageShell";
-import { PlusIcon } from "lucide-react";
-import { CreateHocKyModal } from "./CreateHocKyModal";
-import { toast } from "sonner";
+import HocKyTable from './TableHocKy'
+import { useHocKyContext } from './HocKyProvider'
+import PageShell from '../../../components/ui/PageShell'
+import { GraduationCap, PlusIcon } from 'lucide-react'
+import { CreateHocKyModal } from './CreateHocKyModal'
+import { toast } from 'sonner'
+import ButtonAction from '../../../components/ui/ButtonAction'
 
 const HocKyList = () => {
   const {
@@ -13,25 +14,20 @@ const HocKyList = () => {
     createhocKy,
     isCreateHocKyPending,
     isCreateHocKyError,
-  } = useHocKyContext();
+  } = useHocKyContext()
   return (
     <PageShell
       title="Danh sách học kỳ"
-      sub="Quản lý học kỳ"
+      icon={GraduationCap}
       renderRight={
-        <button
+        <ButtonAction
+          label="Mở học kỳ mới"
+          icon={<PlusIcon size={16} />}
           onClick={() => setIsOpenModalCreate(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 active:transform active:scale-95 text-white text-sm font-semibold rounded-lg shadow-sm shadow-indigo-200 transition-all duration-200 ease-in-out border border-indigo-600"
-        >
-          <PlusIcon size={16} className="text-white" />
-          <span>Mở học kỳ mới</span>
-        </button>
+        />
       }
     >
-      <HocKyTable
-        hocKyList={hocKyList || []}
-        isHocKyListPending={isHocKyListPending}
-      />
+      <HocKyTable hocKyList={hocKyList || []} isHocKyListPending={isHocKyListPending} />
 
       <CreateHocKyModal
         isOpen={useHocKyContext().isOpenModalCreate}
@@ -43,11 +39,11 @@ const HocKyList = () => {
             },
             {
               onSuccess: () => {
-                toast.success("Tạo học kỳ thành công!");
-                window.location.reload();
+                toast.success('Tạo học kỳ thành công!')
+                window.location.reload()
               },
               onError: () => {
-                toast.error("Có lỗi xảy ra khi tạo học kỳ. Vui lòng thử lại.");
+                toast.error('Có lỗi xảy ra khi tạo học kỳ. Vui lòng thử lại.')
               },
             },
           )
@@ -56,7 +52,7 @@ const HocKyList = () => {
         isCreateHocKyError={isCreateHocKyError}
       />
     </PageShell>
-  );
-};
+  )
+}
 
-export default HocKyList;
+export default HocKyList
